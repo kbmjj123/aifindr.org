@@ -1,6 +1,6 @@
 <template>
   <header class="fixed top-0 left-0 right-0 z-50 h-[52px]"
-    :style="{ background: 'rgba(8,8,8,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--color-border)' }">
+    :style="{ background: 'var(--color-header-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--color-border)' }">
     <div class="mx-auto flex h-full items-center gap-4 px-4 lg:px-6 max-w-[1400px]">
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center gap-2 shrink-0">

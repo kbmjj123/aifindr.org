@@ -14,6 +14,7 @@
   --color-bg-surface:     var(--color-bg-surface);
   --color-bg-elevated:    var(--color-bg-elevated);
   --color-bg-input:       var(--color-bg-input);
+  --color-header-bg:      var(--color-header-bg);
   --color-border-base:    var(--color-border);
   --color-border-hover:   var(--color-border-hover);
   --color-border-active:  var(--color-border-active);
@@ -44,6 +45,7 @@
   --color-bg-surface:     #0f0f0f;
   --color-bg-elevated:    #161616;
   --color-bg-input:       #111111;
+  --color-header-bg:      rgba(8,8,8,0.92);
 
   --color-border:         #1e1e1e;
   --color-border-hover:   #2a2a2a;
@@ -109,6 +111,7 @@
   --color-bg-surface:     #ffffff;
   --color-bg-elevated:    #f0efe9;
   --color-bg-input:       #f8f7f3;
+  --color-header-bg:      rgba(245,244,240,0.92);
 
   --color-border:         #e4e3de;
   --color-border-hover:   #d0cfc9;
