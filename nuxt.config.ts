@@ -26,12 +26,7 @@ export default defineNuxtConfig({
     preset: process.env.NODE_ENV === 'production' ? 'cloudflare-pages' : undefined,
   },
 
-  content: {
-    database: {
-      type: 'sqlite',
-      name: 'nuxt-content',
-    },
-  },
+  content: {},
 
   postcss: {
     plugins: {

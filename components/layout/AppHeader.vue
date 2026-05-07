@@ -16,9 +16,10 @@
 
       <!-- Right actions -->
       <div class="flex items-center gap-3 ml-auto">
-        <NuxtLink to="/submit" class="btn-primary flex items-center gap-1.5 text-xs h-8 px-3">
+        <NuxtLink to="/submit" class="btn-primary flex items-center gap-1.5 h-8 px-3 rounded-md text-[13px] font-medium">
           + Submit Tool
         </NuxtLink>
+        <ThemeToggle />
         <a href="https://github.com/aifindr-org/aifindr.org" target="_blank" rel="noopener noreferrer"
           class="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[var(--color-bg-elevated)]"
           style="color: var(--color-text-secondary)">

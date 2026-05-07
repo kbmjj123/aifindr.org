@@ -1,13 +1,13 @@
 <template>
-  <article class="tool-card group">
+  <article class="tool-card group" :class="{ 'tool-card-featured': featured }">
     <div class="flex gap-3">
-      <div class="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center font-semibold text-sm"
+      <div class="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center font-semibold text-[15px]"
         :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
         {{ name[0] }}
       </div>
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 mb-1">
-          <h3 class="text-sm font-semibold truncate" style="color: var(--color-text-primary)">
+          <h3 class="text-[15px] font-semibold truncate" style="color: var(--color-text-primary)">
             {{ name }}
           </h3>
           <div class="flex gap-1 ml-auto shrink-0">
@@ -22,7 +22,7 @@
             </svg>
           </a>
         </div>
-        <p class="text-xs leading-relaxed line-clamp-2 mb-2" style="color: var(--color-text-secondary)">
+        <p class="text-[13px] leading-relaxed line-clamp-2 mb-[10px]" style="color: var(--color-text-secondary)">
           {{ description }}
         </p>
         <div class="flex flex-wrap gap-1.5">

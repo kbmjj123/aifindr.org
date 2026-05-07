@@ -1,6 +1,6 @@
 <template>
   <!-- Hero -->
-  <section class="py-12 lg:py-16 text-center lg:text-left">
+  <section class="pt-12 pb-10 lg:pt-16 lg:pb-10 text-center lg:text-left">
     <h1 class="text-3xl sm:text-4xl font-bold leading-tight"
       style="color: var(--color-text-primary)">
       Discover 500+ AI Tools, Handpicked for You.
@@ -48,8 +48,15 @@
         @mouseleave="($event.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)'">
         <span class="text-2xl">{{ cat.emoji }}</span>
         <div>
-          <div class="text-sm font-semibold" style="color: var(--color-text-primary)">{{ cat.name }}</div>
+          <div class="text-[15px] font-semibold" style="color: var(--color-text-primary)">{{ cat.name }}</div>
           <div class="text-xs" style="color: var(--color-text-muted)">{{ Math.floor(Math.random() * 50) + 5 }} tools</div>
+        </div>
+        <div class="ml-auto flex items-center">
+          <div class="flex -space-x-2">
+            <div v-for="i in 5" :key="i"
+              class="w-4 h-4 rounded-full border-2 border-[var(--color-bg-surface)]"
+              :style="{ background: 'var(--color-bg-elevated)' }" />
+          </div>
         </div>
       </NuxtLink>
     </div>

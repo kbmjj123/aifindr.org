@@ -17,5 +17,12 @@ useHead({
   meta: [
     { name: 'description', content: 'Open-source AI tool directory. Submit your tool, get free backlinks.' },
   ],
+  script: [
+    {
+      innerHTML: `(function(){var p=localStorage.getItem('aifindr-theme');var t=p?p:(new Date().getHours()>=6&&new Date().getHours()<18?'light':'dark');if(t==='light')document.documentElement.classList.add('light');})()`,
+      type: 'text/javascript',
+      tagPosition: 'head',
+    },
+  ],
 })
 </script>

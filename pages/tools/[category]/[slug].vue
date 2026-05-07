@@ -19,7 +19,7 @@
             {{ name?.[0] || 'T' }}
           </div>
           <div class="min-w-0">
-            <h1 class="text-2xl lg:text-3xl font-bold mb-1 truncate" style="color: var(--color-text-primary)">
+            <h1 class="text-[22px] lg:text-[28px] font-bold mb-1 truncate" style="color: var(--color-text-primary)">
               {{ name || slug }}
             </h1>
             <div class="flex flex-wrap gap-2 mb-2">
@@ -55,19 +55,19 @@
 
           <div class="space-y-4 text-sm">
             <div>
-              <div class="text-xs font-medium uppercase tracking-wider mb-1" style="color: var(--color-text-muted)">
+              <div class="text-[11px] font-medium uppercase tracking-wider mb-1" style="color: var(--color-text-muted)">
                 Pricing
               </div>
               <div style="color: var(--color-text-primary)">{{ pricingLabel }}</div>
             </div>
             <div v-if="price_detail">
-              <div class="text-xs font-medium uppercase tracking-wider mb-1" style="color: var(--color-text-muted)">
+              <div class="text-[11px] font-medium uppercase tracking-wider mb-1" style="color: var(--color-text-muted)">
                 Price Details
               </div>
               <div style="color: var(--color-text-primary)">{{ price_detail }}</div>
             </div>
             <div>
-              <div class="text-xs font-medium uppercase tracking-wider mb-1" style="color: var(--color-text-muted)">
+              <div class="text-[11px] font-medium uppercase tracking-wider mb-1" style="color: var(--color-text-muted)">
                 Category
               </div>
               <NuxtLink :to="`/tools/${category}`" style="color: var(--color-text-link)">
@@ -75,7 +75,7 @@
               </NuxtLink>
             </div>
             <div v-if="platforms.length">
-              <div class="text-xs font-medium uppercase tracking-wider mb-1" style="color: var(--color-text-muted)">
+              <div class="text-[11px] font-medium uppercase tracking-wider mb-1" style="color: var(--color-text-muted)">
                 Platforms
               </div>
               <div class="flex flex-wrap gap-1.5">
@@ -87,7 +87,7 @@
           <!-- Submitter info (dofollow backlink) -->
           <div v-if="submitter_site || submitter_github" class="mt-4 pt-4"
             :style="{ borderTop: '1px solid var(--color-border)' }">
-            <div class="text-xs font-medium uppercase tracking-wider mb-2" style="color: var(--color-text-muted)">
+            <div class="text-[11px] font-medium uppercase tracking-wider mb-2" style="color: var(--color-text-muted)">
               Submitted by
             </div>
             <div class="flex items-center gap-2">
@@ -106,6 +106,16 @@
         </div>
       </div>
     </div>
+
+    <!-- Alternatives -->
+    <section class="mt-12">
+      <h2 class="text-lg font-semibold mb-4" style="color: var(--color-text-primary)">
+        Looking for Alternatives to {{ name }}?
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <ToolCardCompact v-for="i in 6" :key="i" />
+      </div>
+    </section>
   </div>
 </template>
 

@@ -1,5 +1,6 @@
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
 @theme {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -95,6 +96,41 @@
   --radius-full: 9999px;
 }
 
+/* 日间主题 */
+html.light {
+  --color-bg-base: #f8f9fa;
+  --color-bg-surface: #ffffff;
+  --color-bg-elevated: #f0f1f3;
+  --color-bg-input: #ffffff;
+  --color-border: #e2e4e8;
+  --color-border-hover: #c8cad0;
+  --color-border-active: #4f46e5;
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+  --color-text-link: #4f46e5;
+  --color-accent: #4f46e5;
+  --color-accent-light: #6366f1;
+  --color-accent-glow: rgba(79, 70, 229, 0.12);
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-new: #0891b2;
+  --color-featured-bg: rgba(245, 158, 11, 0.08);
+  --color-featured-text: #b45309;
+  --color-featured-border: rgba(245, 158, 11, 0.25);
+  --color-verified-bg: rgba(34, 197, 94, 0.08);
+  --color-verified-text: #15803d;
+  --color-verified-border: rgba(34, 197, 94, 0.25);
+  --color-new-bg: rgba(6, 182, 212, 0.08);
+  --color-new-text: #0e7490;
+  --color-new-border: rgba(6, 182, 212, 0.25);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--color-border);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12), 0 0 0 1px var(--color-border-hover);
+  --shadow-active: 0 0 0 2px var(--color-accent-glow), 0 0 0 1px var(--color-accent);
+  --shadow-glow: 0 0 20px var(--color-accent-glow);
+}
+
 /* 全局过渡 */
 * {
   transition-property: background-color, border-color, color, opacity, transform, box-shadow;
@@ -103,7 +139,7 @@
 }
 
 /* 页面进入动画 */
-@keyframes fade-in {
+@keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(4px);
@@ -114,7 +150,7 @@
   }
 }
 .page-enter-active {
-  animation: fade-in 200ms ease;
+  animation: fadeIn 200ms ease;
 }
 
 /* 骨架屏闪烁 */
@@ -147,6 +183,15 @@
   background: var(--color-bg-elevated);
   transform: translateY(-1px);
   box-shadow: var(--shadow-hover);
+}
+
+/* Featured 卡片 */
+.tool-card-featured {
+  border-left: 2px solid var(--color-featured-text);
+  background: linear-gradient(135deg, rgba(245,158,11,0.05), var(--color-bg-surface) 60%);
+}
+.tool-card-featured:hover {
+  background: linear-gradient(135deg, rgba(245,158,11,0.08), var(--color-bg-elevated) 60%);
 }
 
 /* 按钮系统 */
@@ -319,6 +364,7 @@
 /* 滚动条 */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -329,6 +375,19 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-border-hover);
+}
+
+/* 隐藏滚动条（保留功能） */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {

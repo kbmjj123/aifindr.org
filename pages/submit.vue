@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[720px] mx-auto">
+  <div>
     <h1 class="text-3xl font-bold mb-2" style="color: var(--color-text-primary)">Submit Your AI Tool</h1>
     <p class="text-base mb-8" style="color: var(--color-text-secondary)">
       Get 3 free dofollow backlinks for your tool. Open source, no account needed.
@@ -18,25 +18,26 @@
       </button>
     </div>
 
-    <!-- GitHub PR tab -->
-    <div v-if="activeTab === 'github'" class="p-6 rounded-xl"
-      :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
-      <div class="space-y-6">
-        <div v-for="(step, i) in githubSteps" :key="i" class="flex gap-4">
-          <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
-            :style="{ background: 'var(--color-accent)', color: 'white' }">
-            {{ i + 1 }}
+    <!-- Dual column: GitHub PR tab -->
+    <div v-if="activeTab === 'github'" class="flex flex-col lg:flex-row gap-8">
+      <div class="flex-1 min-w-0 p-6 rounded-xl"
+        :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
+        <div class="space-y-6">
+          <div v-for="(step, i) in githubSteps" :key="i" class="flex gap-4">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+              :style="{ background: 'var(--color-accent)', color: 'white' }">
+              {{ i + 1 }}
+            </div>
+            <div>
+              <h3 class="font-semibold mb-1" style="color: var(--color-text-primary)">{{ step.title }}</h3>
+              <p class="text-sm" style="color: var(--color-text-secondary)">{{ step.description }}</p>
+            </div>
           </div>
-          <div>
-            <h3 class="font-semibold mb-1" style="color: var(--color-text-primary)">{{ step.title }}</h3>
-            <p class="text-sm" style="color: var(--color-text-secondary)">{{ step.description }}</p>
-          </div>
-        </div>
 
-        <!-- Template preview -->
-        <div class="p-4 rounded-lg text-sm font-mono"
-          :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)' }">
-          <pre class="text-xs leading-relaxed" style="color: var(--color-text-secondary)">
+          <!-- Template preview -->
+          <div class="p-4 rounded-lg text-sm font-mono"
+            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)' }">
+            <pre class="text-xs leading-relaxed" style="color: var(--color-text-secondary)">
 ---
 name: "Your Tool Name"
 slug: "your-tool-slug"
@@ -52,17 +53,28 @@ submitter_github: "your-username"
 ## Description
 
 Write a detailed description of your tool here...</pre>
-        </div>
+          </div>
 
-        <a href="https://github.com/aifindr-org/aifindr.org" target="_blank" rel="noopener noreferrer"
-          class="btn-primary inline-flex items-center gap-2">
-          Fork &amp; Submit on GitHub →
-        </a>
+          <a href="https://github.com/aifindr-org/aifindr.org" target="_blank" rel="noopener noreferrer"
+            class="btn-primary inline-flex items-center gap-2">
+            Fork &amp; Submit on GitHub →
+          </a>
+        </div>
+      </div>
+      <div class="w-full lg:w-[300px] shrink-0">
+        <BacklinkIncentive />
       </div>
     </div>
 
-    <!-- Online Form tab -->
-    <SubmitForm v-else />
+    <!-- Dual column: Online Form tab -->
+    <div v-else class="flex flex-col lg:flex-row gap-8">
+      <div class="flex-1 min-w-0">
+        <SubmitForm />
+      </div>
+      <div class="w-full lg:w-[300px] shrink-0">
+        <BacklinkIncentive />
+      </div>
+    </div>
   </div>
 </template>
 

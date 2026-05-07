@@ -2,7 +2,7 @@
   <Teleport to="body">
     <div v-if="isOpen" class="fixed inset-0 z-[100]" @click.self="close">
       <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-      <div class="fixed top-[20%] left-1/2 -translate-x-1/2 w-[min(600px,90vw)] overflow-hidden rounded-xl"
+      <div class="fixed top-[20%] left-1/2 -translate-x-1/2 w-[min(600px,90vw)] overflow-hidden rounded-2xl"
         :style="{
           background: 'var(--color-bg-elevated)',
           border: '1px solid var(--color-border)',
