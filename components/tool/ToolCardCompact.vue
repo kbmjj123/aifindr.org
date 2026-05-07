@@ -1,19 +1,18 @@
 <template>
-  <article class="tool-card min-w-[180px] lg:min-w-0">
-    <div class="flex flex-col items-center text-center gap-2">
-      <div class="w-9 h-9 rounded-lg flex items-center justify-center font-semibold text-xs"
-        :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
+  <article class="tool-card min-w-[180px] lg:min-w-0 text-center">
+    <div class="flex flex-col items-center gap-2.5">
+      <div class="tool-logo !w-9 !h-9 !rounded-[7px] !text-[11px]">
         {{ name[0] }}
       </div>
-      <div class="min-w-0">
-        <h3 class="text-sm font-semibold truncate max-w-full" style="color: var(--color-text-primary)">
+      <div class="min-w-0 w-full">
+        <h3 class="font-sans font-semibold text-[12px] truncate max-w-full" style="color: var(--color-text-primary)">
           {{ name }}
         </h3>
-        <p class="text-xs mt-0.5 line-clamp-2" style="color: var(--color-text-muted)">
+        <p class="font-body text-[10px] mt-0.5 line-clamp-2" style="color: var(--color-text-muted)">
           {{ description }}
         </p>
       </div>
-      <ToolTag :type="pricing">{{ pricingLabel }}</ToolTag>
+      <span :class="['tag', `tag-${pricing}`]">{{ pricingLabel }}</span>
     </div>
   </article>
 </template>

@@ -1,44 +1,47 @@
 <template>
-  <div>
-    <h1 class="text-3xl font-bold mb-2" style="color: var(--color-text-primary)">Submit Your AI Tool</h1>
-    <p class="text-base mb-8" style="color: var(--color-text-secondary)">
+  <div class="max-w-[720px] mx-auto">
+    <h1 class="font-sans font-extrabold text-[24px] tracking-tight mb-2" style="color: var(--color-text-primary)">
+      Submit Your AI Tool
+    </h1>
+    <p class="font-body text-[13px] mb-8" style="color: var(--color-text-secondary)">
       Get 3 free dofollow backlinks for your tool. Open source, no account needed.
     </p>
 
     <!-- Dual tabs -->
-    <div class="flex gap-1 mb-6 p-1 rounded-lg" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
+    <div class="flex gap-1 mb-6 p-1 rounded-md"
+      :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
       <button v-for="tab in tabs" :key="tab.key"
-        class="flex-1 h-9 rounded-md text-sm font-medium transition-all duration-150"
-        :class="activeTab === tab.key ? 'active-tab' : ''"
-        :style="activeTab === tab.key
-          ? { background: 'var(--color-bg-surface)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)' }
-          : { color: 'var(--color-text-secondary)' }"
+        class="filter-tab flex-1 justify-center"
+        :class="{ active: activeTab === tab.key }"
         @click="activeTab = tab.key">
         {{ tab.icon }} {{ tab.label }}
       </button>
     </div>
 
-    <!-- Dual column: GitHub PR tab -->
+    <!-- GitHub PR tab -->
     <div v-if="activeTab === 'github'" class="flex flex-col lg:flex-row gap-8">
-      <div class="flex-1 min-w-0 p-6 rounded-xl"
+      <div class="flex-1 min-w-0 p-6 rounded-lg"
         :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
         <div class="space-y-6">
           <div v-for="(step, i) in githubSteps" :key="i" class="flex gap-4">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
-              :style="{ background: 'var(--color-accent)', color: 'white' }">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center font-sans font-bold text-[13px] shrink-0"
+              :style="{ background: 'var(--color-accent)', color: '#000' }">
               {{ i + 1 }}
             </div>
             <div>
-              <h3 class="font-semibold mb-1" style="color: var(--color-text-primary)">{{ step.title }}</h3>
-              <p class="text-sm" style="color: var(--color-text-secondary)">{{ step.description }}</p>
+              <h3 class="font-sans font-semibold text-[13px] mb-1" style="color: var(--color-text-primary)">
+                {{ step.title }}
+              </h3>
+              <p class="font-body text-[12px]" style="color: var(--color-text-secondary)">
+                {{ step.description }}
+              </p>
             </div>
           </div>
 
           <!-- Template preview -->
-          <div class="p-4 rounded-lg text-sm font-mono"
-            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)' }">
-            <pre class="text-xs leading-relaxed" style="color: var(--color-text-secondary)">
----
+          <div class="p-4 rounded-md font-body text-[12px] leading-relaxed"
+            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)' }">
+            <pre class="text-[11px]">---
 name: "Your Tool Name"
 slug: "your-tool-slug"
 website: "https://your-tool.com"
@@ -61,17 +64,17 @@ Write a detailed description of your tool here...</pre>
           </a>
         </div>
       </div>
-      <div class="w-full lg:w-[300px] shrink-0">
+      <div class="w-full lg:w-[280px] shrink-0">
         <BacklinkIncentive />
       </div>
     </div>
 
-    <!-- Dual column: Online Form tab -->
+    <!-- Online Form tab -->
     <div v-else class="flex flex-col lg:flex-row gap-8">
       <div class="flex-1 min-w-0">
         <SubmitForm />
       </div>
-      <div class="w-full lg:w-[300px] shrink-0">
+      <div class="w-full lg:w-[280px] shrink-0">
         <BacklinkIncentive />
       </div>
     </div>

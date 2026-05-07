@@ -5,13 +5,12 @@ const STORAGE_KEY = 'aifindr-theme'
 
 function detectByTime(): Theme {
   const hour = new Date().getHours()
-  // 6:00–18:00 → light, 18:00–6:00 → dark
   return hour >= 6 && hour < 18 ? 'light' : 'dark'
 }
 
 function applyTheme(theme: Theme) {
   if (import.meta.client) {
-    document.documentElement.classList.toggle('light', theme === 'light')
+    document.documentElement.setAttribute('data-theme', theme)
   }
 }
 

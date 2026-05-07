@@ -1,5 +1,5 @@
 <template>
-  <select :class="['input', { error }]" :value="modelValue"
+  <select :class="['select', { error }]" :value="modelValue"
     @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
     v-bind="$attrs">
     <option v-for="opt in options" :key="opt.value" :value="opt.value" :disabled="opt.disabled">

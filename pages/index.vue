@@ -1,72 +1,72 @@
 <template>
-  <!-- Hero -->
-  <section class="pt-12 pb-10 lg:pt-16 lg:pb-10 text-center lg:text-left">
-    <h1 class="text-3xl sm:text-4xl font-bold leading-tight"
-      style="color: var(--color-text-primary)">
-      Discover 500+ AI Tools, Handpicked for You.
+  <!-- ═══ Hero 区 ═══ -->
+  <section class="pt-12 pb-9 lg:pt-12 lg:pb-9">
+    <div class="hero-tag">Open Source</div>
+    <h1 class="hero-title">
+      Discover <em>AI Tools</em><br />Built for Makers.
     </h1>
-    <p class="mt-3 text-base" style="color: var(--color-text-secondary)">
-      Open-source directory. Submit your tool, get free backlinks.
+    <p class="hero-sub">
+      Open-source AI tool directory. Submit your tool, get 3 free dofollow backlinks.
     </p>
-    <div class="mt-6 max-w-[560px] mx-auto lg:mx-0">
+    <!-- Hero search -->
+    <div class="max-w-[560px]">
       <SearchBar :expanded="true" />
     </div>
   </section>
 
-  <!-- Trending -->
+  <!-- ═══ Trending 区 ═══ -->
   <section class="mb-10">
     <div class="flex items-center justify-between mb-4">
       <div>
-        <h2 class="text-lg font-semibold" style="color: var(--color-text-primary)">🔥 Trending</h2>
-        <p class="text-xs mt-0.5" style="color: var(--color-text-muted)">Most viewed this week</p>
+        <h2 class="font-sans font-bold text-[15px]" style="color: var(--color-text-primary)">🔥 Trending</h2>
+        <p class="font-body text-[11px]" style="color: var(--color-text-muted)">Most viewed this week</p>
       </div>
     </div>
-    <div class="flex gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:gap-3 scrollbar-none">
+    <div class="flex gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:gap-[10px] scrollbar-none">
       <ToolCardCompact v-for="i in 8" :key="i" />
     </div>
   </section>
 
-  <!-- Featured -->
+  <!-- ═══ Featured 区 ═══ -->
   <section class="mb-10">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold" style="color: var(--color-text-primary)">⭐ Featured Tools</h2>
-      <span class="text-xs" style="color: var(--color-text-muted)">Sponsored</span>
+      <h2 class="font-sans font-bold text-[15px]" style="color: var(--color-text-primary)">⭐ Featured Tools</h2>
+      <span class="font-body text-[10px]" style="color: var(--color-text-muted)">Sponsored</span>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-[10px]">
       <ToolCard v-for="i in 4" :key="i" :featured="true" />
     </div>
   </section>
 
-  <!-- Browse by Category -->
+  <!-- ═══ Browse by Category 区 ═══ -->
   <section class="mb-10">
-    <h2 class="text-lg font-semibold mb-4" style="color: var(--color-text-primary)">Browse by Category</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <h2 class="font-sans font-bold text-[15px] mb-4" style="color: var(--color-text-primary)">
+      Browse by Category
+    </h2>
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-2">
       <NuxtLink v-for="cat in categories" :key="cat.slug" :to="`/tools/${cat.slug}`"
-        class="flex items-center gap-3 px-4 rounded-xl"
-        :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', height: '72px' }"
+        class="flex items-center gap-2.5 px-3 rounded-lg"
+        :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', height: '64px' }"
         @mouseenter="($event.currentTarget as HTMLElement).style.borderColor = 'var(--color-border-hover)'"
         @mouseleave="($event.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)'">
-        <span class="text-2xl">{{ cat.emoji }}</span>
-        <div>
-          <div class="text-[15px] font-semibold" style="color: var(--color-text-primary)">{{ cat.name }}</div>
-          <div class="text-xs" style="color: var(--color-text-muted)">{{ Math.floor(Math.random() * 50) + 5 }} tools</div>
-        </div>
-        <div class="ml-auto flex items-center">
-          <div class="flex -space-x-2">
-            <div v-for="i in 5" :key="i"
-              class="w-4 h-4 rounded-full border-2 border-[var(--color-bg-surface)]"
-              :style="{ background: 'var(--color-bg-elevated)' }" />
+        <span class="text-lg shrink-0">{{ cat.emoji }}</span>
+        <div class="min-w-0">
+          <div class="font-sans font-semibold text-[12px]" style="color: var(--color-text-primary)">
+            {{ cat.name }}
           </div>
+          <div class="font-body text-[10px]" style="color: var(--color-text-muted)">{{ Math.floor(Math.random() * 50) + 5 }} tools</div>
         </div>
       </NuxtLink>
     </div>
   </section>
 
-  <!-- Recently Added -->
+  <!-- ═══ Recently Added 区 ═══ -->
   <section class="mb-10">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold" style="color: var(--color-text-primary)">🆕 Recently Added</h2>
-      <NuxtLink to="/tools" class="text-sm font-medium" style="color: var(--color-accent-light)">
+      <h2 class="font-sans font-bold text-[15px]" style="color: var(--color-text-primary)">
+        🆕 Recently Added
+      </h2>
+      <NuxtLink to="/tools" class="font-body text-[11px]" style="color: var(--color-accent)">
         View all tools &rarr;
       </NuxtLink>
     </div>
@@ -75,35 +75,43 @@
     </ToolGrid>
   </section>
 
-  <!-- Submit CTA -->
-  <section class="rounded-xl text-center py-10 px-8 mb-10"
-    :style="{
-      background: 'linear-gradient(rgba(79,70,229,0.08), rgba(79,70,229,0.02))',
-      border: '1px solid rgba(79,70,229,0.2)'
-    }">
-    <h2 class="text-2xl font-bold mb-2" style="color: var(--color-text-primary)">
+  <!-- ═══ Submit CTA 区 ═══ -->
+  <section class="cta-section mb-10">
+    <h2 class="font-sans font-extrabold text-[20px] tracking-tight mb-2"
+      style="color: var(--color-text-primary)">
       Get 3 Free Backlinks for Your Tool
     </h2>
-    <p class="text-sm mb-6" style="color: var(--color-text-secondary)">
+    <p class="font-body text-[12px] mb-6" style="color: var(--color-text-muted)">
       Submit your AI tool and get listed on GitHub (DA 100), aifindr.org, and your contributor page.
     </p>
+
     <div class="flex flex-wrap justify-center gap-6 mb-6">
-      <div class="flex items-center gap-2 text-sm" style="color: var(--color-text-secondary)">
-        <span style="color: var(--color-success)">✓</span> github.com <span class="text-xs" style="color: var(--color-text-muted)">DA 100</span>
+      <div class="flex items-center gap-2 font-body text-[12px]" style="color: var(--color-text-secondary)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
+        </svg>
+        github.com <span class="font-body text-[10px]" style="color: var(--color-text-muted)">DA 100</span>
       </div>
-      <div class="flex items-center gap-2 text-sm" style="color: var(--color-text-secondary)">
-        <span style="color: var(--color-success)">✓</span> aifindr.org <span class="text-xs" style="color: var(--color-text-muted)">DA growing</span>
+      <div class="flex items-center gap-2 font-body text-[12px]" style="color: var(--color-text-secondary)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
+        </svg>
+        aifindr.org <span class="font-body text-[10px]" style="color: var(--color-text-muted)">DA growing</span>
       </div>
-      <div class="flex items-center gap-2 text-sm" style="color: var(--color-text-secondary)">
-        <span style="color: var(--color-success)">✓</span> /contributors/you <span class="text-xs" style="color: var(--color-text-muted)">Dofollow</span>
+      <div class="flex items-center gap-2 font-body text-[12px]" style="color: var(--color-text-secondary)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
+        </svg>
+        /contributors/you <span class="font-body text-[10px]" style="color: var(--color-text-muted)">Dofollow</span>
       </div>
     </div>
+
     <div class="flex flex-wrap justify-center gap-3">
-      <NuxtLink to="/submit" class="btn-primary inline-flex items-center">
+      <NuxtLink to="/submit" class="btn-primary">
         Submit via Form
       </NuxtLink>
       <a href="https://github.com/aifindr-org/aifindr.org" target="_blank" rel="noopener noreferrer"
-        class="btn-secondary inline-flex items-center">
+        class="btn-secondary">
         Submit via GitHub PR
       </a>
     </div>

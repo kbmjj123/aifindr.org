@@ -1,19 +1,25 @@
 <template>
   <div>
-    <h1 class="text-3xl font-bold mb-2" style="color: var(--color-text-primary)">Blog</h1>
-    <p class="text-base mb-8" style="color: var(--color-text-secondary)">
+    <h1 class="font-sans font-extrabold text-[24px] tracking-tight mb-2" style="color: var(--color-text-primary)">
+      Blog
+    </h1>
+    <p class="font-body text-[12px] mb-8" style="color: var(--color-text-muted)">
       Latest updates, tool reviews, and AI industry insights.
     </p>
 
-    <div class="grid gap-4">
+    <div class="grid gap-3">
       <NuxtLink v-for="post in posts" :key="post.slug" :to="`/blog/${post.slug}`"
-        class="block p-5 rounded-xl"
+        class="block p-5 rounded-lg"
         :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }"
         @mouseenter="($event.currentTarget as HTMLElement).style.borderColor = 'var(--color-border-hover)'"
         @mouseleave="($event.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)'">
-        <h2 class="text-lg font-semibold mb-1" style="color: var(--color-text-primary)">{{ post.title }}</h2>
-        <p class="text-sm mb-2" style="color: var(--color-text-secondary)">{{ post.excerpt }}</p>
-        <span class="text-xs" style="color: var(--color-text-muted)">{{ post.date }}</span>
+        <h2 class="font-sans font-semibold text-[15px] mb-1" style="color: var(--color-text-primary)">
+          {{ post.title }}
+        </h2>
+        <p class="font-body text-[12px] mb-2" style="color: var(--color-text-secondary)">
+          {{ post.excerpt }}
+        </p>
+        <span class="font-body text-[10px]" style="color: var(--color-text-muted)">{{ post.date }}</span>
       </NuxtLink>
     </div>
   </div>

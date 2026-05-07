@@ -1,15 +1,16 @@
 <template>
   <div>
-    <NuxtLink to="/tools" class="text-sm mb-4 inline-block" style="color: var(--color-text-secondary)">
+    <!-- Breadcrumb -->
+    <NuxtLink to="/tools" class="font-body text-[11px] mb-4 inline-block" style="color: var(--color-text-secondary)">
       &larr; All Tools
     </NuxtLink>
 
     <div class="flex items-center gap-2 mb-6">
       <span class="text-xl">{{ categoryInfo?.emoji }}</span>
-      <h1 class="text-3xl font-bold" style="color: var(--color-text-primary)">
+      <h1 class="font-sans font-extrabold text-[24px] tracking-tight" style="color: var(--color-text-primary)">
         {{ categoryInfo?.name || category }}
       </h1>
-      <span class="text-lg font-normal" style="color: var(--color-text-muted)">({{ toolCount }})</span>
+      <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">({{ toolCount }})</span>
     </div>
 
     <ToolGrid>

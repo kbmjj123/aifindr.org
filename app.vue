@@ -2,12 +2,14 @@
   <div class="min-h-screen">
     <AppHeader />
     <AppSidebar />
-    <main class="pt-14 lg:ml-60">
-      <div class="mx-auto max-w-[1160px] px-4 py-6 lg:px-8">
+    <main class="pt-13 lg:pl-55">
+      <div class="mx-auto max-w-350 px-6 py-6">
         <NuxtPage />
       </div>
     </main>
     <AppFooter />
+    <!-- Mobile tab bar -->
+    <MobileTabBar />
   </div>
 </template>
 
@@ -19,7 +21,7 @@ useHead({
   ],
   script: [
     {
-      innerHTML: `(function(){var p=localStorage.getItem('aifindr-theme');var t=p?p:(new Date().getHours()>=6&&new Date().getHours()<18?'light':'dark');if(t==='light')document.documentElement.classList.add('light');})()`,
+      innerHTML: `(function(){var p=localStorage.getItem('aifindr-theme');var t='dark';if(p==='light'||p==='dark')t=p;else if(p!=='auto'){var h=new Date().getHours();t=(h>=6&&h<18)?'light':'dark'}document.documentElement.setAttribute('data-theme',t)})()`,
       type: 'text/javascript',
       tagPosition: 'head',
     },

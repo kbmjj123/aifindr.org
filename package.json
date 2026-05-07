@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@nuxt/content": "^3.0.0",
+    "@oxc-transform/binding-darwin-x64": "0.128.0",
     "@tailwindcss/postcss": "^4",
     "better-sqlite3": "^12.5.0",
     "nuxt": "^4.0.0",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.0.0",
+    "@oxc-parser/binding-darwin-x64": "^0.129.0",
     "typescript": "^5.7.0",
     "wrangler": "^4.0.0"
   },

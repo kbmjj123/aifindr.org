@@ -1,18 +1,16 @@
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-3xl font-bold" style="color: var(--color-text-primary)">
-        All AI Tools <span class="text-lg font-normal" style="color: var(--color-text-muted)">(500+)</span>
+      <h1 class="font-sans font-extrabold text-[24px] tracking-tight" style="color: var(--color-text-primary)">
+        All AI Tools <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">(500+)</span>
       </h1>
-      <div class="flex items-center gap-2">
-        <NuxtLink to="/submit" class="btn-primary text-xs hidden sm:inline-flex">
-          + Submit Tool
-        </NuxtLink>
-      </div>
+      <NuxtLink to="/submit" class="btn-header-submit hidden sm:inline-flex">
+        + Submit Tool
+      </NuxtLink>
     </div>
 
     <!-- Sort tabs -->
-    <div class="flex gap-2 mb-6 overflow-x-auto scrollbar-none">
+    <div class="filter-tabs mb-6">
       <button v-for="tab in sortTabs" :key="tab.key"
         class="filter-tab shrink-0"
         :class="{ active: activeSort === tab.key }"
@@ -39,15 +37,15 @@
     </div>
 
     <!-- Expandable filter panel -->
-    <div v-if="showFilters" class="p-5 mb-6 rounded-xl"
+    <div v-if="showFilters" class="p-5 mb-6 rounded-lg"
       :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Category -->
         <div>
-          <div class="text-xs font-medium uppercase tracking-wider mb-2" style="color: var(--color-text-muted)">Category</div>
+          <div class="nav-section-title !mt-0">Category</div>
           <div class="space-y-1.5 max-h-48 overflow-y-auto">
             <label v-for="cat in categories" :key="cat.slug"
-              class="flex items-center gap-2 text-sm cursor-pointer" style="color: var(--color-text-secondary)">
+              class="flex items-center gap-2 font-body text-[12px] cursor-pointer" style="color: var(--color-text-secondary)">
               <input type="checkbox" :value="cat.slug" v-model="filterCategories"
                 class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
               <span>{{ cat.emoji }} {{ cat.name }}</span>
@@ -56,10 +54,10 @@
         </div>
         <!-- Pricing -->
         <div>
-          <div class="text-xs font-medium uppercase tracking-wider mb-2" style="color: var(--color-text-muted)">Pricing</div>
+          <div class="nav-section-title !mt-0">Pricing</div>
           <div class="space-y-1.5">
             <label v-for="p in pricingOptions" :key="p.value"
-              class="flex items-center gap-2 text-sm cursor-pointer" style="color: var(--color-text-secondary)">
+              class="flex items-center gap-2 font-body text-[12px] cursor-pointer" style="color: var(--color-text-secondary)">
               <input type="checkbox" :value="p.value" v-model="filterPricing"
                 class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
               {{ p.label }}
@@ -68,10 +66,10 @@
         </div>
         <!-- Platform -->
         <div>
-          <div class="text-xs font-medium uppercase tracking-wider mb-2" style="color: var(--color-text-muted)">Platform</div>
+          <div class="nav-section-title !mt-0">Platform</div>
           <div class="space-y-1.5">
             <label v-for="p in platformOptions" :key="p.value"
-              class="flex items-center gap-2 text-sm cursor-pointer" style="color: var(--color-text-secondary)">
+              class="flex items-center gap-2 font-body text-[12px] cursor-pointer" style="color: var(--color-text-secondary)">
               <input type="checkbox" :value="p.value" v-model="filterPlatforms"
                 class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
               {{ p.label }}
@@ -80,10 +78,10 @@
         </div>
         <!-- Tags -->
         <div>
-          <div class="text-xs font-medium uppercase tracking-wider mb-2" style="color: var(--color-text-muted)">Tags</div>
+          <div class="nav-section-title !mt-0">Tags</div>
           <div class="flex flex-wrap gap-1.5">
             <button v-for="tag in popularTags" :key="tag"
-              class="filter-tab text-xs h-7 px-2.5"
+              class="filter-tab !h-7 !px-2.5 !text-[10px]"
               :class="{ active: filterTags.includes(tag) }"
               @click="toggleTag(tag)">
               {{ tag }}
@@ -93,8 +91,8 @@
       </div>
       <div class="flex items-center justify-end gap-2 mt-4 pt-4"
         :style="{ borderTop: '1px solid var(--color-border)' }">
-        <button class="btn-ghost text-xs" @click="clearFilters">Clear Filters</button>
-        <button class="btn-primary text-xs h-8 px-4" @click="showFilters = false">Apply</button>
+        <button class="btn-ghost" @click="clearFilters">Clear Filters</button>
+        <button class="btn-primary !h-8 !px-4" @click="showFilters = false">Apply</button>
       </div>
     </div>
 
@@ -105,13 +103,13 @@
 
     <!-- Pagination -->
     <div class="flex items-center justify-center gap-2 mt-8">
-      <button class="btn-secondary text-xs h-8 px-3" disabled>← Prev</button>
+      <button class="btn-secondary !h-8 !px-3" disabled>← Prev</button>
       <button class="page-btn active">1</button>
       <button class="page-btn">2</button>
       <button class="page-btn">3</button>
-      <span style="color: var(--color-text-muted)">...</span>
+      <span class="font-body text-[11px]" style="color: var(--color-text-muted)">...</span>
       <button class="page-btn">12</button>
-      <button class="btn-secondary text-xs h-8 px-3">Next →</button>
+      <button class="btn-secondary !h-8 !px-3">Next →</button>
     </div>
   </div>
 </template>
