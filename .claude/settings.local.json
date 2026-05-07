@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm *)",
+      "Bash(npx nuxi *)",
+      "Bash(node *)",
+      "Bash(curl -s http://localhost:3001/)",
+      "Bash(curl -sL http://localhost:3001/)",
+      "Bash(curl -v http://localhost:3001/)"
+    ]
+  }
+}

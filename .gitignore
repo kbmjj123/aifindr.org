@@ -1,16 +1,16 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp
 .pnp.js
 
-# testing
-/coverage
+# Nuxt dev/build
+.output/
+.data/
+.nuxt/
+dist/
 
-# next.js
-/.next/
-/out/
+# testing
+coverage/
 
 # production
 /build
@@ -28,9 +28,14 @@ yarn-error.log*
 .env*.local
 .env
 
-# vercel
-.vercel
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+
+# wrangler
+.wrangler/
