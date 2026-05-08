@@ -7,18 +7,19 @@ routes = [
   { pattern = "aifindr.org/api/*", zone_id = "" }
 ]
 
-# D1 Database
+# D1 Database — 从 Cloudflare Dashboard → D1 → 数据库详情页获取 ID
 [[d1_databases]]
 binding = "DB"
 database_name = "aifindr-db"
-database_id = ""   # 本地开发填入 .dev.vars，生产环境填入
+database_id = ""
 
-# KV Cache
-[[kv_namespaces]]
-binding = "CACHE"
-id = ""            # 本地开发填入 .dev.vars，生产环境填入
+# KV Cache（可选）— 不配置时 stats 不会缓存，不影响其他功能
+# 创建：npx wrangler kv:namespace create CACHE
+# 然后在下方填入返回的 ID
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "5f16b45d-3658-4f74-87df-47f53e2ab04d"
 
-# Turnstile Secret — 通过 wrangler secret put TURNSTILE_SECRET 设置生产值
-# 本地开发在 .dev.vars 中配置
+# Turnstile Secret
 [vars]
 TURNSTILE_SECRET = ""

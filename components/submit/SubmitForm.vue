@@ -95,16 +95,16 @@
       </div>
 
       <!-- Turnstile -->
-      <div class="flex items-center justify-center h-20 rounded-md"
-        :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)' }">
-        <span class="font-body text-[12px]" style="color: var(--color-text-muted)">Turnstile CAPTCHA will render here</span>
-      </div>
+      <div ref="turnstileEl" class="flex items-center justify-center min-h-[65px]"></div>
+      <p v-if="turnstileError" class="font-body text-[11px] text-center" style="color: var(--color-danger)">{{ turnstileError }}</p>
 
-      <button type="submit" class="btn-primary w-full flex items-center justify-center gap-2 !h-[40px] !text-[13px]">
-        Submit for Review
+      <button type="submit" class="btn-primary w-full flex items-center justify-center gap-2 !h-[40px] !text-[13px]"
+        :disabled="submitting || !cfToken">
+        {{ submitting ? 'Submitting...' : 'Submit for Review' }}
       </button>
 
-      <p class="font-body text-[11px] text-center" style="color: var(--color-text-muted)">
+      <p v-if="submitError" class="font-body text-[11px] text-center mt-2" style="color: var(--color-danger)">{{ submitError }}</p>
+      <p v-else class="font-body text-[11px] text-center" style="color: var(--color-text-muted)">
         Submitted tools will be reviewed by our team before publishing.
       </p>
     </form>
@@ -146,10 +146,38 @@ const platformOptions = [
 
 const submitting = ref(false)
 const submitError = ref('')
-const submitSuccess = ref(false)
+const turnstileEl = ref<HTMLDivElement>()
+const cfToken = ref('')
+const turnstileError = ref('')
+
+onMounted(() => {
+  const script = document.createElement('script')
+  script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad'
+  script.async = true
+  script.defer = true
+  document.head.appendChild(script)
+
+  const check = setInterval(() => {
+    const ts = (window as any).turnstile
+    if (ts && turnstileEl.value) {
+      clearInterval(check)
+      ts.render(turnstileEl.value, {
+        sitekey: '0x4AAAAAADLaTYMVN6qFivFT',  // ← 替换为 Cloudflare Turnstile Site Key
+        callback: (token: string) => { cfToken.value = token; turnstileError.value = '' },
+        'expired-callback': () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA expired, please verify again.' },
+        'error-callback': () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA verification error.' },
+      })
+    }
+  }, 200)
+})
+
+onUnmounted(() => {
+  const ts = (window as any).turnstile
+  if (ts && turnstileEl.value) ts.remove(turnstileEl.value)
+})
 
 async function handleSubmit() {
-  if (submitting.value) return
+  if (submitting.value || !cfToken.value) return
   submitting.value = true
   submitError.value = ''
 
@@ -166,7 +194,7 @@ async function handleSubmit() {
         platforms: form.platforms,
         submitter_site: form.submitterSite || undefined,
         submitter_github: form.submitterGithub || undefined,
-        turnstileToken: '1x00000000000000000000',
+        turnstileToken: cfToken.value,
       },
     })
     submitSuccess.value = true
