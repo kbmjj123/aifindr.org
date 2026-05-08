@@ -1,0 +1,493 @@
+openapi: "3.0.3"
+info:
+  title: aifindr.org API
+  description: |
+    AI 工具目录站后端 API。由 Cloudflare Workers 独立部署，处理全部 `/api/*` 路由。
+    Pages 前端通过 `useFetch('/api/...')` 同域调用。
+  version: "1.0.0"
+  contact:
+    name: aifindr.org
+    url: https://aifindr.org
+
+servers:
+  - url: https://aifindr.org/api
+    description: 生产环境
+  - url: http://localhost:8787/api
+    description: 本地开发（wrangler dev）
+  - url: http://localhost:3000/api
+    description: 本地开发（Nuxt 代理）
+
+paths:
+  # ──────────────────────────────────────────────
+  # 工具列表
+  # ──────────────────────────────────────────────
+  /tools:
+    get:
+      summary: 工具列表
+      description: 支持分类、定价、平台、标签多条件筛选，排序和分页。
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [image, writing, video, audio, code, productivity, marketing, data, education, business, research, other]
+          description: 分类筛选
+          example: image
+        - name: pricing
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 定价筛选，逗号分隔多选
+          example: free,freemium
+        - name: platform
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [web, desktop, mobile, api, discord]
+          description: 平台筛选
+          example: web
+        - name: tags
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 标签筛选，逗号分隔多选（联表查询）
+          example: ai,image-generation
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [latest, trending, featured]
+            default: latest
+          description: |
+            排序方式：
+            - latest — 最新收录（默认）
+            - trending — 按点击量降序
+            - featured — 精选优先，其次最新
+          example: trending
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: 页码（从 1 开始）
+          example: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 24
+          description: 每页条数（上限 100）
+          example: 24
+      responses:
+        "200":
+          description: 成功返回工具列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tools:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ToolSummary"
+                  total:
+                    type: integer
+                    description: 符合条件的工具总数（用于分页）
+                    example: 42
+                  page:
+                    type: integer
+                    example: 1
+                  pageSize:
+                    type: integer
+                    example: 24
+
+  # ──────────────────────────────────────────────
+  # 工具详情
+  # ──────────────────────────────────────────────
+  /tools/{category}/{slug}:
+    get:
+      summary: 工具详情
+      description: 获取工具完整信息，含图片、视频、标签。
+      parameters:
+        - name: category
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 工具分类 slug
+          example: image
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 工具 slug
+          example: midjourney
+      responses:
+        "200":
+          description: 成功返回工具详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolDetail"
+        "404":
+          description: 工具不存在
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ──────────────────────────────────────────────
+  # 搜索
+  # ──────────────────────────────────────────────
+  /tools/search:
+    get:
+      summary: 全文搜索
+      description: 搜索工具名称、描述和标签，支持分页。
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 搜索关键词
+          example: midjourney
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: 搜索结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tools:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ToolSummary"
+                  query:
+                    type: string
+                    example: midjourney
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  pageSize:
+                    type: integer
+
+  # ──────────────────────────────────────────────
+  # 站点统计
+  # ──────────────────────────────────────────────
+  /stats:
+    get:
+      summary: 站点统计
+      description: 获取已收录工具数、分类数、贡献者数。结果 KV 缓存 1 小时。
+      responses:
+        "200":
+          description: 统计数字
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tools:
+                    type: integer
+                    description: 已收录工具总数（status = active）
+                    example: 500
+                  categories:
+                    type: integer
+                    description: 分类数量
+                    example: 12
+                  contributors:
+                    type: integer
+                    description: 贡献者数量（有提交记录的 GitHub 用户数）
+                    example: 48
+
+  # ──────────────────────────────────────────────
+  # 记录点击
+  # ──────────────────────────────────────────────
+  /click/{id}:
+    post:
+      summary: 记录点击
+      description: 递增工具的 click_count，用于 Trending 排序。
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 工具 ID
+          example: 1
+      responses:
+        "200":
+          description: 点击已记录
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        "404":
+          description: 工具不存在
+
+  # ──────────────────────────────────────────────
+  # 提交工具
+  # ──────────────────────────────────────────────
+  /submit:
+    post:
+      summary: 提交工具
+      description: 通过在线表单提交新工具。提交后状态为 pending，需要管理员审核。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - website
+                - category
+                - pricing
+                - description
+                - turnstileToken
+              properties:
+                name:
+                  type: string
+                  description: 工具名称
+                  example: My AI Tool
+                website:
+                  type: string
+                  format: uri
+                  description: 工具官网
+                  example: https://my-ai-tool.com
+                category:
+                  type: string
+                  enum: [image, writing, video, audio, code, productivity, marketing, data, education, business, research, other]
+                  description: 工具分类
+                  example: writing
+                pricing:
+                  type: string
+                  enum: [free, freemium, paid]
+                  description: 定价类型
+                  example: freemium
+                price_detail:
+                  type: string
+                  description: 定价说明
+                  example: Free tier available, Pro $20/mo
+                description:
+                  type: string
+                  maxLength: 160
+                  description: 一句话描述（存储在 meta_description）
+                  example: An AI-powered writing assistant.
+                platforms:
+                  type: array
+                  items:
+                    type: string
+                    enum: [web, desktop, mobile, api, discord]
+                  description: 支持的平台
+                  example: [web, api]
+                submitter_site:
+                  type: string
+                  format: uri
+                  description: 提交者个人网站（用于 dofollow 外链）
+                  example: https://submitter-site.com
+                submitter_github:
+                  type: string
+                  description: 提交者 GitHub 用户名
+                  example: username
+                turnstileToken:
+                  type: string
+                  description: Cloudflare Turnstile 验证 token
+                  example: 1x00000000000000000000
+      responses:
+        "201":
+          description: 提交成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  slug:
+                    type: string
+                    description: 生成的工具 slug
+                    example: my-ai-tool
+        "400":
+          description: 参数错误或验证失败
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorWithCode"
+
+components:
+  schemas:
+    ToolSummary:
+      type: object
+      description: 工具列表摘要信息（不含联表数据）
+      properties:
+        id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: midjourney
+        name:
+          type: string
+          example: Midjourney
+        category:
+          type: string
+          example: image
+        website:
+          type: string
+          format: uri
+          example: https://midjourney.com
+        pricing:
+          type: string
+          enum: [free, freemium, paid]
+          example: paid
+        price_starting:
+          type: number
+          example: 10
+        price_detail:
+          type: string
+          example: "Basic $10/mo, Standard $30/mo, Pro $60/mo"
+        platforms:
+          type: string
+          description: 逗号分隔的平台字符串
+          example: web,discord
+        meta_description:
+          type: string
+          example: Midjourney is an AI image generation tool...
+        featured:
+          type: boolean
+          example: false
+        verified:
+          type: boolean
+          example: true
+        click_count:
+          type: integer
+          example: 1520
+        submitter_site:
+          type: string
+          format: uri
+          example: https://example.com
+        submitter_github:
+          type: string
+          example: username
+        submitted_at:
+          type: string
+          format: date-time
+          example: "2026-04-27 12:00:00"
+
+    ToolDetail:
+      type: object
+      description: 工具详情（含标签、图片、视频）
+      allOf:
+        - $ref: "#/components/schemas/ToolSummary"
+        - type: object
+          properties:
+            tags:
+              type: array
+              items:
+                type: string
+              example: ["image-generation", "ai-art", "text-to-image"]
+            images:
+              type: array
+              items:
+                $ref: "#/components/schemas/ToolImage"
+            videos:
+              type: array
+              items:
+                $ref: "#/components/schemas/ToolVideo"
+
+    ToolImage:
+      type: object
+      properties:
+        id:
+          type: integer
+        url:
+          type: string
+          format: uri
+        alt:
+          type: string
+        caption:
+          type: string
+        image_type:
+          type: string
+          enum: [cover, screenshot, logo, banner, og]
+        width:
+          type: integer
+        height:
+          type: integer
+        sort_order:
+          type: integer
+
+    ToolVideo:
+      type: object
+      properties:
+        id:
+          type: integer
+        url:
+          type: string
+          format: uri
+        video_id:
+          type: string
+        platform:
+          type: string
+          enum: [youtube, vimeo, twitter, loom, direct]
+        title:
+          type: string
+        video_type:
+          type: string
+          enum: [demo, tutorial, review, intro]
+        thumbnail:
+          type: string
+        duration:
+          type: integer
+        sort_order:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Tool not found
+
+    ErrorWithCode:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Missing required fields: name
+        code:
+          type: string
+          example: MISSING_FIELDS

@@ -90,6 +90,7 @@ aifindr.org/
 ├── components/
 ├── composables/
 ├── content/tools/            ← 工具 Markdown 文件
+├── api-spec.yaml              ← OpenAPI 3.0 接口文档
 ├── workers/
 ├── assets/css/
 ├── types/
