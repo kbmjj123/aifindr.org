@@ -1,0 +1,24 @@
+name = "aifindr-api"
+main = "workers/api.ts"
+compatibility_date = "2026-05-07"
+
+# Routes: /api/* 指向此 Worker
+routes = [
+  { pattern = "aifindr.org/api/*", zone_id = "" }
+]
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "aifindr-db"
+database_id = ""   # 本地开发填入 .dev.vars，生产环境填入
+
+# KV Cache
+[[kv_namespaces]]
+binding = "CACHE"
+id = ""            # 本地开发填入 .dev.vars，生产环境填入
+
+# Turnstile Secret — 通过 wrangler secret put TURNSTILE_SECRET 设置生产值
+# 本地开发在 .dev.vars 中配置
+[vars]
+TURNSTILE_SECRET = ""

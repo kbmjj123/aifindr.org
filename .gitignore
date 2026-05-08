@@ -39,6 +39,7 @@ yarn-error.log*
 
 # wrangler
 .wrangler/
+.dev.vars
 
 # lockfile
 pnpm-lock.yaml
