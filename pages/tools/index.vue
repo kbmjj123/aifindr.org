@@ -2,7 +2,7 @@
   <div>
     <div class="flex items-center justify-between mb-6">
       <h1 class="font-sans font-extrabold text-[24px] tracking-tight" style="color: var(--color-text-primary)">
-        All AI Tools <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">(500+)</span>
+        All AI Tools <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">({{ total }})</span>
       </h1>
       <NuxtLink to="/submit" class="btn-header-submit hidden sm:inline-flex">
         + Submit Tool
@@ -97,25 +97,28 @@
     </div>
 
     <!-- Tool grid -->
-    <ToolGrid>
-      <ToolCard v-for="i in 24" :key="i" />
-    </ToolGrid>
+    <div v-if="loading" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading tools...</div>
+    <div v-else-if="tools.length === 0" class="text-center py-20">
+      <div class="text-3xl mb-3">🔍</div>
+      <h3 class="font-sans font-bold text-[16px]" style="color: var(--color-text-primary)">No tools found</h3>
+      <p class="font-body text-[12px] mt-1 mb-4" style="color: var(--color-text-muted)">Try adjusting your filters.</p>
+      <button class="btn-secondary" @click="clearFilters">Browse All Tools</button>
+    </div>
+    <ToolGrid v-else>
+      <ToolCard v-for="t in tools" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="t.featured" :verified="t.verified" />
 
     <!-- Pagination -->
-    <div class="flex items-center justify-center gap-2 mt-8">
-      <button class="btn-secondary !h-8 !px-3" disabled>← Prev</button>
-      <button class="page-btn active">1</button>
-      <button class="page-btn">2</button>
-      <button class="page-btn">3</button>
-      <span class="font-body text-[11px]" style="color: var(--color-text-muted)">...</span>
-      <button class="page-btn">12</button>
-      <button class="btn-secondary !h-8 !px-3">Next →</button>
+    <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 mt-8">
+      <button class="btn-secondary !h-8 !px-3" :disabled="currentPage <= 1" @click="goPage(currentPage - 1)">← Prev</button>
+      <button v-for="p in visiblePages" :key="p" class="page-btn" :class="{ active: p === currentPage }" @click="goPage(p)">{{ p }}</button>
+      <button class="btn-secondary !h-8 !px-3" :disabled="currentPage >= totalPages" @click="goPage(currentPage + 1)">Next →</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { CATEGORIES } from '~/types/tool'
+import type { Tool } from '~/types/tool'
 
 const activeSort = ref('latest')
 const activePricing = ref('all')
@@ -124,6 +127,22 @@ const filterCategories = ref<string[]>([])
 const filterPricing = ref<string[]>([])
 const filterPlatforms = ref<string[]>([])
 const filterTags = ref<string[]>([])
+const tools = ref<Tool[]>([])
+const total = ref(0)
+const currentPage = ref(1)
+const pageSize = 24
+const loading = ref(false)
+
+const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
+const visiblePages = computed(() => {
+  const pages: number[] = []
+  const last = totalPages.value
+  const curr = currentPage.value
+  const start = Math.max(1, curr - 2)
+  const end = Math.min(last, curr + 2)
+  for (let i = start; i <= end; i++) pages.push(i)
+  return pages
+})
 
 const sortTabs = [
   { key: 'latest', label: 'Latest' },
@@ -166,7 +185,56 @@ function clearFilters() {
   filterPricing.value = []
   filterPlatforms.value = []
   filterTags.value = []
+  activePricing.value = 'all'
+  activeSort.value = 'latest'
+  currentPage.value = 1
+  loadTools()
 }
+
+function goPage(p: number) {
+  currentPage.value = p
+  loadTools()
+}
+
+function buildPricingParam(): string | undefined {
+  if (activePricing.value === 'all') {
+    return filterPricing.value.length > 0 ? filterPricing.value.join(',') : undefined
+  }
+  return activePricing.value
+}
+
+async function loadTools() {
+  loading.value = true
+  try {
+    const query = new URLSearchParams()
+    query.set('sort', activeSort.value)
+    query.set('page', String(currentPage.value))
+    query.set('pageSize', String(pageSize))
+
+    const pricing = buildPricingParam()
+    if (pricing) query.set('pricing', pricing)
+    if (filterCategories.value.length) query.set('category', filterCategories.value[0])
+    if (filterPlatforms.value.length) query.set('platform', filterPlatforms.value[0])
+    if (filterTags.value.length) query.set('tags', filterTags.value.join(','))
+
+    const { data } = await useFetch<{ tools: Tool[]; total: number }>(`/api/tools?${query.toString()}`)
+    if (data.value) {
+      tools.value = data.value.tools || []
+      total.value = data.value.total || 0
+    }
+  } catch {
+    tools.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+watch([activeSort, activePricing, filterCategories, filterPlatforms, filterTags], () => {
+  currentPage.value = 1
+  loadTools()
+}, { deep: true })
+
+onMounted(loadTools)
 
 usePageSeo({
   title: 'All AI Tools',

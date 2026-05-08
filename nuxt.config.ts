@@ -29,6 +29,9 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: process.env.NODE_ENV === 'production' ? 'cloudflare-pages' : undefined,
+    devProxy: {
+      '/api': { target: 'http://localhost:8787', changeOrigin: true },
+    },
   },
 
   content: {},

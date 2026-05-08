@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="flex gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:gap-[10px] scrollbar-none">
-      <ToolCardCompact v-for="i in 8" :key="i" />
+      <ToolCardCompact v-for="t in trending" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" />
     </div>
   </section>
 
@@ -34,7 +34,7 @@
       <span class="font-body text-[10px]" style="color: var(--color-text-muted)">Sponsored</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-[10px]">
-      <ToolCard v-for="i in 4" :key="i" :featured="true" />
+      <ToolCard v-for="t in featured" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="true" :verified="t.verified" />
     </div>
   </section>
 
@@ -54,7 +54,7 @@
           <div class="font-sans font-semibold text-[12px]" style="color: var(--color-text-primary)">
             {{ cat.name }}
           </div>
-          <div class="font-body text-[10px]" style="color: var(--color-text-muted)">{{ Math.floor(Math.random() * 50) + 5 }} tools</div>
+          <div class="font-body text-[10px]" style="color: var(--color-text-muted)">{{ catCounts[cat.slug] || 0 }} tools</div>
         </div>
       </NuxtLink>
     </div>
@@ -71,7 +71,7 @@
       </NuxtLink>
     </div>
     <ToolGrid>
-      <ToolCard v-for="i in 20" :key="i" />
+      <ToolCard v-for="t in recent" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="t.featured" :verified="t.verified" />
     </ToolGrid>
   </section>
 
@@ -120,8 +120,48 @@
 
 <script setup lang="ts">
 import { CATEGORIES } from '~/types/tool'
+import type { Tool } from '~/types/tool'
 
 const categories = CATEGORIES
+
+const trending = ref<Tool[]>([])
+const featured = ref<Tool[]>([])
+const recent = ref<Tool[]>([])
+const catCounts = ref<Record<string, number>>({})
+const statsTools = ref(500)
+const statsCategories = ref(12)
+const statsContributors = ref(50)
+
+onMounted(async () => {
+  const [{ data: statsData }, { data: trendingData }, { data: featuredData }, { data: recentData }] = await Promise.all([
+    useFetch<{ tools: number; categories: number; contributors: number }>('/api/stats'),
+    useFetch<{ tools: Tool[] }>('/api/tools?sort=trending&pageSize=8'),
+    useFetch<{ tools: Tool[] }>('/api/tools?sort=featured&pageSize=6'),
+    useFetch<{ tools: Tool[] }>('/api/tools?sort=latest&pageSize=20'),
+  ])
+
+  if (statsData.value) {
+    statsTools.value = statsData.value.tools
+    statsCategories.value = statsData.value.categories
+    statsContributors.value = statsData.value.contributors
+  }
+
+  trending.value = trendingData.value?.tools || []
+  featured.value = featuredData.value?.tools || []
+  recent.value = recentData.value?.tools || []
+
+  // Build category counts from recent + trending + featured combined
+  const all = [...recent.value, ...trending.value, ...featured.value]
+  const counts: Record<string, number> = {}
+  for (const t of all) {
+    counts[t.category] = (counts[t.category] || 0) + 1
+  }
+  // Fill in zeros for categories without tools in these result sets
+  for (const cat of categories) {
+    if (!counts[cat.slug]) counts[cat.slug] = 0
+  }
+  catCounts.value = counts
+})
 
 usePageSeo({
   description: 'Open-source AI tool directory. Submit your tool, get free backlinks on GitHub (DA 100), aifindr.org, and your contributor page.',

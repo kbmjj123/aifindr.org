@@ -9,7 +9,7 @@
             <circle cx="11" cy="11" r="8" />
             <path d="M21 21l-4.35-4.35" />
           </svg>
-          <input ref="inputRef" v-model="query" placeholder="Search tools..."
+          <input ref="inputRef" v-model="queryInput" placeholder="Search tools..."
             class="search-modal-input !pl-[52px]"
             @keydown.down.prevent="navigate(1)"
             @keydown.up.prevent="navigate(-1)"
@@ -18,7 +18,8 @@
 
         <!-- Results -->
         <div class="search-results">
-          <div v-for="(result, i) in results" :key="i"
+          <div v-if="loading" class="h-24 flex items-center justify-center font-body text-sm" style="color: var(--color-text-muted)">Searching...</div>
+          <div v-for="(result, i) in results" :key="result.slug"
             class="search-result-item"
             :class="{ active: selectedIndex === i }"
             @click="selectedIndex = i; selectResult()"
@@ -35,14 +36,14 @@
                 {{ result.category }}
               </div>
             </div>
-            <span :class="['tag', `tag-${result.pricing}`]">{{ result.pricingLabel }}</span>
+            <span :class="['tag', `tag-${result.pricing}`]">{{ pricingLabel(result.pricing) }}</span>
           </div>
-          <div v-if="query && results.length === 0" class="empty-state !py-10">
+          <div v-if="queryInput && !loading && results.length === 0" class="empty-state !py-10">
             <span class="icon">🔍</span>
             <h3>No tools found</h3>
-            <p>No results for "{{ query }}"</p>
+            <p>No results for "{{ queryInput }}"</p>
           </div>
-          <div v-if="!query" class="h-24 flex items-center justify-center font-body text-sm" style="color: var(--color-text-muted)">
+          <div v-if="!queryInput" class="h-24 flex items-center justify-center font-body text-sm" style="color: var(--color-text-muted)">
             Type to search AI tools...
           </div>
         </div>
@@ -59,36 +60,47 @@
 </template>
 
 <script setup lang="ts">
-import type { ToolPricing } from '~/types/tool'
+import type { Tool, ToolPricing } from '~/types/tool'
 
 const { isOpen, close } = useSearch()
-const query = ref('')
+const queryInput = ref('')
+const results = ref<Tool[]>([])
+const loading = ref(false)
 const selectedIndex = ref(0)
 const inputRef = ref<HTMLInputElement>()
+let debounce: ReturnType<typeof setTimeout> | null = null
 
-interface SearchResultItem {
-  name: string
-  category: string
-  pricing: ToolPricing
-  pricingLabel: string
+function pricingLabel(p: ToolPricing) {
+  return p.charAt(0).toUpperCase() + p.slice(1)
 }
-
-const results = computed<SearchResultItem[]>(() => {
-  if (!query.value) return []
-  return [
-    { name: 'Midjourney', category: 'Image & Design', pricing: 'paid' as ToolPricing, pricingLabel: 'Paid' },
-    { name: 'ChatGPT', category: 'Writing & Content', pricing: 'freemium' as ToolPricing, pricingLabel: 'Freemium' },
-    { name: 'Stable Diffusion', category: 'Image & Design', pricing: 'free' as ToolPricing, pricingLabel: 'Free' },
-  ].filter(r => r.name.toLowerCase().includes(query.value.toLowerCase()))
-})
 
 watch(isOpen, (open) => {
   if (open) {
     nextTick(() => inputRef.value?.focus())
   } else {
-    query.value = ''
+    queryInput.value = ''
+    results.value = []
     selectedIndex.value = 0
   }
+})
+
+watch(queryInput, (q) => {
+  if (debounce) clearTimeout(debounce)
+  if (!q.trim()) {
+    results.value = []
+    return
+  }
+  loading.value = true
+  debounce = setTimeout(async () => {
+    try {
+      const { data } = await useFetch<{ tools: Tool[] }>(`/api/tools/search?q=${encodeURIComponent(q.trim())}&pageSize=10`)
+      results.value = data.value?.tools || []
+    } catch {
+      results.value = []
+    } finally {
+      loading.value = false
+    }
+  }, 200)
 })
 
 function navigate(dir: number) {
@@ -96,9 +108,10 @@ function navigate(dir: number) {
 }
 
 function selectResult() {
-  if (results.value[selectedIndex.value]) {
+  const r = results.value[selectedIndex.value]
+  if (r) {
     close()
-    navigateTo('/tools/image/midjourney')
+    navigateTo(`/tools/${r.category}/${r.slug}`)
   }
 }
 </script>

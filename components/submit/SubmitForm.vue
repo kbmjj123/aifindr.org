@@ -144,7 +144,37 @@ const platformOptions = [
   { value: 'api', label: 'API' },
 ]
 
-function handleSubmit() {
-  console.log('Form submitted:', form)
+const submitting = ref(false)
+const submitError = ref('')
+const submitSuccess = ref(false)
+
+async function handleSubmit() {
+  if (submitting.value) return
+  submitting.value = true
+  submitError.value = ''
+
+  try {
+    const res = await $fetch('/api/submit', {
+      method: 'POST',
+      body: {
+        name: form.name,
+        website: form.website,
+        category: form.category,
+        pricing: form.pricing,
+        description: form.description,
+        detailDescription: form.detailDescription,
+        platforms: form.platforms,
+        submitter_site: form.submitterSite || undefined,
+        submitter_github: form.submitterGithub || undefined,
+        turnstileToken: '1x00000000000000000000',
+      },
+    })
+    submitSuccess.value = true
+    navigateTo(`/tools/${form.category}/${res.slug}`)
+  } catch (e: any) {
+    submitError.value = e?.data?.error || 'Submission failed. Please try again.'
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
