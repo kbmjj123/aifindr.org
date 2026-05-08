@@ -26,6 +26,7 @@ aifindr.org 是一个**开源、社区驱动**的 AI 工具目录站，同时也
 - @.claude/rules/tech-stack.md — 技术栈约定、目录结构、代码规范
 - @.claude/rules/design-system.md — 设计 Token、组件像素规范、暗色主题
 - @.claude/rules/product-scope.md — 功能模块、数据结构、API 接口、外链逻辑
+- @.claude/rules/seo.md — SEO 标题模板、OG 图片、字数控制规范
 
 ## 核心工作流程
 
@@ -81,7 +82,8 @@ aifindr.org/
 │   └── rules/
 │       ├── tech-stack.md
 │       ├── design-system.md
-│       └── product-scope.md
+│       ├── product-scope.md
+│       └── seo.md
 ├── pages/
 ├── components/
 ├── composables/

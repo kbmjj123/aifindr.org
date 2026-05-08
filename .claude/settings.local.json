@@ -11,7 +11,10 @@
       "Bash(git add *)",
       "WebFetch(domain:nuxtseo.com)",
       "Bash(/Users/zhenggl/.nvm/versions/node/v22.16.0/bin/pnpm add *)",
-      "Bash(timeout 25 /Users/zhenggl/.nvm/versions/node/v22.16.0/bin/pnpm dev)"
+      "Bash(timeout 25 /Users/zhenggl/.nvm/versions/node/v22.16.0/bin/pnpm dev)",
+      "Bash(sips -g all /Users/zhenggl/.claude/image-cache/02a12934-7953-45c6-8849-658f3b4942b1/2.png)",
+      "Bash(python3 *)",
+      "Bash(sips *)"
     ]
   }
 }

@@ -52,11 +52,21 @@ function buildDescription(opts: PageSeoOptions): string {
   )
 }
 
+const OG_TYPE_LABEL: Record<string, string> = {
+  default: 'Home',
+  category: 'Category',
+  tool: 'AI Tool',
+  blog: 'Blog',
+  prefix: 'Page',
+}
+
 /**
- * 标准 SEO 配置 composable
+ * 标准 SEO + OG Image 配置 composable
+ *
+ * 自动设置 page title、meta description、Open Graph / Twitter meta，
+ * 以及调用 defineOgImage 渲染自定义 OG 图片组件。
  *
  * 支持传入普通值或 Ref/Getter（通过 toValue 解包）。
- * 动态值页面（如工具详情页）传入 getter 即可。
  */
 export function usePageSeo(opts: MaybeRefOrGetter<PageSeoOptions>) {
   const resolved = computed(() => {
@@ -64,6 +74,9 @@ export function usePageSeo(opts: MaybeRefOrGetter<PageSeoOptions>) {
     return {
       title: buildTitle(o),
       description: buildDescription(o),
+      ogTitle: o.title || TAGLINE,
+      ogDescription: o.description || TAGLINE,
+      ogType: OG_TYPE_LABEL[o.template || 'default'] || 'Page',
     }
   })
 
@@ -78,4 +91,10 @@ export function usePageSeo(opts: MaybeRefOrGetter<PageSeoOptions>) {
       { property: 'og:description', content: resolved.value.description },
     ]),
   })
+
+  defineOgImage('AppOgImage', computed(() => ({
+    title: resolved.value.ogTitle,
+    description: resolved.value.ogDescription,
+    type: resolved.value.ogType,
+  })))
 }
