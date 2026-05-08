@@ -168,7 +168,9 @@ function clearFilters() {
   filterTags.value = []
 }
 
-useHead({
-  title: 'All AI Tools – aifindr.org',
+usePageSeo({
+  title: 'All AI Tools',
+  template: 'prefix',
+  description: 'Browse our curated collection of 500+ AI tools. Filter by category, pricing, and platform to find the perfect tool for your needs.',
 })
 </script>

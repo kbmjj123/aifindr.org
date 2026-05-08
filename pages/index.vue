@@ -123,7 +123,7 @@ import { CATEGORIES } from '~/types/tool'
 
 const categories = CATEGORIES
 
-useHead({
-  title: 'aifindr.org – Discover 500+ AI Tools, Free & Open Source',
+usePageSeo({
+  description: 'Open-source AI tool directory. Submit your tool, get free backlinks on GitHub (DA 100), aifindr.org, and your contributor page.',
 })
 </script>

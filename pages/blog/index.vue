@@ -31,7 +31,9 @@ const posts = [
   { slug: 'why-backlinks', title: 'Why Backlinks Matter for Your AI Tool', excerpt: 'How submitting to aifindr.org boosts your SEO.', date: 'May 3, 2026' },
 ]
 
-useHead({
-  title: 'Blog – aifindr.org',
+usePageSeo({
+  title: 'Blog',
+  template: 'blog',
+  description: 'Latest updates, AI tool reviews, and industry insights from the aifindr.org team.',
 })
 </script>

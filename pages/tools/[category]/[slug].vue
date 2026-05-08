@@ -131,7 +131,10 @@ const platforms: string[] = ['web', 'api']
 const submitter_site: string = ''
 const submitter_github: string = ''
 
-useHead({
-  title: computed(() => `${name.value} – AI Tool | aifindr.org`),
-})
+usePageSeo(() => ({
+  title: name.value,
+  template: 'tool',
+  subtitle: meta_description,
+  description: meta_description,
+}))
 </script>

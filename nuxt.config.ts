@@ -1,5 +1,10 @@
 export default defineNuxtConfig({
-  modules: ['@nuxt/content'],
+  modules: ['@nuxt/content', '@nuxtjs/seo'],
+
+  site: {
+    url: 'https://aifindr.org',
+    name: 'aifindr.org – Discover AI Tools',
+  },
 
   css: ['~/assets/css/main.css', '~/assets/css/markdown.css'],
 
@@ -27,6 +32,18 @@ export default defineNuxtConfig({
   },
 
   content: {},
+
+  ogImage: {
+    zeroRuntime: true,
+  },
+
+  robots: {
+    allow: ['/'],
+  },
+
+  sitemap: {
+    sources: ['/api/__sitemap__/urls'],
+  },
 
   postcss: {
     plugins: {

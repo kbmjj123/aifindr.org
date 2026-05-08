@@ -41,7 +41,9 @@ const user = {
   toolCount: 3,
 }
 
-useHead({
-  title: computed(() => `${username.value} – Contributor | aifindr.org`),
-})
+usePageSeo(() => ({
+  title: `${username.value} – Contributor`,
+  template: 'prefix',
+  description: `AI tools submitted by ${username.value} on aifindr.org.`,
+}))
 </script>

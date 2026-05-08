@@ -66,7 +66,9 @@ const contributors = [
   { username: 'charlie', toolCount: 1, website: 'https://charlie.ai', joined: '2026-04' },
 ]
 
-useHead({
-  title: 'Contributors – aifindr.org',
+usePageSeo({
+  title: 'Contributors',
+  template: 'prefix',
+  description: 'Meet the contributors who submit and maintain AI tools on aifindr.org.',
 })
 </script>

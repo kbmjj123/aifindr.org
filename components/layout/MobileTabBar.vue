@@ -21,6 +21,7 @@ const tabs = [
 
 function isActive(to: string) {
   if (to === '/') return route.path === '/'
-  return route.path.startsWith(to.split('?')[0])
+  const base = to.split('?')[0]
+  return base !== undefined && route.path.startsWith(base)
 }
 </script>

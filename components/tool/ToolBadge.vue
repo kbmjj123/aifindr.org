@@ -15,7 +15,7 @@ const badgeConfig: Record<string, { icon: string; label: string }> = {
   new: { icon: '🆕', label: 'New' },
 }
 
-const config = badgeConfig[props.type]
+const config = badgeConfig[props.type]!
 const icon = config.icon
 const label = config.label
 </script>

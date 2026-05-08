@@ -96,7 +96,9 @@ const githubSteps = [
   { title: 'Get Your Backlinks', description: 'Once merged, you\'ll receive 3 dofollow backlinks automatically.' },
 ]
 
-useHead({
-  title: 'Submit Your AI Tool – aifindr.org',
+usePageSeo({
+  title: 'Submit Your AI Tool',
+  template: 'prefix',
+  description: 'Get 3 free dofollow backlinks when you submit your AI tool to aifindr.org. Open source, no account needed.',
 })
 </script>

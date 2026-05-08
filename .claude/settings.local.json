@@ -8,7 +8,10 @@
       "Bash(curl -sL http://localhost:3001/)",
       "Bash(curl -v http://localhost:3001/)",
       "Bash(git rm *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "WebFetch(domain:nuxtseo.com)",
+      "Bash(/Users/zhenggl/.nvm/versions/node/v22.16.0/bin/pnpm add *)",
+      "Bash(timeout 25 /Users/zhenggl/.nvm/versions/node/v22.16.0/bin/pnpm dev)"
     ]
   }
 }

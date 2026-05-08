@@ -26,6 +26,7 @@ const linkComponent = computed(() => {
 
 const isActive = computed(() => {
   if (props.to === '/') return route.path === '/'
-  return route.path.startsWith(props.to.split('?')[0])
+  const base = props.to.split('?')[0]
+  return base !== undefined && route.path.startsWith(base)
 })
 </script>

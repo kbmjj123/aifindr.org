@@ -31,7 +31,10 @@ const categoryInfo = computed(() =>
 
 const toolCount = computed(() => Math.floor(Math.random() * 50) + 5)
 
-useHead({
-  title: computed(() => `Best ${categoryInfo.value?.name || category.value} AI Tools in 2026 – aifindr.org`),
-})
+usePageSeo(() => ({
+  title: categoryInfo.value?.name || category.value,
+  template: 'category',
+  category: categoryInfo.value?.name || category.value,
+  description: `Browse the best ${categoryInfo.value?.name || category.value} AI tools. Compare pricing, read reviews, and find the perfect tool.`,
+}))
 </script>

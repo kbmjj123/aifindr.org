@@ -24,7 +24,9 @@ const slug = computed(() => route.params.slug as string)
 const title = computed(() => slug.value.charAt(0).toUpperCase() + slug.value.slice(1))
 const date = 'May 2026'
 
-useHead({
-  title: computed(() => `${title.value} | aifindr.org Blog`),
-})
+usePageSeo(() => ({
+  title: title.value,
+  template: 'blog',
+  description: `${title.value} — aifindr.org Blog`,
+}))
 </script>
