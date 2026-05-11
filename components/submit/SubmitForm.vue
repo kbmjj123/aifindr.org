@@ -179,6 +179,15 @@ onUnmounted(() => {
   if (ts && turnstileEl.value) ts.remove(turnstileEl.value)
 })
 
+const { user, isLoggedIn } = useAuth()
+
+// Auto-fill submitter info when logged in
+watchEffect(() => {
+  if (user.value && !form.submitterGithub) {
+    form.submitterGithub = user.value.username
+  }
+})
+
 async function handleSubmit() {
   if (submitting.value || !cfToken.value) return
   submitting.value = true
@@ -198,6 +207,7 @@ async function handleSubmit() {
         submitter_site: form.submitterSite || undefined,
         submitter_github: form.submitterGithub || undefined,
         turnstileToken: cfToken.value,
+        submitter_id: isLoggedIn.value ? user.value?.id : undefined,
       },
     })
     navigateTo(`/submit?success=1`)

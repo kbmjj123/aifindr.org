@@ -385,6 +385,14 @@ async function handleSubmit(request: Request, env: Env) {
     return error('Method not allowed', 405)
   }
 
+  // ── Extract authenticated user ──
+  let submitterId: number | null = null
+  const authToken = getTokenFromRequest(request)
+  if (authToken) {
+    const payload = await verifyJWT(authToken, env.JWT_SECRET)
+    if (payload) submitterId = payload.sub
+  }
+
   let body: Record<string, unknown>
   try {
     body = await request.json() as Record<string, unknown>
@@ -459,8 +467,8 @@ async function handleSubmit(request: Request, env: Env) {
   // ── Insert tool ──
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   await env.DB.prepare(`
-    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, body, submitter_site, submitter_github, submitted_at)
-    VALUES (?, ?, ?, ?, ?, ?, 0, ?, 'pending', ?, ?, ?, ?, ?)
+    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, body, submitter_site, submitter_github, submitter_id, submitted_at)
+    VALUES (?, ?, ?, ?, ?, ?, 0, ?, 'pending', ?, ?, ?, ?, ?, ?)
   `).bind(
     slug,
     name,
@@ -473,6 +481,7 @@ async function handleSubmit(request: Request, env: Env) {
     bodyContent || null,
     submitterSite || null,
     submitterGithub || null,
+    submitterId,
     now,
   ).run()
 
