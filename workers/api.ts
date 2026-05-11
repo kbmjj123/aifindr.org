@@ -173,6 +173,27 @@ export default {
         return handleSubmit(request, env)
       }
 
+      // ─────────────────────────────────────────────────────────────────
+      // GET /api/auth/github — redirect to GitHub OAuth
+      // ─────────────────────────────────────────────────────────────────
+      if (method === 'GET' && path === '/auth/github') {
+        return handleAuthRedirect(url, env)
+      }
+
+      // ─────────────────────────────────────────────────────────────────
+      // GET /api/auth/callback — handle GitHub OAuth callback
+      // ─────────────────────────────────────────────────────────────────
+      if (method === 'GET' && path === '/auth/callback') {
+        return handleAuthCallback(url, env)
+      }
+
+      // ─────────────────────────────────────────────────────────────────
+      // GET /api/auth/me — get current user info
+      // ─────────────────────────────────────────────────────────────────
+      if (method === 'GET' && path === '/auth/me') {
+        return handleAuthMe(request, env)
+      }
+
       return error('Not found', 404)
     } catch (err) {
       console.error('Worker error:', err)
@@ -456,4 +477,82 @@ async function handleSubmit(request: Request, env: Env) {
   ).run()
 
   return json({ success: true, slug }, 201)
+}
+
+// ─── Auth handlers ──────────────────────────────────────────────────
+
+async function handleAuthRedirect(url: URL, env: Env) {
+  const redirectUri = `${url.origin}/api/auth/callback`
+  const ghUrl = new URL('https://github.com/login/oauth/authorize')
+  ghUrl.searchParams.set('client_id', env.GITHUB_CLIENT_ID)
+  ghUrl.searchParams.set('redirect_uri', redirectUri)
+  ghUrl.searchParams.set('scope', 'read:user user:email')
+  return Response.redirect(ghUrl.toString(), 302)
+}
+
+async function handleAuthCallback(url: URL, env: Env): Promise<Response> {
+  const code = url.searchParams.get('code')
+  if (!code) return error('Missing code', 400)
+
+  // Exchange code for access token
+  const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      client_id: env.GITHUB_CLIENT_ID,
+      client_secret: env.GITHUB_CLIENT_SECRET,
+      code,
+    }),
+  })
+  const tokenData = await tokenRes.json() as { access_token?: string; error?: string }
+  if (!tokenData.access_token) return error('Failed to get access token', 400)
+  const accessToken = tokenData.access_token
+
+  // Fetch GitHub user
+  const userRes = await fetch('https://api.github.com/user', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
+  const ghUser = await userRes.json() as { id: number; login: string; avatar_url: string }
+
+  // Fetch primary email
+  const emailRes = await fetch('https://api.github.com/user/emails', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
+  const emails = await emailRes.json() as { email: string; primary: boolean; verified: boolean }[]
+  const primaryEmail = emails.find(e => e.primary && e.verified)?.email || emails[0]?.email || ''
+
+  // Upsert user in D1
+  const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
+  const existing = await env.DB.prepare('SELECT id FROM users WHERE github_id = ?').bind(ghUser.id).first()
+  if (existing) {
+    await env.DB.prepare('UPDATE users SET username = ?, email = ?, avatar_url = ?, updated_at = ? WHERE github_id = ?')
+      .bind(ghUser.login, primaryEmail, ghUser.avatar_url, now, ghUser.id).run()
+  } else {
+    await env.DB.prepare('INSERT INTO users (github_id, username, email, avatar_url, created_at) VALUES (?, ?, ?, ?, ?)')
+      .bind(ghUser.id, ghUser.login, primaryEmail, ghUser.avatar_url, now).run()
+  }
+
+  // Get user ID
+  const user = await env.DB.prepare('SELECT id FROM users WHERE github_id = ?').bind(ghUser.id).first() as { id: number }
+
+  // Sign JWT
+  const jwt = await signJWT({ sub: user.id, gh_id: ghUser.id }, env.JWT_SECRET)
+
+  // Redirect back to frontend with token
+  const frontendUrl = new URL(url.origin)
+  frontendUrl.searchParams.set('token', jwt)
+  return Response.redirect(frontendUrl.toString(), 302)
+}
+
+async function handleAuthMe(request: Request, env: Env): Promise<Response> {
+  const token = getTokenFromRequest(request)
+  if (!token) return error('Unauthorized', 401)
+
+  const payload = await verifyJWT(token, env.JWT_SECRET)
+  if (!payload) return error('Invalid or expired token', 401)
+
+  const user = await env.DB.prepare('SELECT id, username, email, avatar_url FROM users WHERE id = ?').bind(payload.sub).first()
+  if (!user) return error('User not found', 404)
+
+  return json(user)
 }
