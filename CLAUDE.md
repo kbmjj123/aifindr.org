@@ -108,7 +108,7 @@ aifindr.org/
 
 ## 环境说明
 
-本地 Node.js / pnpm 环境已预先配置好，**禁止**运行 nvm、pnpm 版本检查、Node 版本切换等环境检测操作。直接使用 `pnpm dev`、`pnpm build` 等命令即可。
+本地 Node.js / pnpm 环境已预先配置好，**禁止**运行 node、nvm、pnpm 版本检查、Node 版本切换等环境检测操作。直接使用 `pnpm dev`、`pnpm build` 等命令即可。
 
 ## 常用命令
 

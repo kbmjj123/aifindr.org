@@ -11,15 +11,13 @@ routes = [
 [[d1_databases]]
 binding = "DB"
 database_name = "aifindr-db"
-database_id = ""
+database_id = "5f16b45d-3658-4f74-87df-47f53e2ab04d"
 
-# KV Cache（可选）— 不配置时 stats 不会缓存，不影响其他功能
-# 创建：npx wrangler kv:namespace create CACHE
-# 然后在下方填入返回的 ID
-# [[kv_namespaces]]
-# binding = "CACHE"
-# id = "5f16b45d-3658-4f74-87df-47f53e2ab04d"
+# KV Cache — 用于缓存高频查询（stats 等）
+[[kv_namespaces]]
+binding = "CACHE"
+id = "ae4b1dfcbdb145db969dc4a5e0b3e722"
 
 # Turnstile Secret
 [vars]
-TURNSTILE_SECRET = ""
+TURNSTILE_SECRET = "0x4AAAAAADLaTZ6nhzkwRkpcqMgkr73-yWc"

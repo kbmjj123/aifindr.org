@@ -132,7 +132,7 @@ const tools = ref<Tool[]>([])
 const total = ref(0)
 const currentPage = ref(1)
 const pageSize = 24
-const loading = ref(false)
+const loading = ref(true)
 
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
 const visiblePages = computed(() => {
@@ -218,10 +218,10 @@ async function loadTools() {
     if (filterPlatforms.value.length) query.set('platform', filterPlatforms.value[0])
     if (filterTags.value.length) query.set('tags', filterTags.value.join(','))
 
-    const { data } = await useFetch<{ tools: Tool[]; total: number }>(`/api/tools?${query.toString()}`)
-    if (data.value) {
-      tools.value = data.value.tools || []
-      total.value = data.value.total || 0
+    const data = await $fetch<{ tools: Tool[]; total: number }>(`/api/tools?${query.toString()}`)
+    if (data) {
+      tools.value = data.tools || []
+      total.value = data.total || 0
     }
   } catch {
     tools.value = []
