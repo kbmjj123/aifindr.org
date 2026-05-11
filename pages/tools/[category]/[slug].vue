@@ -6,39 +6,39 @@
       <span class="sep">/</span>
       <NuxtLink :to="`/tools/${category}`">{{ categoryInfo?.name || category }}</NuxtLink>
       <span class="sep">/</span>
-      <span class="current">{{ tool?.name || slug }}</span>
+      <span class="current">{{ toolWithBody?.name || slug }}</span>
     </nav>
 
     <div v-if="pending" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading...</div>
-    <template v-else-if="tool">
+    <template v-else-if="toolWithBody">
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Main content -->
         <div class="flex-1 min-w-0">
           <div class="flex items-start gap-4 mb-6">
             <div class="tool-detail-logo shrink-0 flex items-center justify-center font-sans font-bold text-xl"
               :style="{ background: 'var(--color-bg-elevated)' }">
-              {{ tool.name[0] || 'T' }}
+              {{ toolWithBody.name[0] || 'T' }}
             </div>
             <div class="min-w-0">
-              <h1 class="tool-detail-name mb-1">{{ tool.name }}</h1>
+              <h1 class="tool-detail-name mb-1">{{ toolWithBody.name }}</h1>
               <div class="flex flex-wrap gap-2 mb-2">
-                <ToolBadge v-if="tool.featured" type="featured" />
-                <ToolBadge v-if="tool.verified" type="verified" />
+                <ToolBadge v-if="toolWithBody.featured" type="featured" />
+                <ToolBadge v-if="toolWithBody.verified" type="verified" />
               </div>
               <p class="font-body text-[13px]" style="color: var(--color-text-secondary)">
-                {{ tool.meta_description }}
+                {{ toolWithBody.meta_description }}
               </p>
               <div class="flex flex-wrap gap-1.5 mt-3">
                 <ToolTag v-for="tag in toolTags" :key="tag">{{ tag }}</ToolTag>
-                <ToolTag :type="tool.pricing">{{ pricingLabel(tool.pricing) }}</ToolTag>
+                <ToolTag :type="toolWithBody.pricing">{{ pricingLabel(toolWithBody.pricing) }}</ToolTag>
               </div>
             </div>
           </div>
 
           <!-- Markdown body -->
           <div class="markdown-content">
-            <template v-if="tool.body">
-              <ContentRenderer :value="tool" />
+            <template v-if="toolWithBody.body">
+              <ContentRenderer :value="toolWithBody" />
             </template>
             <template v-else>
               <p class="font-body text-[12px]" style="color: var(--color-text-muted)">
@@ -51,7 +51,7 @@
         <!-- Right sidebar -->
         <div class="w-full lg:w-[270px] shrink-0">
           <div class="detail-sidebar sticky" style="top: 68px;">
-            <a :href="tool.website || '#'" target="_blank" rel="noopener noreferrer"
+            <a :href="toolWithBody.website || '#'" target="_blank" rel="noopener noreferrer"
               class="btn-primary w-full flex items-center justify-center gap-2 !h-[38px]"
               @click="recordClick">
               Visit Website ↗
@@ -62,16 +62,16 @@
             <div class="space-y-1">
               <div>
                 <div class="detail-sidebar-label">Pricing</div>
-                <div class="detail-sidebar-value">{{ pricingLabel(tool.pricing) }}</div>
+                <div class="detail-sidebar-value">{{ pricingLabel(toolWithBody.pricing) }}</div>
               </div>
-              <div v-if="tool.price_detail">
+              <div v-if="toolWithBody.price_detail">
                 <div class="detail-sidebar-label">Price Details</div>
-                <div class="detail-sidebar-value">{{ tool.price_detail }}</div>
+                <div class="detail-sidebar-value">{{ toolWithBody.price_detail }}</div>
               </div>
               <div>
                 <div class="detail-sidebar-label">Category</div>
-                <NuxtLink :to="`/tools/${tool.category}`" class="detail-sidebar-value" style="color: var(--color-text-link)">
-                  {{ categoryInfo?.name || tool.category }}
+                <NuxtLink :to="`/tools/${toolWithBody.category}`" class="detail-sidebar-value" style="color: var(--color-text-link)">
+                  {{ categoryInfo?.name || toolWithBody.category }}
                 </NuxtLink>
               </div>
               <div v-if="toolPlatforms.length">
@@ -83,17 +83,17 @@
             </div>
 
             <!-- Submitter info (dofollow backlink) -->
-            <div v-if="tool.submitter_site || tool.submitter_github" :style="{ borderTop: '1px solid var(--color-border)', margin: '14px 0', paddingTop: '14px' }">
+            <div v-if="toolWithBody.submitter_site || toolWithBody.submitter_github" :style="{ borderTop: '1px solid var(--color-border)', margin: '14px 0', paddingTop: '14px' }">
               <div class="detail-sidebar-label">Submitted by</div>
               <div class="flex items-center gap-2 mt-1">
                 <div class="w-5 h-5 rounded-full shrink-0" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }" />
                 <div>
                   <div class="font-body text-[12px]" style="color: var(--color-text-secondary)">
-                    {{ tool.submitter_github || 'Anonymous' }}
+                    {{ toolWithBody.submitter_github || 'Anonymous' }}
                   </div>
-                  <a v-if="tool.submitter_site" :href="tool.submitter_site" target="_blank"
+                  <a v-if="toolWithBody.submitter_site" :href="toolWithBody.submitter_site" target="_blank"
                     class="font-body text-[12px]" style="color: var(--color-text-link)">
-                    {{ tool.submitter_site.replace(/^https?:\/\//, '') }}
+                    {{ toolWithBody.submitter_site.replace(/^https?:\/\//, '') }}
                   </a>
                 </div>
               </div>
@@ -105,7 +105,7 @@
       <!-- Alternatives -->
       <section v-if="alternatives.length" class="mt-12">
         <h2 class="font-sans font-bold text-[15px] mb-4" style="color: var(--color-text-primary)">
-          Looking for Alternatives to {{ tool.name }}?
+          Looking for Alternatives to {{ toolWithBody.name }}?
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[10px]">
           <ToolCardCompact v-for="t in alternatives" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" />
@@ -139,39 +139,42 @@ function pricingLabel(p: ToolPricing) {
   return p.charAt(0).toUpperCase() + p.slice(1)
 }
 
+// 1. Load metadata from API
 const { data: tool, pending } = useAsyncData<Tool>(
-  `tool-${slug.value}`,
-  async () => {
-    const result = await $fetch<Tool>(`/api/tools/${category.value}/${slug.value}`)
-    if (result) {
-      toolTags.value = (result as any).tags || []
-
-      // Try to load markdown body from Nuxt Content
-      try {
-        const contentTool = await queryCollection('tools').where('slug', '=', slug.value).first()
-        if (contentTool) {
-          (result as any).body = (contentTool as any).body
-        }
-      } catch {
-        // body not available via Nuxt Content, use API data only
-      }
-
-      // Load alternatives (same category, exclude current)
-      try {
-        const altData = await $fetch<{ tools: Tool[] }>(
-          `/api/tools?category=${category.value}&pageSize=7`
-        )
-        if (altData?.tools) {
-          alternatives.value = altData.tools.filter(t => t.slug !== slug.value).slice(0, 6)
-        }
-      } catch {
-        // alternatives optional
-      }
-    }
-    return result
-  },
+  `tool-api-${slug.value}`,
+  () => $fetch<Tool>(`/api/tools/${category.value}/${slug.value}`),
   { watch: [category, slug] }
 )
+
+// 2. Load markdown body from Nuxt Content (SSR only)
+const { data: contentTool } = useAsyncData(
+  `tool-body-${slug.value}`,
+  () => queryCollection('tools').where('slug', '=', slug.value).first(),
+  { watch: [category, slug] }
+)
+
+// Merge body into tool
+const toolWithBody = computed(() => {
+  if (!tool.value) return null
+  return { ...tool.value, body: (contentTool.value as any)?.body || null }
+})
+
+// Extract tags and load alternatives
+watchEffect(async () => {
+  if (!tool.value) return
+  toolTags.value = (tool.value as any).tags || []
+
+  try {
+    const altData = await $fetch<{ tools: Tool[] }>(
+      `/api/tools?category=${category.value}&pageSize=7`
+    )
+    if (altData?.tools) {
+      alternatives.value = altData.tools.filter(t => t.slug !== slug.value).slice(0, 6)
+    }
+  } catch {
+    // alternatives optional
+  }
+})
 
 async function recordClick() {
   if (tool.value?.id) {
