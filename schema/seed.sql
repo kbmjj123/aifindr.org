@@ -89,3 +89,78 @@ VALUES (13, 'https://r2.aifindr.org/tools/image/stability-ai/screenshot-02.webp'
 
 INSERT INTO tool_videos (tool_id, url, platform, video_id, title, video_type, duration)
 VALUES (13, 'https://www.youtube.com/watch?v=dYJnUT4xO2I', 'youtube', 'dYJnUT4xO2I', 'Stable Diffusion 3 — Full Demo & Review', 'demo', 845);
+
+-- Update Stability AI body content
+UPDATE tools SET body = '## What is Stability AI?
+
+Stability AI is the company behind **Stable Diffusion**, the world''s most popular open-source image generation model. Founded with a mission to build open AI infrastructure, Stability AI has rapidly expanded beyond image generation into video, 3D, audio, and language models. Their models have been downloaded hundreds of millions of times and power thousands of applications across the globe.
+
+Unlike closed-source alternatives like Midjourney or DALL·E 3, Stability AI releases model weights publicly, allowing developers to run inference locally, fine-tune on custom datasets, and integrate deeply into existing workflows without API dependency.
+
+## Key Features
+
+### Stable Diffusion 3 (SD3)
+
+The latest generation of Stability AI''s flagship image model brings several major improvements:
+
+- **Photorealistic output** with unprecedented detail and compositional accuracy
+- **Accurate text rendering** — a significant leap over SD2 and SDXL, capable of rendering legible text within generated images
+- **Multi-prompt support** — use up to 3 separate prompt inputs for fine-grained control over composition
+- **Style consistency** — improved ability to maintain consistent artistic styles across generations
+- **10+ model variants** ranging from 800M to 8B parameters, optimized for different use cases and hardware
+
+### Stable Video Diffusion (SVD)
+
+Transform static images into short, high-quality video clips:
+
+- Generate 14–25 frame videos from a single input image
+- **4K output resolution** supported on compatible hardware
+- Control camera motion and framing
+- Frame interpolation for smoother motion
+- Ideal for content creators, advertisers, and game developers
+
+### 3D Model Generation
+
+Stability AI has entered the 3D space with models capable of generating 3D assets from text prompts or reference images:
+
+- Generate textured 3D meshes from text descriptions
+- Create 3D assets from single 2D images
+- Export to standard formats (OBJ, FBX, GLTF)
+- Ready for game engines and 3D modeling software
+
+### API & Platform
+
+The Stability AI platform provides enterprise-grade access to all models:
+
+- **RESTful API** with generous rate limits and affordable pricing
+- **Web playground** for quick experimentation
+- **Discord bot** for community interaction
+- **Mobile apps** for iOS and Android
+- **Batch processing** for large-scale generation tasks
+
+## Pricing
+
+| Plan | Price | Features |
+|------|-------|----------|
+| Free | $0 | 25 generations/day, standard resolution, community queue |
+| Pro | $20/mo | 500 generations/month, priority queue, commercial license |
+| Enterprise | Custom | Unlimited API access, dedicated compute, SLA, custom models |
+
+## Pros
+
+- ✅ **Truly open-source** — model weights available for download, no vendor lock-in
+- ✅ **Runs locally** — no internet required after download, complete privacy
+- ✅ **Active community** — thousands of fine-tuned models on CivitAI and Hugging Face
+- ✅ **Multiple modalities** — image, video, 3D, and audio in one ecosystem
+- ✅ **Commercial-friendly** — permissive license for most use cases
+
+## Cons
+
+- ❌ **Hardware requirements** — high-end GPU recommended for local inference
+- ❌ **Quality variability** — results depend heavily on prompt engineering
+- ❌ **Fragmented ecosystem** — multiple model versions can be confusing for newcomers
+
+## Who Is It For?
+
+**Developers and engineers** who want to integrate AI image generation into their applications will appreciate the open API and self-hostable models. **Researchers** benefit from access to model weights for fine-tuning and experimentation. **Content creators** can use the web interface and Discord bot for rapid prototyping without technical expertise.
+' WHERE slug = 'stability-ai';

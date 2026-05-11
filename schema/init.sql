@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS tools (
   view_count       INTEGER DEFAULT 0,
   submitter_site   TEXT,
   submitter_github TEXT,
-  content_path     TEXT
+  content_path     TEXT,
+	body						 TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_tools_category   ON tools(category);
