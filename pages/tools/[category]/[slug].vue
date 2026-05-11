@@ -35,10 +35,30 @@
             </div>
           </div>
 
-          <!-- Media gallery -->
-          <div v-if="toolImages.length || toolVideos.length" class="mb-8">
-            <!-- Screenshots -->
-            <div v-if="toolImages.length" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          <!-- Cover image -->
+          <div v-if="tool.cover_image" class="mb-6 rounded-lg overflow-hidden"
+            :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
+            <div class="aspect-video flex items-center justify-center font-body text-[11px]"
+              :style="{ color: 'var(--color-text-muted)' }">
+              🖼️ {{ tool.name }} Cover
+            </div>
+          </div>
+
+          <!-- Media: Screenshots -->
+          <div v-if="toolImages.length" class="mb-6">
+            <h3 class="font-sans font-semibold text-[13px] mb-3" style="color: var(--color-text-primary)">Screenshots</h3>
+            <div v-if="toolImages.length === 1" class="rounded-lg overflow-hidden"
+              :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
+              <div class="aspect-video flex items-center justify-center font-body text-[11px]"
+                :style="{ color: 'var(--color-text-muted)' }">
+                🖼️ {{ toolImages[0].alt || 'Screenshot' }}
+              </div>
+              <div v-if="toolImages[0].caption" class="px-3 py-2 font-body text-[10px]"
+                :style="{ color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border)' }">
+                {{ toolImages[0].caption }}
+              </div>
+            </div>
+            <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div v-for="img in toolImages" :key="img.id || img.url"
                 class="rounded-lg overflow-hidden"
                 :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
@@ -52,17 +72,19 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Videos -->
-            <div v-if="toolVideos.length" class="space-y-4">
-              <div v-for="v in toolVideos" :key="v.id || v.url"
-                class="rounded-lg overflow-hidden"
-                :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-                <div class="aspect-video flex flex-col items-center justify-center gap-2 font-body text-[11px]"
-                  :style="{ color: 'var(--color-text-muted)' }">
-                  ▶️ {{ v.title || 'Demo Video' }}
-                  <span class="text-[10px]">({{ v.platform }} — {{ formatDuration(v.duration) }})</span>
-                </div>
+          <!-- Media: Videos -->
+          <div v-if="toolVideos.length" class="mb-6">
+            <h3 class="font-sans font-semibold text-[13px] mb-3" style="color: var(--color-text-primary)">Demo Videos</h3>
+            <div class="space-y-3">
+            <div v-for="v in toolVideos" :key="v.id || v.url"
+              class="rounded-lg overflow-hidden"
+              :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
+              <div class="aspect-video flex flex-col items-center justify-center gap-2 font-body text-[11px]"
+                :style="{ color: 'var(--color-text-muted)' }">
+                ▶️ {{ v.title || 'Demo Video' }}
+                <span class="text-[10px]">({{ v.platform }} — {{ formatDuration(v.duration) }})</span>
               </div>
             </div>
           </div>
