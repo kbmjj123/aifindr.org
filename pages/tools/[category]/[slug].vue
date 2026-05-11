@@ -9,7 +9,7 @@
       <span class="current">{{ tool?.name || slug }}</span>
     </nav>
 
-    <div v-if="loading" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading...</div>
+    <div v-if="pending" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading...</div>
     <template v-else-if="tool">
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Main content -->
@@ -125,46 +125,44 @@ const slug = computed(() => route.params.slug as string)
 
 const categoryInfo = computed(() => CATEGORIES.find(c => c.slug === category.value))
 
-const tool = ref<Tool | null>(null)
-const loading = ref(true)
 const toolTags = ref<string[]>([])
+const alternatives = ref<Tool[]>([])
+const toolBody = ref<any>(null)
+
 const toolPlatforms = computed(() => {
   const p = tool.value?.platforms
   if (!p) return []
   if (Array.isArray(p)) return p
   return String(p).split(',').filter(Boolean)
 })
-const alternatives = ref<Tool[]>([])
 
 function pricingLabel(p: ToolPricing) {
   return p.charAt(0).toUpperCase() + p.slice(1)
 }
 
-watch([category, slug], () => loadTool(), { immediate: true })
-
-async function loadTool() {
-  if (!import.meta.client) return
-  loading.value = true
-  try {
-    const data = await $fetch<Tool>(`/api/tools/${category.value}/${slug.value}`)
-    if (data) {
-      tool.value = data
-      toolTags.value = (data as any).tags || []
+const { data: tool, pending } = useAsyncData<Tool>(
+  `tool-${slug.value}`,
+  async () => {
+    const result = await $fetch<Tool>(`/api/tools/${category.value}/${slug.value}`)
+    if (result) {
+      toolTags.value = (result as any).tags || []
 
       // Load alternatives (same category, exclude current)
-      const altData = await $fetch<{ tools: Tool[] }>(
-        `/api/tools?category=${category.value}&pageSize=7`
-      )
-      if (altData?.tools) {
-        alternatives.value = altData.tools.filter(t => t.slug !== slug.value).slice(0, 6)
+      try {
+        const altData = await $fetch<{ tools: Tool[] }>(
+          `/api/tools?category=${category.value}&pageSize=7`
+        )
+        if (altData?.tools) {
+          alternatives.value = altData.tools.filter(t => t.slug !== slug.value).slice(0, 6)
+        }
+      } catch {
+        // alternatives optional
       }
     }
-  } catch {
-    tool.value = null
-  } finally {
-    loading.value = false
-  }
-}
+    return result
+  },
+  { watch: [category, slug] }
+)
 
 async function recordClick() {
   if (tool.value?.id) {
