@@ -54,14 +54,17 @@
         <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">{{ form.description.length }}/80</p>
       </div>
 
-      <!-- Detailed Description -->
+      <!-- Detailed Description (becomes markdown body) -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Detailed Description <span style="color: var(--color-danger)">*</span>
         </label>
         <textarea v-model="form.detailDescription"
           class="textarea"
-          placeholder="Describe what your tool does in detail (minimum 100 words)..." />
+          placeholder="Describe what your tool does in detail (minimum 100 words). Supports Markdown formatting for headings, lists, bold, links, etc." />
+        <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">
+          {{ form.detailDescription.length }} chars &middot; Renders as tool detail page content
+        </p>
       </div>
 
       <!-- Platforms -->
@@ -197,8 +200,7 @@ async function handleSubmit() {
         turnstileToken: cfToken.value,
       },
     })
-    submitSuccess.value = true
-    navigateTo(`/tools/${form.category}/${res.slug}`)
+    navigateTo(`/submit?success=1`)
   } catch (e: any) {
     submitError.value = e?.data?.error || 'Submission failed. Please try again.'
   } finally {

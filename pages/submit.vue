@@ -1,5 +1,11 @@
 <template>
   <div class="max-w-[720px] mx-auto">
+    <!-- Success banner -->
+    <div v-if="route.query.success" class="mb-6 p-4 rounded-lg font-body text-[13px]"
+      :style="{ background: 'var(--color-verified-bg)', border: '1px solid var(--color-verified-border)', color: 'var(--color-verified-text)' }">
+      ✅ Tool submitted successfully! Our team will review it within 3–7 business days. You'll get your backlinks once approved.
+    </div>
+
     <h1 class="font-sans font-extrabold text-[24px] tracking-tight mb-2" style="color: var(--color-text-primary)">
       Submit Your AI Tool
     </h1>
@@ -53,10 +59,19 @@ submitter_site: "https://your-site.com"
 submitter_github: "your-username"
 ---
 
-## Description
+## What is [Your Tool]?
 
-Write a detailed description of your tool here...</pre>
-          </div>
+Write a detailed description of your tool here (Markdown supported).
+
+## Key Features
+
+- Feature 1
+- Feature 2
+- Feature 3
+
+## Pricing
+
+Brief description of your pricing model.</pre>          </div>
 
           <a href="https://github.com/aifindr-org/aifindr.org" target="_blank" rel="noopener noreferrer"
             class="btn-primary inline-flex items-center gap-2">
@@ -82,6 +97,7 @@ Write a detailed description of your tool here...</pre>
 </template>
 
 <script setup lang="ts">
+const route = useRoute()
 const activeTab = ref('form')
 
 const tabs = [

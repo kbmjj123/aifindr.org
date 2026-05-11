@@ -12,7 +12,7 @@ function matchPath(path: string, pattern: string): Record<string, string> | null
   if (parts.length !== actual.length) return null
   const params: Record<string, string> = {}
   for (let i = 0; i < parts.length; i++) {
-    if (parts[i].startsWith(':')) {
+    if (parts[i]?.startsWith(':')) {
       params[parts[i].slice(1)] = actual[i]
     } else if (parts[i] !== actual[i]) {
       return null
@@ -99,7 +99,7 @@ export default {
       // ─────────────────────────────────────────────────────────────────
       const detailParams = matchPath(path, '/tools/:category/:slug')
       if (method === 'GET' && detailParams) {
-        return handleToolDetail(detailParams.category, detailParams.slug, env)
+        return handleToolDetail(detailParams.category!, detailParams.slug!, env)
       }
 
       // ─────────────────────────────────────────────────────────────────
@@ -107,7 +107,7 @@ export default {
       // ─────────────────────────────────────────────────────────────────
       const clickParams = matchPath(path, '/click/:id')
       if (method === 'POST' && clickParams) {
-        return handleClick(clickParams.id, env)
+        return handleClick(clickParams.id!, env)
       }
 
       // ─────────────────────────────────────────────────────────────────
@@ -332,6 +332,7 @@ async function handleSubmit(request: Request, env: Env) {
   const submitterSite = String(body.submitter_site || body.submitterSite || '').trim()
   const submitterGithub = String(body.submitter_github || body.submitterGithub || '').trim()
   const turnstileToken = String(body.turnstileToken || '').trim()
+  const bodyContent = String(body.detailDescription || body.body || '').trim()
 
   // ── Validate pricing ──
   if (!['free', 'freemium', 'paid'].includes(pricing)) {
@@ -381,8 +382,8 @@ async function handleSubmit(request: Request, env: Env) {
   // ── Insert tool ──
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   await env.DB.prepare(`
-    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, submitter_site, submitter_github, submitted_at)
-    VALUES (?, ?, ?, ?, ?, ?, 0, ?, 'pending', ?, ?, ?, ?)
+    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, body, submitter_site, submitter_github, submitted_at)
+    VALUES (?, ?, ?, ?, ?, ?, 0, ?, 'pending', ?, ?, ?, ?, ?)
   `).bind(
     slug,
     name,
@@ -392,6 +393,7 @@ async function handleSubmit(request: Request, env: Env) {
     priceDetail || null,
     platformsStr,
     description,
+    bodyContent || null,
     submitterSite || null,
     submitterGithub || null,
     now,
