@@ -127,7 +127,6 @@ const categoryInfo = computed(() => CATEGORIES.find(c => c.slug === category.val
 
 const toolTags = ref<string[]>([])
 const alternatives = ref<Tool[]>([])
-const toolBody = ref<any>(null)
 
 const toolPlatforms = computed(() => {
   const p = tool.value?.platforms
@@ -146,6 +145,16 @@ const { data: tool, pending } = useAsyncData<Tool>(
     const result = await $fetch<Tool>(`/api/tools/${category.value}/${slug.value}`)
     if (result) {
       toolTags.value = (result as any).tags || []
+
+      // Try to load markdown body from Nuxt Content
+      try {
+        const contentTool = await queryCollection('tools').where('slug', '=', slug.value).first()
+        if (contentTool) {
+          (result as any).body = (contentTool as any).body
+        }
+      } catch {
+        // body not available via Nuxt Content, use API data only
+      }
 
       // Load alternatives (same category, exclude current)
       try {

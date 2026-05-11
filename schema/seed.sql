@@ -73,3 +73,19 @@ INSERT INTO tools (slug, name, category, website, pricing, price_starting, price
 VALUES ('elevenlabs', 'ElevenLabs', 'audio', 'https://elevenlabs.io', 'freemium', 0, 'Free tier with limited characters. Pro $5/mo, Pro+ $22/mo.', 1, 'web,api', 'active', '2024-01', 'ElevenLabs is an AI voice synthesis platform offering ultra-realistic text-to-speech and voice cloning.', 0, 1, '2026-04-09');
 
 INSERT INTO tool_tags (tool_id, tag) VALUES (12, 'text-to-speech'), (12, 'voice'), (12, 'audio');
+
+-- ── Stability AI (full demo tool) ──
+
+INSERT INTO tools (slug, name, category, website, pricing, price_starting, price_detail, has_free_trial, platforms, status, launched, meta_description, featured, verified, submitted_at)
+VALUES ('stability-ai', 'Stability AI', 'image', 'https://stability.ai', 'freemium', 0, 'Free tier with limited generations. Pro $20/mo, Enterprise custom pricing. API usage-based starting at $0.002/image.', 1, 'web,api,discord,mobile', 'active', '2022-08', 'Stability AI is the creator of Stable Diffusion, the groundbreaking open-source image generation model. Generate images, video, 3D assets, and audio with state-of-the-art AI models.', 1, 1, '2026-04-15');
+
+INSERT INTO tool_tags (tool_id, tag) VALUES (13, 'image-generation'), (13, 'ai-art'), (13, 'text-to-image'), (13, 'stable-diffusion'), (13, 'open-source'), (13, 'video-generation'), (13, '3d-modeling');
+
+INSERT INTO tool_images (tool_id, url, alt, caption, sort_order, image_type)
+VALUES (13, 'https://r2.aifindr.org/tools/image/stability-ai/screenshot-01.webp', 'Stable Diffusion 3 prompt interface', 'SD3 delivers photorealistic text rendering and compositional accuracy', 0, 'screenshot');
+
+INSERT INTO tool_images (tool_id, url, alt, caption, sort_order, image_type)
+VALUES (13, 'https://r2.aifindr.org/tools/image/stability-ai/screenshot-02.webp', 'Stable Video Diffusion generation', 'Transform static images into smooth video animations', 1, 'screenshot');
+
+INSERT INTO tool_videos (tool_id, url, platform, video_id, title, video_type, duration)
+VALUES (13, 'https://www.youtube.com/watch?v=dYJnUT4xO2I', 'youtube', 'dYJnUT4xO2I', 'Stable Diffusion 3 — Full Demo & Review', 'demo', 845);
