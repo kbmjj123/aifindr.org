@@ -38,7 +38,7 @@
           <!-- Markdown body -->
           <div class="markdown-content">
             <template v-if="tool.body">
-              <ContentRenderer :value="tool" />
+              <div class="markdown" v-html="mdBody" />
             </template>
             <template v-else>
               <p class="font-body text-[12px]" style="color: var(--color-text-muted)">
@@ -158,8 +158,12 @@ const { data: tool, pending } = useAsyncData<Tool>(
 
     return result
   },
-  { watch: [category, slug] }
+  { watch: [category, slug], server: false }
 )
+
+// Render markdown body
+const { render } = useMarkdown()
+const mdBody = computed(() => tool.value?.body ? render(tool.value.body as string) : '')
 
 // Extract tags from tool data
 watchEffect(() => {
