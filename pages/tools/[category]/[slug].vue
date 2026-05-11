@@ -143,19 +143,20 @@ function pricingLabel(p: ToolPricing) {
 watch([category, slug], () => loadTool(), { immediate: true })
 
 async function loadTool() {
+  if (!import.meta.client) return
   loading.value = true
   try {
-    const { data } = await useFetch<Tool>(`/api/tools/${category.value}/${slug.value}`)
-    if (data.value) {
-      tool.value = data.value
-      toolTags.value = (data.value as any).tags || []
+    const data = await $fetch<Tool>(`/api/tools/${category.value}/${slug.value}`)
+    if (data) {
+      tool.value = data
+      toolTags.value = (data as any).tags || []
 
       // Load alternatives (same category, exclude current)
-      const { data: altData } = await useFetch<{ tools: Tool[] }>(
+      const altData = await $fetch<{ tools: Tool[] }>(
         `/api/tools?category=${category.value}&pageSize=7`
       )
-      if (altData.value?.tools) {
-        alternatives.value = altData.value.tools.filter(t => t.slug !== slug.value).slice(0, 6)
+      if (altData?.tools) {
+        alternatives.value = altData.tools.filter(t => t.slug !== slug.value).slice(0, 6)
       }
     }
   } catch {
@@ -167,7 +168,7 @@ async function loadTool() {
 
 async function recordClick() {
   if (tool.value?.id) {
-    await useFetch(`/api/click/${tool.value.id}`, { method: 'POST' })
+    await $fetch(`/api/click/${tool.value.id}`, { method: 'POST' })
   }
 }
 

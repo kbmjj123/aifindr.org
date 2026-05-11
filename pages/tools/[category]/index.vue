@@ -36,12 +36,13 @@ const loading = ref(true)
 watch(category, () => loadCategory(), { immediate: true })
 
 async function loadCategory() {
+  if (!import.meta.client) return
   loading.value = true
   try {
-    const { data } = await useFetch<{ tools: Tool[]; total: number }>(`/api/tools?category=${category.value}&pageSize=50`)
-    if (data.value) {
-      tools.value = data.value.tools || []
-      toolCount.value = data.value.total || 0
+    const data = await $fetch<{ tools: Tool[]; total: number }>(`/api/tools?category=${category.value}&pageSize=50`)
+    if (data) {
+      tools.value = data.tools || []
+      toolCount.value = data.total || 0
     }
   } catch {
     tools.value = []

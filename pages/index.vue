@@ -133,22 +133,22 @@ const statsCategories = ref(12)
 const statsContributors = ref(50)
 
 onMounted(async () => {
-  const [{ data: statsData }, { data: trendingData }, { data: featuredData }, { data: recentData }] = await Promise.all([
-    useFetch<{ tools: number; categories: number; contributors: number }>('/api/stats'),
-    useFetch<{ tools: Tool[] }>('/api/tools?sort=trending&pageSize=8'),
-    useFetch<{ tools: Tool[] }>('/api/tools?sort=featured&pageSize=6'),
-    useFetch<{ tools: Tool[] }>('/api/tools?sort=latest&pageSize=20'),
+  const [statsData, trendingData, featuredData, recentData] = await Promise.all([
+    $fetch<{ tools: number; categories: number; contributors: number }>('/api/stats'),
+    $fetch<{ tools: Tool[] }>('/api/tools?sort=trending&pageSize=8'),
+    $fetch<{ tools: Tool[] }>('/api/tools?sort=featured&pageSize=6'),
+    $fetch<{ tools: Tool[] }>('/api/tools?sort=latest&pageSize=20'),
   ])
 
-  if (statsData.value) {
-    statsTools.value = statsData.value.tools
-    statsCategories.value = statsData.value.categories
-    statsContributors.value = statsData.value.contributors
+  if (statsData) {
+    statsTools.value = statsData.tools
+    statsCategories.value = statsData.categories
+    statsContributors.value = statsData.contributors
   }
 
-  trending.value = trendingData.value?.tools || []
-  featured.value = featuredData.value?.tools || []
-  recent.value = recentData.value?.tools || []
+  trending.value = trendingData?.tools || []
+  featured.value = featuredData?.tools || []
+  recent.value = recentData?.tools || []
 
   // Build category counts from recent + trending + featured combined
   const all = [...recent.value, ...trending.value, ...featured.value]
