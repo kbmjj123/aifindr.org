@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS tools (
   submitter_site   TEXT,
   submitter_github TEXT,
   content_path     TEXT,
-	body						 TEXT
+  body             TEXT,
+  submitter_id     INTEGER REFERENCES users(id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_tools_category   ON tools(category);
@@ -75,3 +76,15 @@ CREATE TABLE IF NOT EXISTS tool_videos (
   created_at TEXT DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_tool_videos_tool_id ON tool_videos(tool_id, sort_order);
+
+CREATE TABLE IF NOT EXISTS users (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  github_id       INTEGER NOT NULL UNIQUE,
+  username        TEXT NOT NULL,
+  email           TEXT,
+  avatar_url      TEXT,
+  unsubscribed_at TEXT,
+  created_at      TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at      TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_users_github_id ON users(github_id);
