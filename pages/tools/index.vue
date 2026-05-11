@@ -121,15 +121,27 @@
 import { CATEGORIES } from '~/types/tool'
 import type { Tool } from '~/types/tool'
 
-const activeSort = ref('latest')
-const activePricing = ref('all')
+const route = useRoute()
+const router = useRouter()
+
+const activeSort = ref((route.query.sort as string) || 'latest')
+const activePricing = ref((route.query.pricing as string) || 'all')
 const showFilters = ref(false)
 const filterCategories = ref<string[]>([])
 const filterPricing = ref<string[]>([])
 const filterPlatforms = ref<string[]>([])
 const filterTags = ref<string[]>([])
-const currentPage = ref(1)
+const currentPage = ref(parseInt(route.query.page as string) || 1)
 const pageSize = 24
+
+// Sync sort/pricing/page to URL when changed (for sidebar/external navigation)
+watch([activeSort, activePricing, currentPage], ([s, p, pg]) => {
+  const query: Record<string, string> = {}
+  if (s && s !== 'latest') query.sort = s
+  if (p && p !== 'all') query.pricing = p
+  if (pg && pg > 1) query.page = String(pg)
+  router.replace({ query }).catch(() => {})
+})
 
 function buildPricingParam(): string | undefined {
   if (activePricing.value === 'all') {
