@@ -78,13 +78,14 @@
           <div v-if="toolVideos.length" class="mb-6">
             <h3 class="font-sans font-semibold text-[13px] mb-3" style="color: var(--color-text-primary)">Demo Videos</h3>
             <div class="space-y-3">
-            <div v-for="v in toolVideos" :key="v.id || v.url"
-              class="rounded-lg overflow-hidden"
-              :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-              <div class="aspect-video flex flex-col items-center justify-center gap-2 font-body text-[11px]"
-                :style="{ color: 'var(--color-text-muted)' }">
-                ▶️ {{ v.title || 'Demo Video' }}
-                <span class="text-[10px]">({{ v.platform }} — {{ formatDuration(v.duration) }})</span>
+              <div v-for="v in toolVideos" :key="v.id || v.url"
+                class="rounded-lg overflow-hidden"
+                :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
+                <div class="aspect-video flex flex-col items-center justify-center gap-2 font-body text-[11px]"
+                  :style="{ color: 'var(--color-text-muted)' }">
+                  ▶️ {{ v.title || 'Demo Video' }}
+                  <span class="text-[10px]">({{ v.platform }} — {{ formatDuration(v.duration) }})</span>
+                </div>
               </div>
             </div>
           </div>
