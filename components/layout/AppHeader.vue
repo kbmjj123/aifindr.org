@@ -18,6 +18,7 @@
         <NuxtLink to="/submit" class="btn-header-submit">
           + Submit Tool
         </NuxtLink>
+        <AuthButton />
         <ThemeToggle />
         <a href="https://github.com/aifindr-org/aifindr.org" target="_blank" rel="noopener noreferrer"
           class="flex items-center justify-center w-7 h-7 rounded-md"

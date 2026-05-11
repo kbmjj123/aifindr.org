@@ -27,4 +27,11 @@ useHead({
     },
   ],
 })
+
+const { handleUrlToken, fetchUser } = useAuth()
+
+onMounted(() => {
+  handleUrlToken()
+  fetchUser()
+})
 </script>
