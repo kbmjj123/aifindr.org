@@ -5,12 +5,14 @@
       &larr; All Tools
     </NuxtLink>
 
-    <div class="flex items-center gap-2 mb-6">
-      <span class="text-xl">{{ categoryInfo?.emoji }}</span>
-      <h1 class="font-sans font-extrabold text-[24px] tracking-tight" style="color: var(--color-text-primary)">
-        {{ categoryInfo?.name || category }}
-      </h1>
-      <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">({{ toolCount }})</span>
+    <div class="flex items-start gap-3 mb-6">
+      <span class="text-xl mt-1.5 shrink-0">{{ categoryInfo?.emoji }}</span>
+      <div class="min-w-0">
+        <h1 class="font-sans font-extrabold" style="font-size: clamp(28px, 4vw, 44px); letter-spacing: -1.5px; line-height: 1.05; color: var(--color-text-primary)">
+          {{ categoryInfo?.name || category }}
+        </h1>
+        <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">{{ toolCount }} tools</span>
+      </div>
     </div>
 
     <div v-if="pending" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading tools...</div>
