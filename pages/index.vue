@@ -123,40 +123,33 @@ import { CATEGORIES } from '~/types/tool'
 import type { Tool } from '~/types/tool'
 
 const categories = CATEGORIES
-
-const trending = ref<Tool[]>([])
-const featured = ref<Tool[]>([])
-const recent = ref<Tool[]>([])
 const catCounts = ref<Record<string, number>>({})
-const statsTools = ref(500)
-const statsCategories = ref(12)
-const statsContributors = ref(50)
 
-onMounted(async () => {
-  const [statsData, trendingData, featuredData, recentData] = await Promise.all([
+const { data: homeData } = await useAsyncData('home', () =>
+  Promise.all([
     $fetch<{ tools: number; categories: number; contributors: number }>('/api/stats'),
     $fetch<{ tools: Tool[] }>('/api/tools?sort=trending&pageSize=8'),
     $fetch<{ tools: Tool[] }>('/api/tools?sort=featured&pageSize=6'),
     $fetch<{ tools: Tool[] }>('/api/tools?sort=latest&pageSize=20'),
-  ])
+  ]),
+  { default: () => null }
+)
 
-  if (statsData) {
-    statsTools.value = statsData.tools
-    statsCategories.value = statsData.categories
-    statsContributors.value = statsData.contributors
-  }
+const statsTools = computed(() => homeData.value?.[0]?.tools ?? 500)
+const statsCategories = computed(() => homeData.value?.[0]?.categories ?? 12)
+const statsContributors = computed(() => homeData.value?.[0]?.contributors ?? 50)
 
-  trending.value = trendingData?.tools || []
-  featured.value = featuredData?.tools || []
-  recent.value = recentData?.tools || []
+const trending = computed(() => homeData.value?.[1]?.tools ?? [])
+const featured = computed(() => homeData.value?.[2]?.tools ?? [])
+const recent = computed(() => homeData.value?.[3]?.tools ?? [])
 
-  // Build category counts from recent + trending + featured combined
-  const all = [...recent.value, ...trending.value, ...featured.value]
+// Build category counts from loaded data
+watchEffect(() => {
+  const all = [...trending.value, ...featured.value, ...recent.value]
   const counts: Record<string, number> = {}
   for (const t of all) {
     counts[t.category] = (counts[t.category] || 0) + 1
   }
-  // Fill in zeros for categories without tools in these result sets
   for (const cat of categories) {
     if (!counts[cat.slug]) counts[cat.slug] = 0
   }

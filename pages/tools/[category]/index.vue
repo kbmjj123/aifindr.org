@@ -13,7 +13,7 @@
       <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">({{ toolCount }})</span>
     </div>
 
-    <div v-if="loading" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading tools...</div>
+    <div v-if="pending" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading tools...</div>
     <ToolGrid v-else>
       <ToolCard v-for="t in tools" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="t.featured" :verified="t.verified" />
     </ToolGrid>
@@ -29,27 +29,17 @@ const category = computed(() => route.params.category as string)
 
 const categoryInfo = computed(() => CATEGORIES.find(c => c.slug === category.value))
 
-const tools = ref<Tool[]>([])
-const toolCount = ref(0)
-const loading = ref(true)
-
-watch(category, () => loadCategory(), { immediate: true })
-
-async function loadCategory() {
-  if (!import.meta.client) return
-  loading.value = true
-  try {
-    const data = await $fetch<{ tools: Tool[]; total: number }>(`/api/tools?category=${category.value}&pageSize=50`)
-    if (data) {
-      tools.value = data.tools || []
-      toolCount.value = data.total || 0
-    }
-  } catch {
-    tools.value = []
-  } finally {
-    loading.value = false
+const { data: result, pending } = await useAsyncData<{ tools: Tool[]; total: number }>(
+  () => `category-${category.value}`,
+  () => $fetch<{ tools: Tool[]; total: number }>(`/api/tools?category=${category.value}&pageSize=50`),
+  {
+    watch: [category],
+    default: () => ({ tools: [], total: 0 }),
   }
-}
+)
+
+const tools = computed(() => result.value?.tools ?? [])
+const toolCount = computed(() => result.value?.total ?? 0)
 
 usePageSeo(() => ({
   title: categoryInfo.value?.name || category.value,

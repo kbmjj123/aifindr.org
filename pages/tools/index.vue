@@ -97,7 +97,7 @@
     </div>
 
     <!-- Tool grid -->
-    <div v-if="loading" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading tools...</div>
+    <div v-if="pending" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading tools...</div>
     <div v-else-if="tools.length === 0" class="text-center py-20">
       <div class="text-3xl mb-3">🔍</div>
       <h3 class="font-sans font-bold text-[16px]" style="color: var(--color-text-primary)">No tools found</h3>
@@ -128,11 +128,40 @@ const filterCategories = ref<string[]>([])
 const filterPricing = ref<string[]>([])
 const filterPlatforms = ref<string[]>([])
 const filterTags = ref<string[]>([])
-const tools = ref<Tool[]>([])
-const total = ref(0)
 const currentPage = ref(1)
 const pageSize = 24
-const loading = ref(true)
+
+function buildPricingParam(): string | undefined {
+  if (activePricing.value === 'all') {
+    return filterPricing.value.length > 0 ? filterPricing.value.join(',') : undefined
+  }
+  return activePricing.value
+}
+
+function buildQueryString(): string {
+  const params = new URLSearchParams()
+  params.set('sort', activeSort.value)
+  params.set('page', String(currentPage.value))
+  params.set('pageSize', String(pageSize))
+  const pricing = buildPricingParam()
+  if (pricing) params.set('pricing', pricing)
+  if (filterCategories.value.length) params.set('category', filterCategories.value[0])
+  if (filterPlatforms.value.length) params.set('platform', filterPlatforms.value[0])
+  if (filterTags.value.length) params.set('tags', filterTags.value.join(','))
+  return params.toString()
+}
+
+const { data: result, pending } = await useAsyncData<{ tools: Tool[]; total: number }>(
+  () => `tools-${buildQueryString()}`,
+  () => $fetch<{ tools: Tool[]; total: number }>(`/api/tools?${buildQueryString()}`),
+  {
+    watch: [activeSort, activePricing, currentPage, filterCategories, filterPricing, filterPlatforms, filterTags],
+    default: () => ({ tools: [], total: 0 }),
+  }
+)
+
+const tools = computed(() => result.value?.tools ?? [])
+const total = computed(() => result.value?.total ?? 0)
 
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
 const visiblePages = computed(() => {
@@ -189,53 +218,11 @@ function clearFilters() {
   activePricing.value = 'all'
   activeSort.value = 'latest'
   currentPage.value = 1
-  loadTools()
 }
 
 function goPage(p: number) {
   currentPage.value = p
-  loadTools()
 }
-
-function buildPricingParam(): string | undefined {
-  if (activePricing.value === 'all') {
-    return filterPricing.value.length > 0 ? filterPricing.value.join(',') : undefined
-  }
-  return activePricing.value
-}
-
-async function loadTools() {
-  loading.value = true
-  try {
-    const query = new URLSearchParams()
-    query.set('sort', activeSort.value)
-    query.set('page', String(currentPage.value))
-    query.set('pageSize', String(pageSize))
-
-    const pricing = buildPricingParam()
-    if (pricing) query.set('pricing', pricing)
-    if (filterCategories.value.length) query.set('category', filterCategories.value[0])
-    if (filterPlatforms.value.length) query.set('platform', filterPlatforms.value[0])
-    if (filterTags.value.length) query.set('tags', filterTags.value.join(','))
-
-    const data = await $fetch<{ tools: Tool[]; total: number }>(`/api/tools?${query.toString()}`)
-    if (data) {
-      tools.value = data.tools || []
-      total.value = data.total || 0
-    }
-  } catch {
-    tools.value = []
-  } finally {
-    loading.value = false
-  }
-}
-
-watch([activeSort, activePricing, filterCategories, filterPlatforms, filterTags], () => {
-  currentPage.value = 1
-  loadTools()
-}, { deep: true })
-
-onMounted(loadTools)
 
 usePageSeo({
   title: 'All AI Tools',
