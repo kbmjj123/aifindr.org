@@ -106,6 +106,10 @@ aifindr.org/
 
 **这是产品的核心增长飞轮，任何相关功能开发都不得删除或改为 nofollow。**
 
+## 环境说明
+
+本地 Node.js / pnpm 环境已预先配置好，**禁止**运行 nvm、pnpm 版本检查、Node 版本切换等环境检测操作。直接使用 `pnpm dev`、`pnpm build` 等命令即可。
+
 ## 常用命令
 
 ```bash

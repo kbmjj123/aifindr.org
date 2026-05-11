@@ -6,112 +6,111 @@
       <span class="sep">/</span>
       <NuxtLink :to="`/tools/${category}`">{{ categoryInfo?.name || category }}</NuxtLink>
       <span class="sep">/</span>
-      <span class="current">{{ name }}</span>
+      <span class="current">{{ tool?.name || slug }}</span>
     </nav>
 
-    <div class="flex flex-col lg:flex-row gap-8">
-      <!-- Main content -->
-      <div class="flex-1 min-w-0">
-        <!-- Tool header -->
-        <div v-if="loading" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading...</div>
+    <div v-if="loading" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading...</div>
     <template v-else-if="tool">
-      <div class="flex items-start gap-4 mb-6">
-        <div class="tool-detail-logo shrink-0 flex items-center justify-center font-sans font-bold text-xl"
-          :style="{ background: 'var(--color-bg-elevated)' }">
-          {{ tool.name[0] || 'T' }}
-        </div>
-        <div class="min-w-0">
-          <h1 class="tool-detail-name mb-1">{{ tool.name }}</h1>
-          <div class="flex flex-wrap gap-2 mb-2">
-            <ToolBadge v-if="tool.featured" type="featured" />
-            <ToolBadge v-if="tool.verified" type="verified" />
-          </div>
-          <p class="font-body text-[13px]" style="color: var(--color-text-secondary)">
-            {{ tool.meta_description }}
-          </p>
-          <div class="flex flex-wrap gap-1.5 mt-3">
-            <ToolTag v-for="tag in toolTags" :key="tag">{{ tag }}</ToolTag>
-            <ToolTag :type="tool.pricing">{{ pricingLabel(tool.pricing) }}</ToolTag>
-          </div>
-        </div>
-      </div>
-
-      <!-- Markdown body -->
-      <div class="markdown-content">
-        <template v-if="tool.body">
-          <ContentRenderer :value="tool" />
-        </template>
-        <template v-else>
-          <p class="font-body text-[12px]" style="color: var(--color-text-muted)">
-            No detailed description available.
-          </p>
-        </template>
-      </div>
-      </div>
-
-      <!-- Right sidebar -->
-      <div class="w-full lg:w-[270px] shrink-0">
-        <div class="detail-sidebar sticky" style="top: 68px;">
-          <a :href="tool.website || '#'" target="_blank" rel="noopener noreferrer"
-            class="btn-primary w-full flex items-center justify-center gap-2 !h-[38px]"
-            @click="recordClick">
-            Visit Website ↗
-          </a>
-
-          <div :style="{ borderTop: '1px solid var(--color-border)', margin: '14px 0' }" />
-
-          <div class="space-y-1">
-            <div>
-              <div class="detail-sidebar-label">Pricing</div>
-              <div class="detail-sidebar-value">{{ pricingLabel(tool.pricing) }}</div>
+      <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Main content -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="tool-detail-logo shrink-0 flex items-center justify-center font-sans font-bold text-xl"
+              :style="{ background: 'var(--color-bg-elevated)' }">
+              {{ tool.name[0] || 'T' }}
             </div>
-            <div v-if="tool.price_detail">
-              <div class="detail-sidebar-label">Price Details</div>
-              <div class="detail-sidebar-value">{{ tool.price_detail }}</div>
-            </div>
-            <div>
-              <div class="detail-sidebar-label">Category</div>
-              <NuxtLink :to="`/tools/${tool.category}`" class="detail-sidebar-value" style="color: var(--color-text-link)">
-                {{ categoryInfo?.name || tool.category }}
-              </NuxtLink>
-            </div>
-            <div v-if="toolPlatforms.length">
-              <div class="detail-sidebar-label">Platforms</div>
-              <div class="flex flex-wrap gap-1.5 mt-1 mb-3">
-                <ToolTag v-for="p in toolPlatforms" :key="p">{{ p }}</ToolTag>
+            <div class="min-w-0">
+              <h1 class="tool-detail-name mb-1">{{ tool.name }}</h1>
+              <div class="flex flex-wrap gap-2 mb-2">
+                <ToolBadge v-if="tool.featured" type="featured" />
+                <ToolBadge v-if="tool.verified" type="verified" />
+              </div>
+              <p class="font-body text-[13px]" style="color: var(--color-text-secondary)">
+                {{ tool.meta_description }}
+              </p>
+              <div class="flex flex-wrap gap-1.5 mt-3">
+                <ToolTag v-for="tag in toolTags" :key="tag">{{ tag }}</ToolTag>
+                <ToolTag :type="tool.pricing">{{ pricingLabel(tool.pricing) }}</ToolTag>
               </div>
             </div>
           </div>
 
-          <!-- Submitter info (dofollow backlink) -->
-          <div v-if="tool.submitter_site || tool.submitter_github" :style="{ borderTop: '1px solid var(--color-border)', margin: '14px 0', paddingTop: '14px' }">
-            <div class="detail-sidebar-label">Submitted by</div>
-            <div class="flex items-center gap-2 mt-1">
-              <div class="w-5 h-5 rounded-full shrink-0" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }" />
+          <!-- Markdown body -->
+          <div class="markdown-content">
+            <template v-if="tool.body">
+              <ContentRenderer :value="tool" />
+            </template>
+            <template v-else>
+              <p class="font-body text-[12px]" style="color: var(--color-text-muted)">
+                No detailed description available.
+              </p>
+            </template>
+          </div>
+        </div>
+
+        <!-- Right sidebar -->
+        <div class="w-full lg:w-[270px] shrink-0">
+          <div class="detail-sidebar sticky" style="top: 68px;">
+            <a :href="tool.website || '#'" target="_blank" rel="noopener noreferrer"
+              class="btn-primary w-full flex items-center justify-center gap-2 !h-[38px]"
+              @click="recordClick">
+              Visit Website ↗
+            </a>
+
+            <div :style="{ borderTop: '1px solid var(--color-border)', margin: '14px 0' }" />
+
+            <div class="space-y-1">
               <div>
-                <div class="font-body text-[12px]" style="color: var(--color-text-secondary)">
-                  {{ tool.submitter_github || 'Anonymous' }}
+                <div class="detail-sidebar-label">Pricing</div>
+                <div class="detail-sidebar-value">{{ pricingLabel(tool.pricing) }}</div>
+              </div>
+              <div v-if="tool.price_detail">
+                <div class="detail-sidebar-label">Price Details</div>
+                <div class="detail-sidebar-value">{{ tool.price_detail }}</div>
+              </div>
+              <div>
+                <div class="detail-sidebar-label">Category</div>
+                <NuxtLink :to="`/tools/${tool.category}`" class="detail-sidebar-value" style="color: var(--color-text-link)">
+                  {{ categoryInfo?.name || tool.category }}
+                </NuxtLink>
+              </div>
+              <div v-if="toolPlatforms.length">
+                <div class="detail-sidebar-label">Platforms</div>
+                <div class="flex flex-wrap gap-1.5 mt-1 mb-3">
+                  <ToolTag v-for="p in toolPlatforms" :key="p">{{ p }}</ToolTag>
                 </div>
-                <a v-if="tool.submitter_site" :href="tool.submitter_site" target="_blank"
-                  class="font-body text-[12px]" style="color: var(--color-text-link)">
-                  {{ tool.submitter_site.replace(/^https?:\/\//, '') }}
-                </a>
+              </div>
+            </div>
+
+            <!-- Submitter info (dofollow backlink) -->
+            <div v-if="tool.submitter_site || tool.submitter_github" :style="{ borderTop: '1px solid var(--color-border)', margin: '14px 0', paddingTop: '14px' }">
+              <div class="detail-sidebar-label">Submitted by</div>
+              <div class="flex items-center gap-2 mt-1">
+                <div class="w-5 h-5 rounded-full shrink-0" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }" />
+                <div>
+                  <div class="font-body text-[12px]" style="color: var(--color-text-secondary)">
+                    {{ tool.submitter_github || 'Anonymous' }}
+                  </div>
+                  <a v-if="tool.submitter_site" :href="tool.submitter_site" target="_blank"
+                    class="font-body text-[12px]" style="color: var(--color-text-link)">
+                    {{ tool.submitter_site.replace(/^https?:\/\//, '') }}
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Alternatives -->
-    <section v-if="alternatives.length" class="mt-12">
-      <h2 class="font-sans font-bold text-[15px] mb-4" style="color: var(--color-text-primary)">
-        Looking for Alternatives to {{ tool.name }}?
-      </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[10px]">
-        <ToolCardCompact v-for="t in alternatives" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" />
-      </div>
-    </section>
+      <!-- Alternatives -->
+      <section v-if="alternatives.length" class="mt-12">
+        <h2 class="font-sans font-bold text-[15px] mb-4" style="color: var(--color-text-primary)">
+          Looking for Alternatives to {{ tool.name }}?
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[10px]">
+          <ToolCardCompact v-for="t in alternatives" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" />
+        </div>
+      </section>
     </template>
   </div>
 </template>

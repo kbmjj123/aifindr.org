@@ -107,12 +107,13 @@
     <ToolGrid v-else>
       <ToolCard v-for="t in tools" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="t.featured" :verified="t.verified" />
 
-    <!-- Pagination -->
-    <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 mt-8">
-      <button class="btn-secondary !h-8 !px-3" :disabled="currentPage <= 1" @click="goPage(currentPage - 1)">← Prev</button>
-      <button v-for="p in visiblePages" :key="p" class="page-btn" :class="{ active: p === currentPage }" @click="goPage(p)">{{ p }}</button>
-      <button class="btn-secondary !h-8 !px-3" :disabled="currentPage >= totalPages" @click="goPage(currentPage + 1)">Next →</button>
-    </div>
+      <!-- Pagination -->
+      <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 mt-8">
+        <button class="btn-secondary !h-8 !px-3" :disabled="currentPage <= 1" @click="goPage(currentPage - 1)">← Prev</button>
+        <button v-for="p in visiblePages" :key="p" class="page-btn" :class="{ active: p === currentPage }" @click="goPage(p)">{{ p }}</button>
+        <button class="btn-secondary !h-8 !px-3" :disabled="currentPage >= totalPages" @click="goPage(currentPage + 1)">Next →</button>
+      </div>
+    </ToolGrid>
   </div>
 </template>
 

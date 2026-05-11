@@ -92,9 +92,9 @@ export function usePageSeo(opts: MaybeRefOrGetter<PageSeoOptions>) {
     ]),
   })
 
-  defineOgImage('AppOgImage', computed(() => ({
+  defineOgImage('AppOgImage', () => ({
     title: resolved.value.ogTitle,
     description: resolved.value.ogDescription,
     type: resolved.value.ogType,
-  })))
+  }))
 }
