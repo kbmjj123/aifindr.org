@@ -6,15 +6,15 @@
     <!-- Stats -->
     <div class="sidebar-stats">
       <div class="stat-item">
-        <div class="stat-num">500+</div>
+        <div class="stat-num">{{ stats }}</div>
         <div class="stat-label">Tools</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">12</div>
+        <div class="stat-num">{{ categoriesCount }}</div>
         <div class="stat-label">Categories</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">50+</div>
+        <div class="stat-num">{{ contributors }}+</div>
         <div class="stat-label">Contributors</div>
       </div>
     </div>
@@ -85,4 +85,18 @@ const mainNav = [
 ]
 
 const categories = CATEGORIES
+
+const stats = ref(0)
+const categoriesCount = ref(0)
+const contributors = ref(0)
+
+useAsyncData('sidebar-stats', async () => {
+  const data = await $fetch<{ tools: number; categories: number; contributors: number }>('/api/stats')
+  if (data) {
+    stats.value = data.tools
+    categoriesCount.value = data.categories
+    contributors.value = data.contributors
+  }
+  return data
+})
 </script>
