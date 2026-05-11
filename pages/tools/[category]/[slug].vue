@@ -35,6 +35,38 @@
             </div>
           </div>
 
+          <!-- Media gallery -->
+          <div v-if="toolImages.length || toolVideos.length" class="mb-8">
+            <!-- Screenshots -->
+            <div v-if="toolImages.length" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+              <div v-for="img in toolImages" :key="img.id || img.url"
+                class="rounded-lg overflow-hidden"
+                :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
+                <div class="aspect-video flex items-center justify-center font-body text-[11px]"
+                  :style="{ color: 'var(--color-text-muted)' }">
+                  🖼️ {{ img.alt || 'Screenshot' }}
+                </div>
+                <div v-if="img.caption" class="px-3 py-2 font-body text-[10px]"
+                  :style="{ color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border)' }">
+                  {{ img.caption }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Videos -->
+            <div v-if="toolVideos.length" class="space-y-4">
+              <div v-for="v in toolVideos" :key="v.id || v.url"
+                class="rounded-lg overflow-hidden"
+                :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
+                <div class="aspect-video flex flex-col items-center justify-center gap-2 font-body text-[11px]"
+                  :style="{ color: 'var(--color-text-muted)' }">
+                  ▶️ {{ v.title || 'Demo Video' }}
+                  <span class="text-[10px]">({{ v.platform }} — {{ formatDuration(v.duration) }})</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Markdown body -->
           <div class="markdown-content">
             <template v-if="tool.body">
@@ -137,6 +169,23 @@ const toolPlatforms = computed(() => {
 
 function pricingLabel(p: ToolPricing) {
   return p.charAt(0).toUpperCase() + p.slice(1)
+}
+
+const toolImages = computed(() => {
+  const imgs = (tool.value as any)?.images
+  return Array.isArray(imgs) ? imgs : []
+})
+
+const toolVideos = computed(() => {
+  const vids = (tool.value as any)?.videos
+  return Array.isArray(vids) ? vids : []
+})
+
+function formatDuration(seconds?: number): string {
+  if (!seconds) return ''
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return `${m}:${s.toString().padStart(2, '0')}`
 }
 
 const { data: tool, pending } = useAsyncData<Tool>(
