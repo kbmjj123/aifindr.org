@@ -535,7 +535,7 @@ async function handleAuthCallback(url: URL, env: Env): Promise<Response> {
   let ghUser: { id: number; login: string; avatar_url: string }
   try {
     const userRes = await fetch('https://api.github.com/user', {
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: { Authorization: `Bearer ${accessToken}`, 'User-Agent': 'aifindr-worker' },
     })
     if (!userRes.ok) {
       const errText = await userRes.text()
@@ -548,7 +548,7 @@ async function handleAuthCallback(url: URL, env: Env): Promise<Response> {
 
   // Fetch primary email
   const emailRes = await fetch('https://api.github.com/user/emails', {
-    headers: { Authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${accessToken}`, 'User-Agent': 'aifindr-worker' },
   })
   const emails = await emailRes.json() as { email: string; primary: boolean; verified: boolean }[]
   const primaryEmail = emails.find(e => e.primary && e.verified)?.email || emails[0]?.email || ''
