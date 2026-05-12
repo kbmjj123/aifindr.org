@@ -500,7 +500,8 @@ async function handleSubmit(request: Request, env: Env) {
 async function handleAuthRedirect(url: URL, request: Request, env: Env) {
   const redirectUri = `${url.origin}/api/auth/callback`
   // Store frontend origin in state so we can redirect back after callback
-  const frontendOrigin = request.headers.get('Origin') || request.headers.get('Referer') || url.origin
+  const referer = request.headers.get('Referer')
+  const frontendOrigin = request.headers.get('Origin') || (referer ? new URL(referer).origin : url.origin)
   const ghUrl = new URL('https://github.com/login/oauth/authorize')
   ghUrl.searchParams.set('client_id', env.GITHUB_CLIENT_ID)
   ghUrl.searchParams.set('redirect_uri', redirectUri)
