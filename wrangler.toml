@@ -21,3 +21,4 @@ id = "ae4b1dfcbdb145db969dc4a5e0b3e722"
 # Turnstile Secret
 [vars]
 TURNSTILE_SECRET = "0x4AAAAAADLaTZ6nhzkwRkpcqMgkr73-yWc"
+GITHUB_CLIENT_ID = "Ov23lioNhw0LD6MXeMFJ"

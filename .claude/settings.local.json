@@ -17,7 +17,9 @@
       "Bash(sips *)",
       "Bash(npx wrangler *)",
       "Bash(/Users/zhenggl/.nvm/versions/node/v22.16.0/bin/node /Users/zhenggl/Desktop/personal_upgrade/aifindr.org/aifindr.org/node_modules/.pnpm/wrangler@4.88.0_@cloudflare+workers-types@4.20260507.1/node_modules/wrangler/bin/wrangler.js types)",
-      "Bash(/Users/zhenggl/.nvm/versions/node/v22.16.0/bin/node *)"
+      "Bash(/Users/zhenggl/.nvm/versions/node/v22.16.0/bin/node *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }

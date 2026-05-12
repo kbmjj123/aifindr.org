@@ -34,7 +34,7 @@
       <span class="font-body text-[10px]" style="color: var(--color-text-muted)">Sponsored</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-[10px]">
-      <ToolCard v-for="t in featured" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="true" :verified="t.verified" />
+      <ToolCard v-for="t in featured" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="true" :verified="t.verified" :slug="t.slug" :category="t.category" />
     </div>
   </section>
 
@@ -71,7 +71,7 @@
       </NuxtLink>
     </div>
     <ToolGrid>
-      <ToolCard v-for="t in recent" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="t.featured" :verified="t.verified" />
+      <ToolCard v-for="t in recent" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="t.featured" :verified="t.verified" :slug="t.slug" :category="t.category" />
     </ToolGrid>
   </section>
 

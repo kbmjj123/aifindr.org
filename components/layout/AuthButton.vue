@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading" class="flex items-center">
+  <div class="flex items-center">
     <!-- Logged in: avatar + dropdown -->
     <div v-if="isLoggedIn && user" class="relative" @click.stop>
       <button class="flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors"
@@ -7,7 +7,7 @@
         @click="dropdownOpen = !dropdownOpen">
         <div class="w-6 h-6 rounded-full flex items-center justify-center font-sans font-bold text-[10px]"
           :style="{ background: 'var(--color-accent)', color: '#000' }">
-          {{ user.username[0].toUpperCase() }}
+          {{ user.username[0]?.toUpperCase() }}
         </div>
         <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
           <path d="M6 9l6 6 6-6" />
