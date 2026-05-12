@@ -177,14 +177,14 @@ export default {
       // GET /api/auth/github — redirect to GitHub OAuth
       // ─────────────────────────────────────────────────────────────────
       if (method === 'GET' && path === '/auth/github') {
-        return handleAuthRedirect(url, env)
+        return handleAuthRedirect(url, request, env)
       }
 
       // ─────────────────────────────────────────────────────────────────
       // GET /api/auth/callback — handle GitHub OAuth callback
       // ─────────────────────────────────────────────────────────────────
       if (method === 'GET' && path === '/auth/callback') {
-        return handleAuthCallback(url, env)
+        return handleAuthCallback(url, request, env)
       }
 
       // ─────────────────────────────────────────────────────────────────
@@ -497,16 +497,19 @@ async function handleSubmit(request: Request, env: Env) {
 
 // ─── Auth handlers ──────────────────────────────────────────────────
 
-async function handleAuthRedirect(url: URL, env: Env) {
+async function handleAuthRedirect(url: URL, request: Request, env: Env) {
   const redirectUri = `${url.origin}/api/auth/callback`
+  // Store frontend origin in state so we can redirect back after callback
+  const frontendOrigin = request.headers.get('Origin') || request.headers.get('Referer') || url.origin
   const ghUrl = new URL('https://github.com/login/oauth/authorize')
   ghUrl.searchParams.set('client_id', env.GITHUB_CLIENT_ID)
   ghUrl.searchParams.set('redirect_uri', redirectUri)
   ghUrl.searchParams.set('scope', 'read:user user:email')
+  ghUrl.searchParams.set('state', frontendOrigin)
   return Response.redirect(ghUrl.toString(), 302)
 }
 
-async function handleAuthCallback(url: URL, env: Env): Promise<Response> {
+async function handleAuthCallback(url: URL, request: Request, env: Env): Promise<Response> {
   const code = url.searchParams.get('code')
   if (!code) return error('Missing code', 400)
 
@@ -570,8 +573,9 @@ async function handleAuthCallback(url: URL, env: Env): Promise<Response> {
   // Sign JWT
   const jwt = await signJWT({ sub: user.id, gh_id: ghUser.id }, env.JWT_SECRET)
 
-  // Redirect back to frontend with token
-  const frontendUrl = new URL(url.origin)
+  // Redirect back to frontend with token (use state param or fallback to origin)
+  const frontendOrigin = url.searchParams.get('state') || url.origin
+  const frontendUrl = new URL(frontendOrigin)
   frontendUrl.searchParams.set('token', jwt)
   return Response.redirect(frontendUrl.toString(), 302)
 }
