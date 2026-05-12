@@ -504,24 +504,40 @@ async function handleAuthCallback(url: URL, env: Env): Promise<Response> {
   if (!code) return error('Missing code', 400)
 
   // Exchange code for access token
-  const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({
-      client_id: env.GITHUB_CLIENT_ID,
-      client_secret: env.GITHUB_CLIENT_SECRET,
-      code,
-    }),
-  })
-  const tokenData = await tokenRes.json() as { access_token?: string; error?: string }
-  if (!tokenData.access_token) return error('Failed to get access token', 400)
+  let tokenData: { access_token?: string; error?: string; error_description?: string }
+  try {
+    const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        client_id: env.GITHUB_CLIENT_ID,
+        client_secret: env.GITHUB_CLIENT_SECRET,
+        code,
+      }),
+    })
+    tokenData = await tokenRes.json()
+  } catch (e) {
+    return error(`GitHub token exchange failed: ${e}`, 502)
+  }
+  if (!tokenData.access_token) {
+    return error(tokenData.error_description || tokenData.error || 'Failed to get access token', 400)
+  }
   const accessToken = tokenData.access_token
 
   // Fetch GitHub user
-  const userRes = await fetch('https://api.github.com/user', {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  })
-  const ghUser = await userRes.json() as { id: number; login: string; avatar_url: string }
+  let ghUser: { id: number; login: string; avatar_url: string }
+  try {
+    const userRes = await fetch('https://api.github.com/user', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+    if (!userRes.ok) {
+      const errText = await userRes.text()
+      return error(`GitHub API ${userRes.status}: ${errText}`, 502)
+    }
+    ghUser = await userRes.json()
+  } catch (e) {
+    return error(`GitHub user fetch failed: ${e}`, 502)
+  }
 
   // Fetch primary email
   const emailRes = await fetch('https://api.github.com/user/emails', {
