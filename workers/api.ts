@@ -101,13 +101,17 @@ async function verifyJWT(token: string, secret: string): Promise<JWTPayload | nu
     const key = await crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify'])
     const sig = Uint8Array.from(atob(sigB64.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0))
     const valid = await crypto.subtle.verify('HMAC', key, sig, encoder.encode(data))
-    if (!valid) return null
+    if (!valid) {
+      console.log('JWT verify failed: sig mismatch, secret length:', secret.length)
+      return null
+    }
 
     const payload: JWTPayload = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/')))
     if (payload.exp < Math.floor(Date.now() / 1000)) return null
 
     return payload
-  } catch {
+  } catch (e) {
+    console.log('JWT verify threw:', e)
     return null
   }
 }
@@ -591,6 +595,7 @@ async function handleAuthMe(request: Request, env: Env): Promise<Response> {
   }
   if (!token) return error('Unauthorized', 401)
 
+  console.log('handleAuthMe: token length:', token.length, 'secret length:', env.JWT_SECRET.length)
   const payload = await verifyJWT(token, env.JWT_SECRET)
   if (!payload) return error('Invalid or expired token', 401)
 
@@ -621,6 +626,7 @@ async function handleDevLogin(env: Env) {
   }
 
   const user = await env.DB.prepare('SELECT id FROM users WHERE github_id = ?').bind(devUser.github_id).first() as { id: number }
+  console.log('dev-login: JWT_SECRET length:', env.JWT_SECRET.length)
   const jwt = await signJWT({ sub: user.id, gh_id: devUser.github_id }, env.JWT_SECRET)
 
   const frontendUrl = new URL('http://localhost:3000')
