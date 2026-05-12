@@ -582,7 +582,13 @@ async function handleAuthCallback(url: URL, request: Request, env: Env): Promise
 }
 
 async function handleAuthMe(request: Request, env: Env): Promise<Response> {
-  const token = getTokenFromRequest(request)
+  // Try Authorization header first, then cookie
+  let token = getTokenFromRequest(request)
+  if (!token) {
+    const cookie = request.headers.get('Cookie') || ''
+    const match = cookie.match(/(?:^|;\s*)aifindr-token=([^;]+)/)
+    if (match) token = decodeURIComponent(match[1])
+  }
   if (!token) return error('Unauthorized', 401)
 
   const payload = await verifyJWT(token, env.JWT_SECRET)

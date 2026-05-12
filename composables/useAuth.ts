@@ -18,12 +18,10 @@ export const useAuth = () => {
       return
     }
     try {
-      const data = await $fetch<AuthUser>('/api/auth/me', {
-        headers: { Authorization: `Bearer ${token.value}` },
-      })
+      // Cookie (aifindr-token) is sent automatically by the browser
+      const data = await $fetch<AuthUser>('/api/auth/me')
       user.value = data
     } catch {
-      token.value = null
       user.value = null
     } finally {
       loading.value = false
