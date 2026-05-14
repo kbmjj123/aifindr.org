@@ -50,6 +50,7 @@ export default defineNuxtConfig({
 
   robots: {
     allow: ['/'],
+    disallow: ['/api/'],
   },
 
   sitemap: {

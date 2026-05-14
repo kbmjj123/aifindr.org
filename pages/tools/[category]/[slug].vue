@@ -255,4 +255,36 @@ usePageSeo(() => ({
   subtitle: tool.value?.meta_description || '',
   description: tool.value?.meta_description || '',
 }))
+
+// ─── SoftwareApplication Schema ──────────────────────────────────────
+
+useHead(() => {
+  const t = tool.value
+  if (!t) return {}
+
+  const price = t.pricing === 'free' ? '0' : String(t.price_starting || 0)
+
+  return {
+    script: [
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: t.name,
+          description: t.meta_description || '',
+          url: t.website,
+          applicationCategory: categoryInfo.value?.name || t.category,
+          image: t.cover_image || t.og_image || undefined,
+          operatingSystem: toolPlatforms.value.length ? toolPlatforms.value.join(', ') : undefined,
+          offers: {
+            '@type': 'Offer',
+            price,
+            priceCurrency: 'USD',
+          },
+        }),
+      },
+    ],
+  }
+})
 </script>

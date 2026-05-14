@@ -22,3 +22,4 @@ id = "ae4b1dfcbdb145db969dc4a5e0b3e722"
 [vars]
 TURNSTILE_SECRET = "0x4AAAAAADLaTZ6nhzkwRkpcqMgkr73-yWc"
 GITHUB_CLIENT_ID = "Ov23lioNhw0LD6MXeMFJ"
+ADMIN_GITHUB_IDS = ""  # 管理员 GitHub ID，逗号分隔，如 "12345678,87654321"

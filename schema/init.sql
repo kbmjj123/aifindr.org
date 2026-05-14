@@ -29,7 +29,10 @@ CREATE TABLE IF NOT EXISTS tools (
   submitter_github TEXT,
   content_path     TEXT,
   body             TEXT,
-  submitter_id     INTEGER REFERENCES users(id)
+  submitter_id     INTEGER REFERENCES users(id),
+  reject_reason    TEXT,                    -- 拒绝原因
+  reviewer_note    TEXT,                    -- 管理员备注
+  reviewed_at      TEXT                     -- 审核时间
 );
 
 CREATE INDEX IF NOT EXISTS idx_tools_category   ON tools(category);
@@ -88,3 +91,10 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at      TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_users_github_id ON users(github_id);
+
+-- ─── 增量迁移（已有数据库执行以下 ALTER） ─────────────────────────
+-- 若列已存在会报错，可忽略（初次建表的 CREATE TABLE 已包含这些列）
+
+ALTER TABLE tools ADD COLUMN reject_reason TEXT;
+ALTER TABLE tools ADD COLUMN reviewer_note TEXT;
+ALTER TABLE tools ADD COLUMN reviewed_at TEXT;

@@ -157,6 +157,6 @@ watchEffect(() => {
 })
 
 usePageSeo({
-  description: 'Open-source AI tool directory. Submit your tool, get free backlinks on GitHub (DA 100), aifindr.org, and your contributor page.',
+  description: 'Find the best AI tools for any task. Open-source AI tools directory with 500+ tools across 12 categories. Submit your tool, get free backlinks.',
 })
 </script>

@@ -5,7 +5,7 @@ interface Env {
   GITHUB_CLIENT_ID: string
   GITHUB_CLIENT_SECRET: string
   JWT_SECRET: string
-  ADMIN_KEY: string
+  ADMIN_GITHUB_IDS: string  // 管理员 GitHub ID，逗号分隔
 }
 
 // ─── Route matching helpers ────────────────────────────────────────────
@@ -212,6 +212,20 @@ export default {
       const adminRejectParams = matchPath(path, '/admin/tools/:id/reject')
       if (method === 'POST' && adminRejectParams) {
         return handleAdminReject(adminRejectParams.id!, request, env)
+      }
+
+      // ─────────────────────────────────────────────────────────────────
+      // GET /api/admin/pending — list pending tools (admin only)
+      // ─────────────────────────────────────────────────────────────────
+      if (method === 'GET' && path === '/admin/pending') {
+        return handleAdminPending(request, env)
+      }
+
+      // ─────────────────────────────────────────────────────────────────
+      // POST /api/admin/review — approve or reject a tool (admin only)
+      // ─────────────────────────────────────────────────────────────────
+      if (method === 'POST' && path === '/admin/review') {
+        return handleAdminReview(request, env)
       }
 
       return error('Not found', 404)
@@ -653,4 +667,94 @@ async function handleAdminReject(id: string, request: Request, env: Env) {
   ).bind(parseInt(id)).run()
   if (result.meta.changes === 0) return error('Tool not found', 404)
   return json({ success: true })
+}
+
+// ─── Admin handlers ──────────────────────────────────────────────────
+
+/** Verify the request comes from an admin user. Returns JWT payload or null. */
+async function verifyAdmin(request: Request, env: Env): Promise<JWTPayload | null> {
+  const authToken = getTokenFromRequest(request)
+  if (!authToken) return null
+  const payload = await verifyJWT(authToken, env.JWT_SECRET)
+  if (!payload) return null
+  const adminIds = (env.ADMIN_GITHUB_IDS || '').split(',').map(Number).filter(Boolean)
+  if (!adminIds.includes(payload.gh_id)) return null
+  return payload
+}
+
+/** GET /api/admin/pending — list tools awaiting review */
+async function handleAdminPending(request: Request, env: Env): Promise<Response> {
+  const admin = await verifyAdmin(request, env)
+  if (!admin) return error('Forbidden: admin only', 403)
+
+  const page = Math.max(1, parseInt(new URL(request.url).searchParams.get('page') || '1'))
+  const pageSize = Math.min(50, Math.max(1, parseInt(new URL(request.url).searchParams.get('pageSize') || '20')))
+  const offset = (page - 1) * pageSize
+
+  const countResult = await env.DB.prepare(
+    "SELECT COUNT(*) as total FROM tools WHERE status = 'pending'"
+  ).first<{ total: number }>()
+  const total = countResult?.total || 0
+
+  const { results: tools } = await env.DB.prepare(
+    "SELECT * FROM tools WHERE status = 'pending' ORDER BY submitted_at ASC LIMIT ? OFFSET ?"
+  ).bind(pageSize, offset).all()
+
+  return json({ tools, total, page, pageSize })
+}
+
+/** POST /api/admin/review — approve or reject a submitted tool */
+async function handleAdminReview(request: Request, env: Env): Promise<Response> {
+  const admin = await verifyAdmin(request, env)
+  if (!admin) return error('Forbidden: admin only', 403)
+
+  let body: Record<string, unknown>
+  try {
+    body = await request.json() as Record<string, unknown>
+  } catch {
+    return error('Invalid JSON body', 400, 'INVALID_JSON')
+  }
+
+  const toolId = Number(body.tool_id || body.toolId)
+  const status = String(body.status || '')
+  const rejectReason = String(body.reject_reason || body.rejectReason || '').trim()
+  const reviewerNote = String(body.reviewer_note || body.reviewerNote || '').trim()
+
+  if (!toolId || isNaN(toolId)) {
+    return error('Missing or invalid tool_id', 400, 'INVALID_TOOL_ID')
+  }
+
+  const validStatuses = ['active', 'rejected', 'needs_info']
+  if (!validStatuses.includes(status)) {
+    return error(`Invalid status. Must be one of: ${validStatuses.join(', ')}`, 400, 'INVALID_STATUS')
+  }
+
+  if (status === 'rejected' && !rejectReason) {
+    return error('reject_reason is required when status is rejected', 400, 'MISSING_REJECT_REASON')
+  }
+
+  // Verify tool exists and is pending
+  const tool = await env.DB.prepare('SELECT id, name, status FROM tools WHERE id = ?').bind(toolId).first<{ id: number; name: string; status: string }>()
+  if (!tool) {
+    return error('Tool not found', 404)
+  }
+  if (tool.status !== 'pending') {
+    return error(`Tool has already been reviewed (current status: ${tool.status})`, 400, 'ALREADY_REVIEWED')
+  }
+
+  const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
+  await env.DB.prepare(`
+    UPDATE tools SET status = ?, reject_reason = ?, reviewer_note = ?, reviewed_at = ?, updated_at = ?
+    WHERE id = ?
+  `).bind(status, rejectReason || null, reviewerNote || null, now, now, toolId).run()
+
+  // Clear stats cache so homepage reflects the updated tool count
+  await env.CACHE.delete('stats')
+
+  // TODO: Send notification email (B-03 / B-04) — email notification system
+
+  return json({
+    success: true,
+    tool: { id: toolId, name: tool.name, status, reviewed_at: now },
+  })
 }

@@ -113,7 +113,7 @@ const githubSteps = [
 ]
 
 usePageSeo({
-  title: 'Submit Your AI Tool',
+  title: 'Submit Your AI Tool – Get Free Backlinks',
   template: 'prefix',
   description: 'Get 3 free dofollow backlinks when you submit your AI tool to aifindr.org. Open source, no account needed.',
 })

@@ -242,4 +242,8 @@ usePageSeo({
   template: 'prefix',
   description: 'Browse our curated collection of 500+ AI tools. Filter by category, pricing, and platform to find the perfect tool for your needs.',
 })
+
+useHead({
+  link: [{ rel: 'canonical', href: 'https://aifindr.org/tools' }],
+})
 </script>
