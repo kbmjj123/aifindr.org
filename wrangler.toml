@@ -25,6 +25,7 @@ GITHUB_CLIENT_ID = "Ov23lioNhw0LD6MXeMFJ"
 ADMIN_GITHUB_IDS = ""  # 管理员 GitHub ID，逗号分隔，如 "12345678,87654321"
 RESEND_API_KEY = "" # Resend 邮件服务 API Key（从 resend.com/api-keys 获取）
 GITHUB_WEBHOOK_SECRET = "" # GitHub Webhook Secret（仓库 Settings → Webhooks → Secret）
+LEMONSQUEEZY_WEBHOOK_SECRET = "" # Lemon Squeezy Webhook Secret（Lemon Squeezy → Settings → Webhooks）
 
 # Cron Triggers（Cloudflare Workers Cron Triggers，免费 5 个/账号）
 [triggers]
