@@ -98,21 +98,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE INDEX IF NOT EXISTS idx_users_github_id ON users(github_id);
 CREATE INDEX IF NOT EXISTS idx_users_contact_email ON users(contact_email);
 
--- ─── 增量迁移（已有数据库执行以下 ALTER） ─────────────────────────
--- 若列已存在会报错，可忽略（初次建表的 CREATE TABLE 已包含这些列）
-
-ALTER TABLE tools ADD COLUMN reject_reason TEXT;
-ALTER TABLE tools ADD COLUMN reviewer_note TEXT;
-ALTER TABLE tools ADD COLUMN reviewed_at TEXT;
-
-ALTER TABLE users ADD COLUMN contact_email TEXT;
-ALTER TABLE users ADD COLUMN email_verified INTEGER DEFAULT 0;
-ALTER TABLE users ADD COLUMN email_notify INTEGER DEFAULT 1;
-ALTER TABLE users ADD COLUMN email_verify_token TEXT;
-ALTER TABLE users ADD COLUMN last_login_at TEXT;
-CREATE INDEX IF NOT EXISTS idx_users_contact_email ON users(contact_email);
-
--- ─── 邮件发送记录（v1.1） ────────────────────────────────────────
+-- ─── 邮件发送记录 ──────────────────────────────────────────────
 
 CREATE TABLE IF NOT EXISTS email_logs (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
