@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS users (
   contact_email   TEXT,                       -- 用户手动填写的联系邮箱（用于接收通知）
   email_verified  INTEGER DEFAULT 0,          -- 邮箱验证状态
   email_notify    INTEGER DEFAULT 1,          -- 是否接收邮件通知
+  email_verify_token TEXT,                    -- 邮箱验证令牌
   last_login_at   TEXT,                       -- 最后登录时间
   unsubscribed_at TEXT,
   created_at      TEXT NOT NULL DEFAULT (datetime('now')),
@@ -107,6 +108,7 @@ ALTER TABLE tools ADD COLUMN reviewed_at TEXT;
 ALTER TABLE users ADD COLUMN contact_email TEXT;
 ALTER TABLE users ADD COLUMN email_verified INTEGER DEFAULT 0;
 ALTER TABLE users ADD COLUMN email_notify INTEGER DEFAULT 1;
+ALTER TABLE users ADD COLUMN email_verify_token TEXT;
 ALTER TABLE users ADD COLUMN last_login_at TEXT;
 CREATE INDEX IF NOT EXISTS idx_users_contact_email ON users(contact_email);
 
