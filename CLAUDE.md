@@ -27,7 +27,9 @@ aifindr.org 是一个**开源、社区驱动**的 AI 工具目录站，同时也
 - @.claude/rules/design-system.md — 设计 Token、组件像素规范、暗色主题
 - @.claude/rules/product-scope.md — 功能模块、数据结构、API 接口、外链逻辑
 - @.claude/rules/seo.md — SEO 标题模板、OG 图片、字数控制规范
+- @.claude/rules/seo-keyword-strategy.md — SEO 关键词策略、文案规范、结构化数据清单
 - @.claude/rules/deployment.md — Worker API 部署、wrangler 配置、本地开发
+- @.claude/rules/PRD.md — 完整产品需求文档（功能模块、数据结构、外链生态）
 
 ## 核心工作流程
 
@@ -85,16 +87,32 @@ aifindr.org/
 │       ├── design-system.md
 │       ├── product-scope.md
 │       ├── seo.md
-│       └── deployment.md
+│       ├── seo-keyword-strategy.md
+│       ├── deployment.md
+│       └── PRD.md
+├── .github/
+│   └── workflows/
+│       └── sync-to-d1.yml    ← CI：main 分支 Markdown 变更自动同步 D1
 ├── pages/
 ├── components/
 ├── composables/
 ├── content/tools/            ← 工具 Markdown 文件
-├── api-spec.yaml              ← OpenAPI 3.0 接口文档
+├── docs/                     ← 子产品说明书
+│   └── email-notification-system.md
 ├── workers/
+│   ├── api.ts                ← 主 Worker（工具/认证/管理员 API）
+│   ├── generate.ts           ← AI 文章生成（v1.2+，占位）
+│   └── submit.ts             ← 已废弃（逻辑已合并到 api.ts）
+├── schema/
+│   ├── init.sql              ← D1 建表 + 迁移语句
+│   └── seed.sql              ← 本地开发种子数据
+├── scripts/
+│   └── sync-to-d1.js         ← Markdown → SQL 同步脚本
 ├── assets/css/
 ├── types/
-└── nuxt.config.ts
+├── nuxt.config.ts
+├── wrangler.toml
+└── api-spec.yaml             ← OpenAPI 3.0 接口文档
 ```
 
 ## 外链激励体系（核心产品逻辑）
