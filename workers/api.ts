@@ -6,6 +6,7 @@ interface Env {
   GITHUB_CLIENT_SECRET: string
   JWT_SECRET: string
   ADMIN_GITHUB_IDS: string  // 管理员 GitHub ID，逗号分隔
+  RESEND_API_KEY: string      // Resend 邮件服务 API Key
 }
 
 // ─── Route matching helpers ────────────────────────────────────────────
@@ -121,9 +122,106 @@ function getTokenFromRequest(request: Request): string | null {
   return auth.slice(7)
 }
 
+// ─── Email helpers ────────────────────────────────────────────────────
+
+interface UserRecord {
+  id: number
+  github_id: number
+  username: string
+  email: string | null
+  avatar_url: string | null
+  contact_email: string | null
+  email_verified: number | null
+  email_notify: number | null
+  last_login_at: string | null
+  unsubscribed_at: string | null
+}
+
+/** Pick the best email to use for notifications. Returns null if none available. */
+function getNotifyEmail(user: UserRecord | null): string | null {
+  if (!user) return null
+  // Prefer user's manually provided contact email (verified)
+  if (user.contact_email && user.email_verified) {
+    return user.contact_email
+  }
+  // Fallback to GitHub public email (skip noreply)
+  if (user.email && !user.email.includes('noreply.github.com')) {
+    return user.email
+  }
+  return null
+}
+
+interface SendEmailParams {
+  to: string
+  subject: string
+  html: string
+  sceneId: string
+}
+
+/** Send a transactional email via Resend API and log to D1. */
+async function sendEmail(env: Env, params: SendEmailParams): Promise<{ success: boolean; resendId?: string }> {
+  let resendId: string | undefined
+  let status: 'sent' | 'failed' = 'failed'
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'aifindr <noreply@aifindr.org>',
+        to: [params.to],
+        subject: params.subject,
+        html: params.html,
+      }),
+    })
+
+    const data = await res.json() as { id?: string; error?: string }
+    if (res.ok && data.id) {
+      resendId = data.id
+      status = 'sent'
+    } else {
+      console.error('Resend API error:', data.error || res.statusText)
+    }
+  } catch (e) {
+    console.error('sendEmail failed:', e)
+  }
+
+  // Always log to D1
+  try {
+    await env.DB.prepare(
+      'INSERT INTO email_logs (scene_id, recipient, subject, status, resend_id) VALUES (?, ?, ?, ?, ?)'
+    ).bind(params.sceneId, params.to, params.subject, status, resendId || null).run()
+  } catch (e) {
+    console.error('email_logs insert failed:', e)
+  }
+
+  return { success: status === 'sent', resendId }
+}
+
 // ─── Main handler ─────────────────────────────────────────────────────
 
 export default {
+  async scheduled(controller: ScheduledController, env: Env): Promise<void> {
+    switch (controller.cron) {
+      case '0 9 * * *':
+        await handleCronDailyOps(env)
+        break
+      case '0 3 * * *':
+        // Cron 2: Link checker — deferred to v2.0
+        console.log('Cron 2 (link-checker) skipped — deferred to v2.0')
+        break
+      case '0 8 1 * *':
+        // Cron 3: Monthly report — deferred to v2.0
+        console.log('Cron 3 (monthly-report) skipped — deferred to v2.0')
+        break
+      default:
+        console.log('Unknown cron pattern:', controller.cron)
+    }
+  },
+
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
     const path = url.pathname.replace(/^\/api/, '') || '/'
@@ -215,6 +313,13 @@ export default {
       }
 
       // ─────────────────────────────────────────────────────────────────
+      // POST /api/user/email — update contact email (authenticated)
+      // ─────────────────────────────────────────────────────────────────
+      if (method === 'POST' && path === '/user/email') {
+        return handleUserEmail(request, env)
+      }
+
+      // ─────────────────────────────────────────────────────────────────
       // GET /api/admin/pending — list pending tools (admin only)
       // ─────────────────────────────────────────────────────────────────
       if (method === 'GET' && path === '/admin/pending') {
@@ -226,6 +331,20 @@ export default {
       // ─────────────────────────────────────────────────────────────────
       if (method === 'POST' && path === '/admin/review') {
         return handleAdminReview(request, env)
+      }
+
+      // ─────────────────────────────────────────────────────────────────
+      // Cron trigger routes (also callable manually for testing)
+      // ─────────────────────────────────────────────────────────────────
+      if (method === 'POST' && path === '/cron/daily-ops') {
+        await handleCronDailyOps(env)
+        return json({ success: true, message: 'Daily ops completed' })
+      }
+      if (method === 'POST' && path === '/cron/link-checker') {
+        return json({ success: true, message: 'Link checker — deferred to v2.0' })
+      }
+      if (method === 'POST' && path === '/cron/monthly-report') {
+        return json({ success: true, message: 'Monthly report — deferred to v2.0' })
       }
 
       return error('Not found', 404)
@@ -521,6 +640,70 @@ async function handleSubmit(request: Request, env: Env) {
     now,
   ).run()
 
+  // ── Send notification emails (B-01 + B-02) ──
+
+  // B-01: Confirmation to submitter
+  let submitterEmail: string | null = null
+  if (submitterId) {
+    const submitterUser = await env.DB.prepare(
+      'SELECT * FROM users WHERE id = ?'
+    ).bind(submitterId).first<UserRecord>()
+    submitterEmail = getNotifyEmail(submitterUser)
+  }
+  // Fallback: look up by GitHub username from the form
+  if (!submitterEmail && submitterGithub) {
+    const ghUser = await env.DB.prepare(
+      'SELECT * FROM users WHERE username = ?'
+    ).bind(submitterGithub).first<UserRecord>()
+    submitterEmail = getNotifyEmail(ghUser)
+  }
+
+  if (submitterEmail) {
+    void sendEmail(env, {
+      to: submitterEmail,
+      sceneId: 'B-01',
+      subject: `[aifindr] Submission received: ${name}`,
+      html: [
+        `<p>Hi! Your tool <strong>${name}</strong> (${website}) has been submitted to aifindr.org.</p>`,
+        `<p>Our team will review it within <strong>3–7 working days</strong>.</p>`,
+        `<p>If you'd like faster review (within 24 hours), check out our <a href="https://aifindr.org/submit">paid acceleration</a>.</p>`,
+        `<p>Your submission reference: <code>${slug}</code></p>`,
+        `<p>— aifindr.org</p>`,
+      ].join(''),
+    })
+  }
+
+  // B-02: Notification to admins
+  const adminGhIds = (env.ADMIN_GITHUB_IDS || '').split(',').map(Number).filter(Boolean)
+  if (adminGhIds.length > 0) {
+    const placeholders = adminGhIds.map(() => '?').join(',')
+    const { results: admins } = await env.DB.prepare(
+      `SELECT * FROM users WHERE github_id IN (${placeholders})`
+    ).bind(...adminGhIds).all<UserRecord>()
+
+    for (const admin of admins) {
+      const adminEmail = getNotifyEmail(admin)
+      if (adminEmail) {
+        void sendEmail(env, {
+          to: adminEmail,
+          sceneId: 'B-02',
+          subject: `[aifindr] New submission: ${name}`,
+          html: [
+            `<p>A new tool has been submitted to aifindr.org and needs review:</p>`,
+            `<table>`,
+            `<tr><td><strong>Name:</strong></td><td>${name}</td></tr>`,
+            `<tr><td><strong>Website:</strong></td><td><a href="${website}">${website}</a></td></tr>`,
+            `<tr><td><strong>Category:</strong></td><td>${category}</td></tr>`,
+            `<tr><td><strong>Pricing:</strong></td><td>${pricing}</td></tr>`,
+            `<tr><td><strong>Submitted:</strong></td><td>${now}</td></tr>`,
+            `</table>`,
+            `<p><a href="https://aifindr.org/admin">Review in admin panel →</a></p>`,
+          ].join(''),
+        })
+      }
+    }
+  }
+
   return json({ success: true, slug }, 201)
 }
 
@@ -603,6 +786,30 @@ async function handleAuthCallback(url: URL, request: Request, env: Env): Promise
   // Sign JWT
   const jwt = await signJWT({ sub: user.id, gh_id: ghUser.id }, env.JWT_SECRET)
 
+  // ── A-01: Guide user to set contact_email if GitHub email is noreply ──
+  const isNoreply = !primaryEmail || primaryEmail.includes('noreply.github.com')
+  const existingContact = existing
+    ? (await env.DB.prepare('SELECT contact_email FROM users WHERE github_id = ?').bind(ghUser.id).first<{ contact_email: string | null }>())?.contact_email
+    : null
+
+  if (isNoreply && !existingContact) {
+    void sendEmail(env, {
+      to: primaryEmail || '',  // Will fail gracefully if no email, but email_logs will record it
+      sceneId: 'A-01',
+      subject: '[aifindr] Add your contact email to receive notifications',
+      html: [
+        `<p>Hi <strong>@${ghUser.login}</strong>! Welcome to aifindr.org.</p>`,
+        `<p>Your GitHub email is set to private, so we can't send you important notifications — like submission status updates, review results, and backlink confirmations.</p>`,
+        `<p><strong>Add your contact email here:</strong></p>`,
+        `<p><a href="https://aifindr.org/settings">Go to Settings →</a></p>`,
+        `<p>It's optional and only takes a moment. We'll only email you about your submissions and reviews.</p>`,
+        `<p>— aifindr.org</p>`,
+      ].join(''),
+    })
+  }
+  // Also update last_login_at
+  await env.DB.prepare('UPDATE users SET last_login_at = ? WHERE github_id = ?').bind(now, ghUser.id).run()
+
   // Redirect back to frontend with token (use state param or fallback to origin)
   const frontendOrigin = url.searchParams.get('state') || url.origin
   const frontendUrl = new URL(frontendOrigin)
@@ -623,10 +830,15 @@ async function handleAuthMe(request: Request, env: Env): Promise<Response> {
   const payload = await verifyJWT(token, env.JWT_SECRET)
   if (!payload) return error('Invalid or expired token', 401)
 
-  const user = await env.DB.prepare('SELECT id, username, email, avatar_url FROM users WHERE id = ?').bind(payload.sub).first()
+  const user = await env.DB.prepare(
+    'SELECT id, username, email, avatar_url, contact_email, email_verified FROM users WHERE id = ?'
+  ).bind(payload.sub).first<Record<string, unknown>>()
   if (!user) return error('User not found', 404)
 
-  return json(user)
+  const isNoreply = !user.email || String(user.email).includes('noreply.github.com')
+  const needsContactEmail = isNoreply && !user.contact_email
+
+  return json({ ...user, needs_contact_email: needsContactEmail })
 }
 
 
@@ -734,7 +946,7 @@ async function handleAdminReview(request: Request, env: Env): Promise<Response> 
   }
 
   // Verify tool exists and is pending
-  const tool = await env.DB.prepare('SELECT id, name, status FROM tools WHERE id = ?').bind(toolId).first<{ id: number; name: string; status: string }>()
+  const tool = await env.DB.prepare('SELECT * FROM tools WHERE id = ?').bind(toolId).first<Record<string, unknown>>()
   if (!tool) {
     return error('Tool not found', 404)
   }
@@ -751,10 +963,160 @@ async function handleAdminReview(request: Request, env: Env): Promise<Response> 
   // Clear stats cache so homepage reflects the updated tool count
   await env.CACHE.delete('stats')
 
-  // TODO: Send notification email (B-03 / B-04) — email notification system
+  // ── Send notification email (B-03 / B-04) ──
+  const toolName = String(tool.name || '')
+  const toolSlug = String(tool.slug || '')
+  const toolCategory = String(tool.category || '')
+  const submitterId = tool.submitter_id as number | null
+  const submitterGithub = String(tool.submitter_github || '')
+
+  // Find submitter's email
+  let submitterEmail: string | null = null
+  if (submitterId) {
+    const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(submitterId).first<UserRecord>()
+    submitterEmail = getNotifyEmail(user)
+  }
+  if (!submitterEmail && submitterGithub) {
+    const ghUser = await env.DB.prepare('SELECT * FROM users WHERE username = ?').bind(submitterGithub).first<UserRecord>()
+    submitterEmail = getNotifyEmail(ghUser)
+  }
+
+  if (submitterEmail) {
+    if (status === 'active') {
+      // B-03: Approval with three backlinks
+      const detailUrl = `https://aifindr.org/tools/${toolCategory}/${toolSlug}`
+      const contributorUrl = `https://aifindr.org/contributors/${submitterGithub}`
+      const githubUrl = `https://github.com/aifindr-org/aifindr.org/blob/main/content/tools/${toolCategory}/${toolSlug}.md`
+
+      void sendEmail(env, {
+        to: submitterEmail,
+        sceneId: 'B-03',
+        subject: `[aifindr] Your tool "${toolName}" has been approved!`,
+        html: [
+          `<p>Great news! Your tool <strong>${toolName}</strong> has been approved and is now live.</p>`,
+          `<p>Here are your <strong>three dofollow backlinks</strong>:</p>`,
+          `<ol>`,
+          `<li><a href="${githubUrl}">GitHub</a> — github.com (DA 100)</li>`,
+          `<li><a href="${detailUrl}">Tool Detail Page</a> — aifindr.org</li>`,
+          `<li><a href="${contributorUrl}">Contributor Page</a> — aifindr.org/contributors/${submitterGithub}</li>`,
+          `</ol>`,
+          `<p><a href="${detailUrl}">View your listing →</a></p>`,
+          `<p>Share it with your network — the more clicks it gets, the higher it ranks on Trending!</p>`,
+          `<p>— aifindr.org</p>`,
+        ].join(''),
+      })
+    } else if (status === 'rejected') {
+      // B-04: Rejection with reason
+      const reasonMap: Record<string, string> = {
+        info_incomplete: 'Information is incomplete — please provide more details about the tool',
+        not_qualified: 'Not qualified — the tool does not meet our listing criteria',
+        duplicate: 'Duplicate — this tool is already listed in our directory',
+        other: reviewerNote || 'Other reason',
+      }
+      const reasonText = reasonMap[rejectReason] || rejectReason || ''
+      const noteLine = reviewerNote ? `<p><strong>Reviewer notes:</strong> ${reviewerNote}</p>` : ''
+
+      void sendEmail(env, {
+        to: submitterEmail,
+        sceneId: 'B-04',
+        subject: `[aifindr] Update on your submission "${toolName}"`,
+        html: [
+          `<p>Thank you for submitting <strong>${toolName}</strong> to aifindr.org.</p>`,
+          `<p>After review, we were unable to approve it at this time:</p>`,
+          `<blockquote>${reasonText}</blockquote>`,
+          noteLine,
+          `<p>You're welcome to revise and <a href="https://aifindr.org/submit">resubmit</a> — we'd love to have your tool listed!</p>`,
+          `<p>— aifindr.org</p>`,
+        ].join(''),
+      })
+    }
+  }
 
   return json({
     success: true,
-    tool: { id: toolId, name: tool.name, status, reviewed_at: now },
+    tool: { id: toolId, name: toolName, status, reviewed_at: now },
   })
+}
+
+// ─── User handlers ───────────────────────────────────────────────────
+
+// ─── Cron handlers ───────────────────────────────────────────────────
+
+/** Cron 1: Daily operations — check stale pending tools + refresh cache */
+async function handleCronDailyOps(env: Env): Promise<void> {
+  // Check for pending tools older than 7 days
+  const { results: staleTools } = await env.DB.prepare(
+    "SELECT * FROM tools WHERE status = 'pending' AND submitted_at < datetime('now', '-7 days')"
+  ).all<Record<string, unknown>>()
+
+  if (staleTools.length > 0) {
+    // B-07: Send admin reminder
+    const adminGhIds = (env.ADMIN_GITHUB_IDS || '').split(',').map(Number).filter(Boolean)
+    if (adminGhIds.length > 0) {
+      const placeholders = adminGhIds.map(() => '?').join(',')
+      const { results: admins } = await env.DB.prepare(
+        `SELECT * FROM users WHERE github_id IN (${placeholders})`
+      ).bind(...adminGhIds).all<UserRecord>()
+
+      const toolList = (staleTools as Record<string, unknown>[])
+        .map(t => `• ${t.name} (submitted ${String(t.submitted_at || '').slice(0, 10)})`)
+        .join('<br>')
+
+      for (const admin of admins) {
+        const adminEmail = getNotifyEmail(admin)
+        if (adminEmail) {
+          void sendEmail(env, {
+            to: adminEmail,
+            sceneId: 'B-07',
+            subject: `[aifindr] ${staleTools.length} tool(s) awaiting review for 7+ days`,
+            html: [
+              `<p>The following tools have been pending review for more than 7 days:</p>`,
+              `<p>${toolList}</p>`,
+              `<p><a href="https://aifindr.org/admin">Review in admin panel →</a></p>`,
+            ].join(''),
+          })
+        }
+      }
+    }
+
+    console.log(`Cron 1: Found ${staleTools.length} stale pending tools, sent B-07 reminders`)
+  }
+
+  // Refresh KV stats cache
+  await env.CACHE.delete('stats')
+  console.log('Cron 1: KV stats cache cleared')
+}
+
+// ─── User handlers ───────────────────────────────────────────────────
+
+/** POST /api/user/email — update contact email for notifications */
+async function handleUserEmail(request: Request, env: Env): Promise<Response> {
+  const token = getTokenFromRequest(request)
+  if (!token) return error('Unauthorized', 401)
+
+  const payload = await verifyJWT(token, env.JWT_SECRET)
+  if (!payload) return error('Invalid or expired token', 401)
+
+  let body: Record<string, unknown>
+  try {
+    body = await request.json() as Record<string, unknown>
+  } catch {
+    return error('Invalid JSON body', 400, 'INVALID_JSON')
+  }
+
+  const contactEmail = String(body.contact_email || '').trim()
+  if (!contactEmail) {
+    return error('contact_email is required', 400, 'MISSING_FIELDS')
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
+    return error('Invalid email format', 400, 'INVALID_EMAIL')
+  }
+
+  const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
+  await env.DB.prepare(
+    'UPDATE users SET contact_email = ?, email_verified = 0, updated_at = ? WHERE id = ?'
+  ).bind(contactEmail, now, payload.sub).run()
+
+  return json({ success: true, contact_email: contactEmail, email_verified: 0 })
 }

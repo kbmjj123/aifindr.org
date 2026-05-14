@@ -3,6 +3,9 @@ export interface AuthUser {
   username: string
   email?: string
   avatar_url?: string
+  contact_email?: string | null
+  email_verified?: number
+  needs_contact_email?: boolean
 }
 
 // Module-level shared state — required so app.vue and AuthButton share same refs

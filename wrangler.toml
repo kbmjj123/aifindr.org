@@ -23,3 +23,12 @@ id = "ae4b1dfcbdb145db969dc4a5e0b3e722"
 TURNSTILE_SECRET = "0x4AAAAAADLaTZ6nhzkwRkpcqMgkr73-yWc"
 GITHUB_CLIENT_ID = "Ov23lioNhw0LD6MXeMFJ"
 ADMIN_GITHUB_IDS = ""  # 管理员 GitHub ID，逗号分隔，如 "12345678,87654321"
+RESEND_API_KEY = "" # Resend 邮件服务 API Key（从 resend.com/api-keys 获取）
+
+# Cron Triggers（Cloudflare Workers Cron Triggers，免费 5 个/账号）
+[triggers]
+crons = [
+  "0 9 * * *",   # Cron 1: 每天 09:00 UTC — 检查超 7 天未审核提交 + 刷新 KV 缓存
+  "0 3 * * *",   # Cron 2: 每天 03:00 UTC — 反链失效检查（v2.0）
+  "0 8 1 * *",   # Cron 3: 每月 1 日 08:00 UTC — 反链效果月报（v2.0）
+]

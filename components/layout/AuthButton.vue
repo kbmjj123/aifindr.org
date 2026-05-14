@@ -20,6 +20,10 @@
           {{ user.email || user.username }}
         </div>
         <div :style="{ borderTop: '1px solid var(--color-border)' }" />
+        <NuxtLink to="/settings" class="block w-full text-left px-3 py-2 font-body text-[12px] transition-colors"
+          :style="{ color: 'var(--color-text-secondary)' }"
+          style="display: block;">Settings</NuxtLink>
+        <div :style="{ borderTop: '1px solid var(--color-border)' }" />
         <button class="w-full text-left px-3 py-2 font-body text-[12px] transition-colors"
           :style="{ color: 'var(--color-text-secondary)' }"
           @click="logout">Sign Out</button>
