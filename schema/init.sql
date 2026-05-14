@@ -128,3 +128,24 @@ CREATE TABLE IF NOT EXISTS email_logs (
 CREATE INDEX IF NOT EXISTS idx_email_logs_scene    ON email_logs(scene_id);
 CREATE INDEX IF NOT EXISTS idx_email_logs_recipient ON email_logs(recipient);
 CREATE INDEX IF NOT EXISTS idx_email_logs_created  ON email_logs(created_at DESC);
+
+-- ─── AI 文章生成记录（v1.4） ─────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS generated_articles (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id       INTEGER REFERENCES users(id),    -- 生成者（关联 users 表）
+  user_site     TEXT NOT NULL,                   -- 用户网站 URL
+  platform      TEXT NOT NULL                    -- 目标平台
+                CHECK(platform IN ('medium','devto','hashnode','linkedin','quora','reddit')),
+  title         TEXT NOT NULL,                   -- 生成的文章标题
+  content       TEXT NOT NULL,                   -- 生成的文章正文
+  topic         TEXT,                            -- 用户选择的主题方向
+  status        TEXT DEFAULT 'generated'         -- 状态
+                CHECK(status IN ('generated','published','failed')),
+  published_url TEXT,                            -- 发布后的 URL
+  published_at  TEXT,                            -- 发布时间
+  created_at    TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_gen_articles_user    ON generated_articles(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_gen_articles_status  ON generated_articles(status);
