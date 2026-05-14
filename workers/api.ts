@@ -317,6 +317,13 @@ export default {
       }
 
       // ─────────────────────────────────────────────────────────────────
+      // GET /api/__sitemap__/urls — dynamic sitemap URLs from D1
+      // ─────────────────────────────────────────────────────────────────
+      if (method === 'GET' && path === '/__sitemap__/urls') {
+        return handleSitemapUrls(env)
+      }
+
+      // ─────────────────────────────────────────────────────────────────
       // POST /api/user/email — update contact email (authenticated)
       // ─────────────────────────────────────────────────────────────────
       if (method === 'POST' && path === '/user/email') {
@@ -1537,6 +1544,22 @@ async function handleLSPaymentFailure(env: Env, opts: {
       `<p>— aifindr.org</p>`,
     ].join(''),
   })
+}
+
+/** GET /api/__sitemap__/urls — return all active tool URLs for the sitemap */
+async function handleSitemapUrls(env: Env): Promise<Response> {
+  const { results: tools } = await env.DB.prepare(
+    "SELECT slug, category, updated_at, submitted_at FROM tools WHERE status = 'active'"
+  ).all<{ slug: string; category: string; updated_at: string | null; submitted_at: string }>()
+
+  const urls = tools.map(tool => ({
+    url: `https://aifindr.org/tools/${tool.category}/${tool.slug}`,
+    lastmod: tool.updated_at || tool.submitted_at,
+    changefreq: 'weekly',
+    priority: 0.8,
+  }))
+
+  return json(urls)
 }
 
 // ─── Search engine notification ──────────────────────────────────
