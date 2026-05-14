@@ -31,6 +31,7 @@ LEMONSQUEEZY_WEBHOOK_SECRET = "" # Lemon Squeezy Webhook Secret（Lemon Squeezy 
 [triggers]
 crons = [
   "0 9 * * *",   # Cron 1: 每天 09:00 UTC — 检查超 7 天未审核提交 + 刷新 KV 缓存
-  "0 3 * * *",   # Cron 2: 每天 03:00 UTC — 反链失效检查（v2.0）
-  "0 8 1 * *",   # Cron 3: 每月 1 日 08:00 UTC — 反链效果月报（v2.0）
+  "0 3 * * *",   # Cron 2: 每天 03:00 UTC — 反链失效检查
+  "0 8 1 * *",   # Cron 3: 每月 1 日 08:00 UTC — 反链效果月报
+  "0 14 * * 1",  # Cron 4: 每周一 14:00 UTC — Newsletter 定时触发
 ]

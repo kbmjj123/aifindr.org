@@ -149,3 +149,22 @@ CREATE TABLE IF NOT EXISTS generated_articles (
 
 CREATE INDEX IF NOT EXISTS idx_gen_articles_user    ON generated_articles(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_gen_articles_status  ON generated_articles(status);
+
+-- ─── 反链追踪（v2.0） ──────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS published_links (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  article_id   INTEGER REFERENCES generated_articles(id),
+  user_id      INTEGER REFERENCES users(id),       -- 反链所属用户
+  source_url   TEXT NOT NULL,                       -- 发布文章 URL
+  target_url   TEXT NOT NULL,                       -- 反链目标 URL（用户网站）
+  platform     TEXT NOT NULL,                       -- 发布平台
+  anchor_text  TEXT,                                -- 锚文本
+  is_active    INTEGER DEFAULT 1,                   -- 是否仍有效
+  last_checked TEXT,                                -- 最后检查时间
+  created_at   TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_links_user       ON published_links(user_id);
+CREATE INDEX IF NOT EXISTS idx_links_is_active  ON published_links(is_active);
+CREATE INDEX IF NOT EXISTS idx_links_checked    ON published_links(last_checked);
