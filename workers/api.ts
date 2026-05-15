@@ -619,8 +619,12 @@ async function handleAuthMe(request: Request, env: Env): Promise<Response> {
 // ─── Admin helpers ──────────────────────────────────────────────────
 
 function checkAdminAuth(request: Request, env: Env): boolean {
+  // Try Authorization header first, then cookie
   const auth = request.headers.get('Authorization')
-  return auth === `Bearer ${env.ADMIN_KEY}`
+  if (auth === `Bearer ${env.ADMIN_KEY}`) return true
+  const cookie = request.headers.get('Cookie') || ''
+  const match = cookie.match(/(?:^|;\s*)admin-key=([^;]+)/)
+  return match?.[1] === env.ADMIN_KEY
 }
 
 async function handleAdminListTools(url: URL, request: Request, env: Env) {

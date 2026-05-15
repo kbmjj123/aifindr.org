@@ -78,16 +78,11 @@ const tools = ref<any[]>([])
 const loading = ref(false)
 const processing = ref<number | null>(null)
 
-function authHeaders() {
-  return { Authorization: `Bearer ${adminKey.value}` }
-}
-
 function auth() {
   authError.value = ''
-  // Test auth by fetching tools
-  $fetch('/api/admin/tools?status=pending', {
-    headers: authHeaders(),
-  }).then(data => {
+  // Set cookie so Worker can read it (bypasses Nuxt proxy header stripping)
+  document.cookie = `admin-key=${adminKey.value}; path=/; max-age=86400`
+  $fetch('/api/admin/tools?status=pending').then(data => {
     authed.value = true
     tools.value = (data as any[]) || []
   }).catch(() => {
@@ -98,9 +93,7 @@ function auth() {
 async function loadTools() {
   loading.value = true
   try {
-    const data = await $fetch('/api/admin/tools?status=pending', {
-      headers: authHeaders(),
-    })
+    const data = await $fetch('/api/admin/tools?status=pending')
     tools.value = (data as any[]) || []
   } catch {
     tools.value = []
@@ -112,10 +105,7 @@ async function loadTools() {
 async function approve(id: number) {
   processing.value = id
   try {
-    await $fetch(`/api/admin/tools/${id}/approve`, {
-      method: 'POST',
-      headers: authHeaders(),
-    })
+    await $fetch(`/api/admin/tools/${id}/approve`, { method: 'POST' })
     loadTools()
   } finally {
     processing.value = null
@@ -125,10 +115,7 @@ async function approve(id: number) {
 async function reject(id: number) {
   processing.value = id
   try {
-    await $fetch(`/api/admin/tools/${id}/reject`, {
-      method: 'POST',
-      headers: authHeaders(),
-    })
+    await $fetch(`/api/admin/tools/${id}/reject`, { method: 'POST' })
     loadTools()
   } finally {
     processing.value = null
