@@ -5,13 +5,30 @@ export interface AuthUser {
   avatar_url?: string
 }
 
-// Module-level shared state (global across all useAuth() calls)
+const COOKIE_NAME = 'aifindr-token'
+const MAX_AGE = 604800
+
+function getCookie(): string | null {
+  if (import.meta.server) return null
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${COOKIE_NAME}=([^;]+)`))
+  return match ? decodeURIComponent(match[1]) : null
+}
+
+function setCookie(value: string | null) {
+  if (import.meta.server) return
+  if (value) {
+    document.cookie = `${COOKIE_NAME}=${value}; path=/; max-age=${MAX_AGE}; SameSite=Lax`
+  } else {
+    document.cookie = `${COOKIE_NAME}=; path=/; max-age=0`
+  }
+}
+
+// Module-level shared state — NOT useCookie, avoids SSG hydration clearing value
+const token = ref<string | null>(null)
 const user = ref<AuthUser | null>(null)
-const loading = ref(true)
+const loading = ref(false)
 
 export const useAuth = () => {
-  const token = useCookie<string | null>('aifindr-token', { maxAge: 604800 })
-
   const isLoggedIn = computed(() => !!token.value)
 
   async function fetchUser() {
@@ -19,8 +36,8 @@ export const useAuth = () => {
       loading.value = false
       return
     }
+    loading.value = true
     try {
-      // Cookie (aifindr-token) is sent automatically by the browser
       const data = await $fetch<AuthUser>('/api/auth/me')
       user.value = data
     } catch {
@@ -35,6 +52,7 @@ export const useAuth = () => {
   }
 
   function logout() {
+    setCookie(null)
     token.value = null
     user.value = null
     navigateTo('/')
@@ -42,16 +60,28 @@ export const useAuth = () => {
 
   /** Handle token from URL (?token=xxx) after OAuth callback */
   function handleUrlToken() {
-    if (import.meta.client) {
-      const params = new URLSearchParams(window.location.search)
-      const urlToken = params.get('token')
-      if (urlToken) {
-        token.value = urlToken
-        window.history.replaceState({}, '', window.location.pathname)
-        fetchUser()
-      }
+    if (import.meta.server) return
+    const params = new URLSearchParams(window.location.search)
+    const urlToken = params.get('token')
+    if (urlToken) {
+      setCookie(urlToken)
+      token.value = urlToken
+      window.history.replaceState({}, '', window.location.pathname)
+      fetchUser()
     }
   }
 
-  return { token, user, loading, isLoggedIn, login, logout, fetchUser, handleUrlToken }
+  /** Restore session from existing cookie on app start */
+  function restoreSession() {
+    if (import.meta.server) return
+    const existing = getCookie()
+    if (existing) {
+      token.value = existing
+      fetchUser()
+    } else {
+      loading.value = false
+    }
+  }
+
+  return { token, user, loading, isLoggedIn, login, logout, fetchUser, handleUrlToken, restoreSession }
 }

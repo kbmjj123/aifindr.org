@@ -15,7 +15,6 @@
 
 <script setup lang="ts">
 useHead({
-  title: 'aifindr.org – Discover 500+ AI Tools, Free & Open Source',
   meta: [
     { name: 'description', content: 'Open-source AI tool directory. Submit your tool, get free backlinks.' },
   ],
@@ -28,10 +27,18 @@ useHead({
   ],
 })
 
-const { handleUrlToken, fetchUser } = useAuth()
+const { handleUrlToken, restoreSession } = useAuth()
 
+// Process OAuth token in URL immediately (setup phase)
+if (import.meta.client) {
+  const params = new URLSearchParams(window.location.search)
+  if (params.has('token')) {
+    handleUrlToken()
+  }
+}
+
+// Restore session from existing cookie (survives refresh)
 onMounted(() => {
-  handleUrlToken()
-  fetchUser()
+  restoreSession()
 })
 </script>
