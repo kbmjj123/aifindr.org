@@ -102,7 +102,7 @@
       <p v-if="turnstileError" class="font-body text-[11px] text-center" style="color: var(--color-danger)">{{ turnstileError }}</p>
 
       <button type="submit" class="btn-primary w-full flex items-center justify-center gap-2 !h-[40px] !text-[13px]"
-        :disabled="submitting || !cfToken">
+        :disabled="submitting">
         {{ submitting ? 'Submitting...' : 'Submit for Review' }}
       </button>
 
