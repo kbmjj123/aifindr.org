@@ -33,6 +33,7 @@ export default defineNuxtConfig({
     '/tools/*/*': { isr: 86400 },
     '/blog/*/*': { isr: 604800 },
     '/api/**': { cors: true },
+		'/__og/**': { prerender: false },
   },
 
   nitro: {

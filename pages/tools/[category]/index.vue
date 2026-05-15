@@ -37,6 +37,7 @@ const { data: result, pending } = await useAsyncData<{ tools: Tool[]; total: num
   {
     watch: [category],
     default: () => ({ tools: [], total: 0 }),
+    server: false,
   }
 )
 
