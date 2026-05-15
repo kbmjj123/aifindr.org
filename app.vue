@@ -20,6 +20,12 @@ useHead({
   ],
   script: [
     {
+      // Capture OAuth token from URL BEFORE Nuxt hydration clears query params
+      innerHTML: `(function(){var p=new URLSearchParams(window.location.search).get('token');if(p){localStorage.setItem('aifindr-token',p);var u=new URL(window.location);u.searchParams.delete('token');window.history.replaceState({},'',u.toString())}})()`,
+      type: 'text/javascript',
+      tagPosition: 'head',
+    },
+    {
       innerHTML: `(function(){var p=localStorage.getItem('aifindr-theme');var t='dark';if(p==='light'||p==='dark')t=p;else if(p!=='auto'){var h=new Date().getHours();t=(h>=6&&h<18)?'light':'dark'}document.documentElement.setAttribute('data-theme',t)})()`,
       type: 'text/javascript',
       tagPosition: 'head',
@@ -27,18 +33,9 @@ useHead({
   ],
 })
 
-const { handleUrlToken, restoreSession } = useAuth()
+const { handleUrlToken } = useAuth()
 
-// Process OAuth token in URL immediately (setup phase)
-if (import.meta.client) {
-  const params = new URLSearchParams(window.location.search)
-  if (params.has('token')) {
-    handleUrlToken()
-  }
-}
-
-// Restore session from existing cookie (survives refresh)
 onMounted(() => {
-  restoreSession()
+  handleUrlToken()
 })
 </script>
