@@ -102,7 +102,6 @@ async function verifyJWT(token: string, secret: string): Promise<JWTPayload | nu
     const sig = Uint8Array.from(atob(sigB64.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0))
     const valid = await crypto.subtle.verify('HMAC', key, sig, encoder.encode(data))
     if (!valid) {
-      console.log('JWT verify failed: sig mismatch, secret length:', secret.length)
       return null
     }
 
@@ -111,7 +110,6 @@ async function verifyJWT(token: string, secret: string): Promise<JWTPayload | nu
 
     return payload
   } catch (e) {
-    console.log('JWT verify threw:', e)
     return null
   }
 }
@@ -196,13 +194,6 @@ export default {
       // ─────────────────────────────────────────────────────────────────
       if (method === 'GET' && path === '/auth/me') {
         return handleAuthMe(request, env)
-      }
-
-      // ─────────────────────────────────────────────────────────────────
-      // GET /api/auth/dev-login — mock login for local development
-      // ─────────────────────────────────────────────────────────────────
-      if (method === 'GET' && path === '/auth/dev-login') {
-        return handleDevLogin(env)
       }
 
       return error('Not found', 404)
@@ -595,7 +586,6 @@ async function handleAuthMe(request: Request, env: Env): Promise<Response> {
   }
   if (!token) return error('Unauthorized', 401)
 
-  console.log('handleAuthMe: token length:', token.length, 'secret length:', env.JWT_SECRET.length)
   const payload = await verifyJWT(token, env.JWT_SECRET)
   if (!payload) return error('Invalid or expired token', 401)
 
@@ -605,31 +595,3 @@ async function handleAuthMe(request: Request, env: Env): Promise<Response> {
   return json(user)
 }
 
-// ─── Dev mock login (skip GitHub OAuth for local development) ─────
-
-async function handleDevLogin(env: Env) {
-  const devUser = {
-    github_id: 12345678,
-    username: 'dev-user',
-    email: 'dev@example.com',
-    avatar_url: '',
-  }
-
-  const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
-  const existing = await env.DB.prepare('SELECT id FROM users WHERE github_id = ?').bind(devUser.github_id).first()
-  if (existing) {
-    await env.DB.prepare('UPDATE users SET username = ?, email = ?, updated_at = ? WHERE github_id = ?')
-      .bind(devUser.username, devUser.email, now, devUser.github_id).run()
-  } else {
-    await env.DB.prepare('INSERT INTO users (github_id, username, email, avatar_url, created_at) VALUES (?, ?, ?, ?, ?)')
-      .bind(devUser.github_id, devUser.username, devUser.email, devUser.avatar_url, now).run()
-  }
-
-  const user = await env.DB.prepare('SELECT id FROM users WHERE github_id = ?').bind(devUser.github_id).first() as { id: number }
-  console.log('dev-login: JWT_SECRET length:', env.JWT_SECRET.length)
-  const jwt = await signJWT({ sub: user.id, gh_id: devUser.github_id }, env.JWT_SECRET)
-
-  const frontendUrl = new URL('http://localhost:3000')
-  frontendUrl.searchParams.set('token', jwt)
-  return Response.redirect(frontendUrl.toString(), 302)
-}
