@@ -180,7 +180,7 @@ onUnmounted(() => {
 })
 
 async function handleSubmit() {
-  if (submitting.value || !cfToken.value) return
+  if (submitting.value) return
   submitting.value = true
   submitError.value = ''
 

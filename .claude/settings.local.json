@@ -19,7 +19,16 @@
       "Bash(/Users/zhenggl/.nvm/versions/node/v22.16.0/bin/node /Users/zhenggl/Desktop/personal_upgrade/aifindr.org/aifindr.org/node_modules/.pnpm/wrangler@4.88.0_@cloudflare+workers-types@4.20260507.1/node_modules/wrangler/bin/wrangler.js types)",
       "Bash(/Users/zhenggl/.nvm/versions/node/v22.16.0/bin/node *)",
       "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(sed -i '' '601,631d' workers/api.ts)",
+      "Bash(sed -i '' '/console\\\\.log/d' workers/api.ts)",
+      "Bash(sed -i '' \"s/name: '',/name: 'Test AI Tool',/\" components/submit/SubmitForm.vue)",
+      "Bash(sed -i '' \"s/website: '',/website: 'https:\\\\/\\\\/example.com',/\" components/submit/SubmitForm.vue)",
+      "Bash(sed -i '' \"s/category: '',/category: 'image',/\" components/submit/SubmitForm.vue)",
+      "Bash(sed -i '' \"s/pricing: 'free',/pricing: 'freemium',/\" components/submit/SubmitForm.vue)",
+      "Bash(sed -i '' \"s/description: '',/description: 'An AI-powered tool for generating beautiful images from text prompts.',/\" components/submit/SubmitForm.vue)",
+      "Bash(sed -i '' 's/return data$/return data\\\\n  }, { server: false }\\)/' components/layout/AppSidebar.vue)",
+      "Bash(sed -i '' 's/useAsyncData\\('\\\\''sidebar-stats'\\\\'', async/useAsyncData\\('\\\\''sidebar-stats'\\\\'', { server: false }, async/' components/layout/AppSidebar.vue)"
     ]
   }
 }

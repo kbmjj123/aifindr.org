@@ -4,14 +4,14 @@ compatibility_date = "2026-05-07"
 
 # Routes: /api/* 指向此 Worker
 routes = [
-  { pattern = "aifindr.org/api/*", zone_id = "" }
+  { pattern = "aifindr.org/api/*", zone_id = "e10e1a0eb9055d9740e7659f03c17035" }
 ]
 
 # D1 Database — 从 Cloudflare Dashboard → D1 → 数据库详情页获取 ID
 [[d1_databases]]
 binding = "DB"
 database_name = "aifindr-db"
-database_id = "5f16b45d-3658-4f74-87df-47f53e2ab04d"
+database_id = "8e365acb-9ac4-4fb4-99c6-cfcaa4ed633d"
 
 # KV Cache — 用于缓存高频查询（stats 等）
 [[kv_namespaces]]

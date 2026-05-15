@@ -26,18 +26,17 @@ export default defineNuxtConfig({
 	],
 
   routeRules: {
-    '/': { prerender: true },
+		'/': { prerender: true },
     '/tools': { prerender: true },
     '/tools/*/': { prerender: true },
     '/submit': { prerender: true },
     '/tools/*/*': { isr: 86400 },
     '/blog/*/*': { isr: 604800 },
     '/api/**': { cors: true },
-		'/__og/**': { prerender: false },
-  },
+	},
 
   nitro: {
-    preset: process.env.NODE_ENV === 'production' ? 'cloudflare-pages' : undefined,
+    preset: 'cloudflare-pages',
     devProxy: {
       '/api': { target: 'http://localhost:8787', changeOrigin: true },
     },
@@ -46,7 +45,7 @@ export default defineNuxtConfig({
   content: {},
 
   ogImage: {
-    zeroRuntime: false,
+		enabled: false,
   },
 
   robots: {

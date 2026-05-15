@@ -31,7 +31,7 @@
     <!-- Right content panel -->
     <div style="display: flex; flex-direction: column; justify-content: center; flex: 1; padding: 60px 60px 60px 50px; overflow: hidden;">
       <!-- Page type badge -->
-      <div style="display: inline-flex; align-items: center; gap: 6px; margin-bottom: 16px; padding: 4px 12px; background: rgba(200, 255, 0, 0.1); border: 1px solid rgba(200, 255, 0, 0.25); border-radius: 20px;">
+      <div style="align-items: center; gap: 6px; margin-bottom: 16px; padding: 4px 12px; background: rgba(200, 255, 0, 0.1); border: 1px solid rgba(200, 255, 0, 0.25); border-radius: 20px;">
         <div style="width: 6px; height: 6px; background: #c8ff00; border-radius: 50%; flex-shrink: 0;" />
         <span style="font-size: 12px; color: #c8ff00; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;">{{ type || 'Page' }}</span>
       </div>
