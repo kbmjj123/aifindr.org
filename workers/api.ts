@@ -432,13 +432,15 @@ async function handleSubmit(request: Request, env: Env) {
     return error(`Invalid category. Must be one of: ${validCategories.join(', ')}`, 400, 'INVALID_CATEGORY')
   }
 
-  // ── Verify Turnstile ──
-  if (!turnstileToken) {
-    return error('CAPTCHA verification required', 400, 'CAPTCHA_REQUIRED')
-  }
-  const captchaValid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET)
-  if (!captchaValid) {
-    return error('CAPTCHA verification failed', 400, 'CAPTCHA_FAILED')
+  // ── Verify Turnstile (skip in local dev when secret is empty) ──
+  if (env.TURNSTILE_SECRET) {
+    if (!turnstileToken) {
+      return error('CAPTCHA verification required', 400, 'CAPTCHA_REQUIRED')
+    }
+    const captchaValid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET)
+    if (!captchaValid) {
+      return error('CAPTCHA verification failed', 400, 'CAPTCHA_FAILED')
+    }
   }
 
   // ── Generate unique slug ──
