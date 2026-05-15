@@ -42,6 +42,7 @@ export const useAuth = () => {
 
   /** Handle token from URL (?token=xxx) after OAuth callback */
   function handleUrlToken() {
+		debugger
     if (import.meta.client) {
       const params = new URLSearchParams(window.location.search)
       const urlToken = params.get('token')
