@@ -60,6 +60,7 @@ export const useAuth = () => {
 
   /** Handle token from URL (?token=xxx) after OAuth callback */
   function handleUrlToken() {
+		alert('calllbak')
 		console.info('开始鞋带token过来')
     if (import.meta.server) return
     const params = new URLSearchParams(window.location.search)
