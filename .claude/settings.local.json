@@ -28,7 +28,10 @@
       "Bash(sed -i '' \"s/pricing: 'free',/pricing: 'freemium',/\" components/submit/SubmitForm.vue)",
       "Bash(sed -i '' \"s/description: '',/description: 'An AI-powered tool for generating beautiful images from text prompts.',/\" components/submit/SubmitForm.vue)",
       "Bash(sed -i '' 's/return data$/return data\\\\n  }, { server: false }\\)/' components/layout/AppSidebar.vue)",
-      "Bash(sed -i '' 's/useAsyncData\\('\\\\''sidebar-stats'\\\\'', async/useAsyncData\\('\\\\''sidebar-stats'\\\\'', { server: false }, async/' components/layout/AppSidebar.vue)"
+      "Bash(sed -i '' 's/useAsyncData\\('\\\\''sidebar-stats'\\\\'', async/useAsyncData\\('\\\\''sidebar-stats'\\\\'', { server: false }, async/' components/layout/AppSidebar.vue)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git stash *)"
     ]
   }
 }

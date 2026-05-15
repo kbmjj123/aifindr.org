@@ -60,9 +60,11 @@ export const useAuth = () => {
 
   /** Handle token from URL (?token=xxx) after OAuth callback */
   function handleUrlToken() {
+		console.info('开始鞋带token过来')
     if (import.meta.server) return
     const params = new URLSearchParams(window.location.search)
     const urlToken = params.get('token')
+		console.info('获取到的token：　', urlToken)
     if (urlToken) {
       setCookie(urlToken)
       token.value = urlToken
