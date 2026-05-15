@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 useHead({
-  meta: [
+  meta: [　
     { name: 'description', content: 'Open-source AI tool directory. Submit your tool, get free backlinks.' },
   ],
   script: [

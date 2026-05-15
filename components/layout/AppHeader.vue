@@ -15,7 +15,7 @@
 
       <!-- Right actions -->
       <div class="flex items-center gap-1.5 sm:gap-2 ml-auto">
-        <NuxtLink to="/submit" class="btn-header-submit hidden sm:inline-flex">
+        <NuxtLink to="/submit" class="btn-header-submit !hidden sm:!inline-flex">
           + Submit Tool
         </NuxtLink>
         <AuthButton />
