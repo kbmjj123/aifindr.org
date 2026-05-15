@@ -14,14 +14,14 @@
       </div>
 
       <!-- Right actions -->
-      <div class="flex items-center gap-2 ml-auto">
-        <NuxtLink to="/submit" class="btn-header-submit">
+      <div class="flex items-center gap-1.5 sm:gap-2 ml-auto">
+        <NuxtLink to="/submit" class="btn-header-submit hidden sm:inline-flex">
           + Submit Tool
         </NuxtLink>
         <AuthButton />
         <ThemeToggle />
         <a href="https://github.com/aifindr-org/aifindr.org" target="_blank" rel="noopener noreferrer"
-          class="flex items-center justify-center w-7 h-7 rounded-md"
+          class="hidden sm:flex items-center justify-center w-7 h-7 rounded-md"
           style="color: var(--color-text-secondary)"
           @mouseenter="($event.currentTarget as HTMLElement).style.color = 'var(--color-text-primary)'"
           @mouseleave="($event.currentTarget as HTMLElement).style.color = 'var(--color-text-secondary)'">
