@@ -118,15 +118,15 @@
 import { CATEGORIES } from '~/types/tool'
 
 const form = reactive({
-  name: '',
-  website: '',
-  category: '',
-  pricing: 'free',
-  description: '',
-  detailDescription: '',
-  platforms: [] as string[],
-  submitterSite: '',
-  submitterGithub: '',
+  name: 'Test AI Tool',
+  website: 'https://example.com',
+  category: 'image',
+  pricing: 'freemium',
+  description: 'An AI-powered tool for generating beautiful images from text prompts.',
+  detailDescription: '## What is Test AI Tool?\n\nTest AI Tool helps users create stunning visuals from natural language descriptions. Built on state-of-the-art diffusion models.\n\n## Key Features\n\n- Text-to-Image — Generate images from text\n- Style Control — Choose artistic styles\n- Batch Generation — Create variations\n\n## Pricing\n\nFree: 25 generations/day. Pro: $20/month, unlimited.',
+  platforms: ['web', 'api'] as string[],
+  submitterSite: 'https://aifindr.org',
+  submitterGithub: 'test-user',
 })
 
 const categoryOptions = computed(() => [
