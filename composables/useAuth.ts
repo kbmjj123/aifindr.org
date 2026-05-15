@@ -5,23 +5,31 @@ export interface AuthUser {
   avatar_url?: string
 }
 
-// Module-level shared state (global across all useAuth() calls)
+// Module-level shared state
 const user = ref<AuthUser | null>(null)
-const loading = ref(true)
+const loading = ref(false)
+
+// Token stored in localStorage (not useCookie — SSG hydration clears cookies)
+function lsGet(): string | null {
+  if (import.meta.server) return null
+  return localStorage.getItem('aifindr-token')
+}
 
 export const useAuth = () => {
-  const token = useCookie<string | null>('aifindr-token', { maxAge: 604800 })
-
+  const token = ref<string | null>(null)
   const isLoggedIn = computed(() => !!token.value)
 
   async function fetchUser() {
-    if (!token.value) {
+    const t = token.value
+    if (!t) {
       loading.value = false
       return
     }
+    loading.value = true
     try {
-      // Cookie (aifindr-token) is sent automatically by the browser
-      const data = await $fetch<AuthUser>('/api/auth/me')
+      const data = await $fetch<AuthUser>('/api/auth/me', {
+        headers: { Authorization: `Bearer ${t}` },
+      })
       user.value = data
     } catch {
       user.value = null
@@ -35,22 +43,21 @@ export const useAuth = () => {
   }
 
   function logout() {
+    localStorage.removeItem('aifindr-token')
     token.value = null
     user.value = null
     navigateTo('/')
   }
 
-  /** Handle token from URL (?token=xxx) after OAuth callback */
+  /** Restore token from localStorage on mount */
   function handleUrlToken() {
-		debugger
-    if (import.meta.client) {
-      const params = new URLSearchParams(window.location.search)
-      const urlToken = params.get('token')
-      if (urlToken) {
-        token.value = urlToken
-        window.history.replaceState({}, '', window.location.pathname)
-        fetchUser()
-      }
+    if (import.meta.server) return
+    const stored = lsGet()
+    if (stored) {
+      token.value = stored
+      fetchUser()
+    } else {
+      loading.value = false
     }
   }
 

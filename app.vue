@@ -21,6 +21,12 @@ useHead({
   ],
   script: [
     {
+      // Capture OAuth token from URL BEFORE Nuxt hydration clears it
+      innerHTML: `(function(){var p=new URLSearchParams(window.location.search).get('token');if(p){localStorage.setItem('aifindr-token',p);var u=new URL(window.location);u.searchParams.delete('token');window.history.replaceState({},'',u.toString())}})()`,
+      type: 'text/javascript',
+      tagPosition: 'head',
+    },
+    {
       innerHTML: `(function(){var p=localStorage.getItem('aifindr-theme');var t='dark';if(p==='light'||p==='dark')t=p;else if(p!=='auto'){var h=new Date().getHours();t=(h>=6&&h<18)?'light':'dark'}document.documentElement.setAttribute('data-theme',t)})()`,
       type: 'text/javascript',
       tagPosition: 'head',
@@ -28,10 +34,9 @@ useHead({
   ],
 })
 
-const { handleUrlToken, fetchUser } = useAuth()
+const { handleUrlToken } = useAuth()
 
 onMounted(() => {
   handleUrlToken()
-  fetchUser()
 })
 </script>
