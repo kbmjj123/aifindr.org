@@ -5,10 +5,12 @@ export interface AuthUser {
   avatar_url?: string
 }
 
+// Module-level shared state (global across all useAuth() calls)
+const user = ref<AuthUser | null>(null)
+const loading = ref(true)
+
 export const useAuth = () => {
   const token = useCookie<string | null>('aifindr-token', { maxAge: 604800 })
-  const user = ref<AuthUser | null>(null)
-  const loading = ref(true)
 
   const isLoggedIn = computed(() => !!token.value)
 
