@@ -15,13 +15,12 @@
 
 <script setup lang="ts">
 useHead({
-  title: 'aifindr.org – Discover 500+ AI Tools, Free & Open Source',
   meta: [
     { name: 'description', content: 'Open-source AI tool directory. Submit your tool, get free backlinks.' },
   ],
   script: [
     {
-      // Capture OAuth token from URL BEFORE Nuxt hydration clears it
+      // Capture OAuth token from URL BEFORE Nuxt hydration clears query params
       innerHTML: `(function(){var p=new URLSearchParams(window.location.search).get('token');if(p){localStorage.setItem('aifindr-token',p);var u=new URL(window.location);u.searchParams.delete('token');window.history.replaceState({},'',u.toString())}})()`,
       type: 'text/javascript',
       tagPosition: 'head',

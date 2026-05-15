@@ -5,18 +5,17 @@ export interface AuthUser {
   avatar_url?: string
 }
 
-// Module-level shared state
+// Module-level shared state — required so app.vue and AuthButton share same refs
+const token = ref<string | null>(null)
 const user = ref<AuthUser | null>(null)
 const loading = ref(false)
 
-// Token stored in localStorage (not useCookie — SSG hydration clears cookies)
 function lsGet(): string | null {
   if (import.meta.server) return null
   return localStorage.getItem('aifindr-token')
 }
 
 export const useAuth = () => {
-  const token = ref<string | null>(null)
   const isLoggedIn = computed(() => !!token.value)
 
   async function fetchUser() {
@@ -49,7 +48,7 @@ export const useAuth = () => {
     navigateTo('/')
   }
 
-  /** Restore token from localStorage on mount */
+  /** Restore token from localStorage (set by pre-Nuxt script in app.vue head) */
   function handleUrlToken() {
     if (import.meta.server) return
     const stored = lsGet()
