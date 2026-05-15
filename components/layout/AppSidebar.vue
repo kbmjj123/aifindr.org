@@ -98,5 +98,5 @@ useAsyncData('sidebar-stats', async () => {
     contributors.value = data.contributors
   }
   return data
-})
+}, { server: false })
 </script>
