@@ -5,6 +5,7 @@ interface Env {
   GITHUB_CLIENT_ID: string
   GITHUB_CLIENT_SECRET: string
   JWT_SECRET: string
+  ADMIN_KEY: string
 }
 
 // ─── Route matching helpers ────────────────────────────────────────────
@@ -194,6 +195,23 @@ export default {
       // ─────────────────────────────────────────────────────────────────
       if (method === 'GET' && path === '/auth/me') {
         return handleAuthMe(request, env)
+      }
+
+      // ─────────────────────────────────────────────────────────────────
+      // Admin routes (auth via ADMIN_KEY header)
+      // ─────────────────────────────────────────────────────────────────
+      if (method === 'GET' && path === '/admin/tools') {
+        return handleAdminListTools(url, request, env)
+      }
+
+      const adminApproveParams = matchPath(path, '/admin/tools/:id/approve')
+      if (method === 'POST' && adminApproveParams) {
+        return handleAdminApprove(adminApproveParams.id!, request, env)
+      }
+
+      const adminRejectParams = matchPath(path, '/admin/tools/:id/reject')
+      if (method === 'POST' && adminRejectParams) {
+        return handleAdminReject(adminRejectParams.id!, request, env)
       }
 
       return error('Not found', 404)
@@ -597,3 +615,38 @@ async function handleAuthMe(request: Request, env: Env): Promise<Response> {
   return json(user)
 }
 
+
+// ─── Admin helpers ──────────────────────────────────────────────────
+
+function checkAdminAuth(request: Request, env: Env): boolean {
+  const auth = request.headers.get('Authorization')
+  return auth === `Bearer ${env.ADMIN_KEY}`
+}
+
+async function handleAdminListTools(url: URL, request: Request, env: Env) {
+  if (!checkAdminAuth(request, env)) return error("Unauthorized", 401)
+  const status = url.searchParams.get('status') || 'pending'
+  const { results } = await env.DB.prepare(
+    'SELECT * FROM tools WHERE status = ? ORDER BY submitted_at DESC LIMIT 50'
+  ).bind(status).all()
+  return json(results)
+}
+
+async function handleAdminApprove(id: string, request: Request, env: Env) {
+  if (!checkAdminAuth(request, env)) return error("Unauthorized", 401)
+  const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
+  const result = await env.DB.prepare(
+    "UPDATE tools SET status = 'active', updated_at = ? WHERE id = ?"
+  ).bind(now, parseInt(id)).run()
+  if (result.meta.changes === 0) return error('Tool not found', 404)
+  return json({ success: true })
+}
+
+async function handleAdminReject(id: string, request: Request, env: Env) {
+  if (!checkAdminAuth(request, env)) return error("Unauthorized", 401)
+  const result = await env.DB.prepare(
+    "UPDATE tools SET status = 'discontinued' WHERE id = ?"
+  ).bind(parseInt(id)).run()
+  if (result.meta.changes === 0) return error('Tool not found', 404)
+  return json({ success: true })
+}
