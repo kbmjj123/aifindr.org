@@ -300,23 +300,6 @@ export default {
       }
 
       // ─────────────────────────────────────────────────────────────────
-      // Admin routes (auth via ADMIN_KEY header)
-      // ─────────────────────────────────────────────────────────────────
-      if (method === 'GET' && path === '/admin/tools') {
-        return handleAdminListTools(url, request, env)
-      }
-
-      const adminApproveParams = matchPath(path, '/admin/tools/:id/approve')
-      if (method === 'POST' && adminApproveParams) {
-        return handleAdminApprove(adminApproveParams.id!, request, env)
-      }
-
-      const adminRejectParams = matchPath(path, '/admin/tools/:id/reject')
-      if (method === 'POST' && adminRejectParams) {
-        return handleAdminReject(adminRejectParams.id!, request, env)
-      }
-
-      // ─────────────────────────────────────────────────────────────────
       // GET /api/__sitemap__/urls — dynamic sitemap URLs from D1
       // ─────────────────────────────────────────────────────────────────
       if (method === 'GET' && path === '/__sitemap__/urls') {
@@ -902,45 +885,6 @@ async function handleAuthMe(request: Request, env: Env): Promise<Response> {
   return json({ ...user, needs_contact_email: needsContactEmail })
 }
 
-
-// ─── Admin helpers ──────────────────────────────────────────────────
-
-function checkAdminAuth(request: Request, env: Env): boolean {
-  // Try Authorization header first, then cookie
-  const auth = request.headers.get('Authorization')
-  if (auth === `Bearer ${env.ADMIN_KEY}`) return true
-  const cookie = request.headers.get('Cookie') || ''
-  const match = cookie.match(/(?:^|;\s*)admin-key=([^;]+)/)
-  return match?.[1] === env.ADMIN_KEY
-}
-
-async function handleAdminListTools(url: URL, request: Request, env: Env) {
-  if (!checkAdminAuth(request, env)) return error("Unauthorized", 401)
-  const status = url.searchParams.get('status') || 'pending'
-  const { results } = await env.DB.prepare(
-    'SELECT * FROM tools WHERE status = ? ORDER BY submitted_at DESC LIMIT 50'
-  ).bind(status).all()
-  return json(results)
-}
-
-async function handleAdminApprove(id: string, request: Request, env: Env) {
-  if (!checkAdminAuth(request, env)) return error("Unauthorized", 401)
-  const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
-  const result = await env.DB.prepare(
-    "UPDATE tools SET status = 'active', updated_at = ? WHERE id = ?"
-  ).bind(now, parseInt(id)).run()
-  if (result.meta.changes === 0) return error('Tool not found', 404)
-  return json({ success: true })
-}
-
-async function handleAdminReject(id: string, request: Request, env: Env) {
-  if (!checkAdminAuth(request, env)) return error("Unauthorized", 401)
-  const result = await env.DB.prepare(
-    "UPDATE tools SET status = 'discontinued' WHERE id = ?"
-  ).bind(parseInt(id)).run()
-  if (result.meta.changes === 0) return error('Tool not found', 404)
-  return json({ success: true })
-}
 
 // ─── Admin handlers ──────────────────────────────────────────────────
 
