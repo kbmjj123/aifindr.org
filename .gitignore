@@ -46,4 +46,4 @@ yarn-error.log*
 pnpm-lock.yaml
 
 # claude
-.claude/
+.claude/scripts/scrape-yo-directory.ts
