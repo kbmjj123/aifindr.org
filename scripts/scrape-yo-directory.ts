@@ -11,7 +11,10 @@
 import axios from 'axios'
 import { load as cheerioLoad } from 'cheerio'
 import { writeFileSync, existsSync, mkdirSync } from 'fs'
-import { join } from 'path'
+import { join, dirname } from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 // ─── 类型 ──────────────────────────────────────────────────
 
