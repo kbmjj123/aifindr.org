@@ -25,6 +25,9 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.0.0",
     "@oxc-parser/binding-darwin-x64": "^0.129.0",
+    "axios": "^1.16.1",
+    "cheerio": "^1.2.0",
+    "csv-writer": "^1.6.0",
     "typescript": "^5.7.0",
     "wrangler": "^4.0.0"
   },
