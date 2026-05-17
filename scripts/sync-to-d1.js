@@ -105,7 +105,7 @@ function main() {
     const slug = m.slug || (m.name ? m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'unknown')
 
     lines.push(`-- ${relPath}`)
-    lines.push(`INSERT OR REPLACE INTO tools (`)
+    lines.push(`INSERT OR IGNORE INTO tools (`)
     lines.push(`  slug, name, category, website, pricing, price_starting, price_detail,`)
     lines.push(`  has_free_trial, platforms, status, launched, meta_description,`)
     lines.push(`  cover_image, og_image, featured, verified, editor_pick,`)
