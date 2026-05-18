@@ -30,6 +30,7 @@ export interface RawTool {
   price_hint?: string          // 定价提示
   verified?: boolean
   tags_hint?: string[]
+  data_source?: string         // 数据来源
 }
 
 // ─── 输出类型 ────────────────────────────────────────────
@@ -56,6 +57,10 @@ export interface AifindrTool {
   submitted_at: string
   images: { url: string; alt: string; type: string }[]
   videos: { url: string; platform: string; title: string; type: string }[]
+  use_cases: string[]
+  target_users: string[]
+  last_verified: string
+  data_source: string
   body: string
 }
 
@@ -211,6 +216,10 @@ export function convertTool(raw: RawTool): AifindrTool {
     submitted_at: today,
     images,
     videos,
+    use_cases: [],
+    target_users: [],
+    last_verified: today,
+    data_source: raw.data_source || '',
     body,
   }
 }
@@ -250,6 +259,12 @@ export function toMarkdown(tool: AifindrTool): string {
     `submitter_site: ""`,
     `submitter_github: ""`,
     `submitted_at: "${tool.submitted_at}"`,
+    `last_verified: "${tool.last_verified}"`,
+  )
+  if (tool.data_source) yamlLines.push(`data_source: "${tool.data_source}"`)
+  yamlLines.push(
+    `use_cases: ${JSON.stringify(tool.use_cases)}`,
+    `target_users: ${JSON.stringify(tool.target_users)}`,
   )
 
   if (tool.images.length > 0) {

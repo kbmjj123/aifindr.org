@@ -32,7 +32,10 @@ CREATE TABLE IF NOT EXISTS tools (
   submitter_id     INTEGER REFERENCES users(id),
   reject_reason    TEXT,                    -- 拒绝原因
   reviewer_note    TEXT,                    -- 管理员备注
-  reviewed_at      TEXT                     -- 审核时间
+  reviewed_at      TEXT,                    -- 审核时间
+  use_cases        TEXT DEFAULT '',         -- 场景标签，逗号分隔
+  target_users     TEXT DEFAULT '',         -- 角色标签，逗号分隔
+  data_source      TEXT                     -- 数据来源（futurepedia/producthunt等）
 );
 
 CREATE INDEX IF NOT EXISTS idx_tools_category   ON tools(category);
@@ -154,3 +157,9 @@ CREATE TABLE IF NOT EXISTS published_links (
 CREATE INDEX IF NOT EXISTS idx_links_user       ON published_links(user_id);
 CREATE INDEX IF NOT EXISTS idx_links_is_active  ON published_links(is_active);
 CREATE INDEX IF NOT EXISTS idx_links_checked    ON published_links(last_checked);
+
+-- ─── v2.0 增量字段 ─────────────────────────────────────────
+
+ALTER TABLE tools ADD COLUMN use_cases TEXT DEFAULT '';
+ALTER TABLE tools ADD COLUMN target_users TEXT DEFAULT '';
+ALTER TABLE tools ADD COLUMN data_source TEXT;
