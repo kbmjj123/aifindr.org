@@ -169,7 +169,6 @@ const { data: result, pending } = await useAsyncData<{ tools: Tool[]; total: num
   {
     watch: [activeSort, activePricing, currentPage, filterCategories, filterPricing, filterPlatforms, filterTags],
     default: () => ({ tools: [], total: 0 }),
-    server: false,
   }
 )
 

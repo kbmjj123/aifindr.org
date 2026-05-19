@@ -132,7 +132,7 @@ const { data: homeData } = await useAsyncData('home', () =>
     $fetch<{ tools: Tool[] }>('/api/tools?sort=featured&pageSize=6'),
     $fetch<{ tools: Tool[] }>('/api/tools?sort=latest&pageSize=20'),
   ]),
-  { default: () => null, server: false }
+  { default: () => null }
 )
 
 const statsTools = computed(() => homeData.value?.[0]?.tools ?? 500)

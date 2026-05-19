@@ -298,7 +298,7 @@ const { data: tool, pending } = useAsyncData<Tool>(
 
     return result
   },
-  { watch: [category, slug], server: false }
+  { watch: [category, slug] }
 )
 
 // Render markdown body
