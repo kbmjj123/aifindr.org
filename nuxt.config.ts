@@ -28,9 +28,8 @@ export default defineNuxtConfig({
 
   routeRules: {
 		'/': { isr: 3600 },
-    '/tools': { isr: 3600 },
-    '/tools/*/': { isr: 3600 },
-    '/submit': { prerender: true },
+    '/tools': { prerender: true },
+		'/tools/*/': { prerender: true },
     '/tools/*/*': { isr: 86400 },
     '/blog/*/*': { isr: 604800 },
     '/api/**': { cors: true },
