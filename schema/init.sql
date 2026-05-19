@@ -53,36 +53,6 @@ CREATE TABLE IF NOT EXISTS tool_tags (
 );
 CREATE INDEX IF NOT EXISTS idx_tool_tags_tag ON tool_tags(tag);
 
-CREATE TABLE IF NOT EXISTS tool_images (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  tool_id    INTEGER NOT NULL REFERENCES tools(id) ON DELETE CASCADE,
-  url        TEXT NOT NULL,
-  alt        TEXT DEFAULT '',
-  caption    TEXT DEFAULT '',
-  sort_order INTEGER DEFAULT 0,
-  image_type TEXT DEFAULT 'screenshot'
-             CHECK(image_type IN ('cover','screenshot','logo','banner','og')),
-  width      INTEGER,
-  height     INTEGER,
-  created_at TEXT DEFAULT (datetime('now'))
-);
-CREATE INDEX IF NOT EXISTS idx_tool_images_tool_id ON tool_images(tool_id, sort_order);
-
-CREATE TABLE IF NOT EXISTS tool_videos (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  tool_id    INTEGER NOT NULL REFERENCES tools(id) ON DELETE CASCADE,
-  url        TEXT NOT NULL,
-  video_id   TEXT,
-  platform   TEXT NOT NULL CHECK(platform IN ('youtube','vimeo','twitter','loom','direct')),
-  title      TEXT DEFAULT '',
-  video_type TEXT DEFAULT 'demo' CHECK(video_type IN ('demo','tutorial','review','intro')),
-  thumbnail  TEXT,
-  duration   INTEGER,
-  sort_order INTEGER DEFAULT 0,
-  created_at TEXT DEFAULT (datetime('now'))
-);
-CREATE INDEX IF NOT EXISTS idx_tool_videos_tool_id ON tool_videos(tool_id, sort_order);
-
 CREATE TABLE IF NOT EXISTS users (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
   github_id       INTEGER NOT NULL UNIQUE,
