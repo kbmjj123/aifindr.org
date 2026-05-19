@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Transform audio tracks into captivating music videos effortlessly."
-cover_image: "https://cdn2.futurepedia.io/20a32ff546822754b347b536649233f928b3f78c-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-03-31.575Z-delYCHiv_UKi4Re0hvueohikvGr5D5bKx.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/audio/beatwave/img-788041eebc.png"
+og_image: "https://cdn.aifindr.org/tools/audio/beatwave/img-fc311ee18f.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-03-31.575Z-delYCHiv_UKi4Re0hvueohikvGr5D5bKx.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/audio/beatwave/img-fc311ee18f.webp"
     alt: "Beatwave screenshot"
     type: "screenshot"
 ---

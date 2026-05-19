@@ -10,8 +10,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Ship production-ready apps quickly with customizable templates."
-cover_image: "https://cdn2.futurepedia.io/2026-02-26T19-02-49.636Z-VLO3VaRAcHwIfqxaIygvarMH6EYnaIQD3.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-02-26T19-02-49.636Z-VLO3VaRAcHwIfqxaIygvarMH6EYnaIQD3.png?w=256"
+cover_image: "https://cdn.aifindr.org/tools/writing/justcopy-ai/img-7c1b8f61fd.png"
+og_image: "https://cdn.aifindr.org/tools/writing/justcopy-ai/img-7c1b8f61fd.png"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-02-26T19-02-49.636Z-VLO3VaRAcHwIfqxaIygvarMH6EYnaIQD3.png?w=256"
+  - url: "https://cdn.aifindr.org/tools/writing/justcopy-ai/img-7c1b8f61fd.png"
     alt: "JustCopy.ai screenshot"
     type: "screenshot"
 ---

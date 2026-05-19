@@ -10,8 +10,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Enhance branding with AI-driven analytics and content."
-cover_image: "https://cdn2.futurepedia.io/2026-02-26T19-03-46.627Z-DmGSqXiSYYtOGpsgACvvmAI-go1GhAzb1.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-02-04T16-38-50.872Z-k5Alihrooz8zbVWtrDdunbhvh6HHsoRL8.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/marketing/brandjet/img-75e41ae693.png"
+og_image: "https://cdn.aifindr.org/tools/marketing/brandjet/img-b563b19dc4.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-02-04T16-38-50.872Z-k5Alihrooz8zbVWtrDdunbhvh6HHsoRL8.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/marketing/brandjet/img-b563b19dc4.webp"
     alt: "BrandJet screenshot"
     type: "screenshot"
 ---

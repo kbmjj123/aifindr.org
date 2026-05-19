@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Master new languages with gamified, personalized learning."
-cover_image: "https://cdn2.futurepedia.io/b044a3ba0e1dde477ea865f638225316bb8b9dd5-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-44-06.015Z-BbQNv9AXN0JoowdHbu9ihcpYegnBTjZ29.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/education/duolingo/img-c3d7e61560.png"
+og_image: "https://cdn.aifindr.org/tools/education/duolingo/img-3ab90bb8e2.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-44-06.015Z-BbQNv9AXN0JoowdHbu9ihcpYegnBTjZ29.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/education/duolingo/img-3ab90bb8e2.webp"
     alt: "Duolingo screenshot"
     type: "screenshot"
 ---

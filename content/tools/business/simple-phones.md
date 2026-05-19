@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Revolutionize business calls with AI, ensuring no customer is missed."
-cover_image: "https://cdn2.futurepedia.io/10ee2832f0c612a47e6f969b2807d1b7b56fe1f1-256x256.svg?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-36-33.032Z-tCgHSZEToLXq-GZWLDZeN82jPr55eKnY2.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/business/simple-phones/img-c648735326.svg"
+og_image: "https://cdn.aifindr.org/tools/business/simple-phones/img-4b45c0f302.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-36-33.032Z-tCgHSZEToLXq-GZWLDZeN82jPr55eKnY2.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/business/simple-phones/img-4b45c0f302.webp"
     alt: "Simple Phones screenshot"
     type: "screenshot"
 ---

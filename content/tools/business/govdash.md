@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Streamline GovCon lifecycle: capture, proposal, contract management, automated compliance."
-cover_image: "https://cdn2.futurepedia.io/9041931bf395df5d7dd3f4d7d58f65789b8c6b27-200x200.jpg?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-33-58.375Z-dBC68dD-C_OyOdf9h-uou3Rbfn-qsSzRh.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/business/govdash/img-0ed406d0e4.jpg"
+og_image: "https://cdn.aifindr.org/tools/business/govdash/img-fb7b89c33f.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-33-58.375Z-dBC68dD-C_OyOdf9h-uou3Rbfn-qsSzRh.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/business/govdash/img-fb7b89c33f.webp"
     alt: "GovDash screenshot"
     type: "screenshot"
 ---

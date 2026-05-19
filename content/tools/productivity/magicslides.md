@@ -10,8 +10,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Auto-generate editable presentations from ideas, files, links."
-cover_image: "https://cdn2.futurepedia.io/2026-02-27T22-10-57.437Z-jhw5vviAMZYAf6tbn8UZInpXs54vq8vyZ.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-09T21-00-14.680Z-2RH0YvX4PcrmAPHxZg7NhLP8DbltoEXOJ.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/productivity/magicslides/img-edbacf7837.png"
+og_image: "https://cdn.aifindr.org/tools/productivity/magicslides/img-bdea252d64.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-09T21-00-14.680Z-2RH0YvX4PcrmAPHxZg7NhLP8DbltoEXOJ.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/productivity/magicslides/img-bdea252d64.webp"
     alt: "MagicSlides screenshot"
     type: "screenshot"
 ---

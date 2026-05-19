@@ -10,8 +10,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Build AI-driven UI features directly in React."
-cover_image: "https://cdn2.futurepedia.io/2026-02-26T19-02-17.456Z-sPI0pz8N5uV0ej24NgD_NjgwlhDTA_qlC.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-03-03T12-35-58.156Z-LGndYl8eJg-2cmdhACxTfEuZIBajn_htc.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/other/tambo-ai/img-df8a6618a4.png"
+og_image: "https://cdn.aifindr.org/tools/other/tambo-ai/img-26b22ad0fc.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-03-03T12-35-58.156Z-LGndYl8eJg-2cmdhACxTfEuZIBajn_htc.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/other/tambo-ai/img-26b22ad0fc.webp"
     alt: "tambo-ai screenshot"
     type: "screenshot"
 ---

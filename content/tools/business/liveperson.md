@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Revolutionize customer interactions with AI-driven conversational intelligence."
-cover_image: "https://cdn2.futurepedia.io/17d9fb87f8d54364a071802df18b54397323c095-25x24.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-45-45.185Z-WC_E_RJhpx-BlNAEcfHyhuBekjQIteAHd.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/business/liveperson/img-e895fd5e38.png"
+og_image: "https://cdn.aifindr.org/tools/business/liveperson/img-c5a64069d2.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-45-45.185Z-WC_E_RJhpx-BlNAEcfHyhuBekjQIteAHd.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/business/liveperson/img-c5a64069d2.webp"
     alt: "LivePerson screenshot"
     type: "screenshot"
 ---

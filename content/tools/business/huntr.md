@@ -10,8 +10,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Streamline job applications, optimize resumes, track progress efficiently."
-cover_image: "https://cdn2.futurepedia.io/ba627a824edc754c59f5c2ed612a696573ee6e46-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/ba627a824edc754c59f5c2ed612a696573ee6e46-128x128.png?w=256"
+cover_image: "https://cdn.aifindr.org/tools/business/huntr/img-f529996b24.png"
+og_image: "https://cdn.aifindr.org/tools/business/huntr/img-f529996b24.png"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/ba627a824edc754c59f5c2ed612a696573ee6e46-128x128.png?w=256"
+  - url: "https://cdn.aifindr.org/tools/business/huntr/img-f529996b24.png"
     alt: "Huntr screenshot"
     type: "screenshot"
 ---

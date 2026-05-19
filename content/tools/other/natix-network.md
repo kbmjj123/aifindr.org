@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Revolutionize mapping with IoT, AI, and blockchain integration."
-cover_image: "https://cdn2.futurepedia.io/fb4c70c8484bbfaa66c5c6063b0a37e9e892d178-128x128.jpg?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T19-37-50.477Z-0Z9zkvig-6rgp-ExzD99O_FkKDkxHMjnX.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/other/natix-network/img-0754f736e3.jpg"
+og_image: "https://cdn.aifindr.org/tools/other/natix-network/img-2e520b15cc.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T19-37-50.477Z-0Z9zkvig-6rgp-ExzD99O_FkKDkxHMjnX.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/other/natix-network/img-2e520b15cc.webp"
     alt: "Natix Network screenshot"
     type: "screenshot"
 ---

@@ -12,7 +12,7 @@ platforms: ["web"]
 status: "active"
 meta_description: "Transform spreadsheets into AI-powered data analysis tools, simplifying complex insights."
 cover_image: "https://www.futurepedia.io/api/og?title=Rows+AI+Reviews%3A+Use+Cases%2C+Pricing+%26+Alternatives&image=https%3A%2F%2Fcdn.futurepedia.io%2F2026-04-27T19-25-19.612Z-CyvDqTT-AMSXFG7b80I9b2fwr_YzZF7a-.png"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T19-25-19.362Z-dfetBOl6ZrBgRsjZcr_yovca6zF2rtCmb.webp?w=3840"
+og_image: "https://cdn.aifindr.org/tools/data/rows/img-774e0f67e7.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T19-25-19.362Z-dfetBOl6ZrBgRsjZcr_yovca6zF2rtCmb.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/data/rows/img-774e0f67e7.webp"
     alt: "Rows screenshot"
     type: "screenshot"
 ---

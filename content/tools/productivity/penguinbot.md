@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Delegate inbox, scheduling, documents; it handles execution."
-cover_image: "https://cdn2.futurepedia.io/2026-02-25T22-22-53.392Z-btheprnTqaLnOkU072VekShIDW56Jbo1T.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-03-03T12-38-11.532Z-aasYZTqbBzH6waA6S5j7dNKmm0_1iYcTr.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/productivity/penguinbot/img-6df06ee6bf.png"
+og_image: "https://cdn.aifindr.org/tools/productivity/penguinbot/img-c1c3447582.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-03-03T12-38-11.532Z-aasYZTqbBzH6waA6S5j7dNKmm0_1iYcTr.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/productivity/penguinbot/img-c1c3447582.webp"
     alt: "PenguinBot screenshot"
     type: "screenshot"
 ---

@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "AI-enhanced photo, video editing; local, secure processing."
-cover_image: "https://cdn2.futurepedia.io/d89e4c4b1e3f2ba002b18b3d796f655793cb7f67-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-05-35.105Z-kf2XIWzVa7NXVNDIDa9tET9aymRq76kFe.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/video/topaz-labs/img-ca6dd8f4fe.png"
+og_image: "https://cdn.aifindr.org/tools/video/topaz-labs/img-a7eeba0b15.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-05-35.105Z-kf2XIWzVa7NXVNDIDa9tET9aymRq76kFe.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/video/topaz-labs/img-a7eeba0b15.webp"
     alt: "Topaz Labs screenshot"
     type: "screenshot"
 ---

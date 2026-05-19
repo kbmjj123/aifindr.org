@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "PaperBrain is a state-of-the-art AI tool aimed at revolutionizing how students and researchers engage with academic papers. With its array of powerful"
-cover_image: "https://cdn2.futurepedia.io/2025-02-14T21-12-40.208Z-_DtvAz1fXHt735pqwHUfgtsL6HE3yPAk9.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T19-22-58.418Z-fCnpPagZzMSlmaFahwQXJPeACyPiF6G86.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/research/paperbrain/img-266dd42f3b.png"
+og_image: "https://cdn.aifindr.org/tools/research/paperbrain/img-754d461fcc.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T19-22-58.418Z-fCnpPagZzMSlmaFahwQXJPeACyPiF6G86.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/research/paperbrain/img-754d461fcc.webp"
     alt: "PaperBrain screenshot"
     type: "screenshot"
 ---

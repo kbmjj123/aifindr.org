@@ -10,8 +10,8 @@ has_free_trial: true
 platforms: ["web","mobile"]
 status: "active"
 meta_description: "Streamline music licensing with curated tracks for creators."
-cover_image: "https://cdn2.futurepedia.io/2025-04-11T13-49-57.726Z-sKc8P0A_atXJqMFM-HUNAxRpzeUynLcG6.blob?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-03-03T12-28-18.671Z-iKXmjKv8zVXs-pI6nQMgrGX94RAqI58_W.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/audio/audiosocket/img-d9dc1aa1fd.blob"
+og_image: "https://cdn.aifindr.org/tools/audio/audiosocket/img-a77ea48c5c.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-03-03T12-28-18.671Z-iKXmjKv8zVXs-pI6nQMgrGX94RAqI58_W.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/audio/audiosocket/img-a77ea48c5c.webp"
     alt: "Audiosocket screenshot"
     type: "screenshot"
 ---

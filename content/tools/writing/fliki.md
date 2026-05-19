@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Transform text into captivating videos with lifelike AI voiceovers."
-cover_image: "https://cdn2.futurepedia.io/92768ebade3bede69b24b513983ebaf5173e6796-180x180.svg?w=256"
-og_image: "https://cdn2.futurepedia.io/92768ebade3bede69b24b513983ebaf5173e6796-180x180.svg?w=256"
+cover_image: "https://cdn.aifindr.org/tools/writing/fliki/img-46af099f4e.svg"
+og_image: "https://cdn.aifindr.org/tools/writing/fliki/img-46af099f4e.svg"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/92768ebade3bede69b24b513983ebaf5173e6796-180x180.svg?w=256"
+  - url: "https://cdn.aifindr.org/tools/writing/fliki/img-46af099f4e.svg"
     alt: "Fliki screenshot"
     type: "screenshot"
 ---

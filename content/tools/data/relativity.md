@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Revolutionize data discovery and case strategy with AI-driven, secure technology."
-cover_image: "https://cdn2.futurepedia.io/e6770ea31f90b3ddf30352a7261d3fcd5560c9d5-100x100.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-03-03T12-32-33.309Z-HprThgXBgm2rBrZm0Kr3TYkYoBNI7jeD3.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/data/relativity/img-275a66eb78.png"
+og_image: "https://cdn.aifindr.org/tools/data/relativity/img-9eb304fc8d.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-03-03T12-32-33.309Z-HprThgXBgm2rBrZm0Kr3TYkYoBNI7jeD3.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/data/relativity/img-9eb304fc8d.webp"
     alt: "Relativity screenshot"
     type: "screenshot"
 ---

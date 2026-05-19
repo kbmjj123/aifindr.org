@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "AI platform automating business tasks for enhanced efficiency."
-cover_image: "https://cdn2.futurepedia.io/2e7d2488f1227b94b96589c3b42e4bd70980a47f-48x48.svg?w=256"
-og_image: "https://cdn2.futurepedia.io/2e7d2488f1227b94b96589c3b42e4bd70980a47f-48x48.svg?w=256"
+cover_image: "https://cdn.aifindr.org/tools/productivity/cheat-layer/img-348d63c92b.svg"
+og_image: "https://cdn.aifindr.org/tools/productivity/cheat-layer/img-348d63c92b.svg"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2e7d2488f1227b94b96589c3b42e4bd70980a47f-48x48.svg?w=256"
+  - url: "https://cdn.aifindr.org/tools/productivity/cheat-layer/img-348d63c92b.svg"
     alt: "Cheat Layer screenshot"
     type: "screenshot"
 ---

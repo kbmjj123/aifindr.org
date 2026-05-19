@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "AutoGPT is a groundbreaking AI tool designed to revolutionize the way we interact with autonomous agents. Available on GitHub, this platform offers a "
-cover_image: "https://cdn2.futurepedia.io/5a5c2aa6caa674cb04f457343c41ee469620bf05-560x560.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T19-36-13.819Z-d26YoMwczXmr6SwHKa3b2wdFCDbkXIlQl.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/code/autogpt/img-7e88ef1edd.png"
+og_image: "https://cdn.aifindr.org/tools/code/autogpt/img-3e35cc187e.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T19-36-13.819Z-d26YoMwczXmr6SwHKa3b2wdFCDbkXIlQl.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/code/autogpt/img-3e35cc187e.webp"
     alt: "AutoGPT screenshot"
     type: "screenshot"
 ---

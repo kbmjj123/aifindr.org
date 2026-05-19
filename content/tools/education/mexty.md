@@ -10,8 +10,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Mexty is an innovative AI-driven platform that redefines the creation of personalized learning content. Tailored for educators, trainers, and instruct"
-cover_image: "https://cdn2.futurepedia.io/2026-02-26T18-59-55.524Z-W3anBaN0MzpLPgwTIpyD45_hWaU_fKyLk.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T16-42-40.509Z-8_xTZxmVcnW62LxxvvgQUTXHQgwJ-yHQW.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/education/mexty/img-cd465255fc.png"
+og_image: "https://cdn.aifindr.org/tools/education/mexty/img-874a17f750.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T16-42-40.509Z-8_xTZxmVcnW62LxxvvgQUTXHQgwJ-yHQW.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/education/mexty/img-874a17f750.webp"
     alt: "Mexty screenshot"
     type: "screenshot"
 ---

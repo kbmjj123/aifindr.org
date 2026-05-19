@@ -10,8 +10,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Stammer is a cutting-edge White Label AI SaaS platform designed for agencies specializing in digital marketing, AI, and automation. The tool’s primary"
-cover_image: "https://cdn2.futurepedia.io/b51f9d105cf8307c79b6b497d3006627fc5a667d-32x32.svg?w=256"
-og_image: "https://cdn2.futurepedia.io/b51f9d105cf8307c79b6b497d3006627fc5a667d-32x32.svg?w=256"
+cover_image: "https://cdn.aifindr.org/tools/code/stammer/img-a465ff4bf0.svg"
+og_image: "https://cdn.aifindr.org/tools/code/stammer/img-a465ff4bf0.svg"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/b51f9d105cf8307c79b6b497d3006627fc5a667d-32x32.svg?w=256"
+  - url: "https://cdn.aifindr.org/tools/code/stammer/img-a465ff4bf0.svg"
     alt: "Stammer screenshot"
     type: "screenshot"
 ---

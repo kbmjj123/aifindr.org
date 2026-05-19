@@ -10,8 +10,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Turn product ideas into high-converting video ads."
-cover_image: "https://cdn2.futurepedia.io/f1131d2d536ed7a75ff72f49da22f7adaea2ad08-64x64.png?w=256"
-og_image: "https://cdn2.futurepedia.io/f1131d2d536ed7a75ff72f49da22f7adaea2ad08-64x64.png?w=256"
+cover_image: "https://cdn.aifindr.org/tools/video/vidau/img-2bcad278d5.png"
+og_image: "https://cdn.aifindr.org/tools/video/vidau/img-2bcad278d5.png"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/f1131d2d536ed7a75ff72f49da22f7adaea2ad08-64x64.png?w=256"
+  - url: "https://cdn.aifindr.org/tools/video/vidau/img-2bcad278d5.png"
     alt: "VidAU screenshot"
     type: "screenshot"
 ---

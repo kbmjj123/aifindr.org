@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Streamlines data management and analysis with AI-driven insights."
-cover_image: "https://cdn2.futurepedia.io/2026-02-06T18-40-53.898Z-SQr-uiDV-ugk6wRva0Kp_ofDjlEJWRsz8.webp?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-03-03T12-42-29.107Z-eksO0wMqIc-uLGfcMRYqQUS7aGRe_FSKy.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/data/accio/img-59641f9c57.webp"
+og_image: "https://cdn.aifindr.org/tools/data/accio/img-1c251271d5.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-03-03T12-42-29.107Z-eksO0wMqIc-uLGfcMRYqQUS7aGRe_FSKy.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/data/accio/img-1c251271d5.webp"
     alt: "Accio screenshot"
     type: "screenshot"
 ---

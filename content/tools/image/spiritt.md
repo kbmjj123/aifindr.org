@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Empowers startups with planning, analysis, and networking tools."
-cover_image: "https://cdn2.futurepedia.io/a0018df3a9b80d04e94d5e2783e8cf21b1ab4b2b-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T19-24-21.391Z-fSArpbyKrFt8sGV5OCINO1-xVN_9UzJvU.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/image/spiritt/img-4f91a17f43.png"
+og_image: "https://cdn.aifindr.org/tools/image/spiritt/img-f8430eb593.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T19-24-21.391Z-fSArpbyKrFt8sGV5OCINO1-xVN_9UzJvU.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/image/spiritt/img-f8430eb593.webp"
     alt: "Spiritt screenshot"
     type: "screenshot"
 ---

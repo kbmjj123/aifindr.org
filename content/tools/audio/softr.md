@@ -10,8 +10,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Build custom business apps from your data using AI."
-cover_image: "https://cdn2.futurepedia.io/acc52a3df354b6abd615d9f68652c6c1c72e752b-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/acc52a3df354b6abd615d9f68652c6c1c72e752b-128x128.png?w=256"
+cover_image: "https://cdn.aifindr.org/tools/audio/softr/img-93f7ec6ad2.png"
+og_image: "https://cdn.aifindr.org/tools/audio/softr/img-93f7ec6ad2.png"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/acc52a3df354b6abd615d9f68652c6c1c72e752b-128x128.png?w=256"
+  - url: "https://cdn.aifindr.org/tools/audio/softr/img-93f7ec6ad2.png"
     alt: "Softr screenshot"
     type: "screenshot"
 ---

@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Videoleap by Lightricks is a cutting-edge video editing tool designed to bridge the gap between professional-grade software and user-friendly applicat"
-cover_image: "https://cdn2.futurepedia.io/d7d46020d068fb87a0b290797c94e398cd8277c2-512x512.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T19-26-19.075Z-G0pWXifFLQxD1t141f4--9WBE8dCC4V53.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/video/videoleap/img-537c696011.png"
+og_image: "https://cdn.aifindr.org/tools/video/videoleap/img-b146029759.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T19-26-19.075Z-G0pWXifFLQxD1t141f4--9WBE8dCC4V53.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/video/videoleap/img-b146029759.webp"
     alt: "Videoleap screenshot"
     type: "screenshot"
 ---

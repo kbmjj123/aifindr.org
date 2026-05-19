@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Revolutionize online shopping with AI-driven virtual try-ons."
-cover_image: "https://cdn2.futurepedia.io/423c029550f359ff1dcd409a29e7515204ab56f1-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T16-43-44.688Z-e2QDtGHntPLlOjeyYzOGpUsu2AhEWp7m8.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/other/veesual/img-071d9fde52.png"
+og_image: "https://cdn.aifindr.org/tools/other/veesual/img-e2d2d7e7d3.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T16-43-44.688Z-e2QDtGHntPLlOjeyYzOGpUsu2AhEWp7m8.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/other/veesual/img-e2d2d7e7d3.webp"
     alt: "Veesual screenshot"
     type: "screenshot"
 ---

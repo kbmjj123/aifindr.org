@@ -10,8 +10,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "TurnCage revolutionizes website creation by offering an innovative AI-driven platform designed to simplify the process of building a professional onli"
-cover_image: "https://cdn2.futurepedia.io/d83452c0085bfdfc9172ea301ba9bb6c5cce4c96-291x291.svg?w=256"
-og_image: "https://cdn2.futurepedia.io/d83452c0085bfdfc9172ea301ba9bb6c5cce4c96-291x291.svg?w=256"
+cover_image: "https://cdn.aifindr.org/tools/writing/turncage/img-c7914cdafa.svg"
+og_image: "https://cdn.aifindr.org/tools/writing/turncage/img-c7914cdafa.svg"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/d83452c0085bfdfc9172ea301ba9bb6c5cce4c96-291x291.svg?w=256"
+  - url: "https://cdn.aifindr.org/tools/writing/turncage/img-c7914cdafa.svg"
     alt: "TurnCage screenshot"
     type: "screenshot"
 ---

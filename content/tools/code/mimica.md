@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web","api"]
 status: "active"
 meta_description: "AI-powered tool for rapid process discovery and automation."
-cover_image: "https://cdn2.futurepedia.io/2026-02-06T18-37-44.007Z-6lSGjrmTFsBV6yg0M4TwNypLtxFCZr591.webp?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T15-20-20.585Z-gDZwMdy1l1QOXyvhAiBXcA-nWbYujwgSG.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/code/mimica/img-0838b1ea61.webp"
+og_image: "https://cdn.aifindr.org/tools/code/mimica/img-4cc4cab0ac.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T15-20-20.585Z-gDZwMdy1l1QOXyvhAiBXcA-nWbYujwgSG.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/code/mimica/img-4cc4cab0ac.webp"
     alt: "Mimica screenshot"
     type: "screenshot"
 ---

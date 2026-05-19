@@ -10,8 +10,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "See and improve brand visibility inside AI."
-cover_image: "https://cdn2.futurepedia.io/2026-02-06T18-40-07.521Z-UlyheX0bqpvGq4NfP5soH9xEkVQv5HJa7.webp?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-03-03T12-41-05.594Z-2ZQPF_r2r0KhTb0zw5SMBD0lFMyPKc58t.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/audio/chatbeat/img-7c4db0bbea.webp"
+og_image: "https://cdn.aifindr.org/tools/audio/chatbeat/img-e22a97a078.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-03-03T12-41-05.594Z-2ZQPF_r2r0KhTb0zw5SMBD0lFMyPKc58t.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/audio/chatbeat/img-e22a97a078.webp"
     alt: "chatbeat screenshot"
     type: "screenshot"
 ---

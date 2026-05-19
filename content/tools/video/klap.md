@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Klap is an innovative AI-powered tool designed to transform long-form videos into engaging, viral short clips with minimal effort. It caters to conten"
-cover_image: "https://cdn2.futurepedia.io/9093ce6b617ac961bfe0192e00e86707cf8e9ca8-207x207.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-45-36.253Z-9rByIBSo36Iws91l34g1UUr-gqqAXqhvt.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/video/klap/img-612a387e8b.png"
+og_image: "https://cdn.aifindr.org/tools/video/klap/img-090178fec6.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-45-36.253Z-9rByIBSo36Iws91l34g1UUr-gqqAXqhvt.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/video/klap/img-090178fec6.webp"
     alt: "Klap screenshot"
     type: "screenshot"
 ---

@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web","api"]
 status: "active"
 meta_description: "Juno Research is an advanced AI research platform designed to revolutionize how businesses collect and analyze human insights. It facilitates direct i"
-cover_image: "https://cdn2.futurepedia.io/8c46c0db71661451f1a8a9aae38aadb288f43fa4-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-04-51.399Z-N-udx5LXIPqD7713cbc-0tr5k-PLDmc4i.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/research/juno-research/img-eed93a6492.png"
+og_image: "https://cdn.aifindr.org/tools/research/juno-research/img-7c10aacdad.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-04-51.399Z-N-udx5LXIPqD7713cbc-0tr5k-PLDmc4i.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/research/juno-research/img-7c10aacdad.webp"
     alt: "Juno Research screenshot"
     type: "screenshot"
 ---

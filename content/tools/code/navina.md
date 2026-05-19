@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Transforming chaotic healthcare data into actionable insights for clinicians."
-cover_image: "https://cdn2.futurepedia.io/5995d4c4be876ef90a98463b0521195bcf7a50d2-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-21-17.466Z-mCxIaf3HJJKTPJuoPDuAOldDjcSLmVyLK.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/code/navina/img-a342fa0613.png"
+og_image: "https://cdn.aifindr.org/tools/code/navina/img-8f8c44239b.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-21-17.466Z-mCxIaf3HJJKTPJuoPDuAOldDjcSLmVyLK.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/code/navina/img-8f8c44239b.webp"
     alt: "Navina screenshot"
     type: "screenshot"
 ---

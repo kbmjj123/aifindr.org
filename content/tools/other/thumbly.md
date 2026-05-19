@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Revolutionize YouTube engagement with AI-driven, captivating thumbnail creation."
-cover_image: "https://cdn2.futurepedia.io/106f9165c0558c24dc2bb9742e982b0641dc4b4c-224x224.jpg?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T16-09-52.326Z-YNRgUSacXzJFDVifZP7OC6S9mLb5T8Waw.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/other/thumbly/img-67b99b35aa.jpg"
+og_image: "https://cdn.aifindr.org/tools/other/thumbly/img-4e4b3918f2.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T16-09-52.326Z-YNRgUSacXzJFDVifZP7OC6S9mLb5T8Waw.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/other/thumbly/img-4e4b3918f2.webp"
     alt: "Thumbly screenshot"
     type: "screenshot"
 ---

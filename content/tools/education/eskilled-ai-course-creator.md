@@ -10,8 +10,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "eSkilled AI Course Creator is a cutting-edge tool designed to streamline the process of creating educational content. By harnessing the power of artif"
-cover_image: "https://cdn2.futurepedia.io/56709dea4063ccf624d6300de90cf0276946962f-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T16-12-29.712Z-vn3XWrFJpBQL7lq_7qRlEO0iF5e08lrbY.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/education/eskilled-ai-course-creator/img-91eee5400c.png"
+og_image: "https://cdn.aifindr.org/tools/education/eskilled-ai-course-creator/img-bb42dda8f0.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T16-12-29.712Z-vn3XWrFJpBQL7lq_7qRlEO0iF5e08lrbY.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/education/eskilled-ai-course-creator/img-bb42dda8f0.webp"
     alt: "eSkilled AI Course Creator screenshot"
     type: "screenshot"
 ---

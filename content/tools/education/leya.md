@@ -12,7 +12,7 @@ platforms: ["web"]
 status: "active"
 meta_description: "Transform English fluency with AI-driven personalized learning."
 cover_image: "https://www.futurepedia.io/api/og?title=Leya+AI+Reviews%3A+Use+Cases%2C+Pricing+%26+Alternatives&image=https%3A%2F%2Fcdn.futurepedia.io%2Fbd15a57b6164dfd51b9469e24fcc563354982536-1920x1080.png"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T16-12-54.728Z-jX5IYver3UQ_oNi3-capy2VgdJBJHcCYd.webp?w=3840"
+og_image: "https://cdn.aifindr.org/tools/education/leya/img-229423200c.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T16-12-54.728Z-jX5IYver3UQ_oNi3-capy2VgdJBJHcCYd.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/education/leya/img-229423200c.webp"
     alt: "Leya screenshot"
     type: "screenshot"
 ---

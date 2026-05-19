@@ -12,7 +12,7 @@ platforms: ["web"]
 status: "active"
 meta_description: "Revolutionize music creation with AI-powered voice generation and vocal removal."
 cover_image: "https://www.futurepedia.io/api/og?title=Kits+AI+Reviews%3A+Use+Cases%2C+Pricing+%26+Alternatives&image=https%3A%2F%2Fcdn.futurepedia.io%2F2026-02-27T11-20-18.802Z-11UVELywBekUnMyQxDaOmRilCbhLcuea6.png"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-17-52.852Z-IY0zP-vsFCImxQfouoNNwEd3Y-uWuEwlD.webp?w=3840"
+og_image: "https://cdn.aifindr.org/tools/audio/kits/img-5db2299157.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-17-52.852Z-IY0zP-vsFCImxQfouoNNwEd3Y-uWuEwlD.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/audio/kits/img-5db2299157.webp"
     alt: "Kits screenshot"
     type: "screenshot"
 ---

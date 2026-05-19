@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web","api"]
 status: "active"
 meta_description: "Seamlessly integrate AI across platforms without direct APIs."
-cover_image: "https://cdn2.futurepedia.io/c15e1de91e3bf79dd76063d53221abb159d3d251-128x128.jpg?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-48-10.891Z-sTMSolba2Ok2HB8ODH1Y6sSg4kFSkPkyt.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/code/anon/img-8635015f6c.jpg"
+og_image: "https://cdn.aifindr.org/tools/code/anon/img-368f6fc847.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-48-10.891Z-sTMSolba2Ok2HB8ODH1Y6sSg4kFSkPkyt.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/code/anon/img-368f6fc847.webp"
     alt: "Anon screenshot"
     type: "screenshot"
 ---

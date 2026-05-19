@@ -10,8 +10,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Transform web images into polished, publish-ready marketing videos."
-cover_image: "https://cdn2.futurepedia.io/2026-02-26T18-58-30.417Z-il5NfU_fqvEbzF4AZX3JgghfQ37FJYy5M.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T16-10-59.966Z-URQA7UZ6z3F9WKoii9cjVo5ratnndkKjY.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/video/pixelmotion/img-6e61eb54a4.png"
+og_image: "https://cdn.aifindr.org/tools/video/pixelmotion/img-d10b60d003.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T16-10-59.966Z-URQA7UZ6z3F9WKoii9cjVo5ratnndkKjY.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/video/pixelmotion/img-d10b60d003.webp"
     alt: "PixelMotion screenshot"
     type: "screenshot"
 ---

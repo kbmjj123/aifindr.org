@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Digitize, enhance, and animate old photos effortlessly with AI-powered precision."
-cover_image: "https://cdn2.futurepedia.io/99fce35211c2a7ab987d39b5f2a5057fb9a73584-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-03-03T12-32-40.756Z-EGKUrYjV6D8D_RLwAqrYbpi-K7NptpWXe.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/image/photomyne/img-f136a63e11.png"
+og_image: "https://cdn.aifindr.org/tools/image/photomyne/img-162a62e015.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-03-03T12-32-40.756Z-EGKUrYjV6D8D_RLwAqrYbpi-K7NptpWXe.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/image/photomyne/img-162a62e015.webp"
     alt: "Photomyne screenshot"
     type: "screenshot"
 ---

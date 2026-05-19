@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Turbocharge Your Startup Launch with NextJS Boilerplate"
-cover_image: "https://cdn2.futurepedia.io/ab1248018813b39ea6e5b494d82a93d0e1af2e07-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/ab1248018813b39ea6e5b494d82a93d0e1af2e07-128x128.png?w=256"
+cover_image: "https://cdn.aifindr.org/tools/image/logofast/img-b2d49c385d.png"
+og_image: "https://cdn.aifindr.org/tools/image/logofast/img-b2d49c385d.png"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/ab1248018813b39ea6e5b494d82a93d0e1af2e07-128x128.png?w=256"
+  - url: "https://cdn.aifindr.org/tools/image/logofast/img-b2d49c385d.png"
     alt: "LogoFast screenshot"
     type: "screenshot"
 ---

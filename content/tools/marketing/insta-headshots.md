@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Turn selfies into polished professional headshots."
-cover_image: "https://cdn2.futurepedia.io/2026-02-27T22-17-08.445Z-We_J8EqQWN5BiebMB4pgyyPhZpMP8NXkr.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-09T21-00-36.082Z-OroOASUS4REX5-PNL4OmvqlWCqybNjbQx.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/marketing/insta-headshots/img-676962a0b9.png"
+og_image: "https://cdn.aifindr.org/tools/marketing/insta-headshots/img-b64da926e6.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-09T21-00-36.082Z-OroOASUS4REX5-PNL4OmvqlWCqybNjbQx.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/marketing/insta-headshots/img-b64da926e6.webp"
     alt: "Insta Headshots screenshot"
     type: "screenshot"
 ---

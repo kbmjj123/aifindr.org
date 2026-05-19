@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "AI-driven analytics platform for data visualization and real-time insights."
-cover_image: "https://cdn2.futurepedia.io/e1403934be3c256a9a479de132cf1f96f77bf632-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-05-43.223Z-HMZIfJO8hKErXU68xXW72r12RBkEy251M.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/data/axion-ray/img-04a22ff465.png"
+og_image: "https://cdn.aifindr.org/tools/data/axion-ray/img-1194f517bf.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-05-43.223Z-HMZIfJO8hKErXU68xXW72r12RBkEy251M.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/data/axion-ray/img-1194f517bf.webp"
     alt: "Axion Ray screenshot"
     type: "screenshot"
 ---

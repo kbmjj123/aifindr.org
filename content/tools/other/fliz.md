@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Fliz"
-cover_image: "https://cdn2.futurepedia.io/c139f421006022d2e54e55246dfb244bbdcdd019-300x300.svg?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T16-42-51.425Z-dxOJA280DzLzBT5RpPp-r5X4XGoGZiOJS.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/other/fliz/img-0464c1cd16.svg"
+og_image: "https://cdn.aifindr.org/tools/other/fliz/img-25c021548d.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T16-42-51.425Z-dxOJA280DzLzBT5RpPp-r5X4XGoGZiOJS.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/other/fliz/img-25c021548d.webp"
     alt: "Fliz screenshot"
     type: "screenshot"
 ---

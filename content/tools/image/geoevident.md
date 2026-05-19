@@ -10,8 +10,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Pinpoint photo locations and generate audit-ready reports."
-cover_image: "https://cdn2.futurepedia.io/2026-03-19T17-35-21.295Z-Ynb6AVKslh228lw2YQXLaoWn7EgTs3NiW.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-09T21-00-06.559Z-yxvw06UOiUzDloflKbWxGyGfL_X69Cu3O.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/image/geoevident/img-2374f05ac3.png"
+og_image: "https://cdn.aifindr.org/tools/image/geoevident/img-95f73b572d.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-09T21-00-06.559Z-yxvw06UOiUzDloflKbWxGyGfL_X69Cu3O.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/image/geoevident/img-95f73b572d.webp"
     alt: "GeoEvident screenshot"
     type: "screenshot"
 ---

@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Revolutionizes research by turning complex texts into concise, interactive flashcards."
-cover_image: "https://cdn2.futurepedia.io/5de8da6c1cbd2b90bac6afe1e8254027ac0e93d7-300x300.svg?w=256"
-og_image: "https://cdn2.futurepedia.io/5de8da6c1cbd2b90bac6afe1e8254027ac0e93d7-300x300.svg?w=256"
+cover_image: "https://cdn.aifindr.org/tools/research/scholarcy/img-48c0b5ddcc.svg"
+og_image: "https://cdn.aifindr.org/tools/research/scholarcy/img-48c0b5ddcc.svg"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/5de8da6c1cbd2b90bac6afe1e8254027ac0e93d7-300x300.svg?w=256"
+  - url: "https://cdn.aifindr.org/tools/research/scholarcy/img-48c0b5ddcc.svg"
     alt: "Scholarcy screenshot"
     type: "screenshot"
 ---

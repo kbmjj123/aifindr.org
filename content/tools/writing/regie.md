@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Transform sales with AI-driven prospecting and content automation."
-cover_image: "https://cdn2.futurepedia.io/56a232d82aababa5a8b47f2a9783605094cf8a78-256x256.svg?w=256"
-og_image: "https://cdn2.futurepedia.io/56a232d82aababa5a8b47f2a9783605094cf8a78-256x256.svg?w=256"
+cover_image: "https://cdn.aifindr.org/tools/writing/regie/img-8b6d9609d0.svg"
+og_image: "https://cdn.aifindr.org/tools/writing/regie/img-8b6d9609d0.svg"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/56a232d82aababa5a8b47f2a9783605094cf8a78-256x256.svg?w=256"
+  - url: "https://cdn.aifindr.org/tools/writing/regie/img-8b6d9609d0.svg"
     alt: "Regie screenshot"
     type: "screenshot"
 ---

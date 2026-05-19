@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Enhance personal growth with AI-driven, anonymous, guided conversations."
-cover_image: "https://cdn2.futurepedia.io/2bdfc8d7b93f044b1c0ee13ae37be66a627a1733-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T18-18-43.175Z-vKRpjpkIkvtoDHWYIpsO3p0rf8ksOqV4h.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/marketing/lore/img-48e942bf16.png"
+og_image: "https://cdn.aifindr.org/tools/marketing/lore/img-9c396cdbd0.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T18-18-43.175Z-vKRpjpkIkvtoDHWYIpsO3p0rf8ksOqV4h.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/marketing/lore/img-9c396cdbd0.webp"
     alt: "Lore screenshot"
     type: "screenshot"
 ---

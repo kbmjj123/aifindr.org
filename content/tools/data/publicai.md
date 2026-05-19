@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Revolutionize Web3 data management with AI-driven, secure blockchain integration."
-cover_image: "https://cdn2.futurepedia.io/d670dab37069be2a9391dbbd2432a8d1a573bdda-32x32.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T16-41-10.361Z-Q2DbTuObFwPx8UdgxQFpegkRQoSMbc6sq.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/data/publicai/img-2684cf35a0.png"
+og_image: "https://cdn.aifindr.org/tools/data/publicai/img-a2d6761fc8.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T16-41-10.361Z-Q2DbTuObFwPx8UdgxQFpegkRQoSMbc6sq.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/data/publicai/img-a2d6761fc8.webp"
     alt: "PublicAI screenshot"
     type: "screenshot"
 ---

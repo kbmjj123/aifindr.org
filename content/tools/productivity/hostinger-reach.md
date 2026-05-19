@@ -10,8 +10,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "The AI-Powered Email Marketing Tool."
-cover_image: "https://cdn2.futurepedia.io/2026-02-26T18-55-31.872Z-otdtiUE2mX0_tnUyVenwr0IXAkGvL6zDx.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T16-08-26.864Z-K65j2JSCq0YHadJ05JgPKypa5zIASNsoY.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/productivity/hostinger-reach/img-edaea72474.png"
+og_image: "https://cdn.aifindr.org/tools/productivity/hostinger-reach/img-ee6026435a.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T16-08-26.864Z-K65j2JSCq0YHadJ05JgPKypa5zIASNsoY.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/productivity/hostinger-reach/img-ee6026435a.webp"
     alt: "Hostinger Reach screenshot"
     type: "screenshot"
 ---

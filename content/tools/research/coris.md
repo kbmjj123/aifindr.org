@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Screen merchants, detect fraud, and automate reviews."
-cover_image: "https://cdn2.futurepedia.io/2026-02-26T18-59-36.726Z-nLFVw1OqhRgYa6Mhkj3s3C5f73F_XlfQN.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-03-03T12-30-40.656Z-gTr4jT5bM21ow1QTB4w3ezXGQ_K1pRSnp.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/research/coris/img-ec7ab37660.png"
+og_image: "https://cdn.aifindr.org/tools/research/coris/img-3fd46bd91b.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-03-03T12-30-40.656Z-gTr4jT5bM21ow1QTB4w3ezXGQ_K1pRSnp.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/research/coris/img-3fd46bd91b.webp"
     alt: "Coris screenshot"
     type: "screenshot"
 ---

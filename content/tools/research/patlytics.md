@@ -11,8 +11,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "AI-driven platform optimizing patent creation, protection, and litigation."
-cover_image: "https://cdn2.futurepedia.io/d55ca7bb08c811b5723528fac8b0860fcef1497d-128x128.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T19-25-07.202Z-yiTsLpfcMCDHn2CYEjwWGlnk1JzbxWvUQ.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/research/patlytics/img-3a2f2538af.png"
+og_image: "https://cdn.aifindr.org/tools/research/patlytics/img-301051af3a.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T19-25-07.202Z-yiTsLpfcMCDHn2CYEjwWGlnk1JzbxWvUQ.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/research/patlytics/img-301051af3a.webp"
     alt: "Patlytics screenshot"
     type: "screenshot"
 ---

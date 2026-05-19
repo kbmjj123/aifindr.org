@@ -10,8 +10,8 @@ has_free_trial: false
 platforms: ["web"]
 status: "active"
 meta_description: "Turn a simple customer description into verified B2B lead lists."
-cover_image: "https://cdn2.futurepedia.io/2026-02-06T18-42-14.859Z-_pUMDykqs1BgTG-ZYefR7WbHpxmDtaW06.webp?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-02-06T18-42-14.859Z-_pUMDykqs1BgTG-ZYefR7WbHpxmDtaW06.webp?w=256"
+cover_image: "https://cdn.aifindr.org/tools/marketing/explee/img-555d1033f1.webp"
+og_image: "https://cdn.aifindr.org/tools/marketing/explee/img-555d1033f1.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-02-06T18-42-14.859Z-_pUMDykqs1BgTG-ZYefR7WbHpxmDtaW06.webp?w=256"
+  - url: "https://cdn.aifindr.org/tools/marketing/explee/img-555d1033f1.webp"
     alt: "Explee screenshot"
     type: "screenshot"
 ---

@@ -11,7 +11,7 @@ platforms: ["web"]
 status: "active"
 meta_description: "Create detailed 3D models instantly from text."
 cover_image: "https://www.futurepedia.io/api/og?title=Tripo+AI+Reviews%3A+Use+Cases%2C+Pricing+%26+Alternatives&image=https%3A%2F%2Fcdn.futurepedia.io%2F2026-02-04T13-24-42.479Z-JrdWBo0eqAsgaJnw0zyTy0jBw5MmI-r07.webp"
-og_image: "https://cdn2.futurepedia.io/2026-02-04T13-24-42.479Z-JrdWBo0eqAsgaJnw0zyTy0jBw5MmI-r07.webp?w=3840"
+og_image: "https://cdn.aifindr.org/tools/image/tripo/img-d43b2975d1.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -23,7 +23,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-02-04T13-24-42.479Z-JrdWBo0eqAsgaJnw0zyTy0jBw5MmI-r07.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/image/tripo/img-d43b2975d1.webp"
     alt: "Tripo screenshot"
     type: "screenshot"
 ---

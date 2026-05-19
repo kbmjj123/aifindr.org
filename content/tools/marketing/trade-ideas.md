@@ -11,8 +11,8 @@ has_free_trial: true
 platforms: ["web"]
 status: "active"
 meta_description: "Revolutionize trading with AI-driven signals and real-time scanning."
-cover_image: "https://cdn2.futurepedia.io/a91b937a4b130751c5f97670afd13aac414bd1b4-16x16.png?w=256"
-og_image: "https://cdn2.futurepedia.io/2026-04-27T16-08-31.517Z-RZE87Lv17SWxc-Q9ycCpCk9wxH73bM9yL.webp?w=3840"
+cover_image: "https://cdn.aifindr.org/tools/marketing/trade-ideas/img-3a13406cf2.png"
+og_image: "https://cdn.aifindr.org/tools/marketing/trade-ideas/img-06db4bcd07.webp"
 featured: false
 verified: true
 editor_pick: false
@@ -24,7 +24,7 @@ data_source: "futurepedia"
 use_cases: []
 target_users: []
 images:
-  - url: "https://cdn2.futurepedia.io/2026-04-27T16-08-31.517Z-RZE87Lv17SWxc-Q9ycCpCk9wxH73bM9yL.webp?w=3840"
+  - url: "https://cdn.aifindr.org/tools/marketing/trade-ideas/img-06db4bcd07.webp"
     alt: "Trade Ideas screenshot"
     type: "screenshot"
 ---
