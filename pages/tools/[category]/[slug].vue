@@ -15,9 +15,10 @@
         <!-- Main content -->
         <div class="flex-1 min-w-0">
           <div class="flex items-start gap-4 mb-6">
-            <div class="tool-detail-logo shrink-0 flex items-center justify-center font-sans font-bold text-xl"
+            <div class="tool-detail-logo shrink-0 flex items-center justify-center"
               :style="{ background: 'var(--color-bg-elevated)' }">
-              {{ tool.name[0] || 'T' }}
+              <img v-if="tool.cover_image" :src="tool.cover_image" :alt="`${tool.name} logo`" class="w-full h-full object-cover rounded-[var(--radius-lg)]" />
+              <span v-else class="font-sans font-bold text-xl" :style="{ color: 'var(--color-text-muted)' }">{{ (tool.name || 'T')[0] }}</span>
             </div>
             <div class="min-w-0">
               <h1 class="tool-detail-name mb-1">{{ tool.name }}</h1>
@@ -36,12 +37,9 @@
           </div>
 
           <!-- Cover image -->
-          <div v-if="tool.cover_image" class="mb-6 rounded-lg overflow-hidden"
+          <div v-if="tool.og_image" class="mb-6 rounded-lg overflow-hidden"
             :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-            <div class="aspect-video flex items-center justify-center font-body text-[11px]"
-              :style="{ color: 'var(--color-text-muted)' }">
-              🖼️ {{ tool.name }} Cover
-            </div>
+            <img :src="tool.og_image" :alt="`${tool.name} cover`" class="w-full object-cover" />
           </div>
 
           <!-- Media: Screenshots -->
