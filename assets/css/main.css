@@ -1,14 +1,18 @@
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@400;600;700;800&display=swap');
+@import '@fontsource/hubot-sans/400.css';
+@import '@fontsource/hubot-sans/500.css';
+@import '@fontsource/hubot-sans/600.css';
+@import '@fontsource/hubot-sans/700.css';
+@import '@fontsource/hubot-sans/800.css';
 
 /* ═══════════════════════════════════════════════
    Tailwind v4 设计令牌（映射到 CSS 变量）
    使用方式：bg-accent、text-primary、border-base、font-sans、font-body 等
 ═══════════════════════════════════════════════ */
 @theme {
-  --font-sans:  'Syne', -apple-system, sans-serif;
-  --font-body:  'DM Mono', 'Fira Code', monospace;
-  --font-mono:  'DM Mono', 'Fira Code', monospace;
+  --font-sans:  'Hubot Sans', -apple-system, sans-serif;
+  --font-body:  'Hubot Sans', -apple-system, sans-serif;
+  --font-mono:  'Hubot Sans', 'Fira Code', monospace;
 
   --color-bg-base:        var(--color-bg-base);
   --color-bg-surface:     var(--color-bg-surface);
@@ -35,9 +39,9 @@
   --radius-full: 9999px;
 }
 
-/* 确保 font-sans 使用 Syne（@theme 可能被 Tailwind 默认覆盖） */
+/* 确保 font-sans 使用 Hubot Sans（@theme 可能被 Tailwind 默认覆盖） */
 :root {
-  --font-sans: 'Syne', -apple-system, sans-serif;
+  --font-sans: 'Hubot Sans', -apple-system, sans-serif;
 }
 
 /* ═══════════════════════════════════════════════
