@@ -21,7 +21,7 @@ useHead({
   script: [
     {
       src: 'https://cloud.umami.is/script.js',
-      'data-website-id': 'REPLACE_WITH_YOUR_UMAMI_WEBSITE_ID',
+      'data-website-id': '0521130a-ecf4-4412-9546-26c4adf2c4bd',
       defer: true,
     },
     {
