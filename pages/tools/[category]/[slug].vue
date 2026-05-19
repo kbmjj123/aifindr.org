@@ -196,7 +196,7 @@
           Looking for Alternatives to {{ tool.name }}?
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[10px]">
-          <ToolCardCompact v-for="t in alternatives" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :slug="t.slug" :category="t.category" :pricing="t.pricing" />
+          <ToolCardCompact v-for="t in alternatives" :key="t.slug" :tool="t" />
         </div>
       </section>
     </template>

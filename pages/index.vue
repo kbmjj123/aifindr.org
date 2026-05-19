@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="flex gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:gap-[10px] scrollbar-none">
-      <ToolCardCompact v-for="t in trending" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :slug="t.slug" :category="t.category" :pricing="t.pricing" />
+      <ToolCardCompact v-for="t in trending" :key="t.slug" :tool="t" />
     </div>
   </section>
 
