@@ -189,28 +189,6 @@ function main() {
       }
     }
 
-    // ── tool_images ──
-    const images = parseArray(m.images) || m.images
-    if (Array.isArray(images) && images.length > 0) {
-      lines.push(`DELETE FROM tool_images WHERE tool_id = (SELECT id FROM tools WHERE slug = ${esc(slug)});`)
-      images.forEach((img, i) => {
-        lines.push(`INSERT INTO tool_images (tool_id, url, alt, caption, sort_order, image_type, width, height)`)
-        lines.push(`  SELECT id, ${esc(img.url)}, ${esc(img.alt || '')}, ${esc(img.caption || '')}, ${i}, ${esc(img.type || 'screenshot')}, ${img.width ?? 'NULL'}, ${img.height ?? 'NULL'}`)
-        lines.push(`  FROM tools WHERE slug = ${esc(slug)};`)
-      })
-    }
-
-    // ── tool_videos ──
-    const videos = parseArray(m.videos) || m.videos
-    if (Array.isArray(videos) && videos.length > 0) {
-      lines.push(`DELETE FROM tool_videos WHERE tool_id = (SELECT id FROM tools WHERE slug = ${esc(slug)});`)
-      videos.forEach((vid, i) => {
-        lines.push(`INSERT INTO tool_videos (tool_id, url, video_id, platform, title, video_type, thumbnail, duration, sort_order)`)
-        lines.push(`  SELECT id, ${esc(vid.url)}, ${esc(vid.video_id || '')}, ${esc(vid.platform || 'direct')}, ${esc(vid.title || '')}, ${esc(vid.type || 'demo')}, ${esc(vid.thumbnail || '')}, ${vid.duration ?? 'NULL'}, ${i}`)
-        lines.push(`  FROM tools WHERE slug = ${esc(slug)};`)
-      })
-    }
-
     lines.push('')
   }
 
