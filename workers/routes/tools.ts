@@ -77,16 +77,6 @@ export async function handleToolDetail(category: string, slug: string, env: Env)
     return error('Tool not found', 404)
   }
 
-  // Fetch related images
-  const { results: images } = await env.DB.prepare(
-    'SELECT * FROM tool_images WHERE tool_id = ? ORDER BY sort_order ASC'
-  ).bind((tool as Record<string, unknown>).id).all()
-
-  // Fetch related videos
-  const { results: videos } = await env.DB.prepare(
-    'SELECT * FROM tool_videos WHERE tool_id = ? ORDER BY sort_order ASC'
-  ).bind((tool as Record<string, unknown>).id).all()
-
   // Fetch tags
   const { results: tagRows } = await env.DB.prepare(
     'SELECT tag FROM tool_tags WHERE tool_id = ?'
@@ -97,8 +87,6 @@ export async function handleToolDetail(category: string, slug: string, env: Env)
   return json({
     ...tool as Record<string, unknown>,
     tags,
-    images,
-    videos,
   })
 }
 
