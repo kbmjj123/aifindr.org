@@ -72,6 +72,26 @@ function esc(str) {
   return `'${String(str).replace(/'/g, "''")}'`
 }
 
+/** Strip UTM and tracking params from a URL */
+function cleanUrl(url) {
+  if (!url) return url
+  try {
+    // Decode HTML entities (&amp; → &) and URL-encoded chars
+    const decoded = url.replace(/&amp;/g, '&').replace(/&amp%3B/g, '&')
+    const u = new URL(decoded)
+    const trackParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
+      'ref', 'referrer', 'source', 'fbclid', 'gclid', 'gclsrc', 'dclid', 'msclkid',
+      'mc_cid', 'mc_eid', '_ga', '_gl', 'aff', 'affiliate', 'partner', 'irclickid',
+      'amp;utm_source', 'amp;utm_medium', 'amp;utm_campaign']
+    for (const p of trackParams) u.searchParams.delete(p)
+    // Also remove any param containing 'utm_' in the name
+    const toRemove = []
+    u.searchParams.forEach((_, k) => { if (k.includes('utm_') || k.includes('amp;utm')) toRemove.push(k) })
+    for (const k of toRemove) u.searchParams.delete(k)
+    return u.toString().replace(/\?$/, '').replace(/\/$/, '')
+  } catch { return url }
+}
+
 /** Parse a value that might be a JSON array string (e.g. '["a","b"]') */
 function parseArray(val) {
   if (!val || typeof val !== 'string') return val
@@ -130,7 +150,7 @@ function main() {
     lines.push(`  ${esc(slug)},`)
     lines.push(`  ${esc(m.name)},`)
     lines.push(`  ${esc(category)},`)
-    lines.push(`  ${esc(m.website)},`)
+    lines.push(`  ${esc(cleanUrl(m.website))},`)
     lines.push(`  ${esc(m.pricing)},`)
     lines.push(`  ${m.price_starting ?? 0},`)
     lines.push(`  ${esc(m.price_detail)},`)
