@@ -15,10 +15,15 @@
 
 <script setup lang="ts">
 useHead({
-  meta: [　
+  meta: [
     { name: 'description', content: 'Open-source AI tool directory. Submit your tool, get free backlinks.' },
   ],
   script: [
+    {
+      src: 'https://cloud.umami.is/script.js',
+      'data-website-id': 'REPLACE_WITH_YOUR_UMAMI_WEBSITE_ID',
+      defer: true,
+    },
     {
       // Capture OAuth token from URL BEFORE Nuxt hydration clears query params
       innerHTML: `(function(){var p=new URLSearchParams(window.location.search).get('token');if(p){localStorage.setItem('aifindr-token',p);var u=new URL(window.location);u.searchParams.delete('token');window.history.replaceState({},'',u.toString())}})()`,
