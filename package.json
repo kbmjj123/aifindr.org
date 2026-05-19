@@ -23,6 +23,7 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1049.0",
     "@cloudflare/workers-types": "^4.0.0",
     "@oxc-parser/binding-darwin-x64": "^0.129.0",
     "axios": "^1.16.1",
