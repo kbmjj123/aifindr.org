@@ -53,10 +53,7 @@ export default defineNuxtConfig({
     disallow: ['/api/'],
   },
 
-  sitemap: {
-    sources: ['/api/__sitemap__/urls'],
-    autoLastmod: true,
-  },
+  sitemap: false,  // Disable Nuxt static sitemap — we serve dynamic sitemap via Worker
 
   postcss: {
     plugins: {
