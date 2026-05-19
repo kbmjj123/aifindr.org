@@ -53,7 +53,12 @@ const CDNS_TO_MIGRATE = [
   'cdn2.futurepedia.io',
   'cdn.prod.website-files.com',
   'website-files.com',
-  'www.futurepedia.io/api/og', // Futurepedia OG image proxy
+]
+
+// Don't migrate these — they're composite proxies, not real tool images
+const SKIP_PATTERNS = [
+  'www.futurepedia.io/api/og',
+  'futurepedia.io/_next/image',
 ]
 
 const DRY_RUN = process.env.DRY_RUN === 'true'
@@ -112,6 +117,7 @@ function extractImageUrls(content: string): string[] {
 }
 
 function isExternal(u: string): boolean {
+  if (SKIP_PATTERNS.some(p => u.includes(p))) return false
   return CDNS_TO_MIGRATE.some(cdn => u.includes(cdn))
 }
 
@@ -185,7 +191,8 @@ async function main() {
         done++
         if (done % 50 === 0) log(`  ${done} images migrated...`)
       } catch (err: any) {
-        log(`  ✗ ${url}: ${err.message}`)
+        const detail = err.cause?.code || err.cause?.message || err.message || String(err)
+        log(`  ✗ ${url.slice(0, 80)}: ${detail}`)
         failed++
       }
     }
