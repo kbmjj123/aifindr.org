@@ -135,6 +135,41 @@
                   <ToolTag v-for="p in toolPlatforms" :key="p">{{ p }}</ToolTag>
                 </div>
               </div>
+              <!-- Target Users -->
+              <div v-if="toolTargetUsers.length">
+                <div class="detail-sidebar-label">Best For</div>
+                <div class="flex flex-wrap gap-1.5 mt-1 mb-3">
+                  <NuxtLink v-for="u in toolTargetUsers" :key="u"
+                    :to="`/tools?target_users=${u}`"
+                    class="tag cursor-pointer" style="background: var(--color-verified-bg); color: var(--color-verified-text); border-color: var(--color-verified-border)">
+                    {{ formatUserLabel(u) }}
+                  </NuxtLink>
+                </div>
+              </div>
+              <!-- Use Cases -->
+              <div v-if="toolUseCases.length">
+                <div class="detail-sidebar-label">Use Cases</div>
+                <div class="flex flex-wrap gap-1.5 mt-1 mb-3">
+                  <NuxtLink v-for="uc in toolUseCases" :key="uc"
+                    :to="`/tools?use_cases=${uc}`"
+                    class="tag cursor-pointer" style="background: var(--color-accent-dim); color: var(--color-accent); border-color: var(--color-accent-border)">
+                    {{ formatUseCaseLabel(uc) }}
+                  </NuxtLink>
+                </div>
+              </div>
+              <!-- Free Trial -->
+              <div v-if="tool.has_free_trial" class="mb-3">
+                <span class="badge badge-verified">Free Trial</span>
+              </div>
+              <!-- Data Source + Last Verified -->
+              <div :style="{ borderTop: '1px solid var(--color-border)', paddingTop: '14px', marginTop: '4px' }">
+                <div v-if="tool.data_source" class="detail-sidebar-value" style="font-size: 10px; margin-bottom: 4px;">
+                  Data from {{ tool.data_source }}
+                </div>
+                <div v-if="tool.last_verified" class="detail-sidebar-value" style="font-size: 10px;">
+                  Verified {{ formatDate(tool.last_verified) }}
+                </div>
+              </div>
             </div>
 
             <!-- Submitter info (dofollow backlink) -->
@@ -189,6 +224,41 @@ const toolPlatforms = computed(() => {
   if (Array.isArray(p)) return p
   return String(p).split(',').filter(Boolean)
 })
+
+const toolTargetUsers = computed(() => {
+  const u = (tool.value as any)?.target_users
+  if (!u) return []
+  if (Array.isArray(u)) return u
+  return String(u).split(',').filter(Boolean)
+})
+
+const toolUseCases = computed(() => {
+  const uc = (tool.value as any)?.use_cases
+  if (!uc) return []
+  if (Array.isArray(uc)) return uc
+  return String(uc).split(',').filter(Boolean)
+})
+
+function formatUserLabel(slug: string) {
+  const labels: Record<string, string> = {
+    marketer: 'Marketer', developer: 'Developer', designer: 'Designer',
+    writer: 'Writer', student: 'Student', researcher: 'Researcher',
+    entrepreneur: 'Entrepreneur', educator: 'Educator',
+    'data-analyst': 'Data Analyst', 'small-business': 'Small Business',
+    'non-technical': 'Non-Technical',
+  }
+  return labels[slug] || slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+}
+
+function formatUseCaseLabel(slug: string) {
+  return slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+}
+
+function formatDate(dateStr: string) {
+  if (!dateStr) return ''
+  const d = new Date(dateStr)
+  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+}
 
 function pricingLabel(p: ToolPricing) {
   return p.charAt(0).toUpperCase() + p.slice(1)

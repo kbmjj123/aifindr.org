@@ -42,6 +42,9 @@ export async function handleSubmit(request: Request, env: Env) {
   const submitterGithub = String(body.submitter_github || body.submitterGithub || '').trim()
   const turnstileToken = String(body.turnstileToken || '').trim()
   const bodyContent = String(body.detailDescription || body.body || '').trim()
+  const useCases = String(body.use_cases || '').trim()
+  const targetUsers = String(body.target_users || '').trim()
+  const hasFreeTrial = body.has_free_trial ? 1 : 0
 
   // ── Validate pricing ──
   if (!['free', 'freemium', 'paid'].includes(pricing)) {
@@ -93,8 +96,8 @@ export async function handleSubmit(request: Request, env: Env) {
   // ── Insert tool ──
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   await env.DB.prepare(`
-    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, body, submitter_site, submitter_github, submitter_id, submitted_at)
-    VALUES (?, ?, ?, ?, ?, ?, 0, ?, 'pending', ?, ?, ?, ?, ?, ?)
+    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, body, submitter_site, submitter_github, submitter_id, use_cases, target_users, data_source, submitted_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, 'user_submit', ?)
   `).bind(
     slug,
     name,
@@ -102,12 +105,15 @@ export async function handleSubmit(request: Request, env: Env) {
     website,
     pricing,
     priceDetail || null,
+    hasFreeTrial,
     platformsStr,
     description,
     bodyContent || null,
     submitterSite || null,
     submitterGithub || null,
     submitterId,
+    useCases || null,
+    targetUsers || null,
     now,
   ).run()
 

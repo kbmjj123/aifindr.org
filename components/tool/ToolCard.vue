@@ -13,6 +13,7 @@
           <div class="flex items-center gap-1 shrink-0">
             <ToolBadge v-if="featured" type="featured" />
             <ToolBadge v-if="verified" type="verified" />
+            <span v-if="hasFreeTrial" class="badge badge-verified" style="font-size: 9px;">Free Trial</span>
           </div>
         </div>
 
@@ -47,6 +48,7 @@ const props = withDefaults(defineProps<{
   slug?: string
   category?: string
   tags?: string[]
+  hasFreeTrial?: boolean
   pricing?: ToolPricing
   featured?: boolean
   verified?: boolean

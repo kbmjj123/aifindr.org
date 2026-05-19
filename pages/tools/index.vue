@@ -105,7 +105,7 @@
       <button class="btn-secondary" @click="clearFilters">Browse All Tools</button>
     </div>
     <ToolGrid v-else>
-      <ToolCard v-for="t in tools" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="t.featured" :verified="t.verified" :slug="t.slug" :category="t.category" />
+      <ToolCard v-for="t in tools" :key="t.slug" :name="t.name" :description="t.meta_description || ''" :pricing="t.pricing" :featured="t.featured" :verified="t.verified" :has-free-trial="t.has_free_trial" :slug="t.slug" :category="t.category" />
 
       <!-- Pagination -->
       <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 mt-8">

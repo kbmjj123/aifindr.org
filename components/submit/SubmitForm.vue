@@ -82,6 +82,44 @@
         </div>
       </div>
 
+      <!-- Target Users -->
+      <div>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Target Users
+        </label>
+        <div class="flex flex-wrap gap-2">
+          <label v-for="u in userOptions" :key="u.value"
+            class="flex items-center gap-1 font-body text-[11px] cursor-pointer px-2 py-1 rounded-full"
+            :style="{
+              color: form.targetUsers.includes(u.value) ? 'var(--color-accent)' : 'var(--color-text-muted)',
+              background: form.targetUsers.includes(u.value) ? 'var(--color-accent-dim)' : 'var(--color-bg-elevated)',
+              border: '1px solid ' + (form.targetUsers.includes(u.value) ? 'var(--color-accent-border)' : 'var(--color-border)'),
+            }">
+            <input type="checkbox" :value="u.value" v-model="form.targetUsers" class="hidden" />
+            {{ u.label }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Use Cases -->
+      <div>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Use Cases
+        </label>
+        <div class="flex flex-wrap gap-2">
+          <label v-for="uc in useCaseOptions" :key="uc.value"
+            class="flex items-center gap-1 font-body text-[11px] cursor-pointer px-2 py-1 rounded-full"
+            :style="{
+              color: form.useCases.includes(uc.value) ? 'var(--color-accent)' : 'var(--color-text-muted)',
+              background: form.useCases.includes(uc.value) ? 'var(--color-accent-dim)' : 'var(--color-bg-elevated)',
+              border: '1px solid ' + (form.useCases.includes(uc.value) ? 'var(--color-accent-border)' : 'var(--color-border)'),
+            }">
+            <input type="checkbox" :value="uc.value" v-model="form.useCases" class="hidden" />
+            {{ uc.label }}
+          </label>
+        </div>
+      </div>
+
       <!-- Submitter fields -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
@@ -125,9 +163,46 @@ const form = reactive({
   description: 'An AI-powered tool for generating beautiful images from text prompts.',
   detailDescription: '## What is Test AI Tool?\n\nTest AI Tool helps users create stunning visuals from natural language descriptions. Built on state-of-the-art diffusion models.\n\n## Key Features\n\n- Text-to-Image — Generate images from text\n- Style Control — Choose artistic styles\n- Batch Generation — Create variations\n\n## Pricing\n\nFree: 25 generations/day. Pro: $20/month, unlimited.',
   platforms: ['web', 'api'] as string[],
+  targetUsers: [] as string[],
+  useCases: [] as string[],
   submitterSite: 'https://aifindr.org',
   submitterGithub: 'test-user',
 })
+
+const userOptions = [
+  { value: 'marketer', label: 'Marketer' },
+  { value: 'developer', label: 'Developer' },
+  { value: 'designer', label: 'Designer' },
+  { value: 'writer', label: 'Writer' },
+  { value: 'student', label: 'Student' },
+  { value: 'researcher', label: 'Researcher' },
+  { value: 'entrepreneur', label: 'Entrepreneur' },
+  { value: 'educator', label: 'Educator' },
+  { value: 'data-analyst', label: 'Data Analyst' },
+  { value: 'small-business', label: 'Small Business' },
+  { value: 'non-technical', label: 'Non-Technical' },
+]
+
+const useCaseOptions = [
+  { value: 'social-media-content', label: 'Social Media' },
+  { value: 'blog-writing', label: 'Blog Writing' },
+  { value: 'copywriting', label: 'Copywriting' },
+  { value: 'image-generation', label: 'Image Gen' },
+  { value: 'image-editing', label: 'Image Editing' },
+  { value: 'logo-design', label: 'Logo Design' },
+  { value: 'video-creation', label: 'Video Creation' },
+  { value: 'voice-generation', label: 'Voice Gen' },
+  { value: 'code-generation', label: 'Code Gen' },
+  { value: 'code-review', label: 'Code Review' },
+  { value: 'document-summary', label: 'Doc Summary' },
+  { value: 'email-writing', label: 'Email Writing' },
+  { value: 'data-analysis', label: 'Data Analysis' },
+  { value: 'translation', label: 'Translation' },
+  { value: 'seo-optimization', label: 'SEO' },
+  { value: 'customer-support', label: 'Customer Support' },
+  { value: 'meeting-summary', label: 'Meeting Summary' },
+  { value: 'presentation-design', label: 'Presentation' },
+]
 
 const categoryOptions = computed(() => [
   { value: '', label: 'Select a category...', disabled: true },
@@ -195,6 +270,8 @@ async function handleSubmit() {
         description: form.description,
         detailDescription: form.detailDescription,
         platforms: form.platforms,
+        target_users: form.targetUsers.join(','),
+        use_cases: form.useCases.join(','),
         submitter_site: form.submitterSite || undefined,
         submitter_github: form.submitterGithub || undefined,
         turnstileToken: cfToken.value,
