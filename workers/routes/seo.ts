@@ -1,5 +1,5 @@
 import type { Env } from '../types'
-import { json } from '../lib/response'
+import { json, CORS } from '../lib/response'
 
 /** GET /api/__sitemap__/urls — return all active tool URLs for the sitemap */
 export async function handleSitemapUrls(env: Env): Promise<Response> {
@@ -54,4 +54,72 @@ export async function notifySearchEngines(newUrl: string): Promise<void> {
   }
 
   console.log(`SEO: Search engines notified for ${newUrl}`)
+}
+
+/** GET /api/sitemap.xml — dynamic XML sitemap with all active tools + static pages */
+export async function handleSitemapXml(env: Env): Promise<Response> {
+  // Check KV cache first
+  const cached = await env.CACHE.get('sitemap-xml')
+  if (cached) {
+    return new Response(cached, {
+      headers: { 'Content-Type': 'application/xml', ...CORS },
+    })
+  }
+
+  const BASE = 'https://aifindr.org'
+
+  // Static pages
+  const staticPages = [
+    { url: `${BASE}/`,            lastmod: '2026-05-19', changefreq: 'daily',   priority: '1.0' },
+    { url: `${BASE}/tools`,       lastmod: '2026-05-19', changefreq: 'daily',   priority: '0.9' },
+    { url: `${BASE}/submit`,      lastmod: '2026-05-19', changefreq: 'monthly', priority: '0.7' },
+    { url: `${BASE}/settings`,    lastmod: '2026-05-19', changefreq: 'monthly', priority: '0.5' },
+  ]
+
+  // Category pages
+  const categories = [
+    'image', 'writing', 'video', 'audio', 'code', 'productivity',
+    'marketing', 'data', 'education', 'business', 'research', 'other',
+  ]
+  const categoryPages = categories.map(c => ({
+    url: `${BASE}/tools/${c}`,
+    lastmod: '2026-05-19',
+    changefreq: 'daily' as const,
+    priority: '0.8',
+  }))
+
+  // Dynamic tools from D1
+  const { results: tools } = await env.DB.prepare(
+    "SELECT slug, category, updated_at, submitted_at FROM tools WHERE status = 'active'"
+  ).all<{ slug: string; category: string; updated_at: string | null; submitted_at: string }>()
+
+  const toolPages = tools.map(t => ({
+    url: `${BASE}/tools/${t.category}/${t.slug}`,
+    lastmod: (t.updated_at || t.submitted_at).slice(0, 10),
+    changefreq: 'weekly' as const,
+    priority: '0.8',
+  }))
+
+  const allPages = [...staticPages, ...categoryPages, ...toolPages]
+
+  const xml = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...allPages.map(p =>
+      `  <url>\n` +
+      `    <loc>${p.url}</loc>\n` +
+      `    <lastmod>${p.lastmod}</lastmod>\n` +
+      `    <changefreq>${p.changefreq}</changefreq>\n` +
+      `    <priority>${p.priority}</priority>\n` +
+      `  </url>`
+    ),
+    '</urlset>',
+  ].join('\n')
+
+  // Cache for 1 hour in KV
+  await env.CACHE.put('sitemap-xml', xml, { expirationTtl: 3600 })
+
+  return new Response(xml, {
+    headers: { 'Content-Type': 'application/xml; charset=utf-8', ...CORS },
+  })
 }

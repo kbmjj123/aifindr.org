@@ -71,8 +71,9 @@ export async function handleAdminReview(request: Request, env: Env): Promise<Res
     WHERE id = ?
   `).bind(status, rejectReason || null, reviewerNote || null, now, now, toolId).run()
 
-  // Clear stats cache so homepage reflects the updated tool count
+  // Clear caches so homepage + sitemap reflect the updated tool count
   await env.CACHE.delete('stats')
+  await env.CACHE.delete('sitemap-xml')
 
   // ── Send notification email (B-03 / B-04) ──
   const toolName = String(tool.name || '')

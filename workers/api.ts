@@ -8,7 +8,7 @@ import { handleGithubWebhook } from './routes/webhooks-github'
 import { handleLemonSqueezyWebhook } from './routes/webhooks-ls'
 import { handleCronDailyOps, handleCronLinkChecker, handleCronMonthlyReport, handleCronNewsletter } from './routes/cron'
 import { handleGenerate } from './routes/generate'
-import { handleSitemapUrls } from './routes/seo'
+import { handleSitemapUrls, handleSitemapXml } from './routes/seo'
 import type { Env } from './types'
 
 export default {
@@ -65,6 +65,7 @@ export default {
 
       /* Sitemap */
       if (method === 'GET' && path === '/__sitemap__/urls') return handleSitemapUrls(env)
+      if (method === 'GET' && path === '/sitemap.xml') return handleSitemapXml(env)
 
       /* Cron (manual trigger for testing) */
       if (method === 'POST' && path === '/cron/daily-ops') {
