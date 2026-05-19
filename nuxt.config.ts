@@ -1,3 +1,4 @@
+const isDev = process.env.NODE_ENV === 'development'
 export default defineNuxtConfig({
 	vite: {
     optimizeDeps: {
@@ -53,7 +54,14 @@ export default defineNuxtConfig({
     disallow: ['/api/'],
   },
 
-  // sitemap handled by Worker — see server/routes/sitemap.xml.ts
+  sitemap: {
+    sources: [
+			isDev 
+      ? 'http://localhost:8787/__sitemap__/urls'
+      : '/api/__sitemap__/urls'
+		],
+    autoLastmod: true,
+  },
 
   postcss: {
     plugins: {
