@@ -27,7 +27,7 @@ export default defineNuxtConfig({
 	],
 
   routeRules: {
-		'/': { isr: 3600 },
+		'/': { prerender: true },
     '/tools': { prerender: true },
 		'/tools/*/': { prerender: true },
     '/tools/*/*': { isr: 86400 },
