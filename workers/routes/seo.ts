@@ -59,7 +59,6 @@ export async function notifySearchEngines(newUrl: string): Promise<void> {
 /** GET /api/sitemap.xml — dynamic XML sitemap with all active tools + static pages */
 export async function handleSitemapXml(env: Env): Promise<Response> {
   // Check KV cache first
-	debugger
   const cached = await env.CACHE.get('sitemap-xml')
   if (cached) {
     return new Response(cached, {
