@@ -4,7 +4,8 @@ compatibility_date = "2026-05-07"
 
 # Routes: /api/* 指向此 Worker
 routes = [
-  { pattern = "aifindr.org/api/*", zone_id = "e10e1a0eb9055d9740e7659f03c17035" }
+  { pattern = "aifindr.org/api/*", zone_id = "e10e1a0eb9055d9740e7659f03c17035" },
+  { pattern = "aifindr.org/sitemap.xml", zone_id = "e10e1a0eb9055d9740e7659f03c17035" }
 ]
 
 # D1 Database — 从 Cloudflare Dashboard → D1 → 数据库详情页获取 ID
