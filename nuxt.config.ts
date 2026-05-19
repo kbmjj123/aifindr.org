@@ -28,11 +28,12 @@ export default defineNuxtConfig({
 
   routeRules: {
 		'/': { prerender: true },
-    '/tools': { prerender: true },
-		'/tools/*/': { prerender: true },
-    '/tools/*/*': { isr: 86400 },
-    '/blog/*/*': { isr: 604800 },
-    '/api/**': { cors: true },
+		'/tools': { prerender: true },
+		'/tools/*': { prerender: true },
+		'/tools/*/*': isDev ? { prerender: true } : { swr: 86400 },
+		'/blog/*/*': isDev ? { prerender: true } : { swr: 604800 },
+		'/submit': { prerender: true },
+		'/api/**': { cors: true },
 	},
 
   nitro: {
