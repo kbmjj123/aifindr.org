@@ -1,5 +1,5 @@
 -- aifindr.org — D1 数据库重置
--- 用法：wrangler d1 execute aifindr-db --remote --file=./schema/reset.sql
+-- 用法：npx wrangler d1 execute aifindr-db --remote --file=./schema/reset.sql
 -- 警告：会删除所有数据，仅调试阶段使用
 
 DROP TABLE IF EXISTS published_links;

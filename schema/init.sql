@@ -157,9 +157,3 @@ CREATE TABLE IF NOT EXISTS published_links (
 CREATE INDEX IF NOT EXISTS idx_links_user       ON published_links(user_id);
 CREATE INDEX IF NOT EXISTS idx_links_is_active  ON published_links(is_active);
 CREATE INDEX IF NOT EXISTS idx_links_checked    ON published_links(last_checked);
-
--- ─── v2.0 增量字段 ─────────────────────────────────────────
-
-ALTER TABLE tools ADD COLUMN use_cases TEXT DEFAULT '';
-ALTER TABLE tools ADD COLUMN target_users TEXT DEFAULT '';
-ALTER TABLE tools ADD COLUMN data_source TEXT;
