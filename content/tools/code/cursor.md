@@ -1,29 +1,32 @@
 ---
 name: "Cursor"
 slug: "cursor"
-website: "https://cursor.sh"
+website: "https://www.cursor.com/?utm_source=futurepedia&utm_medium=marketplace&utm_campaign=futurepedia"
 category: "code"
-tags: ["code-generation", "ide", "ai-editor"]
-pricing: "paid"
-price_starting: 20
-price_detail: "Free tier with limited usage. Pro $20/mo, Business $40/mo."
+tags: ["code"]
+pricing: "free"
+price_starting: 0
+price_detail: "Free Version: Explore Cursor’s basic features at no cost.Pro Version: Access advanced features and enhanced support with the Pro version. Contact Cursor for detailed pricing information."
 has_free_trial: true
-platforms: ["desktop"]
+platforms: ["web"]
 status: "active"
-launched: "2024-01"
-last_verified: "2026-04"
-title: "Cursor – AI-Native Code Editor"
-meta_description: "Cursor is an AI-first code editor built on VS Code. Write, edit, and understand code faster with AI that understands your entire codebase."
-submitter_site: ""
-submitter_github: ""
+meta_description: "AI-enhanced code editor with predictive edits and natural language commands."
+cover_image: "https://cdn2.futurepedia.io/2026-02-26T19-02-38.841Z-eOegYjERN0Ofwney3MoHc3yFGTWgF0Zsg.png?w=256"
+og_image: "https://cdn2.futurepedia.io/2026-04-27T19-28-02.338Z-sXBStyV-MX_wxO_QP_xJn4alPbjnMHyBs.webp?w=3840"
 featured: false
 verified: true
 editor_pick: false
-submitted_at: "2026-04-14"
+submitter_site: ""
+submitter_github: ""
+submitted_at: "2026-05-19"
+last_verified: "2026-05-19"
+data_source: "futurepedia"
+use_cases: []
+target_users: []
+images:
+  - url: "https://cdn2.futurepedia.io/2026-04-27T19-28-02.338Z-sXBStyV-MX_wxO_QP_xJn4alPbjnMHyBs.webp?w=3840"
+    alt: "Cursor screenshot"
+    type: "screenshot"
 ---
 
-Cursor is an AI-native code editor that reimagines the development experience around AI collaboration. Built as a fork of VS Code, it retains all the familiar features while adding deep AI integration throughout the editor experience.
-
-What makes Cursor unique is its ability to understand your entire codebase, not just the file you're currently editing. Its AI can reason about project architecture, suggest multi-file changes, and help with complex refactoring tasks. Features include AI-powered code editing with Ctrl+K, natural language chat, intelligent code generation in Composer mode, and automatic bug detection.
-
-Cursor supports all major programming languages and frameworks, making it versatile across different types of development projects.
+AI-enhanced code editor with predictive edits and natural language commands.

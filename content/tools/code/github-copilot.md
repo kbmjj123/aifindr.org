@@ -1,29 +1,31 @@
 ---
 name: "GitHub Copilot"
 slug: "github-copilot"
-website: "https://github.com/features/copilot"
+website: ""
 category: "code"
-tags: ["code-generation", "ide-plugin", "pair-programming"]
-pricing: "paid"
-price_starting: 10
-price_detail: "Individual $10/mo, Business $19/mo per user, Enterprise $39/mo."
+tags: ["code"]
+pricing: "free"
+price_starting: 0
 has_free_trial: true
-platforms: ["api"]
+platforms: ["web"]
 status: "active"
-launched: "2022-06"
-last_verified: "2026-04"
-title: "GitHub Copilot – AI Pair Programmer"
-meta_description: "GitHub Copilot is an AI coding assistant that provides real-time code suggestions and completion in your editor, powered by OpenAI."
+meta_description: "AI tool offers real-time code suggestions and contextual assistance."
+cover_image: "https://cdn2.futurepedia.io/ce9ddf8f35d71da54f1cb4e227cb9bf20fe86141-225x225.png?w=256"
+og_image: "https://cdn2.futurepedia.io/ce9ddf8f35d71da54f1cb4e227cb9bf20fe86141-225x225.png?w=256"
+featured: false
+verified: true
+editor_pick: false
 submitter_site: ""
 submitter_github: ""
-featured: true
-verified: true
-editor_pick: true
-submitted_at: "2026-04-02"
+submitted_at: "2026-05-19"
+last_verified: "2026-05-19"
+data_source: "futurepedia"
+use_cases: []
+target_users: []
+images:
+  - url: "https://cdn2.futurepedia.io/ce9ddf8f35d71da54f1cb4e227cb9bf20fe86141-225x225.png?w=256"
+    alt: "GitHub Copilot screenshot"
+    type: "screenshot"
 ---
 
-GitHub Copilot is an AI-powered code completion tool developed by GitHub in collaboration with OpenAI. It acts as an AI pair programmer, suggesting whole lines and functions as you type in your code editor.
-
-Copilot is trained on a vast corpus of public code and understands dozens of programming languages. It integrates seamlessly with popular IDEs including VS Code, JetBrains, Neovim, and Visual Studio. The tool can generate code from comments, complete partial code snippets, suggest test cases, and help with boilerplate code.
-
-The latest Copilot features include AI chat for natural language coding conversations, code review suggestions, and security vulnerability detection.
+AI tool offers real-time code suggestions and contextual assistance.

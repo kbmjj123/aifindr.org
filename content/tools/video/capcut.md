@@ -1,29 +1,32 @@
 ---
 name: "CapCut"
 slug: "capcut"
-website: "https://www.capcut.com"
+website: "https://capcutaffiliateprogram.pxf.io/MAN7Qo"
 category: "video"
-tags: ["video-editing", "mobile-editing", "template"]
-pricing: "freemium"
+tags: ["video"]
+pricing: "free"
 price_starting: 0
-price_detail: "Free tier available. Pro $7.99/mo."
+price_detail: "Free Tier: Offers a wide range of features without cost.Pro Monthly Subscription: Available for $7.99 per month, providing access to premium features and additional effects."
 has_free_trial: true
-platforms: ["web", "mobile", "desktop"]
+platforms: ["web"]
 status: "active"
-launched: "2023-09"
-last_verified: "2026-04"
-title: "CapCut – AI Video Editing for Everyone"
-meta_description: "CapCut is a free video editing app with powerful AI features including auto-captions, text-to-speech, background removal, and motion tracking."
+meta_description: "Advanced video editing with AI-driven features and effects."
+cover_image: "https://cdn2.futurepedia.io/9bef6d4068bf31831587b04a43238260480eab10-1000x1000.webp?w=256"
+og_image: "https://cdn2.futurepedia.io/9bef6d4068bf31831587b04a43238260480eab10-1000x1000.webp?w=256"
+featured: false
+verified: true
+editor_pick: false
 submitter_site: ""
 submitter_github: ""
-featured: false
-verified: false
-editor_pick: false
-submitted_at: "2026-04-12"
+submitted_at: "2026-05-19"
+last_verified: "2026-05-19"
+data_source: "futurepedia"
+use_cases: []
+target_users: []
+images:
+  - url: "https://cdn2.futurepedia.io/9bef6d4068bf31831587b04a43238260480eab10-1000x1000.webp?w=256"
+    alt: "CapCut screenshot"
+    type: "screenshot"
 ---
 
-CapCut is a comprehensive video editing platform developed by ByteDance, the company behind TikTok. It has quickly become one of the most popular video editing tools, particularly among social media content creators.
-
-The platform combines professional-grade editing capabilities with AI-powered features that make video creation accessible to everyone. Key AI features include automatic caption generation, text-to-speech with natural voices, AI background removal, portrait tracking, and auto-reframe for different aspect ratios.
-
-CapCut offers a vast library of templates, effects, transitions, and music tracks, making it easy to create polished videos without extensive editing experience.
+Advanced video editing with AI-driven features and effects.

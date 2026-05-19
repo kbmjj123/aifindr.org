@@ -1,29 +1,32 @@
 ---
 name: "ElevenLabs"
 slug: "elevenlabs"
-website: "https://elevenlabs.io"
+website: "https://try.elevenlabs.io/byzhm82qidtr"
 category: "audio"
-tags: ["text-to-speech", "voice-cloning", "audio-generation"]
-pricing: "freemium"
+tags: ["audio"]
+pricing: "free"
 price_starting: 0
-price_detail: "Free tier with limited characters. Starter $5/mo, Creator $22/mo, Pro $99/mo."
+price_detail: "Free Tier: Experience ElevenLabs with a limited free trial.Subscription Plans: Subscription plans start at a competitive price point, offering access to additional features and voices."
 has_free_trial: true
-platforms: ["web", "api"]
+platforms: ["web"]
 status: "active"
-launched: "2023-01"
-last_verified: "2026-04"
-title: "ElevenLabs – AI Voice Generation & Cloning"
-meta_description: "ElevenLabs is the leading AI voice platform offering ultra-realistic text-to-speech, voice cloning, and audio content creation."
-submitter_site: ""
-submitter_github: ""
+meta_description: "Revolutionize audio content with AI-driven, lifelike voice synthesis and customization."
+cover_image: "https://cdn2.futurepedia.io/512ad525852d4796f29b171f7d7ae2b6f6d8a57b-512x512.svg?w=256"
+og_image: "https://cdn2.futurepedia.io/512ad525852d4796f29b171f7d7ae2b6f6d8a57b-512x512.svg?w=256"
 featured: false
 verified: true
 editor_pick: false
-submitted_at: "2026-04-13"
+submitter_site: ""
+submitter_github: ""
+submitted_at: "2026-05-19"
+last_verified: "2026-05-19"
+data_source: "futurepedia"
+use_cases: []
+target_users: []
+images:
+  - url: "https://cdn2.futurepedia.io/512ad525852d4796f29b171f7d7ae2b6f6d8a57b-512x512.svg?w=256"
+    alt: "ElevenLabs screenshot"
+    type: "screenshot"
 ---
 
-ElevenLabs is a pioneering AI voice technology company that produces some of the most realistic text-to-speech voices available. Their platform can generate natural-sounding speech from text in dozens of languages, clone voices from short samples, and create full audio productions.
-
-The platform offers a wide range of pre-built voices with different accents, ages, and styles. Voice cloning technology can replicate a person's voice with remarkable accuracy from just a few minutes of audio. The Speech-to-Speech feature allows users to modify existing audio while preserving the original intonation and emotion.
-
-ElevenLabs is used by content creators, publishers, game developers, accessibility tools, and enterprises for various voice applications.
+Revolutionize audio content with AI-driven, lifelike voice synthesis and customization.

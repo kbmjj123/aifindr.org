@@ -1,29 +1,31 @@
 ---
 name: "Grammarly"
 slug: "grammarly"
-website: "https://www.grammarly.com"
+website: "http://grammarly.pxf.io/bkbB7v"
 category: "writing"
-tags: ["grammar", "writing-enhancement", "proofreading"]
-pricing: "freemium"
+tags: ["writing"]
+pricing: "free"
 price_starting: 0
-price_detail: "Free tier available. Premium $12/mo, Business $15/mo per person."
 has_free_trial: true
-platforms: ["web", "desktop", "mobile", "api"]
+platforms: ["web"]
 status: "active"
-launched: "2023-04"
-last_verified: "2026-04"
-title: "Grammarly – AI Writing Assistant"
-meta_description: "Grammarly is an AI-powered writing assistant that helps you write clearly, correctly, and confidently across documents, emails, and messages."
-submitter_site: ""
-submitter_github: ""
+meta_description: "Elevate writing with real-time grammar, tone, and plagiarism checks."
+cover_image: "https://cdn2.futurepedia.io/ef5edb1c567566777a72dae34adf3ab6550450eb-48x48.svg?w=256"
+og_image: "https://cdn2.futurepedia.io/ef5edb1c567566777a72dae34adf3ab6550450eb-48x48.svg?w=256"
 featured: false
 verified: true
 editor_pick: false
-submitted_at: "2026-04-06"
+submitter_site: ""
+submitter_github: ""
+submitted_at: "2026-05-19"
+last_verified: "2026-05-19"
+data_source: "futurepedia"
+use_cases: []
+target_users: []
+images:
+  - url: "https://cdn2.futurepedia.io/ef5edb1c567566777a72dae34adf3ab6550450eb-48x48.svg?w=256"
+    alt: "Grammarly screenshot"
+    type: "screenshot"
 ---
 
-Grammarly is an AI-powered writing assistant that helps millions of people write more clearly and effectively. Beyond basic grammar and spell checking, Grammarly provides advanced suggestions for tone, clarity, engagement, and delivery.
-
-The platform integrates across virtually every text input field through browser extensions, desktop apps, and mobile keyboards. Its AI analyzes writing context to suggest improvements that make writing more impactful and appropriate for the intended audience and purpose.
-
-The generative AI features in Grammarly Premium users can compose, rewrite, and brainstorm within their existing workflow without switching between applications.
+Elevate writing with real-time grammar, tone, and plagiarism checks.

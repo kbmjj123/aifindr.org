@@ -1,29 +1,31 @@
 ---
-name: "Canva AI"
-slug: "canva-ai"
-website: "https://www.canva.com"
+name: "Canva"
+slug: "canva"
+website: "https://www.canva.com/?utm_source=futurepedia&utm_medium=marketplace&utm_campaign=futurepedia"
 category: "image"
-tags: ["design", "presentation", "image-editing", "template"]
-pricing: "freemium"
+tags: ["image","design"]
+pricing: "free"
 price_starting: 0
-price_detail: "Free tier available. Pro $12.99/mo, Teams $14.99/mo per person."
 has_free_trial: true
-platforms: ["web", "mobile", "desktop"]
+platforms: ["web"]
 status: "active"
-launched: "2023-03"
-last_verified: "2026-04"
-title: "Canva AI – AI-Powered Design Platform"
-meta_description: "Canva integrates AI features across its design platform, including Magic Design, Magic Edit, and AI-powered image generation for effortless graphic design."
+meta_description: "Design stunning visuals effortlessly with Canva's intuitive tools."
+cover_image: "https://cdn2.futurepedia.io/2026-02-26T19-01-04.228Z-fxJ3lBiFQbQOPvYZGPhWYkVmp1Nf_UDHB.png?w=256"
+og_image: "https://cdn2.futurepedia.io/2026-04-27T18-05-06.990Z-lVgbI-qc8Gg0wVxvV5ZwJdHA5wM7lz5GG.webp?w=3840"
+featured: false
+verified: true
+editor_pick: false
 submitter_site: ""
 submitter_github: ""
-featured: false
-verified: false
-editor_pick: false
-submitted_at: "2026-04-05"
+submitted_at: "2026-05-19"
+last_verified: "2026-05-19"
+data_source: "futurepedia"
+use_cases: []
+target_users: []
+images:
+  - url: "https://cdn2.futurepedia.io/2026-04-27T18-05-06.990Z-lVgbI-qc8Gg0wVxvV5ZwJdHA5wM7lz5GG.webp?w=3840"
+    alt: "Canva screenshot"
+    type: "screenshot"
 ---
 
-Canva has evolved from a simple design tool into a comprehensive visual communication platform with deep AI integration. Its Magic Studio suite includes AI-powered features that help users create professional designs without traditional design skills.
-
-Key AI features include Magic Design which generates complete design templates from text descriptions, Magic Edit for AI-powered image manipulation, Magic Eraser for removing unwanted objects, and AI-powered background removal. The platform also includes an AI image generator and AI writing assistant for design copy.
-
-Canva's AI features are designed to be accessible to non-designers while still providing professional-grade results.
+Design stunning visuals effortlessly with Canva's intuitive tools.

@@ -31,7 +31,19 @@
       "Bash(sed -i '' 's/useAsyncData\\('\\\\''sidebar-stats'\\\\'', async/useAsyncData\\('\\\\''sidebar-stats'\\\\'', { server: false }, async/' components/layout/AppSidebar.vue)",
       "Bash(git checkout *)",
       "Bash(git merge *)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(curl -sS -L -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36\" 'https://yo.directory/')",
+      "Bash(grep -oP '.{0,200}grid-item-title_text.{0,500}' /Users/kbmjj123/.claude/projects/-Users-kbmjj123-Desktop-fullstack-aifindr-org/30be60f6-3fe2-4012-99f8-cfcd96cc8d94/tool-results/b3j6nhydz.txt)",
+      "Bash(npx playwright *)",
+      "WebSearch",
+      "Bash(npm search *)",
+      "Bash(npx @playwright/mcp --help)",
+      "Read(//Users/kbmjj123/.claude/**)",
+      "Bash(grep -oP '.{0,100}grid-item-title_text.{0,500}')",
+      "Bash(npx tsx *)",
+      "Bash(curl -sS -L \"https://www.futurepedia.io/robots.txt\")",
+      "Bash(curl -sS \"https://www.futurepedia.io/sitemap_tools.xml\")",
+      "Bash(curl -sS -L -A \"Mozilla/5.0\" \"https://www.futurepedia.io/tool/gencraft\")"
     ]
   }
 }

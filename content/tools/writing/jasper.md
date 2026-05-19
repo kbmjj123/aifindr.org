@@ -1,29 +1,31 @@
 ---
 name: "Jasper"
 slug: "jasper"
-website: "https://www.jasper.ai"
+website: ""
 category: "writing"
-tags: ["marketing", "copywriting", "content-generation"]
+tags: ["writing","marketing"]
 pricing: "paid"
-price_starting: 39
-price_detail: "Creator $39/mo, Pro $59/mo, Business custom pricing."
+price_starting: 0
 has_free_trial: true
-platforms: ["web", "api"]
+platforms: ["web"]
 status: "active"
-launched: "2023-01"
-last_verified: "2026-04"
-title: "Jasper – AI Copywriting & Content Platform"
-meta_description: "Jasper is an AI content platform designed for marketing teams. Generate brand-aligned copy, blog posts, social media content, and ads at scale."
+meta_description: "An AI-driven platform for efficient, high-quality content creation and marketing strategy enhancement."
+cover_image: "https://cdn2.futurepedia.io/0c6d1585cf097da3d56a40c7ae873e7c03a2724a-256x256.svg?w=256"
+og_image: "https://cdn2.futurepedia.io/0c6d1585cf097da3d56a40c7ae873e7c03a2724a-256x256.svg?w=256"
+featured: false
+verified: true
+editor_pick: false
 submitter_site: ""
 submitter_github: ""
-featured: false
-verified: false
-editor_pick: false
-submitted_at: "2026-04-08"
+submitted_at: "2026-05-19"
+last_verified: "2026-05-19"
+data_source: "futurepedia"
+use_cases: []
+target_users: []
+images:
+  - url: "https://cdn2.futurepedia.io/0c6d1585cf097da3d56a40c7ae873e7c03a2724a-256x256.svg?w=256"
+    alt: "Jasper screenshot"
+    type: "screenshot"
 ---
 
-Jasper is an AI content platform built specifically for marketing and content teams. It helps businesses create on-brand content at scale, from blog posts and social media content to ad copy and email campaigns.
-
-Jasper distinguishes itself with brand voice customization, allowing teams to maintain consistency across all content. The platform includes templates for dozens of content types, collaboration features for team workflows, and integration with popular marketing tools.
-
-Jasper also offers analytics to track content performance and SEO optimization suggestions to improve search engine visibility of AI-generated content.
+An AI-driven platform for efficient, high-quality content creation and marketing strategy enhancement.

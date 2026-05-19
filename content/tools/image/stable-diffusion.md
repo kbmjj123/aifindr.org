@@ -1,29 +1,32 @@
 ---
 name: "Stable Diffusion"
 slug: "stable-diffusion"
-website: "https://stability.ai"
+website: "https://stability.ai/news/introducing-stable-diffusion-3-5/?utm_source=futurepedia&utm_medium=marketplace&utm_campaign=futurepedia"
 category: "image"
-tags: ["image-generation", "open-source", "text-to-image"]
+tags: ["image"]
 pricing: "free"
 price_starting: 0
-price_detail: "Open source, free self-hosted. API usage via Stability AI."
+price_detail: "Free Tier: Experience Stable Diffusion with unrestricted access to its full capabilities at no cost."
 has_free_trial: true
-platforms: ["web", "api", "desktop"]
+platforms: ["web"]
 status: "active"
-launched: "2022-08"
-last_verified: "2026-04"
-title: "Stable Diffusion – Open Source AI Image Generator"
-meta_description: "Stable Diffusion is an open-source AI image generation model. Generate high-quality images from text prompts, completely free and self-hostable."
-submitter_site: ""
-submitter_github: ""
-featured: true
+meta_description: "Generate stunning images from text with this AI tool."
+cover_image: "https://cdn2.futurepedia.io/7b25e23bd703e8cc47dec9b7f4e27192e38f8183-100x100.svg?w=256"
+og_image: "https://cdn2.futurepedia.io/7b25e23bd703e8cc47dec9b7f4e27192e38f8183-100x100.svg?w=256"
+featured: false
 verified: true
 editor_pick: false
-submitted_at: "2026-04-02"
+submitter_site: ""
+submitter_github: ""
+submitted_at: "2026-05-19"
+last_verified: "2026-05-19"
+data_source: "futurepedia"
+use_cases: []
+target_users: []
+images:
+  - url: "https://cdn2.futurepedia.io/7b25e23bd703e8cc47dec9b7f4e27192e38f8183-100x100.svg?w=256"
+    alt: "Stable Diffusion screenshot"
+    type: "screenshot"
 ---
 
-Stable Diffusion is a deep learning, text-to-image model released by Stability AI. It is primarily used to generate detailed images conditioned on text descriptions, though it can also be applied to other tasks such as inpainting, outpainting, and image-to-image translations.
-
-What sets Stable Diffusion apart is its open-source nature. The model weights are publicly available, allowing developers to run it locally, fine-tune it, and integrate it into their own applications. This has spawned a massive ecosystem of tools, UIs, and community models.
-
-The model has gone through several major versions, with SDXL and Stable Diffusion 3 offering significantly improved image quality, composition, and text rendering capabilities.
+Generate stunning images from text with this AI tool.

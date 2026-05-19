@@ -28,6 +28,9 @@ export interface RawTool {
   video_url?: string
   category_hint?: string      // 如果有明确分类可传入
   price_hint?: string          // 定价提示
+  price_detail?: string        // 定价详情文字
+  has_free_trial?: boolean     // 是否有免费试用
+  launched?: string            // 上线年份
   verified?: boolean
   tags_hint?: string[]
   data_source?: string         // 数据来源
@@ -44,6 +47,7 @@ export interface AifindrTool {
   pricing: 'free' | 'freemium' | 'paid'
   price_starting: number
   price_detail: string
+  has_free_trial: boolean
   platforms: string[]
   status: 'active' | 'beta' | 'discontinued' | 'pending'
   launched: string
@@ -171,7 +175,9 @@ export function convertTool(raw: RawTool): AifindrTool {
   const longDesc = raw.long_description || ''
   const combined = `${name} ${desc} ${longDesc}`
 
-  const category = raw.category_hint || inferCategory(name, desc, longDesc)
+  // Validate category hint — fall back to inference if not recognised
+  const rawCat = (raw.category_hint || '').toLowerCase()
+  const category = VALID_CATEGORIES.includes(rawCat) ? rawCat : inferCategory(name, desc, longDesc)
   const pricingInfo = inferPricing(raw.price_hint || combined)
   const tags = raw.tags_hint || inferTags(name, desc, longDesc, category)
   const platforms = inferPlatforms(combined)
@@ -202,10 +208,11 @@ export function convertTool(raw: RawTool): AifindrTool {
     tags,
     pricing: pricingInfo.pricing,
     price_starting: pricingInfo.price_starting,
-    price_detail: pricingInfo.price_detail,
+    price_detail: raw.price_detail || pricingInfo.price_detail || '',
+    has_free_trial: raw.has_free_trial || false,
     platforms,
     status: raw.verified ? 'active' : 'beta',
-    launched: '',
+    launched: raw.launched || '',
     meta_description: desc.slice(0, 150),
     cover_image: raw.logo_url || '',
     og_image: raw.screenshot_url || raw.logo_url || '',
@@ -242,6 +249,7 @@ export function toMarkdown(tool: AifindrTool): string {
     `price_starting: ${tool.price_starting}`,
   ]
   if (tool.price_detail) yamlLines.push(`price_detail: "${escapeYaml(tool.price_detail)}"`)
+  yamlLines.push(`has_free_trial: ${tool.has_free_trial}`)
   yamlLines.push(
     `platforms: ${JSON.stringify(tool.platforms)}`,
     `status: "${tool.status}"`,

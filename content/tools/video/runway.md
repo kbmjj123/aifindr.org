@@ -1,29 +1,32 @@
 ---
 name: "Runway"
 slug: "runway"
-website: "https://runwayml.com"
+website: "https://runwayml.com/?utm_source=futurepedia&utm_medium=marketplace&utm_campaign=futurepedia"
 category: "video"
-tags: ["video-generation", "video-editing", "text-to-video"]
-pricing: "freemium"
+tags: ["video"]
+pricing: "free"
 price_starting: 0
-price_detail: "Free tier with watermark. Pro $15/mo, Unlimited $95/mo."
+price_detail: "Free Plan: Experience Runway with a limited free trial.Standard Plan: The paid tiers start at $15 per month."
 has_free_trial: true
-platforms: ["web", "api"]
+platforms: ["web"]
 status: "active"
-launched: "2023-02"
-last_verified: "2026-04"
-title: "Runway – AI Video Generation & Editing"
-meta_description: "Runway is a comprehensive AI video creation platform offering text-to-video generation, video editing, motion tracking, and real-time video effects."
-submitter_site: ""
-submitter_github: ""
+meta_description: "AI-driven platform for high-fidelity, controllable video creation."
+cover_image: "https://cdn2.futurepedia.io/714f6803a3f840c332a819cee85824cf2ea79be7-512x512.svg?w=256"
+og_image: "https://cdn2.futurepedia.io/714f6803a3f840c332a819cee85824cf2ea79be7-512x512.svg?w=256"
 featured: false
 verified: true
 editor_pick: false
-submitted_at: "2026-04-10"
+submitter_site: ""
+submitter_github: ""
+submitted_at: "2026-05-19"
+last_verified: "2026-05-19"
+data_source: "futurepedia"
+use_cases: []
+target_users: []
+images:
+  - url: "https://cdn2.futurepedia.io/714f6803a3f840c332a819cee85824cf2ea79be7-512x512.svg?w=256"
+    alt: "Runway screenshot"
+    type: "screenshot"
 ---
 
-Runway is a pioneering AI video creation and editing platform. Its Gen-series models can generate short video clips from text descriptions, while its broader platform offers dozens of AI-powered video editing tools including background removal, motion tracking, inpainting, and super-resolution.
-
-Runway has been used in major film and television productions, music videos, and advertising campaigns. The platform is designed for both professional creators and newcomers to video production.
-
-Key features include text-to-video generation, video-to-video style transfer, green screen keying with AI, motion brush for animating images, and collaborative team workspaces for creative projects.
+AI-driven platform for high-fidelity, controllable video creation.

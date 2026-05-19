@@ -1,29 +1,32 @@
 ---
 name: "Replit"
 slug: "replit"
-website: "https://replit.com"
+website: "https://replit.com/?utm_source=futurepedia&utm_medium=marketplace&utm_campaign=futurepedia"
 category: "code"
-tags: ["ide", "collaboration", "deployment", "agent"]
-pricing: "freemium"
+tags: ["code"]
+pricing: "free"
 price_starting: 0
-price_detail: "Free tier available. Core $20/mo, Teams $40/mo."
+price_detail: "Free Tier: Explore Replit AI with a basic set of features at no cost.Pro Tier: Advanced features and capabilities start at $7 per month."
 has_free_trial: true
-platforms: ["web", "desktop"]
+platforms: ["web"]
 status: "active"
-launched: "2023-11"
-last_verified: "2026-04"
-title: "Replit – AI-Powered Collaborative IDE"
-meta_description: "Replit is an online coding platform with AI-powered development tools. Code, collaborate, and deploy apps directly from your browser."
+meta_description: "Streamline coding, collaborate in real-time, deploy instantly from your browser."
+cover_image: "https://cdn2.futurepedia.io/273e25784ddd17a8ae900fb3f27e047202fdbe64-128x128.png?w=256"
+og_image: "https://cdn2.futurepedia.io/2026-04-27T18-46-46.860Z-Qg5XcxqJgzFMZxEQ0lilpb0BSV3XEJ6pi.webp?w=3840"
+featured: false
+verified: true
+editor_pick: false
 submitter_site: ""
 submitter_github: ""
-featured: false
-verified: false
-editor_pick: false
-submitted_at: "2026-04-15"
+submitted_at: "2026-05-19"
+last_verified: "2026-05-19"
+data_source: "futurepedia"
+use_cases: []
+target_users: []
+images:
+  - url: "https://cdn2.futurepedia.io/2026-04-27T18-46-46.860Z-Qg5XcxqJgzFMZxEQ0lilpb0BSV3XEJ6pi.webp?w=3840"
+    alt: "Replit screenshot"
+    type: "screenshot"
 ---
 
-Replit is a cloud-based development platform that makes it easy to write, run, and deploy code from any device with a browser. Its AI agent, Replit Agent, can build entire applications from natural language descriptions.
-
-The platform supports hundreds of programming languages and frameworks, with instant setup and no configuration required. Replit's AI features include code completion, AI chat, and the Agent mode that can autonomously build, test, and deploy applications based on user requirements.
-
-Replit is particularly popular for learning to code, rapid prototyping, hackathons, and building full-stack applications quickly without managing infrastructure.
+Streamline coding, collaborate in real-time, deploy instantly from your browser.
