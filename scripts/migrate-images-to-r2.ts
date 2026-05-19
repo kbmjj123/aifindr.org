@@ -25,10 +25,18 @@ import { readFileSync, writeFileSync, existsSync } from 'fs'
 import { readdirSync, statSync } from 'fs'
 import { join, basename, extname } from 'path'
 import { createHash } from 'crypto'
-import { fileURLToPath } from 'url'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
+// Load .env file (no dependency needed)
 const __dirname = new URL('.', import.meta.url).pathname
+try {
+  const envPath = join(__dirname, '..', '.env')
+  const envContent = readFileSync(envPath, 'utf-8')
+  for (const line of envContent.split('\n')) {
+    const m = line.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/)
+    if (m) process.env[m[1]] = m[2].trim()
+  }
+} catch { /* .env not found, skip */ }
 
 // ─── 配置 ──────────────────────────────────────────────────
 
