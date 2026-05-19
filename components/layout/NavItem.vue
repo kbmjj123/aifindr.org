@@ -29,9 +29,15 @@ const emitClick = (e: MouseEvent) => emit('click', e)
 
 const isActive = computed(() => {
   if (props.to === '/') return route.path === '/'
-  const base = props.to.split('?')[0]
-  // Remove trailing slash if present
-  const normalized = base.endsWith('/') ? base.slice(0, -1) : base
-  return route.path === normalized || route.path.startsWith(normalized + '/')
+  // Compare full URL including query params
+  const toUrl = new URL(props.to, 'https://aifindr.org')
+  const currentUrl = new URL(route.fullPath, 'https://aifindr.org')
+  // For top-level nav items, match exactly the path+query
+  if (toUrl.search) {
+    return currentUrl.pathname + currentUrl.search === toUrl.pathname + toUrl.search
+  }
+  // For category nav items, match path prefix (e.g. /tools/image matches /tools/image/midjourney)
+  const normalized = toUrl.pathname.endsWith('/') ? toUrl.pathname.slice(0, -1) : toUrl.pathname
+  return currentUrl.pathname === normalized || currentUrl.pathname.startsWith(normalized + '/')
 })
 </script>

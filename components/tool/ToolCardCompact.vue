@@ -1,5 +1,5 @@
 <template>
-  <article class="tool-card min-w-[180px] lg:min-w-0 text-center">
+  <NuxtLink :to="detailLink" class="tool-card min-w-[180px] lg:min-w-0 text-center no-underline block">
     <div class="flex flex-col items-center gap-2.5">
       <div class="tool-logo !w-9 !h-9 !rounded-[7px] !text-[11px]">
         {{ name[0] }}
@@ -14,21 +14,30 @@
       </div>
       <span :class="['tag', `tag-${pricing}`]">{{ pricingLabel }}</span>
     </div>
-  </article>
+  </NuxtLink>
 </template>
 
 <script setup lang="ts">
 import type { ToolPricing } from '~/types/tool'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   name?: string
+  slug?: string
+  category?: string
   description?: string
   pricing?: ToolPricing
 }>(), {
   name: 'Tool Name',
+  slug: '',
+  category: 'other',
   description: 'Brief description',
   pricing: 'free',
 })
 
-const pricingLabel = 'Free'
+const detailLink = computed(() => `/tools/${props.category}/${props.slug}`)
+
+const pricingLabel = computed(() => {
+  const p = props.pricing
+  return p.charAt(0).toUpperCase() + p.slice(1)
+})
 </script>
