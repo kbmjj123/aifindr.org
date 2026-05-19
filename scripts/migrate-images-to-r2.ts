@@ -159,8 +159,14 @@ async function main() {
       total++
 
       try {
-        const res = await fetch(url)
-        if (!res.ok) { log(`  ✗ ${res.status} ${url}`); failed++; continue }
+        const res = await fetch(url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (compatible; aifindr-migrate/1.0)',
+            'Accept': 'image/webp,image/png,image/jpeg,image/svg+xml,*/*',
+          },
+          signal: AbortSignal.timeout(15000),
+        })
+        if (!res.ok) { log(`  ✗ ${res.status} ${url.slice(0, 80)}`); failed++; continue }
 
         const body = Buffer.from(await res.arrayBuffer())
         const contentType = res.headers.get('content-type') || 'image/webp'
