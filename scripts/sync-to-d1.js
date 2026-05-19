@@ -72,6 +72,16 @@ function esc(str) {
   return `'${String(str).replace(/'/g, "''")}'`
 }
 
+/** Parse a value that might be a JSON array string (e.g. '["a","b"]') */
+function parseArray(val) {
+  if (!val || typeof val !== 'string') return val
+  const t = val.trim()
+  if (t.startsWith('[') && t.endsWith(']')) {
+    try { return JSON.parse(t) } catch { return val }
+  }
+  return val
+}
+
 function now() {
   return new Date().toISOString().slice(0, 19).replace('T', ' ')
 }
@@ -101,7 +111,11 @@ function main() {
     const body = parsed.body
     const relPath = relative(CONTENT_DIR, filePath)
     const category = relPath.split('/')[0]
-    const platforms = Array.isArray(m.platforms) ? m.platforms.join(',') : (typeof m.platforms === 'string' ? m.platforms : '')
+
+    // Normalize JSON-string arrays to real arrays
+    const tags = parseArray(m.tags)
+    const platformsVal = parseArray(m.platforms) || m.platforms
+    const platforms = Array.isArray(platformsVal) ? platformsVal.join(',') : (typeof platformsVal === 'string' ? platformsVal : '')
     const slug = m.slug || (m.name ? m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'unknown')
 
     lines.push(`-- ${relPath}`)
@@ -135,8 +149,10 @@ function main() {
     lines.push(`  ${esc(relPath)},`)
     lines.push(`  ${esc(body)},`)
     // v2.0 新字段
-    const useCases = Array.isArray(m.use_cases) ? m.use_cases.join(',') : (m.use_cases || '')
-    const targetUsers = Array.isArray(m.target_users) ? m.target_users.join(',') : (m.target_users || '')
+    const ucArr = parseArray(m.use_cases)
+    const tuArr = parseArray(m.target_users)
+    const useCases = Array.isArray(ucArr) ? ucArr.join(',') : (ucArr || '')
+    const targetUsers = Array.isArray(tuArr) ? tuArr.join(',') : (tuArr || '')
     lines.push(`  ${esc(useCases)},`)
     lines.push(`  ${esc(targetUsers)},`)
     lines.push(`  ${esc(m.data_source)},`)
@@ -144,6 +160,37 @@ function main() {
     lines.push(`  ${esc(m.submitted_at || timestamp)},`)
     lines.push(`  ${esc(timestamp)}`)
     lines.push(`);`)
+
+    // ── tool_tags ──
+    if (Array.isArray(tags) && tags.length > 0) {
+      lines.push(`DELETE FROM tool_tags WHERE tool_id = (SELECT id FROM tools WHERE slug = ${esc(slug)});`)
+      for (const tag of tags) {
+        lines.push(`INSERT INTO tool_tags (tool_id, tag) SELECT id, ${esc(tag)} FROM tools WHERE slug = ${esc(slug)};`)
+      }
+    }
+
+    // ── tool_images ──
+    const images = parseArray(m.images) || m.images
+    if (Array.isArray(images) && images.length > 0) {
+      lines.push(`DELETE FROM tool_images WHERE tool_id = (SELECT id FROM tools WHERE slug = ${esc(slug)});`)
+      images.forEach((img, i) => {
+        lines.push(`INSERT INTO tool_images (tool_id, url, alt, caption, sort_order, image_type, width, height)`)
+        lines.push(`  SELECT id, ${esc(img.url)}, ${esc(img.alt || '')}, ${esc(img.caption || '')}, ${i}, ${esc(img.type || 'screenshot')}, ${img.width ?? 'NULL'}, ${img.height ?? 'NULL'}`)
+        lines.push(`  FROM tools WHERE slug = ${esc(slug)};`)
+      })
+    }
+
+    // ── tool_videos ──
+    const videos = parseArray(m.videos) || m.videos
+    if (Array.isArray(videos) && videos.length > 0) {
+      lines.push(`DELETE FROM tool_videos WHERE tool_id = (SELECT id FROM tools WHERE slug = ${esc(slug)});`)
+      videos.forEach((vid, i) => {
+        lines.push(`INSERT INTO tool_videos (tool_id, url, video_id, platform, title, video_type, thumbnail, duration, sort_order)`)
+        lines.push(`  SELECT id, ${esc(vid.url)}, ${esc(vid.video_id || '')}, ${esc(vid.platform || 'direct')}, ${esc(vid.title || '')}, ${esc(vid.type || 'demo')}, ${esc(vid.thumbnail || '')}, ${vid.duration ?? 'NULL'}, ${i}`)
+        lines.push(`  FROM tools WHERE slug = ${esc(slug)};`)
+      })
+    }
+
     lines.push('')
   }
 
