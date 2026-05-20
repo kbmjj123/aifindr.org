@@ -827,23 +827,34 @@ body::before {
 /* ═══════════════════════════════════════════════
    移动端 Sidebar 抽屉
 ═══════════════════════════════════════════════ */
-.sidebar-drawer {
-  width: 280px;
-  max-width: 82vw;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 150;
-  background: var(--color-bg-elevated);
-  transform: translateX(-100%);
-  transition: transform 250ms ease;
-  border-right: 1px solid var(--color-border);
-  overflow-y: auto;
-}
-.sidebar-drawer.open { transform: translateX(0); }
 
-/* ═══════════════════════════════════════════════
+
+	.sidebar-drawer {
+	  width: 280px;
+	  max-width: 82vw;
+	  position: fixed;
+	  left: 0;
+	  top: 0;
+	  bottom: 0;
+	  z-index: 150;
+	  background: var(--color-bg-elevated);
+	  border-right: 1px solid var(--color-border);
+	  overflow-y: auto;
+	}
+
+	.drawer-enter-active,
+	.drawer-leave-active { transition: opacity 250ms ease; }
+	.drawer-enter-active .sidebar-drawer,
+	.drawer-leave-active .sidebar-drawer { transition: transform 250ms ease; }
+	.drawer-enter-from,
+	.drawer-leave-to { opacity: 0; }
+	.drawer-enter-from .sidebar-drawer { transform: translateX(-100%); }
+	.drawer-leave-to .sidebar-drawer { transform: translateX(-100%); }
+
+	.overlay-enter-active,
+	.overlay-leave-active { transition: opacity 250ms ease; }
+	.overlay-enter-from,
+	.overlay-leave-to { opacity: 0; }/* ═══════════════════════════════════════════════
    页面级 Header 组件样式
 ═══════════════════════════════════════════════ */
 /* Logo */

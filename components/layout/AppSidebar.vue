@@ -42,37 +42,41 @@
 
   <!-- Mobile drawer -->
   <Teleport to="body">
-    <div v-if="isMobileMenuOpen" class="fixed inset-0 z-[60] lg:hidden" style="pointer-events: auto;">
-      <div class="absolute inset-0" :style="{ background: 'rgba(0,0,0,0.6)', pointerEvents: 'auto' }" @click="isMobileMenuOpen = false" />
-      <aside class="sidebar-drawer open px-3 py-4">
-        <div class="flex items-center justify-between mb-4 px-3">
-          <NuxtLink to="/" class="flex items-center gap-2" @click="isMobileMenuOpen = false">
-            <div class="logo-icon">A</div>
-            <span class="logo-text">aifindr</span>
-          </NuxtLink>
-          <button class="w-7 h-7 flex items-center justify-center rounded-md"
-            style="color: var(--color-text-secondary)" @click="isMobileMenuOpen = false">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+    <Transition name="drawer">
+      <div v-if="isMobileMenuOpen" class="fixed inset-0 z-[60] lg:hidden" style="pointer-events: auto;">
+        <Transition name="overlay">
+          <div v-if="isMobileMenuOpen" class="absolute inset-0" :style="{ background: 'rgba(0,0,0,0.6)', pointerEvents: 'auto' }" @click="isMobileMenuOpen = false" />
+        </Transition>
+        <aside class="sidebar-drawer px-3 py-4">
+          <div class="flex items-center justify-between mb-4 px-3">
+            <NuxtLink to="/" class="flex items-center gap-2" @click="isMobileMenuOpen = false">
+              <div class="logo-icon">A</div>
+              <span class="logo-text">aifindr</span>
+            </NuxtLink>
+            <button class="w-7 h-7 flex items-center justify-center rounded-md"
+              style="color: var(--color-text-secondary)" @click="isMobileMenuOpen = false">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-        <div class="nav-section-title">Browse</div>
-        <NavItem v-for="item in mainNav" :key="item.label" :to="item.to" :icon="item.icon" :label="item.label" @click="isMobileMenuOpen = false" />
-        <div class="nav-section-title">Categories</div>
-        <NavItem v-for="cat in categories" :key="cat.slug" :to="`/tools/${cat.slug}`"
-          :icon="cat.emoji" :label="cat.name" @click="isMobileMenuOpen = false" />
-        <div class="mt-6 pt-4" :style="{ borderTop: '1px solid var(--color-border)' }">
-          <NavItem to="/submit" label="Submit a Tool" @click="isMobileMenuOpen = false" />
-          <template v-if="auth?.isLoggedIn.value && auth?.user.value">
-            <NavItem to="/settings" label="Settings" @click="isMobileMenuOpen = false" />
-            <button class="nav-item w-full" @click="auth.logout(); isMobileMenuOpen = false">Sign Out</button>
-          </template>
-          <button v-else class="nav-item w-full" @click="auth.login(); isMobileMenuOpen = false">Sign In with GitHub</button>
-        </div>
-      </aside>
-    </div>
+          <div class="nav-section-title">Browse</div>
+          <NavItem v-for="item in mainNav" :key="item.label" :to="item.to" :icon="item.icon" :label="item.label" @click="isMobileMenuOpen = false" />
+          <div class="nav-section-title">Categories</div>
+          <NavItem v-for="cat in categories" :key="cat.slug" :to="`/tools/${cat.slug}`"
+            :icon="cat.emoji" :label="cat.name" @click="isMobileMenuOpen = false" />
+          <div class="mt-6 pt-4" :style="{ borderTop: '1px solid var(--color-border)' }">
+            <NavItem to="/submit" label="Submit a Tool" @click="isMobileMenuOpen = false" />
+            <template v-if="auth?.isLoggedIn.value && auth?.user.value">
+              <NavItem to="/settings" label="Settings" @click="isMobileMenuOpen = false" />
+              <button class="nav-item w-full" @click="auth.logout(); isMobileMenuOpen = false">Sign Out</button>
+            </template>
+            <button v-else class="nav-item w-full" @click="auth.login(); isMobileMenuOpen = false">Sign In with GitHub</button>
+          </div>
+        </aside>
+      </div>
+    </Transition>
   </Teleport>
 </template>
 
