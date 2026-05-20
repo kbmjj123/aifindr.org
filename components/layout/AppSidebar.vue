@@ -42,8 +42,8 @@
 
   <!-- Mobile drawer -->
   <Teleport to="body">
-    <div v-if="isMobileMenuOpen" class="fixed inset-0 z-[60] lg:hidden">
-      <div class="absolute inset-0" :style="{ background: 'rgba(0,0,0,0.6)' }" @click="isMobileMenuOpen = false" />
+    <div v-if="isMobileMenuOpen" class="fixed inset-0 z-[60] lg:hidden" style="pointer-events: auto;">
+      <div class="absolute inset-0" :style="{ background: 'rgba(0,0,0,0.6)', pointerEvents: 'auto' }" @click="isMobileMenuOpen = false" />
       <aside class="sidebar-drawer open px-3 py-4">
         <div class="flex items-center justify-between mb-4 px-3">
           <NuxtLink to="/" class="flex items-center gap-2" @click="isMobileMenuOpen = false">
@@ -91,6 +91,13 @@ const mainNav = [
 ]
 
 const categories = CATEGORIES
+
+// Lock body scroll when mobile menu is open
+watch(isMobileMenuOpen, (open) => {
+  if (import.meta.client) {
+    document.body.style.overflow = open ? 'hidden' : ''
+  }
+})
 
 const stats = ref(0)
 const categoriesCount = ref(0)

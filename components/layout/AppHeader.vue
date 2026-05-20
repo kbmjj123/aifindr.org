@@ -8,10 +8,9 @@
         <span class="logo-text">aifindr<span class="org">.org</span></span>
       </NuxtLink>
 
-      <!-- Center: Search (full bar desktop, compact icon mobile) -->
-      <div class="flex-1 flex justify-center max-w-[420px] mx-auto">
-        <div class="hidden sm:contents"><SearchBar /></div>
-        <div class="sm:hidden ml-auto"><SearchBar compact /></div>
+      <!-- Center: Search (desktop only) -->
+      <div class="flex-1 hidden sm:flex justify-center max-w-[420px] mx-auto">
+        <SearchBar />
       </div>
 
       <!-- Right: Actions -->
