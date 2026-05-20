@@ -1,5 +1,6 @@
 <template>
-  <NuxtLink v-if="!isExternal" :to="resolvedTo" class="nav-item" :class="{ active: isActive }" @click="emitClick">
+  <NuxtLink v-if="!isExternal" :to="resolvedTo" class="nav-item" :class="{ active: isActive }"
+    @click="handleClick">
     <span v-if="icon" class="w-4 h-4 flex items-center justify-center text-sm shrink-0">{{ icon }}</span>
     <span class="truncate">{{ label }}</span>
     <span v-if="count !== undefined" class="nav-count">{{ count }}</span>
@@ -27,33 +28,55 @@ const route = useRoute()
 const isExternal = computed(() => props.to.startsWith('http'))
 const emitClick = (e: MouseEvent) => emit('click', e)
 
-const resolvedTo = computed(() => {
-  const [path, rawQuery] = props.to.split('?')
-  if (!rawQuery) return path
-  return { path, query: Object.fromEntries(new URLSearchParams(rawQuery)) }
+// Parse to into { path, query, hash }
+const parsed = computed(() => {
+  const [pathAndQuery, hash] = props.to.split('#')
+  const [path, rawQuery] = pathAndQuery.split('?')
+  let p = path || '/'
+  // Resolve relative hash anchors like "#trending" → path is current page
+  if (props.to.startsWith('#') && !p.startsWith('/')) p = '/'
+  const query = rawQuery ? Object.fromEntries(new URLSearchParams(rawQuery)) : undefined
+  return { path: p, query, hash: hash || undefined }
 })
 
-const isActive = computed(() => {
-  if (props.to === '/') return route.path === '/'
+const resolvedTo = computed(() => {
+  const { path, query, hash } = parsed.value
+  if (!query && !hash) return path
+  return { path, query: query || undefined, hash: hash || undefined }
+})
 
-  const toUrl = new URL(props.to, 'https://aifindr.org')
-  const toPath = toUrl.pathname.endsWith('/') ? toUrl.pathname.slice(0, -1) : toUrl.pathname
+function handleClick(e: MouseEvent) {
+  const { hash } = parsed.value
+  if (hash && route.path === '/') {
+    // Same page hash scroll — smooth
+    e.preventDefault()
+    const el = document.getElementById(hash)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+  emitClick(e)
+}
+
+const isActive = computed(() => {
+  const { path: toPathRaw, hash: toHash, query } = parsed.value
+  const toPath = toPathRaw.endsWith('/') ? toPathRaw.slice(0, -1) : toPathRaw
   const currentPath = route.path.endsWith('/') ? route.path.slice(0, -1) : route.path
 
-  // Nav has query → must match path AND query params exactly
-  if (toUrl.search) {
-    const toParams = new URLSearchParams(toUrl.search)
-    const matchAll = Array.from(toParams.entries()).every(([k, v]) => route.query[k] === v)
+  // Home: active on '/' with no hash and no query
+  if (toPath === '/') return currentPath === '/' && !route.hash && !Object.keys(route.query).length
+
+  // Hash anchor link (e.g. #trending) — active when page matches + hash matches
+  if (toHash) return currentPath === toPath && route.hash === `#${toHash}`
+
+  // Query params — exact match required
+  if (query) {
+    const matchAll = Object.entries(query).every(([k, v]) => route.query[k] === v)
     if (!matchAll) return false
-  } else {
-    // Nav has NO query → only active if current URL also has NO query
-    if (Object.keys(route.query).length > 0) return false
+  } else if (Object.keys(route.query).length > 0) {
+    return false
   }
 
-  // Exact path match
+  // Path match
   if (toPath === currentPath) return true
-  // Prefix match: only if nav item has 2+ segments (e.g. /tools/image matches /tools/image/midjourney)
-  // Single-segment roots like /tools do NOT match children (/tools/image)
   const toDepth = toPath.split('/').filter(Boolean).length
   if (toDepth >= 2 && currentPath.startsWith(toPath + '/')) return true
   return false

@@ -88,9 +88,9 @@ const isMobileMenuOpen = useState('mobileMenuOpen')
 
 const mainNav = [
   { label: 'Home', to: '/', icon: '🏠' },
-  { label: 'Trending', to: '/tools?sort=trending', icon: '🔥' },
-  { label: 'Featured', to: '/tools?sort=featured', icon: '⭐' },
-  { label: 'New', to: '/tools?sort=latest', icon: '🆕' },
+  { label: 'Trending', to: '/#trending', icon: '🔥' },
+  { label: 'Featured', to: '/#featured', icon: '⭐' },
+  { label: 'New', to: '/#recent', icon: '🆕' },
   { label: 'All Tools', to: '/tools', icon: '🔍' },
 ]
 
