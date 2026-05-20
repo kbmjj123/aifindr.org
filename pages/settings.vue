@@ -12,8 +12,22 @@
       </p>
     </div>
 
+    <!-- Not logged in -->
+    <div v-if="!isLoggedIn" class="text-center py-16">
+      <p class="font-body text-[28px] mb-3">👤</p>
+      <h3 class="font-sans font-bold text-[16px]" :style="{ color: 'var(--color-text-primary)' }">
+        Sign in to manage your profile
+      </h3>
+      <p class="font-body text-[12px] mt-1 mb-6" :style="{ color: 'var(--color-text-muted)' }">
+        Connect your GitHub account to set up notifications and email preferences.
+      </p>
+      <button class="btn-primary !h-[36px] !px-[20px] !text-[12px]" @click="login">
+        Sign in with GitHub
+      </button>
+    </div>
+
     <!-- Needs Contact Email Banner -->
-    <div v-if="user?.needs_contact_email" class="mb-6 px-5 py-4 rounded-lg"
+    <div v-if="isLoggedIn && user?.needs_contact_email" class="mb-6 px-5 py-4 rounded-lg"
       :style="{ background: 'var(--color-accent-dim)', border: '1px solid var(--color-accent-border)' }">
       <p class="font-body text-[13px]"
         :style="{ color: 'var(--color-text-primary)' }">
@@ -22,7 +36,7 @@
     </div>
 
     <!-- Email Section -->
-    <section class="max-w-lg">
+    <section v-if="isLoggedIn" class="max-w-lg">
       <h2 class="font-sans font-bold text-[15px] tracking-[-0.3px] mb-5"
         :style="{ color: 'var(--color-text-primary)' }">
         Email Notifications
@@ -94,12 +108,7 @@ usePageSeo({
   description: 'Manage your aifindr.org account settings and email preferences.',
 })
 
-const { user, isLoggedIn, fetchUser } = useAuth()
-
-// Redirect if not logged in
-if (import.meta.client && !isLoggedIn.value) {
-  await navigateTo('/')
-}
+const { user, isLoggedIn, login, fetchUser } = useAuth()
 
 const contactEmail = ref('')
 const saving = ref(false)
