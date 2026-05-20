@@ -65,6 +65,11 @@
           :icon="cat.emoji" :label="cat.name" @click="isMobileMenuOpen = false" />
         <div class="mt-6 pt-4" :style="{ borderTop: '1px solid var(--color-border)' }">
           <NavItem to="/submit" label="Submit a Tool" @click="isMobileMenuOpen = false" />
+          <template v-if="auth?.isLoggedIn.value && auth?.user.value">
+            <NavItem to="/settings" label="Settings" @click="isMobileMenuOpen = false" />
+            <button class="nav-item w-full" @click="auth.logout(); isMobileMenuOpen = false">Sign Out</button>
+          </template>
+          <button v-else class="nav-item w-full" @click="auth.login(); isMobileMenuOpen = false">Sign In with GitHub</button>
         </div>
       </aside>
     </div>
@@ -74,6 +79,7 @@
 <script setup lang="ts">
 import { CATEGORIES } from '~/types/tool'
 
+const auth = useAuth()
 const isMobileMenuOpen = useState('mobileMenuOpen')
 
 const mainNav = [
