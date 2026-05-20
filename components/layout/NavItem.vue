@@ -29,14 +29,15 @@ const emitClick = (e: MouseEvent) => emit('click', e)
 
 const isActive = computed(() => {
   if (props.to === '/') return route.path === '/'
-  // Compare full URL including query params
   const toUrl = new URL(props.to, 'https://aifindr.org')
   const currentUrl = new URL(route.fullPath, 'https://aifindr.org')
-  // For top-level nav items, match exactly the path+query
+  // Nav item has query params → require exact path + query match
   if (toUrl.search) {
     return currentUrl.pathname + currentUrl.search === toUrl.pathname + toUrl.search
   }
-  // For category nav items, match path prefix (e.g. /tools/image matches /tools/image/midjourney)
+  // Nav item has NO query → only active if current URL also has no query
+  if (currentUrl.search) return false
+  // Match /tools, /tools/image, /tools/image/midjourney
   const normalized = toUrl.pathname.endsWith('/') ? toUrl.pathname.slice(0, -1) : toUrl.pathname
   return currentUrl.pathname === normalized || currentUrl.pathname.startsWith(normalized + '/')
 })
