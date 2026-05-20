@@ -939,7 +939,6 @@ body::before {
   cursor: pointer;
   white-space: nowrap;
   transition: opacity 0.15s;
-  display: inline-flex;
   align-items: center;
   gap: 4px;
 }
