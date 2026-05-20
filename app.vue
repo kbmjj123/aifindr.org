@@ -10,6 +10,8 @@
     <AppFooter />
     <!-- Mobile tab bar -->
     <MobileTabBar />
+    <!-- Search Modal -->
+    <SearchModal />
   </div>
 </template>
 
@@ -50,6 +52,7 @@ useHead({
 })
 
 const { handleUrlToken } = useAuth()
+useKeyboardShortcuts()
 
 onMounted(() => {
   handleUrlToken()
