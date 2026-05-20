@@ -62,10 +62,16 @@ const isActive = computed(() => {
   const currentPath = route.path.endsWith('/') ? route.path.slice(0, -1) : route.path
 
   // Home: active on '/' with no hash and no query
-  if (toPath === '/') return currentPath === '/' && !route.hash && !Object.keys(route.query).length
+  if (toPath === '/') {
+    const currentHash = import.meta.client ? window.location.hash : route.hash || ''
+    return currentPath === '/' && !currentHash && !Object.keys(route.query).length
+  }
 
   // Hash anchor link (e.g. #trending) — active when page matches + hash matches
-  if (toHash) return currentPath === toPath && route.hash === `#${toHash}`
+  if (toHash) {
+    const currentHash = import.meta.client ? window.location.hash : route.hash || ''
+    return currentPath === toPath && currentHash === `#${toHash}`
+  }
 
   // Query params — exact match required
   if (query) {
