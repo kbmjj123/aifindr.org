@@ -14,7 +14,7 @@
       </div>
 
       <!-- Right: Actions -->
-      <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+      <div class="flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto">
         <!-- Desktop: Submit + Auth -->
         <NuxtLink to="/submit" class="btn-header-submit hidden sm:inline-flex">
           + Submit
