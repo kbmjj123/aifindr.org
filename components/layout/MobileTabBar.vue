@@ -20,8 +20,22 @@ const tabs = [
 ]
 
 function isActive(to: string) {
-  if (to === '/') return route.path === '/'
-  const base = to.split('?')[0]
-  return base !== undefined && route.path.startsWith(base)
+  const [toPath, toQuery] = to.split('?')
+
+  // Exact match for home
+  if (toPath === '/') return route.path === '/'
+
+  // Query-parameter-sensitive: active only when query param matches
+  if (toQuery) {
+    const params = new URLSearchParams(toQuery)
+    const active = Array.from(params.entries()).every(([k, v]) => route.query[k] === v)
+    if (!active) return false
+  }
+
+  // Path match: /tools matches /tools, /tools/image/midjourney etc.
+  if (toPath === '/tools') return route.path.startsWith('/tools')
+
+  // Exact path match for everything else
+  return route.path === toPath || route.path.startsWith(toPath + '/')
 }
 </script>
