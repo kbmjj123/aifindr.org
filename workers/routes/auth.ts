@@ -1,4 +1,4 @@
-import type { Env, JWTPayload } from '../types'
+import { siteUrl, type Env, type JWTPayload } from '../types'
 import { json, error } from '../lib/response'
 import { signJWT, verifyJWT, getTokenFromRequest } from '../lib/jwt'
 import { getNotifyEmail, sendEmail } from '../lib/email'
@@ -106,7 +106,7 @@ export async function handleAuthCallback(url: URL, request: Request, env: Env): 
         `<p>Hi <strong>@${ghUser.login}</strong>! Welcome to aifindr.org.</p>`,
         `<p>Your GitHub email is set to private, so we can't send you important notifications — like submission status updates, review results, and backlink confirmations.</p>`,
         `<p><strong>Add your contact email here:</strong></p>`,
-        `<p><a href="https://aifindr.org/settings">Go to Settings →</a></p>`,
+        `<p><a href="${siteUrl(env, '/settings')}">Go to Settings →</a></p>`,
         `<p>It's optional and only takes a moment. We'll only email you about your submissions and reviews.</p>`,
         `<p>— aifindr.org</p>`,
       ].join(''),

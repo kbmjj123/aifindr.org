@@ -1,4 +1,4 @@
-import type { Env, UserRecord } from '../types'
+import { siteUrl, type Env, type UserRecord } from '../types'
 import { json, error } from '../lib/response'
 import { verifyJWT, getTokenFromRequest } from '../lib/jwt'
 import { getNotifyEmail, sendEmail } from '../lib/email'
@@ -143,7 +143,7 @@ export async function handleSubmit(request: Request, env: Env) {
       html: [
         `<p>Hi! Your tool <strong>${name}</strong> (${website}) has been submitted to aifindr.org.</p>`,
         `<p>Our team will review it within <strong>3–7 working days</strong>.</p>`,
-        `<p>If you'd like faster review (within 24 hours), check out our <a href="https://aifindr.org/submit">paid acceleration</a>.</p>`,
+        `<p>If you'd like faster review (within 24 hours), check out our <a href="${siteUrl(env, '/submit')}">paid acceleration</a>.</p>`,
         `<p>Your submission reference: <code>${slug}</code></p>`,
         `<p>— aifindr.org</p>`,
       ].join(''),
@@ -174,7 +174,7 @@ export async function handleSubmit(request: Request, env: Env) {
             `<tr><td><strong>Pricing:</strong></td><td>${pricing}</td></tr>`,
             `<tr><td><strong>Submitted:</strong></td><td>${now}</td></tr>`,
             `</table>`,
-            `<p><a href="https://aifindr.org/admin">Review in admin panel →</a></p>`,
+            `<p><a href="${siteUrl(env, '/admin')}">Review in admin panel →</a></p>`,
           ].join(''),
         })
       }

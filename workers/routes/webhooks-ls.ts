@@ -1,4 +1,4 @@
-import type { Env } from '../types'
+import { siteUrl, type Env } from '../types'
 import { json, error } from '../lib/response'
 import { sendEmail } from '../lib/email'
 
@@ -130,7 +130,7 @@ export async function handleLSPurchaseEmail(env: Env, opts: {
       `<tr><td><strong>Order:</strong></td><td><code>${orderId}</code></td></tr>`,
       `</table>`,
       `<p>${purchaseBody}</p>`,
-      `<p>Questions? Reply to this email or <a href="https://aifindr.org">visit aifindr.org</a>.</p>`,
+      `<p>Questions? Reply to this email or <a href="${siteUrl(env)}">visit aifindr.org</a>.</p>`,
       `<p>— aifindr.org</p>`,
     ].join(''),
   })
@@ -156,7 +156,7 @@ export async function handleLSPaymentFailure(env: Env, opts: {
       `<p><strong>Order ID:</strong> <code>${orderId}</code></p>`,
       isRefund
         ? `<p>The refund should appear on your statement within 5–10 business days.</p>`
-        : `<p>Please check your payment method or try again. If the issue persists, <a href="https://aifindr.org">contact support</a>.</p>`,
+        : `<p>Please check your payment method or try again. If the issue persists, <a href="${siteUrl(env)}">contact support</a>.</p>`,
       `<p>— aifindr.org</p>`,
     ].join(''),
   })

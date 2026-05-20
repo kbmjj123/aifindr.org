@@ -1,4 +1,4 @@
-import type { Env } from '../types'
+import { siteUrl, type Env } from '../types'
 import { json, error } from '../lib/response'
 import { verifyJWT, getTokenFromRequest } from '../lib/jwt'
 import { getNotifyEmail, sendEmail } from '../lib/email'
@@ -35,7 +35,7 @@ export async function handleUserEmail(request: Request, env: Env): Promise<Respo
   ).bind(contactEmail, verifyToken, now, payload.sub).run()
 
   // A-02: Send verification email
-  const verifyUrl = `https://aifindr.org/api/user/email/verify/${verifyToken}`
+  const verifyUrl = siteUrl(env, `/api/user/email/verify/${verifyToken}`)
   void sendEmail(env, {
     to: contactEmail,
     sceneId: 'A-02',

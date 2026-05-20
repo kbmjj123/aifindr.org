@@ -1,4 +1,4 @@
-import type { Env, JWTPayload, UserRecord } from '../types'
+import { siteUrl, type Env, type JWTPayload, type UserRecord } from '../types'
 import { json, error } from '../lib/response'
 import { verifyJWT, getTokenFromRequest } from '../lib/jwt'
 import { getNotifyEmail, sendEmail } from '../lib/email'
@@ -96,8 +96,8 @@ export async function handleAdminReview(request: Request, env: Env): Promise<Res
   if (submitterEmail) {
     if (status === 'active') {
       // B-03: Approval with three backlinks
-      const detailUrl = `https://aifindr.org/tools/${toolCategory}/${toolSlug}`
-      const contributorUrl = `https://aifindr.org/contributors/${submitterGithub}`
+      const detailUrl = siteUrl(env, `/tools/${toolCategory}/${toolSlug}`)
+      const contributorUrl = siteUrl(env, `/contributors/${submitterGithub}`)
       const githubUrl = `https://github.com/aifindr-org/aifindr.org/blob/main/content/tools/${toolCategory}/${toolSlug}.md`
 
       void sendEmail(env, {
@@ -119,8 +119,8 @@ export async function handleAdminReview(request: Request, env: Env): Promise<Res
       })
 
       // Ping search engines to index the new tool page
-      const toolPageUrl = `https://aifindr.org/tools/${toolCategory}/${toolSlug}`
-      void notifySearchEngines(toolPageUrl)
+      const toolPageUrl = siteUrl(env, `/tools/${toolCategory}/${toolSlug}`)
+      void notifySearchEngines(env, toolPageUrl)
 
       // F-02: Notify submitters in the same category about the new tool
       const { results: categorySubmitters } = await env.DB.prepare(
@@ -142,8 +142,8 @@ export async function handleAdminReview(request: Request, env: Env): Promise<Res
             html: [
               `<p>A new tool has been added in <strong>${toolCategory}</strong>:</p>`,
               `<h3>${toolName}</h3>`,
-              `<p><a href="https://aifindr.org/tools/${toolCategory}/${toolSlug}">View ${toolName} →</a></p>`,
-              `<p style="color:#666;font-size:11px;">You're receiving this because you submitted a tool in the ${toolCategory} category. <a href="https://aifindr.org/settings">Manage notifications</a>.</p>`,
+              `<p><a href="${siteUrl(env, `/tools/${toolCategory}/${toolSlug}`)}">View ${toolName} →</a></p>`,
+              `<p style="color:#666;font-size:11px;">You're receiving this because you submitted a tool in the ${toolCategory} category. <a href="${siteUrl(env, '/settings')}">Manage notifications</a>.</p>`,
               `<p>— aifindr.org</p>`,
             ].join(''),
           })
@@ -169,7 +169,7 @@ export async function handleAdminReview(request: Request, env: Env): Promise<Res
           `<p>After review, we were unable to approve it at this time:</p>`,
           `<blockquote>${reasonText}</blockquote>`,
           noteLine,
-          `<p>You're welcome to revise and <a href="https://aifindr.org/submit">resubmit</a> — we'd love to have your tool listed!</p>`,
+          `<p>You're welcome to revise and <a href="${siteUrl(env, '/submit')}">resubmit</a> — we'd love to have your tool listed!</p>`,
           `<p>— aifindr.org</p>`,
         ].join(''),
       })
@@ -186,7 +186,7 @@ export async function handleAdminReview(request: Request, env: Env): Promise<Res
           `<p>We've reviewed your submission and need a bit more information before we can approve it.</p>`,
           noteLine,
           `<p>Please update your submission with the requested details. Once updated, our team will re-review it.</p>`,
-          `<p><a href="https://aifindr.org/submit">Resubmit →</a></p>`,
+          `<p><a href="${siteUrl(env, '/submit')}">Resubmit →</a></p>`,
           `<p>— aifindr.org</p>`,
         ].join(''),
       })
@@ -262,7 +262,7 @@ export async function handleAdminFeature(request: Request, env: Env): Promise<Re
     }
 
     if (submitterEmail) {
-      const detailUrl = `https://aifindr.org/tools/${toolCategory}/${toolSlug}`
+      const detailUrl = siteUrl(env, `/tools/${toolCategory}/${toolSlug}`)
       void sendEmail(env, {
         to: submitterEmail,
         sceneId: 'C-02',
@@ -316,7 +316,7 @@ export async function handleAdminBroadcast(request: Request, env: Env): Promise<
       subject: `[aifindr] ${subject}`,
       html: [
         htmlBody,
-        `<p style="color:#666;font-size:11px;margin-top:16px;">You're receiving this as an aifindr.org member. <a href="https://aifindr.org/settings">Manage email preferences</a>.</p>`,
+        `<p style="color:#666;font-size:11px;margin-top:16px;">You're receiving this as an aifindr.org member. <a href="${siteUrl(env, '/settings')}">Manage email preferences</a>.</p>`,
       ].join(''),
     })
   }

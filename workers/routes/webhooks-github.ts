@@ -1,4 +1,4 @@
-import type { Env, UserRecord } from '../types'
+import { siteUrl, type Env, type UserRecord } from '../types'
 import { json, error } from '../lib/response'
 import { getNotifyEmail, sendEmail } from '../lib/email'
 
@@ -88,7 +88,7 @@ export async function handlePRMerged(payload: Record<string, unknown>, env: Env)
     }
 
     if (submitterEmail) {
-      const detailUrl = `https://aifindr.org/tools/${category}/${slug}`
+      const detailUrl = siteUrl(env, `/tools/${category}/${slug}`)
       void sendEmail(env, {
         to: submitterEmail,
         sceneId: 'B-05',

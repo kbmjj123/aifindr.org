@@ -1,4 +1,4 @@
-import type { Env, UserRecord } from '../types'
+import { siteUrl, type Env, type UserRecord } from '../types'
 import { getNotifyEmail, sendEmail } from '../lib/email'
 
 /** Cron 1: Daily operations — check stale pending tools + refresh cache */
@@ -31,7 +31,7 @@ export async function handleCronDailyOps(env: Env): Promise<void> {
             html: [
               `<p>The following tools have been pending review for more than 7 days:</p>`,
               `<p>${toolList}</p>`,
-              `<p><a href="https://aifindr.org/admin">Review in admin panel →</a></p>`,
+              `<p><a href="${siteUrl(env, '/admin')}">Review in admin panel →</a></p>`,
             ].join(''),
           })
         }
@@ -100,7 +100,7 @@ export async function handleCronLinkChecker(env: Env): Promise<{ total: number; 
               `<li><strong>Target:</strong> ${targetUrl}</li>`,
               `</ul>`,
               `<p>The link has been marked as inactive in your dashboard. If this is a mistake, it will be re-checked in the next scan.</p>`,
-              `<p><a href="https://aifindr.org/settings">View your backlinks →</a></p>`,
+              `<p><a href="${siteUrl(env, '/settings')}">View your backlinks →</a></p>`,
               `<p>— aifindr.org</p>`,
             ].join(''),
           })
@@ -154,7 +154,7 @@ export async function handleCronMonthlyReport(env: Env): Promise<{ recipients: n
         `<tr><td><strong>New this month:</strong></td><td>${newLinks}</td></tr>`,
         ...(dead > 0 ? [`<tr><td><strong>Broken:</strong></td><td>${dead}</td></tr>`] : []),
         `</table>`,
-        `<p><a href="https://aifindr.org/settings">View detailed report →</a></p>`,
+        `<p><a href="${siteUrl(env, '/settings')}">View detailed report →</a></p>`,
         `<p>— aifindr.org</p>`,
       ].join(''),
     })
@@ -169,9 +169,9 @@ export async function handleCronNewsletter(env: Env, subject?: string, body?: st
   const newsletterSubject = subject || 'aifindr Newsletter — Latest AI Tools & Backlink Tips'
   const newsletterBody = body || [
     '<h2>Latest from aifindr.org</h2>',
-    '<p>New AI tools have been added this week. Check them out on the <a href="https://aifindr.org/tools?sort=latest">Tools page</a>.</p>',
-    '<p><a href="https://aifindr.org">Visit aifindr.org →</a></p>',
-    '<p style="color:#666;font-size:11px;">You\'re receiving this because you have aifindr.org notifications enabled. <a href="https://aifindr.org/settings">Unsubscribe</a>.</p>',
+    `<p>New AI tools have been added this week. Check them out on the <a href="${siteUrl(env, '/tools')}?sort=latest">Tools page</a>.</p>`,
+    `<p><a href="${siteUrl(env)}">Visit aifindr.org →</a></p>`,
+    `<p style="color:#666;font-size:11px;">You're receiving this because you have aifindr.org notifications enabled. <a href="${siteUrl(env, '/settings')}">Unsubscribe</a>.</p>`,
   ].join('')
 
   // Get users who haven't unsubscribed and have email notifications enabled

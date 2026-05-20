@@ -1,4 +1,4 @@
-import type { Env, UserRecord } from '../types'
+import { siteUrl, type Env, type UserRecord } from '../types'
 import { json, error } from '../lib/response'
 import { verifyJWT, getTokenFromRequest } from '../lib/jwt'
 import { getNotifyEmail, sendEmail } from '../lib/email'
@@ -60,7 +60,7 @@ export async function handleGenerate(request: Request, env: Env): Promise<Respon
         html: [
           `<p>You've reached the free limit of <strong>${GENERATION_FREE_LIMIT} articles</strong> this month (${quota.current}/${quota.limit}).</p>`,
           `<p>Upgrade to the paid plan for <strong>unlimited</strong> multi-platform article generation, anchor text optimization, and performance tracking.</p>`,
-          `<p><a href="https://aifindr.org/generate">Upgrade now →</a></p>`,
+          `<p><a href="${siteUrl(env, '/generate')}">Upgrade now →</a></p>`,
           `<p>Your free quota resets on the 1st of next month.</p>`,
           `<p>— aifindr.org</p>`,
         ].join(''),
@@ -103,8 +103,8 @@ export async function handleGenerate(request: Request, env: Env): Promise<Respon
         html: [
           `<p>Sorry, we couldn't generate your article <strong>"${title}"</strong> for ${platform}.</p>`,
           `<p><strong>Reason:</strong> ${errorMessage || 'An unexpected error occurred.'}</p>`,
-          `<p>This won't count toward your monthly quota. Please <a href="https://aifindr.org/generate">try again</a> or try a different platform.</p>`,
-          `<p><a href="https://aifindr.org/generate">Retry →</a></p>`,
+          `<p>This won't count toward your monthly quota. Please <a href="${siteUrl(env, '/generate')}">try again</a> or try a different platform.</p>`,
+          `<p><a href="${siteUrl(env, '/generate')}">Retry →</a></p>`,
           `<p>— aifindr.org</p>`,
         ].join(''),
       })
@@ -133,7 +133,7 @@ export async function handleGenerate(request: Request, env: Env): Promise<Respon
       html: [
         `<p>Your AI-generated article <strong>"${title}"</strong> for <strong>${platform}</strong> is ready.</p>`,
         `<p>It's been tailored for your site <a href="${userSite}">${userSite}</a> using data from the aifindr.org tool database.</p>`,
-        `<p><a href="https://aifindr.org/generate">View and publish →</a></p>`,
+        `<p><a href="${siteUrl(env, '/generate')}">View and publish →</a></p>`,
         `<p>You've used <strong>${newQuota.current}/${newQuota.limit}</strong> free generations this month.</p>`,
         `<p>— aifindr.org</p>`,
       ].join(''),

@@ -1,4 +1,4 @@
-import type { Env } from '../types'
+import { siteUrl, type Env } from '../types'
 import { json, CORS } from '../lib/response'
 
 /** GET /api/__sitemap__/urls — return all active tool URLs for the sitemap */
@@ -8,7 +8,7 @@ export async function handleSitemapUrls(env: Env): Promise<Response> {
   ).all<{ slug: string; category: string; updated_at: string | null; submitted_at: string }>()
 
   const urls = tools.map(tool => ({
-    url: `https://aifindr.org/tools/${tool.category}/${tool.slug}`,
+    url: siteUrl(env, `/tools/${tool.category}/${tool.slug}`),
     lastmod: tool.updated_at || tool.submitted_at,
     changefreq: 'weekly',
     priority: 0.8,
@@ -20,8 +20,8 @@ export async function handleSitemapUrls(env: Env): Promise<Response> {
 /** Ping Google & Bing sitemap endpoints to notify them of new content.
  *  Also pings the specific tool URL to Google's PubSubHubbub hub.
  *  Non-blocking — failures are logged but don't affect the response. */
-export async function notifySearchEngines(newUrl: string): Promise<void> {
-  const sitemapUrl = 'https://aifindr.org/sitemap.xml'
+export async function notifySearchEngines(env: Env, newUrl: string): Promise<void> {
+  const sitemapUrl = siteUrl(env, '/sitemap.xml')
 
   // Google sitemap ping
   try {
@@ -66,7 +66,7 @@ export async function handleSitemapXml(env: Env): Promise<Response> {
     })
   }
 
-  const BASE = 'https://aifindr.org'
+  const BASE = siteUrl(env)
 
   // Static pages
   const staticPages = [

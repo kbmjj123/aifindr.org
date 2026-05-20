@@ -9,6 +9,13 @@ export interface Env {
   RESEND_API_KEY: string
   GITHUB_WEBHOOK_SECRET: string
   LEMONSQUEEZY_WEBHOOK_SECRET: string
+  SITE_URL: string
+}
+
+/** Build an absolute URL for the site. */
+export function siteUrl(env: Env, path = '') {
+  const base = env.SITE_URL || 'https://aifindr.org'
+  return path ? `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}` : base
 }
 
 export interface JWTPayload {
