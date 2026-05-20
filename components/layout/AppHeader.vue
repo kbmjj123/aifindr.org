@@ -1,22 +1,20 @@
 <template>
   <header class="fixed top-0 left-0 right-0 z-50 h-[52px]"
     :style="{ background: 'var(--color-header-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--color-border)' }">
-    <div class="mx-auto flex h-full items-center px-4 lg:px-6 max-w-[1400px] w-full">
+    <div class="mx-auto flex h-full items-center gap-3 sm:gap-4 px-4 lg:px-6 max-w-[1400px] w-full">
       <!-- Left: Logo -->
-      <div class="flex items-center shrink-0 w-[140px] lg:w-[180px]">
-        <NuxtLink to="/" class="flex items-center gap-2 shrink-0">
-          <div class="logo-icon">A</div>
-          <span class="logo-text">aifindr<span class="org">.org</span></span>
-        </NuxtLink>
-      </div>
+      <NuxtLink to="/" class="flex items-center gap-2 shrink-0">
+        <div class="logo-icon">A</div>
+        <span class="logo-text hidden sm:block">aifindr<span class="org">.org</span></span>
+      </NuxtLink>
 
-      <!-- Center: Search -->
+      <!-- Center: Search (fills available space) -->
       <div class="flex-1 flex justify-center max-w-[420px] mx-auto">
         <SearchBar />
       </div>
 
       <!-- Right: Actions -->
-      <div class="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0 w-[140px] lg:w-[180px]">
+      <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
         <NuxtLink to="/submit" class="btn-header-submit hidden sm:inline-flex">
           + Submit
         </NuxtLink>
