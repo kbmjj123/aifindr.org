@@ -44,10 +44,12 @@ const isActive = computed(() => {
     if (Object.keys(route.query).length > 0) return false
   }
 
-  // Path match
+  // Exact path match
   if (toPath === currentPath) return true
-  // /tools matches /tools/image/midjourney
-  if (currentPath.startsWith(toPath + '/')) return true
+  // Prefix match: only if nav item has 2+ segments (e.g. /tools/image matches /tools/image/midjourney)
+  // Single-segment roots like /tools do NOT match children (/tools/image)
+  const toDepth = toPath.split('/').filter(Boolean).length
+  if (toDepth >= 2 && currentPath.startsWith(toPath + '/')) return true
   return false
 })
 </script>
