@@ -29,16 +29,25 @@ const emitClick = (e: MouseEvent) => emit('click', e)
 
 const isActive = computed(() => {
   if (props.to === '/') return route.path === '/'
+
   const toUrl = new URL(props.to, 'https://aifindr.org')
-  const currentUrl = new URL(route.fullPath, 'https://aifindr.org')
-  // Nav item has query params → require exact path + query match
+  const toPath = toUrl.pathname.endsWith('/') ? toUrl.pathname.slice(0, -1) : toUrl.pathname
+  const currentPath = route.path.endsWith('/') ? route.path.slice(0, -1) : route.path
+
+  // Nav has query → must match path AND query params exactly
   if (toUrl.search) {
-    return currentUrl.pathname + currentUrl.search === toUrl.pathname + toUrl.search
+    const toParams = new URLSearchParams(toUrl.search)
+    const matchAll = Array.from(toParams.entries()).every(([k, v]) => route.query[k] === v)
+    if (!matchAll) return false
+  } else {
+    // Nav has NO query → only active if current URL also has NO query
+    if (Object.keys(route.query).length > 0) return false
   }
-  // Nav item has NO query → only active if current URL also has no query
-  if (currentUrl.search) return false
-  // Match /tools, /tools/image, /tools/image/midjourney
-  const normalized = toUrl.pathname.endsWith('/') ? toUrl.pathname.slice(0, -1) : toUrl.pathname
-  return currentUrl.pathname === normalized || currentUrl.pathname.startsWith(normalized + '/')
+
+  // Path match
+  if (toPath === currentPath) return true
+  // /tools matches /tools/image/midjourney
+  if (currentPath.startsWith(toPath + '/')) return true
+  return false
 })
 </script>
