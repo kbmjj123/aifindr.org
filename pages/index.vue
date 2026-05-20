@@ -9,7 +9,7 @@
       Open-source AI tool directory. Submit your tool, get 3 free dofollow backlinks.
     </p>
     <!-- Hero search -->
-    <div class="max-w-[720px]">
+    <div class="w-full">
       <SearchBar :expanded="true" />
     </div>
   </section>
