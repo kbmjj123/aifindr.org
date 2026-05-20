@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink v-if="!isExternal" :to="to" class="nav-item" :class="{ active: isActive }" @click="emitClick">
+  <NuxtLink v-if="!isExternal" :to="resolvedTo" class="nav-item" :class="{ active: isActive }" @click="emitClick">
     <span v-if="icon" class="w-4 h-4 flex items-center justify-center text-sm shrink-0">{{ icon }}</span>
     <span class="truncate">{{ label }}</span>
     <span v-if="count !== undefined" class="nav-count">{{ count }}</span>
@@ -26,6 +26,12 @@ const emit = defineEmits<{
 const route = useRoute()
 const isExternal = computed(() => props.to.startsWith('http'))
 const emitClick = (e: MouseEvent) => emit('click', e)
+
+const resolvedTo = computed(() => {
+  const [path, rawQuery] = props.to.split('?')
+  if (!rawQuery) return path
+  return { path, query: Object.fromEntries(new URLSearchParams(rawQuery)) }
+})
 
 const isActive = computed(() => {
   if (props.to === '/') return route.path === '/'
