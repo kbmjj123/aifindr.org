@@ -39,7 +39,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'cloudflare-pages',
     devProxy: {
-      '/api': { target: 'http://localhost:8787', changeOrigin: true },
+      '/api': { target: process.env.API_TARGET || 'http://localhost:8787', changeOrigin: true },
     },
   },
 
