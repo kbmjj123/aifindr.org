@@ -195,7 +195,7 @@ export function convertTool(raw: RawTool): AifindrTool {
 
   const images: AifindrTool['images'] = []
   if (raw.screenshot_url) {
-    images.push({ url: raw.screenshot_url, alt: `${name} screenshot`, type: 'screenshot' })
+    images.push({ url: raw.screenshot_url, alt: `${name} — AI ${category} tool interface`, type: 'screenshot' })
   }
 
   const videos: AifindrTool['videos'] = []

@@ -68,8 +68,16 @@ export async function handleSubmit(request: Request, env: Env) {
     }
   }
 
-  // ── Generate unique slug ──
-  const baseSlug = slugify(name)
+  // ── Generate unique slug with category keyword (SEO) ──
+  const catSuffix: Record<string, string> = {
+    image: 'ai-image-generator', writing: 'ai-writing-tool', video: 'ai-video-generator',
+    audio: 'ai-audio-tool', code: 'ai-coding-tool', productivity: 'ai-productivity-tool',
+    marketing: 'ai-marketing-tool', data: 'ai-data-tool', education: 'ai-learning-tool',
+    business: 'ai-business-tool', research: 'ai-research-tool', other: 'ai-tool',
+  }
+  const catKw = catSuffix[category] || 'ai-tool'
+  const nameSlug = slugify(name)
+  const baseSlug = nameSlug.includes(catKw.split('-')[0]) ? nameSlug : `${nameSlug}-${catKw}`
   if (!baseSlug) {
     return error('Invalid tool name', 400, 'INVALID_NAME')
   }
