@@ -181,7 +181,16 @@ export function convertTool(raw: RawTool): AifindrTool {
   const pricingInfo = inferPricing(raw.price_hint || combined)
   const tags = raw.tags_hint || inferTags(name, desc, longDesc, category)
   const platforms = inferPlatforms(combined)
-  const slug = slugify(name)
+  // Add category keyword to slug for SEO (e.g. midjourney → midjourney-ai-image-generator)
+  const categorySuffix: Record<string, string> = {
+    image: 'ai-image-generator', writing: 'ai-writing-tool', video: 'ai-video-generator',
+    audio: 'ai-audio-tool', code: 'ai-coding-tool', productivity: 'ai-productivity-tool',
+    marketing: 'ai-marketing-tool', data: 'ai-data-tool', education: 'ai-learning-tool',
+    business: 'ai-business-tool', research: 'ai-research-tool', other: 'ai-tool',
+  }
+  const suffix = categorySuffix[category] || 'ai-tool'
+  const base = slugify(name)
+  const slug = base.includes(suffix.split('-')[0]) ? base : `${base}-${suffix}`
   const today = new Date().toISOString().slice(0, 10)
 
   const images: AifindrTool['images'] = []

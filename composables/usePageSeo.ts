@@ -35,7 +35,9 @@ function buildTitle(opts: PageSeoOptions): string {
     case 'category':
       return `Best ${opts.category || t} AI Tools in 2026${TITLE_SEPARATOR}${SITE_NAME}`
     case 'tool':
-      return `${t}${DESC_SEPARATOR}${opts.subtitle || ''}${TITLE_SEPARATOR}${SITE_NAME}`
+      // Use subtitle (short tagline) or truncate to keep title under 60 chars
+      const shortTag = opts.subtitle ? truncate(opts.subtitle, 60 - t.length - 4 - SITE_NAME.length) : ''
+      return `${t}${shortTag ? DESC_SEPARATOR + shortTag : ''}${TITLE_SEPARATOR}${SITE_NAME}`
     case 'blog':
       return `${t}${TITLE_SEPARATOR}${SITE_NAME} Blog`
     case 'prefix':
