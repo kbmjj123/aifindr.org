@@ -4,7 +4,7 @@
     <form class="space-y-5" @submit.prevent="handleSubmit">
       <!-- Tool Name -->
       <div>
-        <label class="block text-sm font-medium mb-1.5" style="color: var(--color-text-primary)">
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Tool Name <span style="color: var(--color-danger)">*</span>
         </label>
         <BaseInput v-model="form.name" placeholder="e.g. Midjourney" />
@@ -12,7 +12,7 @@
 
       <!-- Website -->
       <div>
-        <label class="block text-sm font-medium mb-1.5" style="color: var(--color-text-primary)">
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Website URL <span style="color: var(--color-danger)">*</span>
         </label>
         <BaseInput v-model="form.website" placeholder="https://midjourney.com" />
@@ -20,7 +20,7 @@
 
       <!-- Category -->
       <div>
-        <label class="block text-sm font-medium mb-1.5" style="color: var(--color-text-primary)">
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Category <span style="color: var(--color-danger)">*</span>
         </label>
         <BaseSelect v-model="form.category" :options="categoryOptions" />
@@ -28,15 +28,16 @@
 
       <!-- Pricing -->
       <div>
-        <label class="block text-sm font-medium mb-1.5" style="color: var(--color-text-primary)">
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Pricing Type <span style="color: var(--color-danger)">*</span>
         </label>
-        <div class="flex gap-3">
+        <div class="flex gap-2">
           <label v-for="p in pricingOptions" :key="p.value"
-            class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm cursor-pointer"
+            class="flex-1 flex items-center justify-center gap-1.5 h-[34px] rounded-md text-[12px] font-body cursor-pointer"
             :style="{
-              background: form.pricing === p.value ? 'rgba(79,70,229,0.1)' : 'var(--color-bg-input)',
+              background: form.pricing === p.value ? 'var(--color-accent-dim)' : 'var(--color-bg-input)',
               border: '1px solid ' + (form.pricing === p.value ? 'var(--color-accent)' : 'var(--color-border)'),
+              color: form.pricing === p.value ? 'var(--color-accent)' : 'var(--color-text-secondary)',
             }">
             <input type="radio" :value="p.value" v-model="form.pricing" class="sr-only" />
             {{ p.label }}
@@ -46,32 +47,34 @@
 
       <!-- One-line Description -->
       <div>
-        <label class="block text-sm font-medium mb-1.5" style="color: var(--color-text-primary)">
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           One-line Description <span style="color: var(--color-danger)">*</span>
         </label>
         <BaseInput v-model="form.description" placeholder="Briefly describe your tool" maxlength="80" />
-        <p class="text-xs mt-1 text-right" style="color: var(--color-text-muted)">{{ form.description.length }}/80</p>
+        <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">{{ form.description.length }}/80</p>
       </div>
 
-      <!-- Detailed Description -->
+      <!-- Detailed Description (becomes markdown body) -->
       <div>
-        <label class="block text-sm font-medium mb-1.5" style="color: var(--color-text-primary)">
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Detailed Description <span style="color: var(--color-danger)">*</span>
         </label>
         <textarea v-model="form.detailDescription"
-          class="input h-32 resize-y pt-3"
-          placeholder="Describe what your tool does in detail (minimum 100 words)..."
-          style="height: 120px; resize: vertical; padding: 12px" />
+          class="textarea"
+          placeholder="Describe what your tool does in detail (minimum 100 words). Supports Markdown formatting for headings, lists, bold, links, etc." />
+        <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">
+          {{ form.detailDescription.length }} chars &middot; Renders as tool detail page content
+        </p>
       </div>
 
       <!-- Platforms -->
       <div>
-        <label class="block text-sm font-medium mb-1.5" style="color: var(--color-text-primary)">
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Platforms
         </label>
         <div class="flex flex-wrap gap-3">
           <label v-for="p in platformOptions" :key="p.value"
-            class="flex items-center gap-1.5 text-sm cursor-pointer" style="color: var(--color-text-secondary)">
+            class="flex items-center gap-1.5 font-body text-[12px] cursor-pointer" style="color: var(--color-text-secondary)">
             <input type="checkbox" :value="p.value" v-model="form.platforms"
               class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
             {{ p.label }}
@@ -79,32 +82,70 @@
         </div>
       </div>
 
-      <!-- Submitter fields (for backlinks) -->
+      <!-- Target Users -->
       <div>
-        <label class="block text-sm font-medium mb-1.5" style="color: var(--color-text-primary)">
-          Your Website <span class="text-xs" style="color: var(--color-text-muted)">(optional — gets a dofollow backlink)</span>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Target Users
+        </label>
+        <div class="flex flex-wrap gap-2">
+          <label v-for="u in userOptions" :key="u.value"
+            class="flex items-center gap-1 font-body text-[11px] cursor-pointer px-2 py-1 rounded-full"
+            :style="{
+              color: form.targetUsers.includes(u.value) ? 'var(--color-accent)' : 'var(--color-text-muted)',
+              background: form.targetUsers.includes(u.value) ? 'var(--color-accent-dim)' : 'var(--color-bg-elevated)',
+              border: '1px solid ' + (form.targetUsers.includes(u.value) ? 'var(--color-accent-border)' : 'var(--color-border)'),
+            }">
+            <input type="checkbox" :value="u.value" v-model="form.targetUsers" class="hidden" />
+            {{ u.label }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Use Cases -->
+      <div>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Use Cases
+        </label>
+        <div class="flex flex-wrap gap-2">
+          <label v-for="uc in useCaseOptions" :key="uc.value"
+            class="flex items-center gap-1 font-body text-[11px] cursor-pointer px-2 py-1 rounded-full"
+            :style="{
+              color: form.useCases.includes(uc.value) ? 'var(--color-accent)' : 'var(--color-text-muted)',
+              background: form.useCases.includes(uc.value) ? 'var(--color-accent-dim)' : 'var(--color-bg-elevated)',
+              border: '1px solid ' + (form.useCases.includes(uc.value) ? 'var(--color-accent-border)' : 'var(--color-border)'),
+            }">
+            <input type="checkbox" :value="uc.value" v-model="form.useCases" class="hidden" />
+            {{ uc.label }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Submitter fields -->
+      <div>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Your Website <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional — gets a dofollow backlink)</span>
         </label>
         <BaseInput v-model="form.submitterSite" placeholder="https://your-site.com" />
       </div>
 
       <div>
-        <label class="block text-sm font-medium mb-1.5" style="color: var(--color-text-primary)">
-          GitHub Username <span class="text-xs" style="color: var(--color-text-muted)">(optional)</span>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          GitHub Username <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
         </label>
         <BaseInput v-model="form.submitterGithub" placeholder="your-github-username" />
       </div>
 
-      <!-- Turnstile placeholder -->
-      <div class="flex items-center justify-center h-20 rounded-lg"
-        :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)' }">
-        <span class="text-sm" style="color: var(--color-text-muted)">Turnstile CAPTCHA will render here</span>
-      </div>
+      <!-- Turnstile -->
+      <div ref="turnstileEl" class="flex items-center justify-center min-h-[65px]"></div>
+      <p v-if="turnstileError" class="font-body text-[11px] text-center" style="color: var(--color-danger)">{{ turnstileError }}</p>
 
-      <button type="submit" class="btn-primary w-full flex items-center justify-center gap-2 h-11 text-base">
-        Submit for Review
+      <button type="submit" class="btn-primary w-full flex items-center justify-center gap-2 !h-[40px] !text-[13px]"
+        :disabled="submitting">
+        {{ submitting ? 'Submitting...' : 'Submit for Review' }}
       </button>
 
-      <p class="text-xs text-center" style="color: var(--color-text-muted)">
+      <p v-if="submitError" class="font-body text-[11px] text-center mt-2" style="color: var(--color-danger)">{{ submitError }}</p>
+      <p v-else class="font-body text-[11px] text-center" style="color: var(--color-text-muted)">
         Submitted tools will be reviewed by our team before publishing.
       </p>
     </form>
@@ -115,16 +156,53 @@
 import { CATEGORIES } from '~/types/tool'
 
 const form = reactive({
-  name: '',
-  website: '',
-  category: '',
-  pricing: 'free',
-  description: '',
-  detailDescription: '',
-  platforms: [] as string[],
-  submitterSite: '',
-  submitterGithub: '',
+  name: 'Test AI Tool',
+  website: 'https://example.com',
+  category: 'image',
+  pricing: 'freemium',
+  description: 'An AI-powered tool for generating beautiful images from text prompts.',
+  detailDescription: '## What is Test AI Tool?\n\nTest AI Tool helps users create stunning visuals from natural language descriptions. Built on state-of-the-art diffusion models.\n\n## Key Features\n\n- Text-to-Image — Generate images from text\n- Style Control — Choose artistic styles\n- Batch Generation — Create variations\n\n## Pricing\n\nFree: 25 generations/day. Pro: $20/month, unlimited.',
+  platforms: ['web', 'api'] as string[],
+  targetUsers: [] as string[],
+  useCases: [] as string[],
+  submitterSite: 'https://aifindr.org',
+  submitterGithub: 'test-user',
 })
+
+const userOptions = [
+  { value: 'marketer', label: 'Marketer' },
+  { value: 'developer', label: 'Developer' },
+  { value: 'designer', label: 'Designer' },
+  { value: 'writer', label: 'Writer' },
+  { value: 'student', label: 'Student' },
+  { value: 'researcher', label: 'Researcher' },
+  { value: 'entrepreneur', label: 'Entrepreneur' },
+  { value: 'educator', label: 'Educator' },
+  { value: 'data-analyst', label: 'Data Analyst' },
+  { value: 'small-business', label: 'Small Business' },
+  { value: 'non-technical', label: 'Non-Technical' },
+]
+
+const useCaseOptions = [
+  { value: 'social-media-content', label: 'Social Media' },
+  { value: 'blog-writing', label: 'Blog Writing' },
+  { value: 'copywriting', label: 'Copywriting' },
+  { value: 'image-generation', label: 'Image Gen' },
+  { value: 'image-editing', label: 'Image Editing' },
+  { value: 'logo-design', label: 'Logo Design' },
+  { value: 'video-creation', label: 'Video Creation' },
+  { value: 'voice-generation', label: 'Voice Gen' },
+  { value: 'code-generation', label: 'Code Gen' },
+  { value: 'code-review', label: 'Code Review' },
+  { value: 'document-summary', label: 'Doc Summary' },
+  { value: 'email-writing', label: 'Email Writing' },
+  { value: 'data-analysis', label: 'Data Analysis' },
+  { value: 'translation', label: 'Translation' },
+  { value: 'seo-optimization', label: 'SEO' },
+  { value: 'customer-support', label: 'Customer Support' },
+  { value: 'meeting-summary', label: 'Meeting Summary' },
+  { value: 'presentation-design', label: 'Presentation' },
+]
 
 const categoryOptions = computed(() => [
   { value: '', label: 'Select a category...', disabled: true },
@@ -144,8 +222,66 @@ const platformOptions = [
   { value: 'api', label: 'API' },
 ]
 
-function handleSubmit() {
-  // Placeholder — will integrate with Worker API
-  console.log('Form submitted:', form)
+const submitting = ref(false)
+const submitError = ref('')
+const turnstileEl = ref<HTMLDivElement>()
+const cfToken = ref('')
+const turnstileError = ref('')
+
+onMounted(() => {
+  const script = document.createElement('script')
+  script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad'
+  script.async = true
+  script.defer = true
+  document.head.appendChild(script)
+
+  const check = setInterval(() => {
+    const ts = (window as any).turnstile
+    if (ts && turnstileEl.value) {
+      clearInterval(check)
+      ts.render(turnstileEl.value, {
+        sitekey: '0x4AAAAAADLaTYMVN6qFivFT',  // ← 替换为 Cloudflare Turnstile Site Key
+        callback: (token: string) => { cfToken.value = token; turnstileError.value = '' },
+        'expired-callback': () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA expired, please verify again.' },
+        'error-callback': () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA verification error.' },
+      })
+    }
+  }, 200)
+})
+
+onUnmounted(() => {
+  const ts = (window as any).turnstile
+  if (ts && turnstileEl.value) ts.remove(turnstileEl.value)
+})
+
+async function handleSubmit() {
+  if (submitting.value) return
+  submitting.value = true
+  submitError.value = ''
+
+  try {
+    const res = await $fetch('/api/submit', {
+      method: 'POST',
+      body: {
+        name: form.name,
+        website: form.website,
+        category: form.category,
+        pricing: form.pricing,
+        description: form.description,
+        detailDescription: form.detailDescription,
+        platforms: form.platforms,
+        target_users: form.targetUsers.join(','),
+        use_cases: form.useCases.join(','),
+        submitter_site: form.submitterSite || undefined,
+        submitter_github: form.submitterGithub || undefined,
+        turnstileToken: cfToken.value,
+      },
+    })
+    navigateTo(`/submit?success=1`)
+  } catch (e: any) {
+    submitError.value = e?.data?.error || 'Submission failed. Please try again.'
+  } finally {
+    submitting.value = false
+  }
 }
 </script>

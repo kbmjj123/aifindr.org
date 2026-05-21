@@ -8,7 +8,7 @@ node_modules/
 .data/
 .nuxt/
 dist/
-
+content/tools-raw/
 # testing
 coverage/
 
@@ -39,3 +39,12 @@ yarn-error.log*
 
 # wrangler
 .wrangler/
+.dev.vars
+.dev.vars.local
+
+# lockfile
+pnpm-lock.yaml
+
+# claude
+.claude/scripts/scrape-yo-directory.ts
+scripts/scraper/futurepedia.ts

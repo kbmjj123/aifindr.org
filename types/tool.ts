@@ -52,6 +52,9 @@ export interface Tool {
   view_count?: number
   submitter_site?: string
   submitter_github?: string
+  use_cases?: string[]
+  target_users?: string[]
+  data_source?: string
   images?: ToolImage[]
   videos?: ToolVideo[]
   // Nuxt Content 字段

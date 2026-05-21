@@ -9,7 +9,7 @@ withDefaults(defineProps<{
   radius?: string
 }>(), {
   width: '100%',
-  height: '20px',
-  radius: '4px',
+  height: '16px',
+  radius: 'var(--radius-sm)',
 })
 </script>

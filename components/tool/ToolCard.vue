@@ -1,61 +1,62 @@
 <template>
-  <article class="tool-card group">
-    <div class="flex gap-3">
-      <div class="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center font-semibold text-sm"
-        :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
-        {{ name[0] }}
+  <NuxtLink :to="detailLink" class="tool-card group no-underline" :class="{ 'tool-card-featured': t.featured }">
+    <div class="flex gap-3 pr-5">
+      <!-- Logo / Icon -->
+      <div class="tool-logo">
+        <img v-if="t.cover_image" :src="t.cover_image" :alt="`${t.name} logo`" class="w-full h-full object-cover rounded-[7px]" />
+        <span v-else class="font-sans font-bold text-[11px]" :style="{ color: 'var(--color-text-muted)' }">{{ (t.name || '?')[0] }}</span>
       </div>
+
       <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-2 mb-1">
-          <h3 class="text-sm font-semibold truncate" style="color: var(--color-text-primary)">
-            {{ name }}
-          </h3>
-          <div class="flex gap-1 ml-auto shrink-0">
-            <ToolBadge v-if="featured" type="featured" />
-            <ToolBadge v-if="verified" type="verified" />
+        <!-- Top row: name, badges -->
+        <div class="flex items-start gap-1.5 mb-0.5">
+          <h3 class="tool-name flex-1 min-w-0">{{ t.name }}</h3>
+          <div class="flex items-center gap-1 shrink-0">
+            <ToolBadge v-if="t.featured" type="featured" />
+            <ToolBadge v-if="t.verified" type="verified" />
+            <span v-if="t.has_free_trial" class="badge badge-verified" style="font-size: 9px;">Free Trial</span>
           </div>
-          <a :href="website" target="_blank" rel="noopener noreferrer"
-            class="shrink-0" style="color: var(--color-text-muted)"
-            @click.stop>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
-            </svg>
-          </a>
         </div>
-        <p class="text-xs leading-relaxed line-clamp-2 mb-2" style="color: var(--color-text-secondary)">
-          {{ description }}
-        </p>
+
+        <!-- Description -->
+        <p class="tool-desc">{{ t.meta_description || '' }}</p>
+
+        <!-- Tags -->
         <div class="flex flex-wrap gap-1.5">
-          <ToolTag v-for="tag in visibleTags" :key="tag">{{ tag }}</ToolTag>
-          <ToolTag :type="pricing">{{ pricingLabel }}</ToolTag>
+          <span v-for="tag in visibleTags" :key="tag" class="tag">{{ tag }}</span>
+          <span v-if="t.pricing" :class="['tag', `tag-${t.pricing}`]" class="tag-pricing">{{ pricingLabel }}</span>
         </div>
       </div>
     </div>
-  </article>
+
+    <!-- External link icon -->
+    <div class="absolute top-3 right-3 card-ext-link opacity-0 group-hover:opacity-100 transition-opacity">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="7" y1="17" x2="17" y2="7" />
+        <polyline points="7 7 17 7 17 17" />
+      </svg>
+    </div>
+  </NuxtLink>
 </template>
 
 <script setup lang="ts">
-import type { ToolPricing } from '~/types/tool'
+import type { Tool } from '~/types/tool'
 
-// Placeholder props — will be replaced with real Tool data
-withDefaults(defineProps<{
-  name?: string
-  description?: string
-  website?: string
-  tags?: string[]
-  pricing?: ToolPricing
-  featured?: boolean
-  verified?: boolean
-}>(), {
-  name: 'Tool Name',
-  description: 'AI-powered tool description goes here.',
-  website: 'https://example.com',
-  tags: () => ['ai', 'tool'],
-  pricing: 'free',
-  featured: false,
-  verified: false,
+const props = defineProps<{ tool: Tool }>()
+
+const t = computed(() => props.tool)
+
+const detailLink = computed(() => `/tools/${t.value.category}/${t.value.slug}`)
+
+const visibleTags = computed(() => {
+  const tags = t.value.tags
+  if (!tags) return []
+  if (Array.isArray(tags)) return tags.slice(0, 3)
+  return String(tags).split(',').slice(0, 3).filter(Boolean)
 })
 
-const pricingLabel = 'Free'
-const visibleTags = ['ai', 'tool']
+const pricingLabel = computed(() => {
+  const p = t.value.pricing || 'free'
+  return p.charAt(0).toUpperCase() + p.slice(1)
+})
 </script>

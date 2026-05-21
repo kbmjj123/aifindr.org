@@ -55,7 +55,12 @@ CREATE TABLE tools (
   view_count       INTEGER DEFAULT 0,
   submitter_site   TEXT,                   -- dofollow 外链，不得删除
   submitter_github TEXT,
-  content_path     TEXT
+  submitter_id     INTEGER REFERENCES users(id),  -- 关联提交者
+  content_path     TEXT,
+  body             TEXT,                   -- Markdown 正文
+  reject_reason    TEXT,                   -- 拒绝原因
+  reviewer_note    TEXT,                   -- 管理员备注
+  reviewed_at      TEXT                    -- 审核时间
 );
 
 CREATE INDEX idx_tools_category   ON tools(category);
@@ -114,6 +119,37 @@ CREATE TABLE tool_videos (
   created_at TEXT DEFAULT (datetime('now'))
 );
 CREATE INDEX idx_tool_videos_tool_id ON tool_videos(tool_id, sort_order);
+```
+
+### users（用户表，GitHub OAuth 登录）
+
+```sql
+CREATE TABLE users (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  github_id       INTEGER NOT NULL UNIQUE,
+  username        TEXT NOT NULL,              -- GitHub 用户名
+  email           TEXT,                       -- GitHub 公开邮箱
+  avatar_url      TEXT,
+  unsubscribed_at TEXT,
+  created_at      TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at      TEXT
+);
+CREATE INDEX idx_users_github_id ON users(github_id);
+```
+
+### email_logs（邮件发送记录，MVP 后实现）
+
+```sql
+CREATE TABLE email_logs (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  scene_id    TEXT    NOT NULL,               -- 场景编号，如 "B-03"
+  recipient   TEXT    NOT NULL,
+  subject     TEXT    NOT NULL,
+  status      TEXT    DEFAULT 'sent'
+              CHECK(status IN ('sent','failed','bounced')),
+  resend_id   TEXT,                           -- Resend message id
+  created_at  TEXT    DEFAULT (datetime('now'))
+);
 ```
 
 ---
@@ -201,6 +237,16 @@ GET  /api/tools/search?q=keyword   # 全文搜索（D1 LIKE，后期可接 Algol
 GET  /api/stats                    # 首页统计：工具数/分类数/贡献者数
 POST /api/submit                   # 表单提交（Turnstile 验证）
 POST /api/click/:id                # 记录点击，用于 Trending 排序
+
+# 认证
+GET  /api/auth/github              # GitHub OAuth 入口
+GET  /api/auth/callback            # GitHub OAuth 回调
+GET  /api/auth/me                  # 当前用户信息（Cookie JWT）
+GET  /api/auth/dev-login           # 本地 mock 登录
+
+# 管理员
+GET  /api/admin/pending            # 待审核工具列表（需管理员 JWT）
+POST /api/admin/review             # 审核通过/拒绝（需管理员 JWT）
 ```
 
 **KV 缓存策略**（TTL 1小时）：`/api/stats`、`/api/tools?sort=trending`、首页数据

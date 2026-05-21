@@ -1,36 +1,73 @@
+const isDev = process.env.NODE_ENV === 'development'
+const apiTarget = process.env.API_TARGET || 'http://localhost:8787'
+
 export default defineNuxtConfig({
-  modules: ['@nuxt/content'],
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+      ]
+    },
+    server: {
+      proxy: {
+        '/api': { target: apiTarget, changeOrigin: true },
+      },
+    },
+  },
+  modules: ['@nuxt/content', '@nuxtjs/seo'],
+
+  site: {
+    url: 'https://aifindr.org',
+    name: 'aifindr.org – Discover AI Tools',
+  },
 
   css: ['~/assets/css/main.css', '~/assets/css/markdown.css'],
 
   compatibilityDate: '2026-05-07',
 
   components: [
-		{
-			path: '~/components',
-			pathPrefix: false
-		}
-	],
+    {
+      path: '~/components',
+      pathPrefix: false
+    }
+  ],
 
   routeRules: {
     '/': { prerender: true },
     '/tools': { prerender: true },
-    '/tools/*/': { prerender: true },
+    '/tools/*': { prerender: true },
+    '/tools/*/*': isDev ? { prerender: true } : { swr: 86400 },
+    '/blog/*/*': isDev ? { prerender: true } : { swr: 604800 },
     '/submit': { prerender: true },
-    '/tools/*/*': { isr: 86400 },
-    '/blog/*/*': { isr: 604800 },
     '/api/**': { cors: true },
   },
 
   nitro: {
-    preset: process.env.NODE_ENV === 'production' ? 'cloudflare-pages' : undefined,
+    preset: 'cloudflare-pages',
+    devProxy: {
+      '/api': { target: apiTarget, changeOrigin: true },
+    },
   },
 
-  content: {
-    database: {
-      type: 'sqlite',
-      name: 'nuxt-content',
-    },
+  content: {},
+
+  ogImage: {
+    enabled: false,
+  },
+
+  robots: {
+    allow: ['/'],
+    disallow: ['/api/'],
+  },
+
+  sitemap: {
+    sources: [
+      isDev
+        ? 'http://localhost:8787/__sitemap__/urls'
+        : '/api/__sitemap__/urls'
+    ],
+    autoLastmod: true,
   },
 
   postcss: {

@@ -1,5 +1,5 @@
 <template>
-  <component :is="tag" :class="btnClass" v-bind="attrs">
+  <component :is="tag" :class="[btnClass, className]" v-bind="attrs">
     <slot />
   </component>
 </template>
@@ -11,10 +11,13 @@ const props = withDefaults(defineProps<{
   to?: string
   href?: string
   disabled?: boolean
+  class?: string
 }>(), {
   variant: 'primary',
   size: 'md',
 })
+
+const className = computed(() => props.class || '')
 
 const tag = computed(() => {
   if (props.to) return resolveComponent('NuxtLink')
@@ -30,6 +33,7 @@ const attrs = computed(() => {
 
 const btnClass = computed(() => {
   const base = props.variant === 'primary' ? 'btn-primary' : props.variant === 'secondary' ? 'btn-secondary' : 'btn-ghost'
-  return [base, props.size === 'sm' ? 'text-xs h-8 px-3' : ''].filter(Boolean).join(' ')
+  const size = props.size === 'sm' ? '!h-[30px] !px-[10px] !text-[11px]' : ''
+  return `${base} ${size}`
 })
 </script>
