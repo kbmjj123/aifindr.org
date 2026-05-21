@@ -145,7 +145,16 @@ function main() {
     const tags = parseArray(m.tags)
     const platformsVal = parseArray(m.platforms) || m.platforms
     const platforms = Array.isArray(platformsVal) ? platformsVal.join(',') : (typeof platformsVal === 'string' ? platformsVal : '')
-    const slug = m.slug || (m.name ? m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'unknown')
+    // Add category keyword to slug for SEO (e.g. midjourney → midjourney-ai-image-generator)
+    const catSuffixes = {
+      image: 'ai-image-generator', writing: 'ai-writing-tool', video: 'ai-video-generator',
+      audio: 'ai-audio-tool', code: 'ai-coding-tool', productivity: 'ai-productivity-tool',
+      marketing: 'ai-marketing-tool', data: 'ai-data-tool', education: 'ai-learning-tool',
+      business: 'ai-business-tool', research: 'ai-research-tool', other: 'ai-tool',
+    }
+    const catKw = catSuffixes[category] || 'ai-tool'
+    const baseSlug = m.slug || (m.name ? m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'unknown')
+    const slug = baseSlug.includes(catKw.split('-')[0]) ? baseSlug : `${baseSlug}-${catKw}`
 
     lines.push(`-- ${relPath}`)
     lines.push(`INSERT OR IGNORE INTO tools (`)
