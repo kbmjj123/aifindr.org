@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "code-review-graph": {
+      "command": "uvx",
+      "args": [
+        "code-review-graph",
+        "serve"
+      ],
+      "cwd": "/Users/kbmjj123/Desktop/fullstack/aifindr.org",
+      "type": "stdio",
+      "env": []
+    }
+  }
+}

@@ -44,7 +44,9 @@
       "Bash(curl -sS -L \"https://www.futurepedia.io/robots.txt\")",
       "Bash(curl -sS \"https://www.futurepedia.io/sitemap_tools.xml\")",
       "Bash(curl -sS -L -A \"Mozilla/5.0\" \"https://www.futurepedia.io/tool/gencraft\")",
-      "Bash(xxd)"
+      "Bash(xxd)",
+      "Bash(rtk ls *)",
+      "Bash(rtk grep *)"
     ]
   }
 }

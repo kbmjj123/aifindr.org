@@ -48,3 +48,5 @@ pnpm-lock.yaml
 # claude
 .claude/scripts/scrape-yo-directory.ts
 scripts/scraper/futurepedia.ts
+# Added by code-review-graph
+.code-review-graph/
