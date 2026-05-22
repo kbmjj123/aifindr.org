@@ -154,6 +154,7 @@
 
 <script setup lang="ts">
 import { CATEGORIES } from '~/types/tool'
+const { post } = useApi()
 
 const form = reactive({
   name: 'Test AI Tool',
@@ -260,9 +261,7 @@ async function handleSubmit() {
   submitError.value = ''
 
   try {
-    const res = await $fetch('/api/submit', {
-      method: 'POST',
-      body: {
+    const res = await post('/api/submit', {
         name: form.name,
         website: form.website,
         category: form.category,
@@ -275,8 +274,7 @@ async function handleSubmit() {
         submitter_site: form.submitterSite || undefined,
         submitter_github: form.submitterGithub || undefined,
         turnstileToken: cfToken.value,
-      },
-    })
+      })
     navigateTo(`/submit?success=1`)
   } catch (e: any) {
     submitError.value = e?.data?.error || 'Submission failed. Please try again.'

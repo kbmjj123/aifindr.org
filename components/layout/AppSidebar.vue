@@ -84,6 +84,7 @@
 import { CATEGORIES } from '~/types/tool'
 
 const auth = useAuth()
+const { get } = useApi()
 const isMobileMenuOpen = useState('mobileMenuOpen')
 
 const mainNav = [
@@ -108,7 +109,7 @@ const categoriesCount = ref(0)
 const contributors = ref(0)
 
 useAsyncData('sidebar-stats', async () => {
-  const data = await $fetch<{ tools: number; categories: number; contributors: number }>('/api/stats')
+  const data = await get<{ tools: number; categories: number; contributors: number }>('/api/stats')
   if (data) {
     stats.value = data.tools
     categoriesCount.value = data.categories

@@ -210,6 +210,7 @@ import type { Tool, ToolPricing } from '~/types/tool'
 const route = useRoute()
 const category = computed(() => route.params.category as string)
 const slug = computed(() => route.params.slug as string)
+const { get, post } = useApi()
 
 const categoryInfo = computed(() => CATEGORIES.find(c => c.slug === category.value))
 
@@ -282,11 +283,11 @@ function formatDuration(seconds?: number): string {
 const { data: tool, pending } = useAsyncData<Tool>(
   `tool-${slug.value}`,
   async () => {
-    const result = await $fetch<Tool>(`/api/tools/${category.value}/${slug.value}`)
+    const result = await get<Tool>(`/api/tools/${category.value}/${slug.value}`)
 
     // Load alternatives (same category, exclude current)
     try {
-      const altData = await $fetch<{ tools: Tool[] }>(
+      const altData = await get<{ tools: Tool[] }>(
         `/api/tools?category=${category.value}&pageSize=7`
       )
       if (altData?.tools) {
@@ -313,7 +314,7 @@ watchEffect(() => {
 
 async function recordClick() {
   if (tool.value?.id) {
-    await $fetch(`/api/click/${tool.value.id}`, { method: 'POST' })
+    await post(`/api/click/${tool.value.id}`, {})
   }
 }
 

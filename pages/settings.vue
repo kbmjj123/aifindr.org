@@ -102,6 +102,7 @@
 </template>
 
 <script setup lang="ts">
+const { post } = useApi()
 usePageSeo({
   title: 'Settings',
   template: 'prefix',
@@ -129,10 +130,7 @@ async function saveEmail() {
   saveError.value = ''
 
   try {
-    await $fetch('/api/user/email', {
-      method: 'POST',
-      body: { contact_email: contactEmail.value.trim() },
-    })
+    await post('/api/user/email', { contact_email: contactEmail.value.trim() })
     saveSuccess.value = true
     await fetchUser()
     setTimeout(() => { saveSuccess.value = false }, 3000)

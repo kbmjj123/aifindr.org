@@ -168,6 +168,7 @@
 </template>
 
 <script setup lang="ts">
+const { get, post } = useApi()
 usePageSeo({
   title: 'Admin Panel',
   template: 'prefix',
@@ -232,7 +233,7 @@ async function fetchPending() {
   loading.value = true
   forbidden.value = false
   try {
-    const data = await $fetch<{ tools: PendingTool[]; total: number }>(
+    const data = await get<{ tools: PendingTool[]; total: number }>(
       `/api/admin/pending?page=${page.value}&pageSize=${pageSize}`
     )
     tools.value = data.tools || []
@@ -250,10 +251,7 @@ async function approve(tool: PendingTool) {
   acting.value = tool.id
   reviewStatus.value = 'active'
   try {
-    await $fetch('/api/admin/review', {
-      method: 'POST',
-      body: { tool_id: tool.id, status: 'active' },
-    })
+    await post('/api/admin/review', { tool_id: tool.id, status: 'active' })
     tools.value = tools.value.filter(t => t.id !== tool.id)
     total.value--
   } catch {
@@ -281,15 +279,12 @@ async function reject(tool: PendingTool) {
   acting.value = tool.id
   reviewStatus.value = 'rejected'
   try {
-    await $fetch('/api/admin/review', {
-      method: 'POST',
-      body: {
+    await post('/api/admin/review', {
         tool_id: tool.id,
         status: 'rejected',
         reject_reason: rejectReason.value,
         reviewer_note: reviewerNote.value || undefined,
-      },
-    })
+      })
     tools.value = tools.value.filter(t => t.id !== tool.id)
     total.value--
     cancelReject()

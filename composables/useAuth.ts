@@ -19,6 +19,7 @@ function lsGet(): string | null {
 }
 
 export const useAuth = () => {
+	const { get } = useApi()
   const isLoggedIn = computed(() => !!token.value)
 
   async function fetchUser() {
@@ -29,7 +30,7 @@ export const useAuth = () => {
     }
     loading.value = true
     try {
-      const data = await $fetch<AuthUser>('/api/auth/me', {
+      const data = await get<AuthUser>('/api/auth/me', {
         headers: { Authorization: `Bearer ${t}` },
       })
       user.value = data

@@ -4,7 +4,6 @@ export function useApi() {
   const base = import.meta.server && config.apiBase ? config.apiBase : ''
 
   function get<T>(path: string, opts?: Parameters<typeof $fetch>[1]) {
-		console.info('get', path, opts)
     return $fetch<T>(`${base}${path}`, opts)
   }
 

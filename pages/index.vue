@@ -135,7 +135,6 @@ const { data: homeData } = await useAsyncData('home', () =>
   ]),
   { default: () => null }
 )
-console.info('--->', homeData.value)
 
 const statsTools = computed(() => homeData.value?.[0]?.tools ?? 500)
 const statsCategories = computed(() => homeData.value?.[0]?.categories ?? 12)
