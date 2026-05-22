@@ -49,7 +49,9 @@ export default defineNuxtConfig({
   content: {},
 
   ogImage: {
-    enabled: false,
+    enabled: true,
+		// 告诉模块当前是边缘运行时，用 wasm 版本
+		runtimeCacheStorage: false
   },
 
   robots: {
