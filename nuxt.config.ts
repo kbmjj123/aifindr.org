@@ -33,22 +33,18 @@ export default defineNuxtConfig({
     }
   ],
 
-  routeRules: {
-    '/': { prerender: true },
-    '/tools': { prerender: true },
-    '/tools/*': { prerender: true },
-    '/tools/*/*': isDev ? { prerender: true } : { swr: 86400 },
-    '/blog/*/*': isDev ? { prerender: true } : { swr: 604800 },
-    '/submit': { prerender: true },
-    '/api/**': { cors: true },
-  },
-
   nitro: {
-    preset: 'cloudflare-pages',
+    preset: 'cloudflare_module',
     devProxy: {
       '/api': { target: apiTarget, changeOrigin: true },
     },
+		cloudflare: {
+			nodeCompat: true,
+		}
   },
+	runtimeConfig: {
+		apiBase: '',  // 服务端用，本地开发由 .env.local 注入
+	},
 
   content: {},
 
