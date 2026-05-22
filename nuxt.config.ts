@@ -1,6 +1,3 @@
-const isDev = process.env.NODE_ENV === 'development'
-const apiTarget = process.env.API_TARGET || 'http://localhost:8787'
-
 export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
@@ -8,11 +5,6 @@ export default defineNuxtConfig({
         '@vue/devtools-core',
         '@vue/devtools-kit',
       ]
-    },
-    server: {
-      proxy: {
-        '/api': { target: apiTarget, changeOrigin: true },
-      },
     },
   },
   modules: ['@nuxt/content', '@nuxtjs/seo'],
@@ -35,9 +27,6 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare_module',
-    devProxy: {
-      '/api': { target: apiTarget, changeOrigin: true },
-    },
 		cloudflare: {
 			nodeCompat: true,
 		}
@@ -61,9 +50,7 @@ export default defineNuxtConfig({
 
   sitemap: {
     sources: [
-      isDev
-        ? 'http://localhost:8787/__sitemap__/urls'
-        : '/api/__sitemap__/urls'
+      '/api/__sitemap__/urls'
     ],
     autoLastmod: true,
   },
