@@ -46,7 +46,11 @@
       "Bash(curl -sS -L -A \"Mozilla/5.0\" \"https://www.futurepedia.io/tool/gencraft\")",
       "Bash(xxd)",
       "Bash(rtk ls *)",
-      "Bash(rtk grep *)"
+      "Bash(rtk grep *)",
+      "Bash(rtk find *)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute_file",
+      "mcp__plugin_context-mode_context-mode__ctx_search",
+      "Bash(rtk read *)"
     ]
   }
 }
