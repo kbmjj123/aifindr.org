@@ -126,7 +126,7 @@ const { get } = useApi()
 const categories = CATEGORIES
 const catCounts = ref<Record<string, number>>({})
 
-const { data: homeData } = await useAsyncData('home', () =>
+const { data: homeData, error } = await useAsyncData('home', () =>
   Promise.all([
     get<{ tools: number; categories: number; contributors: number }>('/api/stats'),
     get<{ tools: Tool[] }>('/api/tools?sort=trending&pageSize=8'),
@@ -135,6 +135,9 @@ const { data: homeData } = await useAsyncData('home', () =>
   ]),
   { default: () => null }
 )
+
+// 临时加这行看报错
+console.log('homeData error:', error.value)
 
 const statsTools = computed(() => homeData.value?.[0]?.tools ?? 500)
 const statsCategories = computed(() => homeData.value?.[0]?.categories ?? 12)

@@ -1,7 +1,15 @@
 export function useApi() {
   const config = useRuntimeConfig()
 
-  const base = import.meta.server && config.apiBase ? config.apiBase : ''
+  function getBase() {
+    if (!import.meta.server) return ''
+		if (config.apiBase) return config.apiBase
+		const { origin } = useRequestURL()
+		console.log('SSR base:', origin)  // 加这行
+		return origin
+  }
+
+  const base = getBase()
 
   function get<T>(path: string, opts?: Parameters<typeof $fetch>[1]) {
     return $fetch<T>(`${base}${path}`, opts)
