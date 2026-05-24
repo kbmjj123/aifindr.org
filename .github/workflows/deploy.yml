@@ -18,7 +18,6 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10        # 显式指定版本，改成你本地实际用的版本
           run_install: false
 
       - name: Install dependencies
