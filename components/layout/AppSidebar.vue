@@ -35,7 +35,7 @@
     <!-- Bottom links -->
     <div class="mt-6 pt-4" :style="{ borderTop: '1px solid var(--color-border)' }">
       <NavItem to="/submit" label="Submit a Tool" />
-      <NavItem to="https://github.com/aifindr-org/aifindr.org" label="Open Source on GitHub" />
+      <NavItem to="https://github.com/kbmjj123/aifindr.org" label="Open Source on GitHub" />
       <NavItem to="/blog" label="Blog" />
     </div>
   </aside>

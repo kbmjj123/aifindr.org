@@ -68,7 +68,7 @@ export default defineEventHandler(async (event) => {
     if (status === 'active') {
       const detailUrl = siteUrl(env, `/tools/${toolCategory}/${toolSlug}`)
       const contributorUrl = siteUrl(env, `/contributors/${submitterGithub}`)
-      const githubUrl = `https://github.com/aifindr-org/aifindr.org/blob/main/content/tools/${toolCategory}/${toolSlug}.md`
+      const githubUrl = `https://github.com/kbmjj123/aifindr.org/blob/main/content/tools/${toolCategory}/${toolSlug}.md`
 
       void sendEmail(env, {
         to: submitterEmail,

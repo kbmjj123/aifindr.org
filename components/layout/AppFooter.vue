@@ -6,7 +6,7 @@
         <NuxtLink to="/" style="color: var(--color-text-secondary)">aifindr.org</NuxtLink>
         &nbsp;&mdash;&nbsp;Open-source AI tool directory.
         <br class="sm:hidden" />
-        <a href="https://github.com/aifindr-org/aifindr.org" target="_blank" rel="noopener noreferrer"
+        <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
           style="color: var(--color-text-secondary)">GitHub</a>
         &nbsp;&middot;&nbsp;Built with Nuxt &amp; Cloudflare
       </p>

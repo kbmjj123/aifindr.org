@@ -110,7 +110,7 @@
       <NuxtLink to="/submit" class="btn-primary">
         Submit via Form
       </NuxtLink>
-      <a href="https://github.com/aifindr-org/aifindr.org" target="_blank" rel="noopener noreferrer"
+      <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
         class="btn-secondary">
         Submit via GitHub PR
       </a>
