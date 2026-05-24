@@ -123,6 +123,7 @@ import type { Tool } from '~/types/tool'
 
 const route = useRoute()
 const router = useRouter()
+const { get } = useApi()
 
 const activeSort = ref((route.query.sort as string) || 'latest')
 const activePricing = ref((route.query.pricing as string) || 'all')
@@ -157,15 +158,15 @@ function buildQueryString(): string {
   params.set('pageSize', String(pageSize))
   const pricing = buildPricingParam()
   if (pricing) params.set('pricing', pricing)
-  if (filterCategories.value.length) params.set('category', filterCategories.value[0])
-  if (filterPlatforms.value.length) params.set('platform', filterPlatforms.value[0])
+  if (filterCategories.value.length) params.set('category', filterCategories.value[0]!)
+  if (filterPlatforms.value.length) params.set('platform', filterPlatforms.value[0]!)
   if (filterTags.value.length) params.set('tags', filterTags.value.join(','))
   return params.toString()
 }
 
 const { data: result, pending } = await useAsyncData<{ tools: Tool[]; total: number }>(
   () => `tools-${buildQueryString()}`,
-  () => $fetch<{ tools: Tool[]; total: number }>(`/api/tools?${buildQueryString()}`),
+  () => get<{ tools: Tool[]; total: number }>(`/api/tools?${buildQueryString()}`),
   {
     watch: [activeSort, activePricing, currentPage, filterCategories, filterPricing, filterPlatforms, filterTags],
     default: () => ({ tools: [], total: 0 }),

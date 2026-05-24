@@ -27,13 +27,14 @@ import { CATEGORIES } from '~/types/tool'
 import type { Tool } from '~/types/tool'
 
 const route = useRoute()
+const { get } = useApi()
 const category = computed(() => route.params.category as string)
 
 const categoryInfo = computed(() => CATEGORIES.find(c => c.slug === category.value))
 
 const { data: result, pending } = await useAsyncData<{ tools: Tool[]; total: number }>(
   () => `category-${category.value}`,
-  () => $fetch<{ tools: Tool[]; total: number }>(`/api/tools?category=${category.value}&pageSize=50`),
+  () => get<{ tools: Tool[]; total: number }>(`/api/tools?category=${category.value}&pageSize=50`),
   {
     watch: [category],
     default: () => ({ tools: [], total: 0 }),

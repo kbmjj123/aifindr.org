@@ -1,39 +1,36 @@
-name = "aifindr-api"
-main = "workers/api.ts"
+name = "aifindr"
+main = ".output/server/index.mjs"
 compatibility_date = "2026-05-07"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
-# Routes: /api/* 指向此 Worker
+assets = { directory = ".output/public" }
+
 routes = [
-  { pattern = "aifindr.org/api/*", zone_id = "e10e1a0eb9055d9740e7659f03c17035" },
-  { pattern = "aifindr.org/sitemap.xml", zone_id = "e10e1a0eb9055d9740e7659f03c17035" }
+  { pattern = "aifindr.org", zone_name = "aifindr.org", custom_domain = true, enabled = true, previews_enabled = false }
 ]
 
-# D1 Database — 从 Cloudflare Dashboard → D1 → 数据库详情页获取 ID
 [[d1_databases]]
 binding = "DB"
 database_name = "aifindr-db"
-database_id = "8e365acb-9ac4-4fb4-99c6-cfcaa4ed633d"
+database_id = "PLACEHOLDER_DB_ID"
 
-# KV Cache — 用于缓存高频查询（stats 等）
 [[kv_namespaces]]
 binding = "CACHE"
-id = "ae4b1dfcbdb145db969dc4a5e0b3e722"
+id = "PLACEHOLDER_KV_ID"
 
-# Turnstile Secret
 [vars]
-TURNSTILE_SECRET = "0x4AAAAAADLaTZ6nhzkwRkpcqMgkr73-yWc"
-GITHUB_CLIENT_ID = "Ov23lioNhw0LD6MXeMFJ"
-ADMIN_GITHUB_IDS = ""  # 管理员 GitHub ID，逗号分隔，如 "12345678,87654321"
-RESEND_API_KEY = "" # Resend 邮件服务 API Key（从 resend.com/api-keys 获取）
-GITHUB_WEBHOOK_SECRET = "" # GitHub Webhook Secret（仓库 Settings → Webhooks → Secret）
-LEMONSQUEEZY_WEBHOOK_SECRET = "" # Lemon Squeezy Webhook Secret（Lemon Squeezy → Settings → Webhooks）
-SITE_URL = "https://aifindr.org" # 站点 URL（生产默认，本地开发在 .dev.vars 中覆盖）
+API_BASE                    = "https://aifindr.org"
+ADMIN_GITHUB_IDS            = ""
+TURNSTILE_SECRET            = ""
+GITHUB_CLIENT_ID            = ""
+RESEND_API_KEY              = ""
+GITHUB_WEBHOOK_SECRET       = ""
+LEMONSQUEEZY_WEBHOOK_SECRET = ""
 
-# Cron Triggers（Cloudflare Workers Cron Triggers，免费 5 个/账号）
 [triggers]
 crons = [
-  "0 9 * * *",   # Cron 1: 每天 09:00 UTC — 检查超 7 天未审核提交 + 刷新 KV 缓存
-  "0 3 * * *",   # Cron 2: 每天 03:00 UTC — 反链失效检查
-  "0 8 1 * *",   # Cron 3: 每月 1 日 08:00 UTC — 反链效果月报
-  "0 14 * * 1",  # Cron 4: 每周一 14:00 UTC — Newsletter 定时触发
+  "0 9 * * *",
+  "0 3 * * *",
+  "0 8 1 * *",
+  "0 14 * * 1",
 ]

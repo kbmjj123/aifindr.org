@@ -181,12 +181,21 @@ export function convertTool(raw: RawTool): AifindrTool {
   const pricingInfo = inferPricing(raw.price_hint || combined)
   const tags = raw.tags_hint || inferTags(name, desc, longDesc, category)
   const platforms = inferPlatforms(combined)
-  const slug = slugify(name)
+  // Add category keyword to slug for SEO (e.g. midjourney → midjourney-ai-image-generator)
+  const categorySuffix: Record<string, string> = {
+    image: 'ai-image-generator', writing: 'ai-writing-tool', video: 'ai-video-generator',
+    audio: 'ai-audio-tool', code: 'ai-coding-tool', productivity: 'ai-productivity-tool',
+    marketing: 'ai-marketing-tool', data: 'ai-data-tool', education: 'ai-learning-tool',
+    business: 'ai-business-tool', research: 'ai-research-tool', other: 'ai-tool',
+  }
+  const suffix = categorySuffix[category] || 'ai-tool'
+  const base = slugify(name)
+  const slug = base.includes(suffix.split('-')[0]) ? base : `${base}-${suffix}`
   const today = new Date().toISOString().slice(0, 10)
 
   const images: AifindrTool['images'] = []
   if (raw.screenshot_url) {
-    images.push({ url: raw.screenshot_url, alt: `${name} screenshot`, type: 'screenshot' })
+    images.push({ url: raw.screenshot_url, alt: `${name} — AI ${category} tool interface`, type: 'screenshot' })
   }
 
   const videos: AifindrTool['videos'] = []
@@ -218,8 +227,8 @@ export function convertTool(raw: RawTool): AifindrTool {
     og_image: raw.screenshot_url || raw.logo_url || '',
     featured: false,
     verified: raw.verified || false,
-    submitter_site: '',
-    submitter_github: '',
+    submitter_site: raw.submitter_site || 'https://aifindr.org',
+    submitter_github: raw.submitter_github || 'aifindr-bot',
     submitted_at: today,
     images,
     videos,
@@ -264,8 +273,8 @@ export function toMarkdown(tool: AifindrTool): string {
     `featured: ${tool.featured}`,
     `verified: ${tool.verified}`,
     `editor_pick: false`,
-    `submitter_site: ""`,
-    `submitter_github: ""`,
+    `submitter_site: "${escapeYaml(tool.submitter_site)}"`,
+    `submitter_github: "${tool.submitter_github}"`,
     `submitted_at: "${tool.submitted_at}"`,
     `last_verified: "${tool.last_verified}"`,
   )
