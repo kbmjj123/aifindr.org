@@ -5,23 +5,19 @@ compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
 assets = { directory = ".output/public" }
 
-# Routes
 routes = [
   { pattern = "aifindr.org", zone_name = "aifindr.org", custom_domain = true, enabled = true, previews_enabled = false }
 ]
 
-# D1 Database — 从 Cloudflare Dashboard → D1 → 数据库详情页获取 ID
 [[d1_databases]]
 binding = "DB"
 database_name = "aifindr-db"
-database_id = ""  # 见 wrangler.local.toml
+database_id = "PLACEHOLDER_DB_ID"
 
-# KV Cache
 [[kv_namespaces]]
 binding = "CACHE"
-id = ""  # 见 wrangler.local.toml
+id = "PLACEHOLDER_KV_ID"
 
-# 环境变量（敏感值见 wrangler.local.toml）
 [vars]
 API_BASE                    = "https://aifindr.org"
 ADMIN_GITHUB_IDS            = ""
@@ -31,11 +27,10 @@ RESEND_API_KEY              = ""
 GITHUB_WEBHOOK_SECRET       = ""
 LEMONSQUEEZY_WEBHOOK_SECRET = ""
 
-# Cron Triggers
 [triggers]
 crons = [
-  "0 9 * * *",   # 每天 09:00 UTC — 检查超 7 天未审核提交 + 刷新 KV 缓存
-  "0 3 * * *",   # 每天 03:00 UTC — 反链失效检查
-  "0 8 1 * *",   # 每月 1 日 08:00 UTC — 反链效果月报
-  "0 14 * * 1",  # 每周一 14:00 UTC — Newsletter 定时触发
+  "0 9 * * *",
+  "0 3 * * *",
+  "0 8 1 * *",
+  "0 14 * * 1",
 ]
