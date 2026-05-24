@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
               `<p>Your dofollow backlinks are now active — check them out:</p>`,
               `<ul>`,
               `<li><a href="${detailUrl}">${detailUrl}</a> — Tool detail page</li>`,
-              `<li><a href="https://github.com/aifindr-org/aifindr.org/blob/main/content/tools/${category}/${slug}.md">GitHub</a> — github.com (DA 100)</li>`,
+              `<li><a href="https://github.com/kbmjj123/aifindr.org/blob/main/content/tools/${category}/${slug}.md">GitHub</a> — github.com (DA 100)</li>`,
               `</ul>`,
               `<p><a href="${detailUrl}">View your listing →</a></p>`,
               `<p>— aifindr.org</p>`,

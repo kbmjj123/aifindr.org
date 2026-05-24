@@ -73,7 +73,7 @@ Write a detailed description of your tool here (Markdown supported).
 
 Brief description of your pricing model.</pre>          </div>
 
-          <a href="https://github.com/aifindr-org/aifindr.org" target="_blank" rel="noopener noreferrer"
+          <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
             class="btn-primary inline-flex items-center gap-2">
             Fork &amp; Submit on GitHub →
           </a>
