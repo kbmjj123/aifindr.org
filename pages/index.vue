@@ -128,7 +128,6 @@ const catCounts = ref<Record<string, number>>({})
 
 const { data: homeData, error } = await useAsyncData('home', () =>
   Promise.all([
-    get<{ tools: number; categories: number; contributors: number }>('/api/stats'),
     get<{ tools: Tool[] }>('/api/tools?sort=trending&pageSize=8'),
     get<{ tools: Tool[] }>('/api/tools?sort=featured&pageSize=6'),
     get<{ tools: Tool[] }>('/api/tools?sort=latest&pageSize=20'),
@@ -136,16 +135,9 @@ const { data: homeData, error } = await useAsyncData('home', () =>
   { default: () => null }
 )
 
-// 临时加这行看报错
-console.log('homeData error:', error.value)
-
-const statsTools = computed(() => homeData.value?.[0]?.tools ?? 500)
-const statsCategories = computed(() => homeData.value?.[0]?.categories ?? 12)
-const statsContributors = computed(() => homeData.value?.[0]?.contributors ?? 50)
-
-const trending = computed(() => homeData.value?.[1]?.tools ?? [])
-const featured = computed(() => homeData.value?.[2]?.tools ?? [])
-const recent = computed(() => homeData.value?.[3]?.tools ?? [])
+const trending = computed(() => homeData.value?.[0]?.tools ?? [])
+const featured = computed(() => homeData.value?.[1]?.tools ?? [])
+const recent = computed(() => homeData.value?.[2]?.tools ?? [])
 
 // Build category counts from loaded data
 watchEffect(() => {
