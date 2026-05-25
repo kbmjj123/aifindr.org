@@ -32,7 +32,8 @@ jobs:
         run: |
           sed -i "s/PLACEHOLDER_DB_ID/${{ secrets.DB_DATABASE_ID }}/g" wrangler.toml
           sed -i "s/PLACEHOLDER_KV_ID/${{ secrets.CACHE_KV_ID }}/g" wrangler.toml
-
+			- name: Debug wrangler.toml
+        run: cat wrangler.toml
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
@@ -42,9 +43,9 @@ jobs:
         env:
           API_BASE: "https://aifindr.org"
           TURNSTILE_SECRET: ${{ secrets.TURNSTILE_SECRET }}
-          GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}
-          GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
+          GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
           ADMIN_GITHUB_IDS: ${{ secrets.ADMIN_GITHUB_IDS }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          GITHUB_WEBHOOK_SECRET: ${{ secrets.GITHUB_WEBHOOK_SECRET }}
+          GITHUB_WEBHOOK_SECRET: ${{ secrets.GH_WEBHOOK_SECRET }}
           LEMONSQUEEZY_WEBHOOK_SECRET: ${{ secrets.LEMONSQUEEZY_WEBHOOK_SECRET }}
