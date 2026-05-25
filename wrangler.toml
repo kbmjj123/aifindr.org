@@ -9,15 +9,6 @@ routes = [
   { pattern = "aifindr.org", zone_name = "aifindr.org", custom_domain = true, enabled = true, previews_enabled = false }
 ]
 
-[[d1_databases]]
-binding = "DB"
-database_name = "aifindr-db"
-database_id = ""
-
-[[kv_namespaces]]
-binding = "CACHE"
-id = ""
-
 [vars]
 API_BASE                    = "https://aifindr.org"
 ADMIN_GITHUB_IDS            = ""
