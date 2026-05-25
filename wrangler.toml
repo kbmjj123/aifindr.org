@@ -12,11 +12,11 @@ routes = [
 [[d1_databases]]
 binding = "DB"
 database_name = "aifindr-db"
-database_id = "PLACEHOLDER_DB_ID"
+database_id = ""
 
 [[kv_namespaces]]
 binding = "CACHE"
-id = "PLACEHOLDER_KV_ID"
+id = ""
 
 [vars]
 API_BASE                    = "https://aifindr.org"
