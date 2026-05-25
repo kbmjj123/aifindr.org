@@ -8,20 +8,3 @@ assets = { directory = ".output/public" }
 routes = [
   { pattern = "aifindr.org", zone_name = "aifindr.org", custom_domain = true, enabled = true, previews_enabled = false }
 ]
-
-[vars]
-API_BASE                    = "https://aifindr.org"
-ADMIN_GITHUB_IDS            = ""
-TURNSTILE_SECRET            = ""
-GITHUB_CLIENT_ID            = ""
-RESEND_API_KEY              = ""
-GITHUB_WEBHOOK_SECRET       = ""
-LEMONSQUEEZY_WEBHOOK_SECRET = ""
-
-[triggers]
-crons = [
-  "0 9 * * *",
-  "0 3 * * *",
-  "0 8 1 * *",
-  "0 14 * * 1",
-]
