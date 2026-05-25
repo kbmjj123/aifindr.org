@@ -26,7 +26,7 @@ jobs:
       - name: Build
         run: pnpm nuxi build
         env:
-          NITRO_PRESET: cloudflare-pages
+          NITRO_PRESET: cloudflare_module
 
       - name: Inject resource IDs
         run: |
