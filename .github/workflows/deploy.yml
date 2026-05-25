@@ -32,8 +32,10 @@ jobs:
         run: |
           sed -i "s/PLACEHOLDER_DB_ID/${{ secrets.DB_DATABASE_ID }}/g" wrangler.toml
           sed -i "s/PLACEHOLDER_KV_ID/${{ secrets.CACHE_KV_ID }}/g" wrangler.toml
-			- name: Debug wrangler.toml
+
+      - name: Debug wrangler.toml
         run: cat wrangler.toml
+
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
