@@ -1,8 +1,9 @@
 <template>
-  <footer class="lg:pl-[220px] py-8 px-6 text-center"
+  <footer class="lg:pl-[220px] py-8 px-6"
     :style="{ borderTop: '1px solid var(--color-border)' }">
     <div class="max-w-[1400px] mx-auto">
-      <p class="font-body text-xs" style="color: var(--color-text-muted)">
+      <LinkExchange />
+      <p class="font-body text-xs text-center" style="color: var(--color-text-muted)">
         <NuxtLink to="/" style="color: var(--color-text-secondary)">aifindr.org</NuxtLink>
         &nbsp;&mdash;&nbsp;Open-source AI tool directory.
         <br class="sm:hidden" />
@@ -13,3 +14,7 @@
     </div>
   </footer>
 </template>
+
+<script setup lang="ts">
+import LinkExchange from './LinkExchange.vue'
+</script>
