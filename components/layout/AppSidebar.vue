@@ -13,10 +13,10 @@
         <div class="stat-num">{{ categoriesCount }}</div>
         <div class="stat-label">Categories</div>
       </div>
-      <div class="stat-item">
+      <NuxtLink to="/contributors" class="stat-item block no-underline">
         <div class="stat-num">{{ contributors }}+</div>
         <div class="stat-label">Contributors</div>
-      </div>
+      </NuxtLink>
     </div>
 
     <!-- Main nav -->
@@ -104,17 +104,11 @@ watch(isMobileMenuOpen, (open) => {
   }
 })
 
-const stats = ref(0)
-const categoriesCount = ref(0)
-const contributors = ref(0)
+const { data: statsData } = await useAsyncData('sidebar-stats', () =>
+  get<{ tools: number; categories: number; contributors: number }>('/api/stats')
+)
 
-useAsyncData('sidebar-stats', async () => {
-  const data = await get<{ tools: number; categories: number; contributors: number }>('/api/stats')
-  if (data) {
-    stats.value = data.tools
-    categoriesCount.value = data.categories
-    contributors.value = data.contributors
-  }
-  return data
-})
+const stats = computed(() => statsData.value?.tools ?? 0)
+const categoriesCount = computed(() => statsData.value?.categories ?? 0)
+const contributors = computed(() => statsData.value?.contributors ?? 0)
 </script>
