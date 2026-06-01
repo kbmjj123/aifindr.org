@@ -617,8 +617,7 @@ body::before {
   background: var(--color-bg-elevated);
   color: var(--color-text-primary);
 }
-.nav-item.active,
-.nav-item.router-link-active {
+.nav-item.active {
   background: var(--color-accent-dim);
   color: var(--color-text-primary);
   border-left-color: var(--color-accent);

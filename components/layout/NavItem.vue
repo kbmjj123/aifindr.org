@@ -25,6 +25,7 @@ const emit = defineEmits<{
 }>()
 
 const route = useRoute()
+const router = useRouter()
 const isExternal = computed(() => props.to.startsWith('http'))
 const emitClick = (e: MouseEvent) => emit('click', e)
 
@@ -42,16 +43,14 @@ const parsed = computed(() => {
 const resolvedTo = computed(() => {
   const { path, query, hash } = parsed.value
   if (!query && !hash) return path
-  return { path, query: query || undefined, hash: hash || undefined }
+  return { path, query: query || undefined, hash: hash ? `#${hash}` : undefined }
 })
 
 function handleClick(e: MouseEvent) {
   const { hash } = parsed.value
   if (hash && route.path === '/') {
-    // Same page hash scroll — smooth
     e.preventDefault()
-    const el = document.getElementById(hash)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    router.replace({ hash: `#${hash}` })
   }
   emitClick(e)
 }
@@ -63,14 +62,12 @@ const isActive = computed(() => {
 
   // Home: active on '/' with no hash and no query
   if (toPath === '/') {
-    const currentHash = import.meta.client ? window.location.hash : route.hash || ''
-    return currentPath === '/' && !currentHash && !Object.keys(route.query).length
+    return currentPath === '/' && !route.hash && !Object.keys(route.query).length
   }
 
   // Hash anchor link (e.g. #trending) — active when page matches + hash matches
   if (toHash) {
-    const currentHash = import.meta.client ? window.location.hash : route.hash || ''
-    return currentPath === toPath && currentHash === `#${toHash}`
+    return currentPath === toPath && route.hash === `#${toHash}`
   }
 
   // Query params — exact match required

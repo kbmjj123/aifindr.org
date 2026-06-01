@@ -39,6 +39,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { exchangeLinks, type ExchangeLink } from '~/data/exchange-links'
 
 const links = exchangeLinks
