@@ -3,6 +3,7 @@
 CREATE TABLE IF NOT EXISTS tools (
   id               INTEGER PRIMARY KEY AUTOINCREMENT,
   slug             TEXT NOT NULL UNIQUE,
+	description    	 TEXT,
   name             TEXT NOT NULL,
   category         TEXT NOT NULL,
   website          TEXT NOT NULL,
