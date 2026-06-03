@@ -171,7 +171,7 @@
       </div>
 
       <!-- Turnstile -->
-      <div ref="turnstileEl" class="flex items-center justify-center min-h-[65px]"></div>
+      <div v-if="!isDev" ref="turnstileEl" class="flex items-center justify-center min-h-[65px]"></div>
       <p v-if="turnstileError" class="font-body text-[11px] text-center" style="color: var(--color-danger)">{{ turnstileError }}</p>
 
       <button type="submit" class="btn-primary w-full flex items-center justify-center gap-2 !h-[40px] !text-[13px]"
@@ -261,6 +261,7 @@ const platformOptions = [
   { value: 'api', label: 'API' },
 ]
 
+const isDev = import.meta.dev
 const submitting = ref(false)
 const submitError = ref('')
 const turnstileEl = ref<HTMLDivElement>()
@@ -268,6 +269,11 @@ const cfToken = ref('')
 const turnstileError = ref('')
 
 onMounted(() => {
+  if (isDev) {
+    // Dev mode: use Turnstile test token (always passes)
+    cfToken.value = '1x00000000000000000000'
+    return
+  }
   const script = document.createElement('script')
   script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad'
   script.async = true
