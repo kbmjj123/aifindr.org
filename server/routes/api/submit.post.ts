@@ -37,6 +37,9 @@ export default defineEventHandler(async (event) => {
   const useCases = String(body.use_cases || '').trim()
   const targetUsers = String(body.target_users || '').trim()
   const hasFreeTrial = body.has_free_trial ? 1 : 0
+  const coverImage = String(body.cover_image || '').trim()
+  const screenshotUrls = String(body.screenshot_urls || '').trim()
+  const demoVideoUrl = String(body.demo_video_url || '').trim()
 
   if (!['free', 'freemium', 'paid'].includes(pricing)) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid pricing value. Must be free, freemium, or paid' })
@@ -88,10 +91,23 @@ export default defineEventHandler(async (event) => {
     platformsStr = platformsRaw.trim()
   }
 
+  // Append media URLs to body for review visibility
+  let fullBody = bodyContent || ''
+  if (screenshotUrls) {
+    const urls = screenshotUrls.split(',').filter(Boolean)
+    if (urls.length > 0) {
+      fullBody += '\n\n## Screenshots\n'
+      urls.forEach((u, i) => { fullBody += `- ![Screenshot ${i + 1}](${u})\n` })
+    }
+  }
+  if (demoVideoUrl) {
+    fullBody += `\n\n## Demo Video\n${demoVideoUrl}\n`
+  }
+
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   await env.DB.prepare(`
-    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, body, submitter_site, submitter_github, submitter_id, use_cases, target_users, data_source, submitted_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, 'user_submit', ?)
+    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, cover_image, body, submitter_site, submitter_github, submitter_id, use_cases, target_users, data_source, submitted_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, 'user_submit', ?)
   `).bind(
     slug,
     name,
@@ -102,7 +118,8 @@ export default defineEventHandler(async (event) => {
     hasFreeTrial,
     platformsStr,
     description,
-    bodyContent || null,
+    coverImage || null,
+    fullBody || null,
     submitterSite || null,
     submitterGithub || null,
     submitterId,

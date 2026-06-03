@@ -120,6 +120,41 @@
         </div>
       </div>
 
+      <!-- Media section -->
+      <div class="pt-4 border-t" :style="{ borderColor: 'var(--color-border)' }">
+        <p class="font-body text-[12px] font-medium mb-4" style="color: var(--color-text-primary)">
+          Media <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
+        </p>
+
+        <!-- Cover Image -->
+        <div class="mb-4">
+          <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+            Cover Image URL
+          </label>
+          <BaseInput v-model="form.coverImage" placeholder="https://r2.aifindr.org/tools/.../cover.webp" />
+        </div>
+
+        <!-- Screenshots -->
+        <div class="mb-4">
+          <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+            Screenshots <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(up to 3)</span>
+          </label>
+          <div class="space-y-2">
+            <BaseInput v-for="(_, i) in form.screenshots" :key="i"
+              v-model="form.screenshots[i]"
+              :placeholder="`Screenshot ${i + 1} URL`" />
+          </div>
+        </div>
+
+        <!-- Demo Video -->
+        <div>
+          <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+            Demo Video URL
+          </label>
+          <BaseInput v-model="form.demoVideo" placeholder="https://youtube.com/watch?v=..." />
+        </div>
+      </div>
+
       <!-- Submitter fields -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
@@ -157,17 +192,20 @@ import { CATEGORIES } from '~/types/tool'
 const { post } = useApi()
 
 const form = reactive({
-  name: 'Test AI Tool',
-  website: 'https://example.com',
-  category: 'image',
-  pricing: 'freemium',
-  description: 'An AI-powered tool for generating beautiful images from text prompts.',
-  detailDescription: '## What is Test AI Tool?\n\nTest AI Tool helps users create stunning visuals from natural language descriptions. Built on state-of-the-art diffusion models.\n\n## Key Features\n\n- Text-to-Image — Generate images from text\n- Style Control — Choose artistic styles\n- Batch Generation — Create variations\n\n## Pricing\n\nFree: 25 generations/day. Pro: $20/month, unlimited.',
-  platforms: ['web', 'api'] as string[],
+  name: '',
+  website: '',
+  category: '',
+  pricing: 'free',
+  description: '',
+  detailDescription: '',
+  platforms: [] as string[],
   targetUsers: [] as string[],
   useCases: [] as string[],
-  submitterSite: 'https://aifindr.org',
-  submitterGithub: 'test-user',
+  submitterSite: '',
+  submitterGithub: '',
+  coverImage: '',
+  screenshots: ['', '', ''],
+  demoVideo: '',
 })
 
 const userOptions = [
@@ -261,6 +299,7 @@ async function handleSubmit() {
   submitError.value = ''
 
   try {
+    const screenshotUrls = form.screenshots.filter(Boolean)
     const res = await post('/api/submit', {
         name: form.name,
         website: form.website,
@@ -273,6 +312,9 @@ async function handleSubmit() {
         use_cases: form.useCases.join(','),
         submitter_site: form.submitterSite || undefined,
         submitter_github: form.submitterGithub || undefined,
+        cover_image: form.coverImage || undefined,
+        screenshot_urls: screenshotUrls.length > 0 ? screenshotUrls.join(',') : undefined,
+        demo_video_url: form.demoVideo || undefined,
         turnstileToken: cfToken.value,
       })
     navigateTo(`/submit?success=1`)
