@@ -6,6 +6,7 @@ import { verifyTurnstile, slugify } from '~/server/utils/utils'
 import type { UserRecord } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
+	console.info('xxxx')
   const env = getEnv(event)
 
   let submitterId: number | null = null
@@ -50,8 +51,7 @@ export default defineEventHandler(async (event) => {
   if (!validCategories.includes(category)) {
     throw createError({ statusCode: 400, statusMessage: `Invalid category. Must be one of: ${validCategories.join(', ')}` })
   }
-
-  if (env.TURNSTILE_SECRET) {
+  if (env.TURNSTILE_SECRET && !import.meta.dev) {
     if (!turnstileToken) {
       throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification required' })
     }
@@ -69,7 +69,7 @@ export default defineEventHandler(async (event) => {
   }
   const catKw = catSuffix[category] || 'ai-tool'
   const nameSlug = slugify(name)
-  const baseSlug = nameSlug.includes(catKw.split('-')[0]) ? nameSlug : `${nameSlug}-${catKw}`
+  const baseSlug = nameSlug.includes(catKw.split('-')[0] as string) ? nameSlug : `${nameSlug}-${catKw}`
   if (!baseSlug) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid tool name' })
   }

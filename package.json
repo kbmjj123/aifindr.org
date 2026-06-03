@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nuxi dev",
+    "dev": "API_PROXY_TARGET=http://localhost:8787 API_BASE=http://localhost:8787 nuxi dev",
     "dev:remote": "API_PROXY_TARGET=https://aifindr.org API_BASE=https://aifindr.org nuxi dev",
     "build": "nuxi build",
     "generate": "nuxi generate",

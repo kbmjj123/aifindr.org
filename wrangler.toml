@@ -12,11 +12,11 @@ routes = [
 [[d1_databases]]
 binding = "DB"
 database_name = "aifindr-db"
-database_id = ""
+database_id = "8e365acb-9ac4-4fb4-99c6-cfcaa4ed633d"
 
 [[kv_namespaces]]
 binding = "CACHE"
-id = ""
+id = "ae4b1dfcbdb145db969dc4a5e0b3e722"
 
 [[r2_buckets]]
 binding = "CDN"
