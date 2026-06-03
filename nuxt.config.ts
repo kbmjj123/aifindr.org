@@ -7,13 +7,12 @@ export default defineNuxtConfig({
       ]
     },
     server: {
-      proxy: {
+      proxy: process.env.API_PROXY_TARGET ? {
         '/api': {
-          target: process.env.API_PROXY_TARGET || 'https://aifindr.org',
+          target: process.env.API_PROXY_TARGET,
           changeOrigin: true,
         }
-      }
-    }
+      } : undefined
   },
   modules: ['@nuxt/content', '@nuxtjs/seo'],
 
@@ -38,12 +37,12 @@ export default defineNuxtConfig({
 		cloudflare: {
 			nodeCompat: true,
 		},
-    devProxy: {
+    devProxy: process.env.API_PROXY_TARGET ? {
       '/api': {
-        target: process.env.API_PROXY_TARGET || 'https://aifindr.org',
+        target: process.env.API_PROXY_TARGET,
         changeOrigin: true,
       }
-    }
+    } : undefined
   },
 	runtimeConfig: {
 		apiBase: '',  // 服务端用，本地开发由 .env.local 注入
