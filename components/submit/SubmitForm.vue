@@ -285,6 +285,7 @@ const submitError = ref('')
 const turnstileEl = ref<HTMLDivElement>()
 const cfToken = ref('')
 const turnstileError = ref('')
+const turnstileWidgetId = ref<string | undefined>()
 
 // Pre-fill from GitHub auth when user data loads
 watch(user, (u) => {
@@ -310,8 +311,8 @@ onMounted(() => {
     const ts = (window as any).turnstile
     if (ts && turnstileEl.value) {
       clearInterval(check)
-      ts.render(turnstileEl.value, {
-        sitekey: '0x4AAAAAADLaTYMVN6qFivFT',  // ← 替换为 Cloudflare Turnstile Site Key
+      turnstileWidgetId.value = ts.render(turnstileEl.value, {
+        sitekey: '0x4AAAAAADLaTYMVN6qFivFT',
         callback: (token: string) => { cfToken.value = token; turnstileError.value = '' },
         'expired-callback': () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA expired, please verify again.' },
         'error-callback': () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA verification error.' },
@@ -359,6 +360,12 @@ async function handleSubmit() {
     navigateTo(`/submit?success=1`)
   } catch (e: any) {
     submitError.value = e?.data?.error || 'Submission failed. Please try again.'
+    // Reset Turnstile so user can get a fresh token
+    if (!isDev) {
+      const ts = (window as any).turnstile
+      if (ts && turnstileWidgetId.value) ts.reset(turnstileWidgetId.value)
+      cfToken.value = ''
+    }
   } finally {
     submitting.value = false
   }
