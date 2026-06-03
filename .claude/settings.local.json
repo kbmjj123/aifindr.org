@@ -60,7 +60,10 @@
       "Bash(rtk pnpm *)",
       "Bash(gtimeout 30 pnpm dev)",
       "Bash(rtk npx *)",
-      "Bash(echo \"---exit:$?\")"
+      "Bash(echo \"---exit:$?\")",
+      "Bash(rtk git *)",
+      "Bash(rtk curl *)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute"
     ]
   }
 }
