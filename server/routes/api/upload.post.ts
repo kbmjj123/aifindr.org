@@ -1,5 +1,4 @@
 import { createError, readFormData } from 'h3'
-import { getEnv } from '~/server/utils/env'
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -8,7 +7,6 @@ const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
 const EXT_MAP: Record<string, string> = { png: 'png', jpeg: 'jpg', webp: 'webp', gif: 'gif' }
 
 export default defineEventHandler(async (event) => {
-  const env = getEnv(event)
   const formData = await readFormData(event)
   const file = formData.get('file')
 
@@ -28,17 +26,21 @@ export default defineEventHandler(async (event) => {
   const ext = EXT_MAP[mimeType] || mimeType
   const key = `submissions/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`
 
-  if (env.MEDIA) {
-    await env.MEDIA.put(key, file.stream(), {
+  // R2 available (wrangler dev or Cloudflare runtime)
+  const cf = (event.context as any).cloudflare
+  if (cf?.env?.MEDIA) {
+    await cf.env.MEDIA.put(key, file.stream(), {
       httpMetadata: { contentType: file.type },
     })
-    const publicUrl = `${(env.R2_PUBLIC_URL || 'https://r2.aifindr.org').replace(/\/+$/, '')}/${key}`
+    const publicUrl = `${(cf.env.R2_PUBLIC_URL || 'https://r2.aifindr.org').replace(/\/+$/, '')}/${key}`
     return { url: publicUrl }
   }
 
+  // Dev fallback: write to public/tmp/ served by Vite
   const publicDir = join(process.cwd(), 'public', 'tmp')
   mkdirSync(publicDir, { recursive: true })
   const buffer = Buffer.from(await file.arrayBuffer())
-  writeFileSync(join(publicDir, key), buffer)
+  const filePath = join(publicDir, key)
+  writeFileSync(filePath, buffer)
   return { url: `/tmp/${key}` }
 })
