@@ -7,12 +7,13 @@ export default defineNuxtConfig({
       ]
     },
     server: {
-      proxy: process.env.API_PROXY_TARGET ? {
+      proxy: {
         '/api': {
           target: process.env.API_PROXY_TARGET,
           changeOrigin: true,
         }
-      } : undefined
+      }
+    }
   },
   modules: ['@nuxt/content', '@nuxtjs/seo'],
 
@@ -37,12 +38,12 @@ export default defineNuxtConfig({
 		cloudflare: {
 			nodeCompat: true,
 		},
-    devProxy: process.env.API_PROXY_TARGET ? {
+    devProxy: {
       '/api': {
         target: process.env.API_PROXY_TARGET,
         changeOrigin: true,
       }
-    } : undefined
+    }
   },
 	runtimeConfig: {
 		apiBase: '',  // 服务端用，本地开发由 .env.local 注入
