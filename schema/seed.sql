@@ -4,7 +4,7 @@
 -- ─── Dev 用户（匹配 /api/auth/dev-login 的 github_id=12345678）────
 
 INSERT OR IGNORE INTO users (github_id, username, email, avatar_url, contact_email, email_verified, email_notify)
-VALUES (12345678, 'dev-user', 'dev@example.com', '', 'dev@example.com', 1, 1);
+VALUES (284824170, 'aifindr-bot', 'ngoctoquang2@gmail.com', '', 'ngoctoquang2@gmail.com', 1, 1);
 
 -- ─── Image & Design ──────────────────────────────────────────────
 

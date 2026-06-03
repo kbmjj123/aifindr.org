@@ -6,9 +6,9 @@ export default defineEventHandler(async (event) => {
   const env = getEnv(event)
 
   const devUser = {
-    github_id: 12345678,
-    username: 'dev-user',
-    email: 'dev@example.com',
+    github_id: 284824170,
+    username: 'aifindr-bot',
+    email: 'ngoctoquang2@gmail.com',
     avatar_url: '',
   }
 
