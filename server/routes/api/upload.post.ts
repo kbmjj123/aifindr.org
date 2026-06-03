@@ -7,6 +7,7 @@ const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
 const EXT_MAP: Record<string, string> = { png: 'png', jpeg: 'jpg', webp: 'webp', gif: 'gif' }
 
 export default defineEventHandler(async (event) => {
+	console.info(123)
   const formData = await readFormData(event)
   const file = formData.get('file')
 
@@ -22,7 +23,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 415, statusMessage: 'Unsupported file type. Use PNG, JPEG, WebP, or GIF.' })
   }
 
-  const mimeType = file.type.split('/')[1]
+  const mimeType = file.type.split('/')[1]!
   const ext = EXT_MAP[mimeType] || mimeType
   const key = `submissions/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`
 

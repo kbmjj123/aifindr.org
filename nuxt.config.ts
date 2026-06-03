@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         '/api': {
-          target: process.env.API_PROXY_TARGET,
+          target: process.env.API_PROXY_TARGET || 'https://aifindr.org',
           changeOrigin: true,
         }
       }
@@ -40,7 +40,7 @@ export default defineNuxtConfig({
 		},
     devProxy: {
       '/api': {
-        target: process.env.API_PROXY_TARGET,
+        target: process.env.API_PROXY_TARGET || 'https://aifindr.org',
         changeOrigin: true,
       }
     }
