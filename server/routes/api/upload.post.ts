@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
 
   const mimeType = file.type.split('/')[1]!
   const ext = EXT_MAP[mimeType] || mimeType
-  const key = `submissions/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`
+  const key = `tools/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`
 
   // R2 available (wrangler dev or Cloudflare runtime)
   const cf = (event.context as any).cloudflare
