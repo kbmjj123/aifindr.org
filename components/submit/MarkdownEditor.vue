@@ -27,6 +27,15 @@
       </template>
       &middot; Renders as tool detail page content
     </p>
+
+    <div v-show="mode === 'edit'" class="mt-2 p-2 rounded-md font-body text-[10px] leading-relaxed"
+      :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)', color: 'var(--color-text-muted)' }">
+      <span class="font-medium" style="color: var(--color-text-secondary)">Markdown hints:</span>
+      <code class="text-[10px]"># h1</code> <code class="text-[10px]">## h2</code>
+      <code class="text-[10px]">**bold**</code> <code class="text-[10px]">*italic*</code>
+      <code class="text-[10px]">[link](url)</code> <code class="text-[10px]">![](img)</code>
+      <code class="text-[10px]">- list</code> <code class="text-[10px]">```code```</code>
+    </div>
   </div>
 </template>
 
