@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aifindr.org · Developer Docs</title>
+  <meta name="description" content="Open-source AI tools directory built with Nuxt & Cloudflare. Self-host, contribute, or fork." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #09090b;
+      --surface: #111113;
+      --border: #1f1f23;
+      --border-bright: #2e2e34;
+      --text: #e4e4e7;
+      --muted: #71717a;
+      --accent: #a3e635;
+      --accent-dim: #4d7c0f;
+      --accent-glow: rgba(163,230,53,0.10);
+      --blue: #60a5fa;
+      --orange: #fb923c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9,9,11,0.88);
+      backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 24px;
+      height: 52px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px;
+      color: var(--accent); text-decoration: none; letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--muted); font-weight: 400; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 12px;
+      padding: 5px 11px; border-radius: 6px; transition: all 0.15s;
+      font-family: 'DM Mono', monospace;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--surface); }
+    .nav-links a.cta {
+      background: var(--accent); color: #000; font-weight: 500;
+    }
+    .nav-links a.cta:hover { background: #bef264; }
+
+    /* LAYOUT */
+    .page {
+      max-width: 860px; margin: 0 auto; padding: 0 24px;
+      position: relative; z-index: 1;
+    }
+
+    /* HERO */
+    .hero { padding: 80px 0 64px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      color: var(--accent); background: var(--accent-glow);
+      border: 1px solid var(--accent-dim);
+      padding: 3px 10px; border-radius: 999px; margin-bottom: 28px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    h1 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(36px, 6vw, 56px); line-height: 1.05;
+      letter-spacing: -0.03em; margin-bottom: 16px;
+    }
+    h1 em { font-style: normal; color: var(--accent); }
+    .hero-sub {
+      font-size: 16px; color: var(--muted); max-width: 500px;
+      margin-bottom: 36px; line-height: 1.75;
+    }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 20px; border-radius: 7px; font-size: 13px;
+      font-weight: 500; text-decoration: none; transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif; border: none; cursor: pointer;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: #bef264; transform: translateY(-1px); }
+    .btn-ghost {
+      background: var(--surface); color: var(--text);
+      border: 1px solid var(--border-bright);
+    }
+    .btn-ghost:hover { border-color: var(--muted); transform: translateY(-1px); }
+
+    /* TECH STACK */
+    .stack-row {
+      display: flex; gap: 10px; flex-wrap: wrap; margin: 48px 0;
+    }
+    .tag {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      padding: 4px 10px; border-radius: 5px;
+      border: 1px solid var(--border-bright); color: var(--muted);
+      background: var(--surface);
+    }
+    .tag.hi { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-glow); }
+
+    /* SECTIONS */
+    .section { margin: 72px 0; }
+    .section-label {
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      color: var(--accent); text-transform: uppercase;
+      letter-spacing: 0.12em; margin-bottom: 14px;
+    }
+    h2 {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: clamp(20px, 3vw, 28px); letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .section-desc { color: var(--muted); font-size: 15px; margin-bottom: 32px; }
+
+    /* QUICK START */
+    .steps { display: flex; flex-direction: column; }
+    .step {
+      display: grid; grid-template-columns: 36px 1fr;
+      gap: 16px; padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-n {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 22px; color: var(--border-bright); line-height: 1;
+      padding-top: 2px;
+    }
+    .step-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 15px; margin-bottom: 6px;
+    }
+    .step-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .code {
+      margin-top: 10px; background: #000;
+      border: 1px solid var(--border); border-radius: 7px;
+      padding: 12px 14px; font-family: 'DM Mono', monospace;
+      font-size: 12px; color: var(--accent); overflow-x: auto; line-height: 1.8;
+    }
+    .code .c { color: var(--muted); }
+    .code .k { color: var(--blue); }
+    .code .v { color: var(--orange); }
+
+    /* STRUCTURE */
+    .tree {
+      background: #000; border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px 22px;
+      font-family: 'DM Mono', monospace; font-size: 12px;
+      line-height: 2; color: var(--muted);
+    }
+    .tree .dir { color: var(--blue); }
+    .tree .file { color: var(--text); }
+    .tree .note { color: var(--muted); font-size: 11px; }
+    .tree .hl { color: var(--accent); }
+
+    /* CONTRIBUTE */
+    .contrib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .contrib-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px;
+      transition: border-color 0.15s;
+    }
+    .contrib-card:hover { border-color: var(--border-bright); }
+    .contrib-card-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 14px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .contrib-card-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+    /* ENV */
+    .env-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13px; font-family: 'DM Mono', monospace;
+    }
+    .env-table th {
+      text-align: left; padding: 8px 14px;
+      font-size: 11px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+    }
+    .env-table td {
+      padding: 10px 14px; border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .env-table tr:last-child td { border-bottom: none; }
+    .env-table .key { color: var(--blue); }
+    .env-table .req {
+      font-size: 10px; padding: 2px 6px; border-radius: 4px;
+      background: var(--accent-glow); color: var(--accent);
+      border: 1px solid var(--accent-dim);
+    }
+    .env-table .opt {
+      font-size: 10px; padding: 2px 6px; border-radius: 4px;
+      background: var(--surface); color: var(--muted);
+      border: 1px solid var(--border-bright);
+    }
+    .env-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 36px 0; margin-top: 96px;
+    }
+    .footer-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 24px;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 14px;
+    }
+    .footer-brand { font-size: 13px; color: var(--muted); }
+    .footer-brand a { color: var(--accent); text-decoration: none; }
+    .footer-links { display: flex; gap: 18px; }
+    .footer-links a {
+      font-size: 12px; color: var(--muted);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    @media (max-width: 600px) {
+      .contrib-grid { grid-template-columns: 1fr; }
+      .nav-links a.cta { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="https://aifindr.org" class="nav-logo">
+      aifindr.org <span>/ docs</span>
+    </a>
+    <div class="nav-links">
+      <a href="#quickstart">Quick Start</a>
+      <a href="#structure">Structure</a>
+      <a href="#contribute">Contribute</a>
+      <a href="https://github.com/kbmjj123/aifindr.org" target="_blank">GitHub</a>
+      <a href="https://aifindr.org" class="cta">Live Site →</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="badge">Developer Docs</div>
+    <h1>Build &amp; Contribute to<br/><em>aifindr.org</em></h1>
+    <p class="hero-sub">
+      Open-source AI tools directory. Self-host it, fork it, or contribute tools and code.
+      Built with Nuxt 3 and deployed on Cloudflare Pages.
+    </p>
+    <div class="hero-actions">
+      <a href="https://github.com/kbmjj123/aifindr.org" class="btn btn-primary" target="_blank">
+        ★ View on GitHub
+      </a>
+      <a href="#quickstart" class="btn btn-ghost">Quick Start ↓</a>
+      <a href="https://aifindr.org/submit" class="btn btn-ghost">Submit a Tool</a>
+    </div>
+    <div class="stack-row">
+      <span class="tag hi">Nuxt 3</span>
+      <span class="tag hi">Cloudflare Pages</span>
+      <span class="tag">TypeScript</span>
+      <span class="tag">Vue 3</span>
+      <span class="tag">MIT License</span>
+      <span class="tag">Open Source</span>
+    </div>
+  </section>
+
+  <!-- QUICK START -->
+  <section class="section" id="quickstart">
+    <div class="section-label">Get Started</div>
+    <h2>Quick Start</h2>
+    <p class="section-desc">Run aifindr.org locally in under 5 minutes.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div>
+          <div class="step-title">Clone the repository</div>
+          <p class="step-desc">Fork or clone the repo to your local machine.</p>
+          <div class="code">
+git clone https://github.com/kbmjj123/aifindr.org.git
+cd aifindr.org
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div>
+          <div class="step-title">Install dependencies</div>
+          <p class="step-desc">Requires Node.js 18+. Uses npm as the package manager.</p>
+          <div class="code">
+npm install
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div>
+          <div class="step-title">Configure environment</div>
+          <p class="step-desc">Copy the example env file and fill in your values. See the Environment Variables section below.</p>
+          <div class="code">
+cp .env.example .env
+<span class="c"># Then edit .env with your config values</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <div>
+          <div class="step-title">Start the dev server</div>
+          <p class="step-desc">The site runs at localhost:3000 by default.</p>
+          <div class="code">
+npm run dev
+<span class="c"># → http://localhost:3000</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">5</div>
+        <div>
+          <div class="step-title">Deploy to Cloudflare Pages</div>
+          <p class="step-desc">The project is pre-configured for Cloudflare Pages via wrangler.toml.</p>
+          <div class="code">
+npm run build
+npx wrangler pages deploy .output/public
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECT STRUCTURE -->
+  <section class="section" id="structure">
+    <div class="section-label">Architecture</div>
+    <h2>Project Structure</h2>
+    <p class="section-desc">Key directories and what they contain.</p>
+    <div class="tree">
+      <div><span class="dir">aifindr.org/</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">components/</span> &nbsp;<span class="note">── Vue UI components</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">composables/</span> &nbsp;<span class="note">── shared logic hooks</span></div>
+      <div>&nbsp;&nbsp;<span class="dir hl">content/tools/</span> &nbsp;<span class="note">── tool Markdown files (one per tool)</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">image/</span> &nbsp;<span class="note">── Image & Design tools</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">writing/</span> &nbsp;<span class="note">── Writing & Content tools</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">video/</span> &nbsp;<span class="note">── Video & Animation tools</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">── ... 12 categories total</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">docs/</span> &nbsp;<span class="note">── this GitHub Pages site</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">pages/</span> &nbsp;<span class="note">── Nuxt route pages</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">server/</span> &nbsp;<span class="note">── API routes</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">schema/</span> &nbsp;<span class="note">── tool data schema / validation</span></div>
+      <div>&nbsp;&nbsp;<span class="file hl">nuxt.config.ts</span> &nbsp;<span class="note">── Nuxt configuration</span></div>
+      <div>&nbsp;&nbsp;<span class="file hl">wrangler.toml</span> &nbsp;<span class="note">── Cloudflare Pages config</span></div>
+      <div>&nbsp;&nbsp;<span class="file">.env.example</span> &nbsp;<span class="note">── environment variable template</span></div>
+    </div>
+  </section>
+
+  <!-- ENV VARS -->
+  <section class="section" id="env">
+    <div class="section-label">Configuration</div>
+    <h2>Environment Variables</h2>
+    <p class="section-desc">Copy <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent)">.env.example</code> to <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent)">.env</code> and fill in these values.</p>
+    <div class="env-wrap">
+      <table class="env-table">
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Description</th>
+            <th>Required</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="key">NUXT_PUBLIC_SITE_URL</td>
+            <td style="color:var(--muted)">Your deployed site URL</td>
+            <td><span class="req">Required</span></td>
+          </tr>
+          <tr>
+            <td class="key">GITHUB_TOKEN</td>
+            <td style="color:var(--muted)">GitHub token for PR automation</td>
+            <td><span class="req">Required</span></td>
+          </tr>
+          <tr>
+            <td class="key">GITHUB_REPO</td>
+            <td style="color:var(--muted)">Target repo for tool submissions (owner/repo)</td>
+            <td><span class="req">Required</span></td>
+          </tr>
+          <tr>
+            <td class="key">NUXT_PUBLIC_GA_ID</td>
+            <td style="color:var(--muted)">Google Analytics measurement ID</td>
+            <td><span class="opt">Optional</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CONTRIBUTE -->
+  <section class="section" id="contribute">
+    <div class="section-label">Contributing</div>
+    <h2>How to Contribute</h2>
+    <p class="section-desc">Two ways to contribute — submit tools or improve the codebase.</p>
+    <div class="contrib-grid">
+      <div class="contrib-card">
+        <div class="contrib-card-title">🛠 Submit a Tool</div>
+        <p class="contrib-card-desc">
+          Add a Markdown file to <code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">content/tools/[category]/</code>,
+          fill in the frontmatter, and open a Pull Request.
+          Approved tools get 3 free dofollow backlinks.
+        </p>
+        <a href="https://aifindr.org/submit" class="btn btn-ghost" style="margin-top:16px;font-size:12px;">
+          Submission Guide →
+        </a>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-card-title">💻 Improve the Code</div>
+        <p class="contrib-card-desc">
+          Bug fixes, new features, UI improvements — all welcome.
+          Open an Issue first to discuss larger changes before submitting a PR.
+        </p>
+        <a href="https://github.com/kbmjj123/aifindr.org/issues" class="btn btn-ghost" style="margin-top:16px;font-size:12px;" target="_blank">
+          Open an Issue →
+        </a>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-card-title">⭐ Star the Repo</div>
+        <p class="contrib-card-desc">
+          The simplest contribution. Starring the repo helps more people discover the project and signals to search engines that the project is active.
+        </p>
+        <a href="https://github.com/kbmjj123/aifindr.org" class="btn btn-ghost" style="margin-top:16px;font-size:12px;" target="_blank">
+          Star on GitHub →
+        </a>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-card-title">🔗 Add a Backlink</div>
+        <p class="contrib-card-desc">
+          Add a footer link to aifindr.org on your site and unlock free access to premium features. One line of HTML, permanent value.
+        </p>
+        <a href="https://aifindr.org" class="btn btn-ghost" style="margin-top:16px;font-size:12px;">
+          Learn More →
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="https://aifindr.org" target="_blank">aifindr.org</a> ·
+      Open source under MIT License ·
+      <a href="https://github.com/kbmjj123/aifindr.org" target="_blank">GitHub</a>
+    </div>
+    <div class="footer-links">
+      <a href="https://aifindr.org">Live Site</a>
+      <a href="https://aifindr.org/submit">Submit Tool</a>
+      <a href="https://aifindr.org/contributors">Contributors</a>
+      <a href="https://github.com/kbmjj123/aifindr.org/issues" target="_blank">Issues</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
