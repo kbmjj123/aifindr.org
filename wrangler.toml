@@ -19,12 +19,12 @@ binding = "CACHE"
 id = ""
 
 [[r2_buckets]]
-binding = "MEDIA"
-bucket_name = "aifindr-media"
+binding = "CDN"
+bucket_name = "aifindr-cdn"
 
 [vars]
 API_BASE                    = "https://aifindr.org"
-R2_PUBLIC_URL               = "https://r2.aifindr.org"
+R2_PUBLIC_URL               = "https://cdn.aifindr.org"
 ADMIN_GITHUB_IDS            = ""
 TURNSTILE_SECRET            = ""
 GITHUB_CLIENT_ID            = ""

@@ -7,7 +7,6 @@ const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
 const EXT_MAP: Record<string, string> = { png: 'png', jpeg: 'jpg', webp: 'webp', gif: 'gif' }
 
 export default defineEventHandler(async (event) => {
-	console.info(123)
   const formData = await readFormData(event)
   const file = formData.get('file')
 
@@ -29,11 +28,11 @@ export default defineEventHandler(async (event) => {
 
   // R2 available (wrangler dev or Cloudflare runtime)
   const cf = (event.context as any).cloudflare
-  if (cf?.env?.MEDIA) {
-    await cf.env.MEDIA.put(key, file.stream(), {
+  if (cf?.env?.CDN) {
+    await cf.env.CDN.put(key, file.stream(), {
       httpMetadata: { contentType: file.type },
     })
-    const publicUrl = `${(cf.env.R2_PUBLIC_URL || 'https://r2.aifindr.org').replace(/\/+$/, '')}/${key}`
+    const publicUrl = `${(cf.env.R2_PUBLIC_URL || 'https://cdn.aifindr.org').replace(/\/+$/, '')}/${key}`
     return { url: publicUrl }
   }
 

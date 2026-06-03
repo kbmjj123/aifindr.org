@@ -12,7 +12,7 @@
  *      R2_ACCESS_KEY_ID=xxx
  *      R2_SECRET_ACCESS_KEY=xxx
  *      R2_BUCKET_NAME=aifindr-media  （默认）
- *      R2_PUBLIC_URL=https://r2.aifindr.org  （默认）
+ *      R2_PUBLIC_URL=https://cdn.aifindr.org  （默认）
  *
  * 运行：
  *   预览模式：DRY_RUN=true npx tsx scripts/migrate-images-to-r2.ts

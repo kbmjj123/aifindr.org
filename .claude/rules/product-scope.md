@@ -317,5 +317,5 @@ routeRules: {
 ```typescript
 const { DB }    = env  // D1Database
 const { CACHE } = env  // KVNamespace
-const { MEDIA } = env  // R2Bucket
+const { CDN } = env  // R2Bucket
 ```
