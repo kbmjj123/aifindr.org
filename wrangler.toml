@@ -18,8 +18,13 @@ database_id = ""
 binding = "CACHE"
 id = ""
 
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "aifindr-media"
+
 [vars]
 API_BASE                    = "https://aifindr.org"
+R2_PUBLIC_URL               = "https://r2.aifindr.org"
 ADMIN_GITHUB_IDS            = ""
 TURNSTILE_SECRET            = ""
 GITHUB_CLIENT_ID            = ""

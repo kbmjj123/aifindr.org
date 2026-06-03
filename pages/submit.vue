@@ -79,7 +79,7 @@ Brief description of your pricing model.</pre>          </div>
           </a>
         </div>
       </div>
-      <div class="w-full lg:w-[280px] shrink-0">
+      <div class="w-full lg:w-[280px] shrink-0 lg:sticky lg:top-[76px] lg:self-start">
         <BacklinkIncentive />
       </div>
     </div>
@@ -89,7 +89,7 @@ Brief description of your pricing model.</pre>          </div>
       <div class="flex-1 min-w-0">
         <SubmitForm />
       </div>
-      <div class="w-full lg:w-[280px] shrink-0">
+      <div class="w-full lg:w-[280px] shrink-0 lg:sticky lg:top-[76px] lg:self-start">
         <BacklinkIncentive />
       </div>
     </div>

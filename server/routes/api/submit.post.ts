@@ -32,6 +32,7 @@ export default defineEventHandler(async (event) => {
   const platformsRaw = body.platforms
   const submitterSite = String(body.submitter_site || body.submitterSite || '').trim()
   const submitterGithub = String(body.submitter_github || body.submitterGithub || '').trim()
+  const submitterEmailRaw = String(body.submitter_email || body.submitterEmail || '').trim()
   const turnstileToken = String(body.turnstileToken || '').trim()
   const bodyContent = String(body.detailDescription || body.body || '').trim()
   const useCases = String(body.use_cases || '').trim()
@@ -130,7 +131,9 @@ export default defineEventHandler(async (event) => {
 
   // B-01: Confirmation to submitter
   let submitterEmail: string | null = null
-  if (submitterId) {
+  if (submitterEmailRaw) {
+    submitterEmail = submitterEmailRaw
+  } else if (submitterId) {
     const submitterUser = await env.DB.prepare(
       'SELECT * FROM users WHERE id = ?'
     ).bind(submitterId).first<UserRecord>()

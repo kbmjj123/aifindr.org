@@ -46,6 +46,9 @@ wrangler.local.toml
 # lockfile
 pnpm-lock.yaml
 
+# dev uploads
+public/tmp/
+
 # claude
 .claude/scripts/scrape-yo-directory.ts
 scripts/scraper/futurepedia.ts

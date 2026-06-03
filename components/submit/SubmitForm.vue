@@ -59,12 +59,7 @@
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Detailed Description <span style="color: var(--color-danger)">*</span>
         </label>
-        <textarea v-model="form.detailDescription"
-          class="textarea"
-          placeholder="Describe what your tool does in detail (minimum 100 words). Supports Markdown formatting for headings, lists, bold, links, etc." />
-        <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">
-          {{ form.detailDescription.length }} chars &middot; Renders as tool detail page content
-        </p>
+        <MarkdownEditor v-model="form.detailDescription" />
       </div>
 
       <!-- Platforms -->
@@ -120,6 +115,17 @@
         </div>
       </div>
 
+      <!-- Contact Email -->
+      <div>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Contact Email <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
+        </label>
+        <BaseInput v-model="form.submitterEmail" type="email" placeholder="you@example.com" />
+        <p class="font-body text-[11px] mt-1" style="color: var(--color-text-muted)">
+          Used only for submission status updates. Never shown publicly.
+        </p>
+      </div>
+
       <!-- Media section -->
       <div class="pt-4 border-t" :style="{ borderColor: 'var(--color-border)' }">
         <p class="font-body text-[12px] font-medium mb-4" style="color: var(--color-text-primary)">
@@ -129,9 +135,9 @@
         <!-- Cover Image -->
         <div class="mb-4">
           <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-            Cover Image URL
+            Cover Image
           </label>
-          <BaseInput v-model="form.coverImage" placeholder="https://r2.aifindr.org/tools/.../cover.webp" />
+          <ImageUploadSlot v-model="form.coverImage" placeholder="https://r2.aifindr.org/tools/.../cover.webp" />
         </div>
 
         <!-- Screenshots -->
@@ -140,9 +146,9 @@
             Screenshots <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(up to 3)</span>
           </label>
           <div class="space-y-2">
-            <BaseInput v-for="(_, i) in form.screenshots" :key="i"
+            <ImageUploadSlot v-for="(_, i) in form.screenshots" :key="i"
               v-model="form.screenshots[i]"
-              :placeholder="`Screenshot ${i + 1} URL`" />
+              :placeholder="`Screenshot ${i + 1} — upload or paste URL`" />
           </div>
         </div>
 
@@ -190,6 +196,7 @@
 <script setup lang="ts">
 import { CATEGORIES } from '~/types/tool'
 const { post } = useApi()
+const { user } = useAuth()
 
 const form = reactive({
   name: '',
@@ -201,11 +208,12 @@ const form = reactive({
   platforms: [] as string[],
   targetUsers: [] as string[],
   useCases: [] as string[],
-  submitterSite: '',
-  submitterGithub: '',
+  submitterEmail: '',
   coverImage: '',
   screenshots: ['', '', ''],
   demoVideo: '',
+  submitterSite: '',
+  submitterGithub: '',
 })
 
 const userOptions = [
@@ -269,6 +277,13 @@ const cfToken = ref('')
 const turnstileError = ref('')
 
 onMounted(() => {
+  // Pre-fill email from GitHub auth
+  if (user.value?.contact_email) {
+    form.submitterEmail = user.value.contact_email
+  } else if (user.value?.email) {
+    form.submitterEmail = user.value.email
+  }
+
   if (isDev) {
     // Dev mode: use Turnstile test token (always passes)
     cfToken.value = '1x00000000000000000000'
@@ -318,6 +333,7 @@ async function handleSubmit() {
         use_cases: form.useCases.join(','),
         submitter_site: form.submitterSite || undefined,
         submitter_github: form.submitterGithub || undefined,
+        submitter_email: form.submitterEmail || undefined,
         cover_image: form.coverImage || undefined,
         screenshot_urls: screenshotUrls.length > 0 ? screenshotUrls.join(',') : undefined,
         demo_video_url: form.demoVideo || undefined,
