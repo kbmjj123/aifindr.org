@@ -118,7 +118,7 @@
       <!-- Contact Email -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Contact Email <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
+          Contact Email <span style="color: var(--color-danger)">*</span>
         </label>
         <BaseInput v-model="form.submitterEmail" type="email" placeholder="you@example.com" />
         <p class="font-body text-[11px] mt-1" style="color: var(--color-text-muted)">
@@ -135,9 +135,9 @@
         <!-- Cover Image -->
         <div class="mb-4">
           <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-            Cover Image
+            Tool Icon
           </label>
-          <ImageUploadSlot v-model="form.coverImage" placeholder="https://r2.aifindr.org/tools/.../cover.webp" />
+          <ImageUploadSlot v-model="form.coverImage" aspect="square" />
         </div>
 
         <!-- Screenshots -->
@@ -147,8 +147,7 @@
           </label>
           <div class="space-y-2">
             <ImageUploadSlot v-for="(_, i) in form.screenshots" :key="i"
-              v-model="form.screenshots[i]"
-              :placeholder="`Screenshot ${i + 1} — upload or paste URL`" />
+              v-model="form.screenshots[i]" aspect="screenshot" />
           </div>
         </div>
 
@@ -173,7 +172,18 @@
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           GitHub Username <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
         </label>
-        <BaseInput v-model="form.submitterGithub" placeholder="your-github-username" />
+        <div v-if="user" class="flex items-center gap-2 p-2 rounded-md"
+          :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
+          <img v-if="user.avatar_url" :src="user.avatar_url" class="w-6 h-6 rounded-full" />
+          <div class="flex-1 min-w-0">
+            <p class="font-body text-[12px] truncate" style="color: var(--color-text-primary)">{{ user.username }}</p>
+          </div>
+          <span class="font-body text-[10px] px-1.5 py-0.5 rounded"
+            :style="{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)' }">GitHub</span>
+        </div>
+        <div v-else>
+          <BaseInput v-model="form.submitterGithub" placeholder="your-github-username" />
+        </div>
       </div>
 
       <!-- Turnstile -->
@@ -276,14 +286,15 @@ const turnstileEl = ref<HTMLDivElement>()
 const cfToken = ref('')
 const turnstileError = ref('')
 
-onMounted(() => {
-  // Pre-fill email from GitHub auth
-  if (user.value?.contact_email) {
-    form.submitterEmail = user.value.contact_email
-  } else if (user.value?.email) {
-    form.submitterEmail = user.value.email
-  }
+// Pre-fill from GitHub auth when user data loads
+watch(user, (u) => {
+  if (!u) return
+  if (u.contact_email) form.submitterEmail = u.contact_email
+  else if (u.email) form.submitterEmail = u.email
+  if (u.username) form.submitterGithub = u.username
+}, { immediate: true })
 
+onMounted(() => {
   if (isDev) {
     // Dev mode: use Turnstile test token (always passes)
     cfToken.value = '1x00000000000000000000'
@@ -316,8 +327,14 @@ onUnmounted(() => {
 
 async function handleSubmit() {
   if (submitting.value) return
-  submitting.value = true
   submitError.value = ''
+
+  if (!form.submitterEmail.trim()) {
+    submitError.value = 'Contact Email is required'
+    return
+  }
+
+  submitting.value = true
 
   try {
     const screenshotUrls = form.screenshots.filter(Boolean)
