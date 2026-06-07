@@ -127,25 +127,3 @@ CREATE TABLE IF NOT EXISTS published_links (
 CREATE INDEX IF NOT EXISTS idx_links_user       ON published_links(user_id);
 CREATE INDEX IF NOT EXISTS idx_links_is_active  ON published_links(is_active);
 CREATE INDEX IF NOT EXISTS idx_links_checked    ON published_links(last_checked);
-
-
--- ============================================================
--- aifindr.org — Cloudflare D1 Schema (简化版，单表)
--- ============================================================
-
-CREATE TABLE IF NOT EXISTS categories (
-  id            TEXT PRIMARY KEY,   -- e.g. "audio"
-  slug          TEXT NOT NULL UNIQUE,
-  icon          TEXT NOT NULL,
-  title         TEXT NOT NULL,
-  description   TEXT NOT NULL,
-  hero          TEXT NOT NULL,
-  subcategories TEXT NOT NULL,       -- JSON 数组，见 seed.sql 示例
-  sort_order    INTEGER NOT NULL DEFAULT 0,
-  created_at    TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
-CREATE INDEX IF NOT EXISTS idx_categories_sort ON categories(sort_order);
-

@@ -6,10 +6,10 @@
     </NuxtLink>
 
     <div class="flex items-start gap-3 mb-6">
-      <span class="text-xl mt-1.5 shrink-0">{{ categoryInfo?.emoji }}</span>
+      <span class="text-xl mt-1.5 shrink-0">{{ categoryInfo?.icon }}</span>
       <div class="min-w-0">
         <h1 class="font-sans font-extrabold text-[24px]" style="letter-spacing: -1.5px; line-height: 1.05; color: var(--color-text-primary)">
-          {{ categoryInfo?.name || category }}
+          {{ categoryInfo?.title || category }}
         </h1>
         <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">{{ toolCount }} tools</span>
       </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { CATEGORIES } from '~/types/tool'
+import { CATEGORIES } from '~/types/category'
 import type { Tool } from '~/types/tool'
 
 const route = useRoute()
@@ -45,9 +45,10 @@ const tools = computed(() => result.value?.tools ?? [])
 const toolCount = computed(() => result.value?.total ?? 0)
 
 usePageSeo(() => ({
-  title: categoryInfo.value?.name || category.value,
+  title: categoryInfo.value?.title || category.value,
   template: 'category',
-  category: categoryInfo.value?.name || category.value,
-  description: `Browse the best ${categoryInfo.value?.name || category.value} AI tools. Compare pricing, read reviews, and find the perfect tool.`,
+  category: categoryInfo.value?.title || category.value,
+  description: categoryInfo.value?.description
+    || `Browse the best ${categoryInfo.value?.title || category.value} AI tools. Compare pricing, read reviews, and find the perfect tool.`,
 }))
 </script>
