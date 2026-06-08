@@ -213,13 +213,7 @@ export const CATEGORIES: Category[] = [
     description: "AI tools that don't fit neatly into the above categories, including tools for small business, freelancers, content creators, and open-source AI.",
     hero: "Discover AI tools for every use case that doesn't fit a single category — from tools for small business owners and freelancers to open-source AI projects and weekly new releases. Whether you're looking for the best free AI tools list, AI tools for students, or the latest AI tools this week, this section keeps you covered in 2026.",
     subcategories: [
-      { id: 'small-business', title: 'Small Business', keywords: ['ai tool for small business'] },
-      { id: 'freelancers', title: 'Freelancers', keywords: ['best ai tools for freelancers'] },
-      { id: 'content-creators', title: 'Content Creators', keywords: ['ai tool for content creators'] },
-      { id: 'students', title: 'Students', keywords: ['ai tools for students free'] },
-      { id: 'open-source', title: 'Open Source', keywords: ['open source ai tools'] },
-      { id: 'directories-lists', title: 'Directories & Lists', keywords: ['free ai tools list 2026', 'ai tools directory', 'ai tools comparison'] },
-      { id: 'new-releases', title: 'New Releases', keywords: ['new ai tools this week', 'ai productivity tools 2026'] },
+      { id: 'open-source', title: 'Open Source', keywords: ['open source ai tools'] }
     ],
   },
 ]
