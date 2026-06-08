@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NuxtLink to="/blog" class="font-body text-[11px] mb-4 inline-block" style="color: var(--color-text-secondary)">
+    <NuxtLink to="/blog" class="font-body text-[12px] mb-4 inline-block" style="color: var(--color-text-secondary)">
       &larr; Back to Blog
     </NuxtLink>
 
@@ -8,7 +8,7 @@
       <h1 class="font-sans font-extrabold text-[24px] tracking-tight mb-2" style="color: var(--color-text-primary)">
         {{ title }}
       </h1>
-      <p class="font-body text-[11px] mb-8" style="color: var(--color-text-muted)">{{ date }}</p>
+      <p class="font-body text-[12px] mb-8" style="color: var(--color-text-muted)">{{ date }}</p>
 
       <div class="markdown-content">
         <p>Blog post content will be rendered here from Markdown.</p>

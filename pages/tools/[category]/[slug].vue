@@ -9,7 +9,7 @@
       <span class="current">{{ tool?.name || slug }}</span>
     </nav>
 
-    <div v-if="pending" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading...</div>
+    <div v-if="pending" class="text-center py-20 font-body text-[13px]" style="color: var(--color-text-muted)">Loading...</div>
     <template v-else-if="tool">
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Main content -->
@@ -47,11 +47,11 @@
             <h3 class="font-sans font-semibold text-[13px] mb-3" style="color: var(--color-text-primary)">Screenshots</h3>
             <div v-if="toolImages.length === 1" class="rounded-lg overflow-hidden"
               :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-              <div class="aspect-video flex items-center justify-center font-body text-[11px]"
+              <div class="aspect-video flex items-center justify-center font-body text-[12px]"
                 :style="{ color: 'var(--color-text-muted)' }">
                 🖼️ {{ toolImages[0].alt || 'Screenshot' }}
               </div>
-              <div v-if="toolImages[0].caption" class="px-3 py-2 font-body text-[10px]"
+              <div v-if="toolImages[0].caption" class="px-3 py-2 font-body text-[11px]"
                 :style="{ color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border)' }">
                 {{ toolImages[0].caption }}
               </div>
@@ -60,11 +60,11 @@
               <div v-for="img in toolImages" :key="img.id || img.url"
                 class="rounded-lg overflow-hidden"
                 :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-                <div class="aspect-video flex items-center justify-center font-body text-[11px]"
+                <div class="aspect-video flex items-center justify-center font-body text-[12px]"
                   :style="{ color: 'var(--color-text-muted)' }">
                   🖼️ {{ img.alt || 'Screenshot' }}
                 </div>
-                <div v-if="img.caption" class="px-3 py-2 font-body text-[10px]"
+                <div v-if="img.caption" class="px-3 py-2 font-body text-[11px]"
                   :style="{ color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border)' }">
                   {{ img.caption }}
                 </div>
@@ -82,7 +82,7 @@
                 <div class="aspect-video flex flex-col items-center justify-center gap-2 font-body text-[11px]"
                   :style="{ color: 'var(--color-text-muted)' }">
                   ▶️ {{ v.title || 'Demo Video' }}
-                  <span class="text-[10px]">({{ v.platform }} — {{ formatDuration(v.duration) }})</span>
+                  <span class="text-[11px]">({{ v.platform }} — {{ formatDuration(v.duration) }})</span>
                 </div>
               </div>
             </div>
@@ -94,10 +94,55 @@
               <div class="markdown" v-html="mdBody" />
             </template>
             <template v-else>
-              <p class="font-body text-[12px]" style="color: var(--color-text-muted)">
+              <p class="font-body text-[13px]" style="color: var(--color-text-muted)">
                 No detailed description available.
               </p>
             </template>
+          </div>
+
+          <!-- Category guides -->
+          <div v-if="categoryGuides.length" class="mt-10 mb-8">
+            <h2 class="font-sans font-bold text-[16px] mb-4" style="color: var(--color-text-primary)">
+              {{ categoryInfo?.icon }} {{ categoryInfo?.title }} Guides
+            </h2>
+            <div class="space-y-3">
+              <div v-for="(guide, gi) in categoryGuides" :key="gi"
+                class="rounded-lg overflow-hidden transition-all duration-150"
+                :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
+                <button
+                  class="w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors"
+                  :style="{ color: 'var(--color-text-primary)' }"
+                  @click="toggleGuide(gi)">
+                  <span class="text-xl shrink-0">{{ guide.icon }}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-sans font-semibold text-[13px]">{{ guide.title }}</div>
+                    <div class="font-body text-[11px] line-clamp-1" style="color: var(--color-text-muted)">{{ guide.description }}</div>
+                  </div>
+                  <svg
+                    class="shrink-0 transition-transform duration-200"
+                    :class="{ 'rotate-180': openGuide === gi }"
+                    width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    :style="{ stroke: 'var(--color-text-muted)' }" stroke-width="2">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+                <div v-if="openGuide === gi" class="px-4 pb-4 space-y-3">
+                  <p class="font-body text-[12px]" style="color: var(--color-text-secondary); line-height: 1.6">
+                    {{ guide.description }}
+                  </p>
+                  <div v-for="(faq, fi) in guide.faq" :key="fi"
+                    class="rounded-md p-3"
+                    :style="{ background: 'var(--color-bg-elevated)' }">
+                    <div class="font-sans font-semibold text-[12px] mb-1.5" style="color: var(--color-text-primary)">
+                      Q: {{ faq.question }}
+                    </div>
+                    <div class="font-body text-[12px]" style="color: var(--color-text-secondary); line-height: 1.6">
+                      {{ faq.answer }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -176,11 +221,11 @@
               <div class="flex items-center gap-2 mt-1">
                 <div class="w-5 h-5 rounded-full shrink-0" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }" />
                 <div>
-                  <div class="font-body text-[12px]" style="color: var(--color-text-secondary)">
+                  <div class="font-body text-[13px]" style="color: var(--color-text-secondary)">
                     {{ tool.submitter_github || 'Anonymous' }}
                   </div>
                   <a v-if="tool.submitter_site" :href="tool.submitter_site" target="_blank"
-                    class="font-body text-[12px]" style="color: var(--color-text-link)">
+                    class="font-body text-[13px]" style="color: var(--color-text-link)">
                     {{ tool.submitter_site.replace(/^https?:\/\//, '') }}
                   </a>
                 </div>
@@ -213,6 +258,11 @@ const slug = computed(() => route.params.slug as string)
 const { get, post } = useApi()
 
 const categoryInfo = computed(() => CATEGORIES.find(c => c.slug === category.value))
+const categoryGuides = computed(() => categoryInfo.value?.guides || [])
+const openGuide = ref<number | null>(null)
+function toggleGuide(idx: number) {
+  openGuide.value = openGuide.value === idx ? null : idx
+}
 
 const toolTags = ref<string[]>([])
 const alternatives = ref<Tool[]>([])

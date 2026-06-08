@@ -18,8 +18,8 @@
   <section id="trending" class="mb-10" style="scroll-margin-top: 68px">
     <div class="flex items-center justify-between mb-4">
       <div>
-        <h2 class="font-sans font-bold text-[15px]" style="color: var(--color-text-primary)">🔥 Trending</h2>
-        <p class="font-body text-[11px]" style="color: var(--color-text-muted)">Most viewed this week</p>
+        <h2 class="font-sans font-bold text-[16px]" style="color: var(--color-text-primary)">🔥 Trending</h2>
+        <p class="font-body text-[12px]" style="color: var(--color-text-muted)">Most viewed this week</p>
       </div>
     </div>
     <div class="flex gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:gap-[10px] scrollbar-none">
@@ -30,8 +30,8 @@
   <!-- ═══ Featured 区 ═══ -->
   <section id="featured" class="mb-10" style="scroll-margin-top: 68px">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="font-sans font-bold text-[15px]" style="color: var(--color-text-primary)">⭐ Featured Tools</h2>
-      <span class="font-body text-[10px]" style="color: var(--color-text-muted)">Sponsored</span>
+      <h2 class="font-sans font-bold text-[16px]" style="color: var(--color-text-primary)">⭐ Featured Tools</h2>
+      <span class="font-body text-[11px]" style="color: var(--color-text-muted)">Sponsored</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-[10px]">
       <ToolCard v-for="t in featured" :key="t.slug" :tool="t" />
@@ -40,7 +40,7 @@
 
   <!-- ═══ Browse by Category 区 ═══ -->
   <section class="mb-10">
-    <h2 class="font-sans font-bold text-[15px] mb-4" style="color: var(--color-text-primary)">
+    <h2 class="font-sans font-bold text-[16px] mb-4" style="color: var(--color-text-primary)">
       Browse by Category
     </h2>
     <div class="grid grid-cols-2 lg:grid-cols-3 gap-2">
@@ -51,10 +51,10 @@
         @mouseleave="($event.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)'">
         <span class="text-lg shrink-0">{{ cat.emoji }}</span>
         <div class="min-w-0">
-          <div class="font-sans font-semibold text-[12px]" style="color: var(--color-text-primary)">
+          <div class="font-sans font-semibold text-[13px]" style="color: var(--color-text-primary)">
             {{ cat.name }}
           </div>
-          <div class="font-body text-[10px]" style="color: var(--color-text-muted)">{{ catCounts[cat.slug] || 0 }} tools</div>
+          <div class="font-body text-[11px]" style="color: var(--color-text-muted)">{{ catCounts[cat.slug] || 0 }} tools</div>
         </div>
       </NuxtLink>
     </div>
@@ -63,10 +63,10 @@
   <!-- ═══ Recently Added 区 ═══ -->
   <section id="recent" class="mb-10" style="scroll-margin-top: 68px">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="font-sans font-bold text-[15px]" style="color: var(--color-text-primary)">
+      <h2 class="font-sans font-bold text-[16px]" style="color: var(--color-text-primary)">
         🆕 Recently Added
       </h2>
-      <NuxtLink to="/tools" class="font-body text-[11px]" style="color: var(--color-accent)">
+      <NuxtLink to="/tools" class="font-body text-[12px]" style="color: var(--color-accent)">
         View all tools &rarr;
       </NuxtLink>
     </div>
@@ -81,28 +81,28 @@
       style="color: var(--color-text-primary)">
       Get 3 Free Backlinks for Your Tool
     </h2>
-    <p class="font-body text-[12px] mb-6" style="color: var(--color-text-muted)">
+    <p class="font-body text-[13px] mb-6" style="color: var(--color-text-muted)">
       Submit your AI tool and get listed on GitHub (DA 100), aifindr.org, and your contributor page.
     </p>
 
     <div class="flex flex-wrap justify-center gap-6 mb-6">
-      <div class="flex items-center gap-2 font-body text-[12px]" style="color: var(--color-text-secondary)">
+      <div class="flex items-center gap-2 font-body text-[13px]" style="color: var(--color-text-secondary)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5">
           <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
         </svg>
-        github.com <span class="font-body text-[10px]" style="color: var(--color-text-muted)">DA 100</span>
+        github.com <span class="font-body text-[11px]" style="color: var(--color-text-muted)">DA 100</span>
       </div>
       <div class="flex items-center gap-2 font-body text-[12px]" style="color: var(--color-text-secondary)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5">
           <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
         </svg>
-        aifindr.org <span class="font-body text-[10px]" style="color: var(--color-text-muted)">DA growing</span>
+        aifindr.org <span class="font-body text-[11px]" style="color: var(--color-text-muted)">DA growing</span>
       </div>
       <div class="flex items-center gap-2 font-body text-[12px]" style="color: var(--color-text-secondary)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5">
           <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
         </svg>
-        /contributors/you <span class="font-body text-[10px]" style="color: var(--color-text-muted)">Dofollow</span>
+        /contributors/you <span class="font-body text-[11px]" style="color: var(--color-text-muted)">Dofollow</span>
       </div>
     </div>
 

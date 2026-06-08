@@ -6,10 +6,10 @@
         <span v-else class="font-sans font-bold text-[11px]" :style="{ color: 'var(--color-text-muted)' }">{{ (t.name || '?')[0] }}</span>
       </div>
       <div class="min-w-0 w-full">
-        <h3 class="font-sans font-semibold text-[12px] truncate max-w-full" style="color: var(--color-text-primary)">
+        <h3 class="font-sans font-semibold text-[13px] truncate max-w-full" style="color: var(--color-text-primary)">
           {{ t.name }}
         </h3>
-        <p class="font-body text-[10px] mt-0.5 line-clamp-2" style="color: var(--color-text-muted)">
+        <p class="font-body text-[11px] mt-0.5 line-clamp-2" style="color: var(--color-text-muted)">
           {{ t.meta_description || '' }}
         </p>
       </div>
