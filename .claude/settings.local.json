@@ -50,7 +50,20 @@
       "Bash(rtk find *)",
       "mcp__plugin_context-mode_context-mode__ctx_execute_file",
       "mcp__plugin_context-mode_context-mode__ctx_search",
-      "Bash(rtk read *)"
+      "Bash(rtk read *)",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "Bash(cp -r /Users/kbmjj123/Desktop/fullstack/aifindr.org/components/layout /Users/kbmjj123/Desktop/fullstack/nuxt-cloudflare-starter/components/layout)",
+      "Bash(cp -r /Users/kbmjj123/Desktop/fullstack/aifindr.org/components/ui /Users/kbmjj123/Desktop/fullstack/nuxt-cloudflare-starter/components/ui)",
+      "Bash(cp -r /Users/kbmjj123/Desktop/fullstack/aifindr.org/components/og /Users/kbmjj123/Desktop/fullstack/nuxt-cloudflare-starter/components/og)",
+      "Bash(cp /Users/kbmjj123/Desktop/fullstack/aifindr.org/components/layout/*.vue /Users/kbmjj123/Desktop/fullstack/nuxt-cloudflare-starter/components/layout/)",
+      "Bash(cp /Users/kbmjj123/Desktop/fullstack/aifindr.org/components/ui/*.vue /Users/kbmjj123/Desktop/fullstack/nuxt-cloudflare-starter/components/ui/)",
+      "Bash(rtk pnpm *)",
+      "Bash(gtimeout 30 pnpm dev)",
+      "Bash(rtk npx *)",
+      "Bash(echo \"---exit:$?\")",
+      "Bash(rtk git *)",
+      "Bash(rtk curl *)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute"
     ]
   }
 }

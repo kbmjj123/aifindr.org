@@ -8,3 +8,34 @@ assets = { directory = ".output/public" }
 routes = [
   { pattern = "aifindr.org", zone_name = "aifindr.org", custom_domain = true, enabled = true, previews_enabled = false }
 ]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "aifindr-db"
+database_id = "8e365acb-9ac4-4fb4-99c6-cfcaa4ed633d"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "ae4b1dfcbdb145db969dc4a5e0b3e722"
+
+[[r2_buckets]]
+binding = "CDN"
+bucket_name = "aifindr-cdn"
+
+[vars]
+API_BASE                    = "https://aifindr.org"
+R2_PUBLIC_URL               = "https://cdn.aifindr.org"
+ADMIN_GITHUB_IDS            = ""
+TURNSTILE_SECRET            = ""
+GITHUB_CLIENT_ID            = ""
+RESEND_API_KEY              = ""
+GITHUB_WEBHOOK_SECRET       = ""
+LEMONSQUEEZY_WEBHOOK_SECRET = ""
+
+[triggers]
+crons = [
+  "0 9 * * *",
+  "0 3 * * *",
+  "0 8 1 * *",
+  "0 14 * * 1",
+]

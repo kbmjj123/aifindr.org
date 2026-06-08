@@ -7,7 +7,20 @@
       People who have submitted AI tools to aifindr.org.
     </p>
 
-    <div class="rounded-lg overflow-hidden"
+    <div v-if="pending" class="flex items-center justify-center py-12">
+      <div class="w-5 h-5 rounded-full border-2 animate-spin"
+        :style="{ borderColor: 'var(--color-border)', borderTopColor: 'var(--color-accent)' }" />
+    </div>
+
+    <div v-else-if="error" class="font-body text-[12px] py-8 text-center" style="color: var(--color-text-muted)">
+      Failed to load contributors.
+    </div>
+
+    <div v-else-if="contributors.length === 0" class="font-body text-[12px] py-8 text-center" style="color: var(--color-text-muted)">
+      No contributors yet.
+    </div>
+
+    <div v-else class="rounded-lg overflow-hidden"
       :style="{ border: '1px solid var(--color-border)' }">
       <table class="w-full font-body text-[12px]">
         <thead>
@@ -45,11 +58,11 @@
             <td class="px-4 py-3 hidden md:table-cell">
               <a v-if="c.website" :href="c.website" target="_blank"
                 class="hover:underline" style="color: var(--color-text-link)">
-                {{ c.website!.replace(/^https?:\/\//, '') }}
+                {{ c.website.replace(/^https?:\/\//, '') }}
               </a>
             </td>
             <td class="px-4 py-3 hidden md:table-cell" style="color: var(--color-text-muted)">
-              {{ c.joined }}
+              {{ c.joined?.slice(0, 7) }}
             </td>
           </tr>
         </tbody>
@@ -59,12 +72,11 @@
 </template>
 
 <script setup lang="ts">
-const contributors = [
-  { username: 'johndoe', toolCount: 5, website: 'https://johndoe.com', joined: '2026-01' },
-  { username: 'alice', toolCount: 3, website: 'https://alice.dev', joined: '2026-02' },
-  { username: 'bob', toolCount: 2, website: '', joined: '2026-03' },
-  { username: 'charlie', toolCount: 1, website: 'https://charlie.ai', joined: '2026-04' },
-]
+const { get } = useApi()
+
+const { data: contributors, pending, error } = await useAsyncData('contributors', () =>
+  get<{ username: string; website: string | null; toolCount: number; joined: string }[]>('/api/contributors')
+)
 
 usePageSeo({
   title: 'Contributors',

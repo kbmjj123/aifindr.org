@@ -13,10 +13,10 @@
         <div class="stat-num">{{ categoriesCount }}</div>
         <div class="stat-label">Categories</div>
       </div>
-      <div class="stat-item">
+      <NuxtLink to="/contributors" class="stat-item block no-underline">
         <div class="stat-num">{{ contributors }}+</div>
         <div class="stat-label">Contributors</div>
-      </div>
+      </NuxtLink>
     </div>
 
     <!-- Main nav -->
@@ -28,8 +28,13 @@
     <!-- Categories -->
     <div class="mb-1">
       <div class="nav-section-title">Categories</div>
-      <NavItem v-for="cat in categories" :key="cat.slug" :to="`/tools/${cat.slug}`"
-        :icon="cat.emoji" :label="cat.name" />
+      <NavItem
+        v-for="cat in CATEGORIES"
+        :key="cat.slug"
+        :to="`/tools/${cat.slug}`"
+        :icon="cat.icon"
+        :label="cat.title"
+      />
     </div>
 
     <!-- Bottom links -->
@@ -45,7 +50,9 @@
     <Transition name="drawer">
       <div v-if="isMobileMenuOpen" class="fixed inset-0 z-[60] lg:hidden" style="pointer-events: auto;">
         <Transition name="overlay">
-          <div v-if="isMobileMenuOpen" class="absolute inset-0" :style="{ background: 'rgba(0,0,0,0.6)', pointerEvents: 'auto' }" @click="isMobileMenuOpen = false" />
+          <div v-if="isMobileMenuOpen" class="absolute inset-0"
+            :style="{ background: 'rgba(0,0,0,0.6)', pointerEvents: 'auto' }"
+            @click="isMobileMenuOpen = false" />
         </Transition>
         <aside class="sidebar-drawer px-3 py-4">
           <div class="flex items-center justify-between mb-4 px-3">
@@ -62,10 +69,25 @@
           </div>
 
           <div class="nav-section-title">Browse</div>
-          <NavItem v-for="item in mainNav" :key="item.label" :to="item.to" :icon="item.icon" :label="item.label" @click="isMobileMenuOpen = false" />
+          <NavItem
+            v-for="item in mainNav"
+            :key="item.label"
+            :to="item.to"
+            :icon="item.icon"
+            :label="item.label"
+            @click="isMobileMenuOpen = false"
+          />
+
           <div class="nav-section-title">Categories</div>
-          <NavItem v-for="cat in categories" :key="cat.slug" :to="`/tools/${cat.slug}`"
-            :icon="cat.emoji" :label="cat.name" @click="isMobileMenuOpen = false" />
+          <NavItem
+            v-for="cat in CATEGORIES"
+            :key="cat.slug"
+            :to="`/tools/${cat.slug}`"
+            :icon="cat.icon"
+            :label="cat.title"
+            @click="isMobileMenuOpen = false"
+          />
+
           <div class="mt-6 pt-4" :style="{ borderTop: '1px solid var(--color-border)' }">
             <NavItem to="/submit" label="Submit a Tool" @click="isMobileMenuOpen = false" />
             <template v-if="auth?.isLoggedIn.value && auth?.user.value">
@@ -81,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import { CATEGORIES } from '~/types/tool'
+import { CATEGORIES } from '~/types/category'
 
 const auth = useAuth()
 const { get } = useApi()
@@ -95,26 +117,17 @@ const mainNav = [
   { label: 'All Tools', to: '/tools', icon: '🔍' },
 ]
 
-const categories = CATEGORIES
-
-// Lock body scroll when mobile menu is open
 watch(isMobileMenuOpen, (open) => {
   if (import.meta.client) {
     document.body.style.overflow = open ? 'hidden' : ''
   }
 })
 
-const stats = ref(0)
-const categoriesCount = ref(0)
-const contributors = ref(0)
+const { data: statsData } = await useAsyncData('sidebar-stats', () =>
+  get<{ tools: number; categories: number; contributors: number }>('/api/stats')
+)
 
-useAsyncData('sidebar-stats', async () => {
-  const data = await get<{ tools: number; categories: number; contributors: number }>('/api/stats')
-  if (data) {
-    stats.value = data.tools
-    categoriesCount.value = data.categories
-    contributors.value = data.contributors
-  }
-  return data
-})
+const stats = computed(() => statsData.value?.tools ?? 0)
+const categoriesCount = computed(() => statsData.value?.categories ?? 0)
+const contributors = computed(() => statsData.value?.contributors ?? 0)
 </script>

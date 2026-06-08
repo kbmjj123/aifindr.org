@@ -4,7 +4,7 @@
     <nav class="breadcrumb">
       <NuxtLink to="/tools">All Tools</NuxtLink>
       <span class="sep">/</span>
-      <NuxtLink :to="`/tools/${category}`">{{ categoryInfo?.name || category }}</NuxtLink>
+      <NuxtLink :to="`/tools/${category}`">{{ categoryInfo?.title || category }}</NuxtLink>
       <span class="sep">/</span>
       <span class="current">{{ tool?.name || slug }}</span>
     </nav>
@@ -124,7 +124,7 @@
               <div>
                 <div class="detail-sidebar-label">Category</div>
                 <NuxtLink :to="`/tools/${tool.category}`" class="detail-sidebar-value" style="color: var(--color-text-link)">
-                  {{ categoryInfo?.name || tool.category }}
+                  {{ categoryInfo?.title || tool.category }}
                 </NuxtLink>
               </div>
               <div v-if="toolPlatforms.length">
@@ -204,7 +204,7 @@
 </template>
 
 <script setup lang="ts">
-import { CATEGORIES } from '~/types/tool'
+import { CATEGORIES } from '~/types/category'
 import type { Tool, ToolPricing } from '~/types/tool'
 
 const route = useRoute()
@@ -343,25 +343,25 @@ useHead(() => {
       { rel: 'canonical', href: canonical },
     ],
     script: [
-        {
-          type: 'application/ld+json',
-          children: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'SoftwareApplication',
-            name: t.name,
-            description: t.meta_description || '',
-            url: t.website,
-            applicationCategory: categoryInfo.value?.name || t.category,
-            image: t.cover_image || t.og_image || undefined,
-            operatingSystem: toolPlatforms.value.length ? toolPlatforms.value.join(', ') : undefined,
-            offers: {
-              '@type': 'Offer',
-              price,
-              priceCurrency: 'USD',
-            },
-          }),
-        },
-      ],
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: t.name,
+          description: t.meta_description || '',
+          url: t.website,
+          applicationCategory: categoryInfo.value?.title || t.category,
+          image: t.cover_image || t.og_image || undefined,
+          operatingSystem: toolPlatforms.value.length ? toolPlatforms.value.join(', ') : undefined,
+          offers: {
+            '@type': 'Offer',
+            price,
+            priceCurrency: 'USD',
+          },
+        }),
+      },
+    ],
   }
 })
 </script>

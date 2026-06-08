@@ -320,7 +320,7 @@ const { DB } = env  // D1Database
 const { CACHE } = env  // KVNamespace
 
 // 访问 R2
-const { MEDIA } = env  // R2Bucket
+const { CDN } = env  // R2Bucket
 ```
 
 ## Git 提交规范

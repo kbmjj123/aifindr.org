@@ -3,6 +3,8 @@ import type { H3Event } from 'h3'
 export interface CloudflareEnv {
   DB: D1Database
   CACHE: KVNamespace
+  CDN: R2Bucket
+  R2_PUBLIC_URL: string
   TURNSTILE_SECRET: string
   GITHUB_CLIENT_ID: string
   GITHUB_CLIENT_SECRET: string

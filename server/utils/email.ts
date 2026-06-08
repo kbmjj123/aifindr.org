@@ -1,17 +1,11 @@
 import type { CloudflareEnv } from './env'
+import type { UserRecord } from './jwt'
 
 export interface SendEmailParams {
   to: string
   subject: string
   html: string
   sceneId: string
-}
-
-export interface UserRecord {
-  id: number
-  email: string | null
-  contact_email: string | null
-  email_verified: number | null
 }
 
 /** Pick the best email to use for notifications. Returns null if none available. */

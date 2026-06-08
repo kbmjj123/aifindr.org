@@ -15,7 +15,7 @@
   </section>
 
   <!-- ═══ Trending 区 ═══ -->
-  <section id="trending" class="mb-10">
+  <section id="trending" class="mb-10" style="scroll-margin-top: 68px">
     <div class="flex items-center justify-between mb-4">
       <div>
         <h2 class="font-sans font-bold text-[15px]" style="color: var(--color-text-primary)">🔥 Trending</h2>
@@ -28,7 +28,7 @@
   </section>
 
   <!-- ═══ Featured 区 ═══ -->
-  <section id="featured" class="mb-10">
+  <section id="featured" class="mb-10" style="scroll-margin-top: 68px">
     <div class="flex items-center justify-between mb-4">
       <h2 class="font-sans font-bold text-[15px]" style="color: var(--color-text-primary)">⭐ Featured Tools</h2>
       <span class="font-body text-[10px]" style="color: var(--color-text-muted)">Sponsored</span>
@@ -61,7 +61,7 @@
   </section>
 
   <!-- ═══ Recently Added 区 ═══ -->
-  <section id="recent" class="mb-10">
+  <section id="recent" class="mb-10" style="scroll-margin-top: 68px">
     <div class="flex items-center justify-between mb-4">
       <h2 class="font-sans font-bold text-[15px]" style="color: var(--color-text-primary)">
         🆕 Recently Added

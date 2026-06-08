@@ -59,12 +59,7 @@
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Detailed Description <span style="color: var(--color-danger)">*</span>
         </label>
-        <textarea v-model="form.detailDescription"
-          class="textarea"
-          placeholder="Describe what your tool does in detail (minimum 100 words). Supports Markdown formatting for headings, lists, bold, links, etc." />
-        <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">
-          {{ form.detailDescription.length }} chars &middot; Renders as tool detail page content
-        </p>
+        <MarkdownEditor v-model="form.detailDescription" />
       </div>
 
       <!-- Platforms -->
@@ -120,6 +115,51 @@
         </div>
       </div>
 
+      <!-- Contact Email -->
+      <div>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Contact Email <span style="color: var(--color-danger)">*</span>
+        </label>
+        <BaseInput v-model="form.submitterEmail" type="email" placeholder="you@example.com" />
+        <p class="font-body text-[11px] mt-1" style="color: var(--color-text-muted)">
+          Used only for submission status updates. Never shown publicly.
+        </p>
+      </div>
+
+      <!-- Media section -->
+      <div class="pt-4 border-t" :style="{ borderColor: 'var(--color-border)' }">
+        <p class="font-body text-[12px] font-medium mb-4" style="color: var(--color-text-primary)">
+          Media <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
+        </p>
+
+        <!-- Cover Image -->
+        <div class="mb-4">
+          <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+            Tool Icon
+          </label>
+          <ImageUploadSlot v-model="form.coverImage" aspect="square" />
+        </div>
+
+        <!-- Screenshots -->
+        <div class="mb-4">
+          <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+            Screenshots <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(up to 3)</span>
+          </label>
+          <div class="space-y-2">
+            <ImageUploadSlot v-for="(_, i) in form.screenshots" :key="i"
+              v-model="form.screenshots[i]" aspect="screenshot" />
+          </div>
+        </div>
+
+        <!-- Demo Video -->
+        <div>
+          <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+            Demo Video URL
+          </label>
+          <BaseInput v-model="form.demoVideo" placeholder="https://youtube.com/watch?v=..." />
+        </div>
+      </div>
+
       <!-- Submitter fields -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
@@ -132,11 +172,22 @@
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           GitHub Username <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
         </label>
-        <BaseInput v-model="form.submitterGithub" placeholder="your-github-username" />
+        <div v-if="user" class="flex items-center gap-2 p-2 rounded-md"
+          :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
+          <img v-if="user.avatar_url" :src="user.avatar_url" class="w-6 h-6 rounded-full" />
+          <div class="flex-1 min-w-0">
+            <p class="font-body text-[12px] truncate" style="color: var(--color-text-primary)">{{ user.username }}</p>
+          </div>
+          <span class="font-body text-[10px] px-1.5 py-0.5 rounded"
+            :style="{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)' }">GitHub</span>
+        </div>
+        <div v-else>
+          <BaseInput v-model="form.submitterGithub" placeholder="your-github-username" />
+        </div>
       </div>
 
       <!-- Turnstile -->
-      <div ref="turnstileEl" class="flex items-center justify-center min-h-[65px]"></div>
+      <div v-if="!isDev" ref="turnstileEl" class="flex items-center justify-center min-h-[65px]"></div>
       <p v-if="turnstileError" class="font-body text-[11px] text-center" style="color: var(--color-danger)">{{ turnstileError }}</p>
 
       <button type="submit" class="btn-primary w-full flex items-center justify-center gap-2 !h-[40px] !text-[13px]"
@@ -155,19 +206,24 @@
 <script setup lang="ts">
 import { CATEGORIES } from '~/types/tool'
 const { post } = useApi()
+const { user } = useAuth()
 
 const form = reactive({
-  name: 'Test AI Tool',
-  website: 'https://example.com',
-  category: 'image',
-  pricing: 'freemium',
-  description: 'An AI-powered tool for generating beautiful images from text prompts.',
-  detailDescription: '## What is Test AI Tool?\n\nTest AI Tool helps users create stunning visuals from natural language descriptions. Built on state-of-the-art diffusion models.\n\n## Key Features\n\n- Text-to-Image — Generate images from text\n- Style Control — Choose artistic styles\n- Batch Generation — Create variations\n\n## Pricing\n\nFree: 25 generations/day. Pro: $20/month, unlimited.',
-  platforms: ['web', 'api'] as string[],
+  name: '',
+  website: '',
+  category: '',
+  pricing: 'free',
+  description: '',
+  detailDescription: '',
+  platforms: [] as string[],
   targetUsers: [] as string[],
   useCases: [] as string[],
-  submitterSite: 'https://aifindr.org',
-  submitterGithub: 'test-user',
+  submitterEmail: '',
+  coverImage: '',
+  screenshots: ['', '', ''],
+  demoVideo: '',
+  submitterSite: '',
+  submitterGithub: '',
 })
 
 const userOptions = [
@@ -223,13 +279,28 @@ const platformOptions = [
   { value: 'api', label: 'API' },
 ]
 
+const isDev = import.meta.dev
 const submitting = ref(false)
 const submitError = ref('')
 const turnstileEl = ref<HTMLDivElement>()
 const cfToken = ref('')
 const turnstileError = ref('')
+const turnstileWidgetId = ref<string | undefined>()
+
+// Pre-fill from GitHub auth when user data loads
+watch(user, (u) => {
+  if (!u) return
+  if (u.contact_email) form.submitterEmail = u.contact_email
+  else if (u.email) form.submitterEmail = u.email
+  if (u.username) form.submitterGithub = u.username
+}, { immediate: true })
 
 onMounted(() => {
+  if (isDev) {
+    // Dev mode: use Turnstile test token (always passes)
+    cfToken.value = '1x00000000000000000000'
+    return
+  }
   const script = document.createElement('script')
   script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad'
   script.async = true
@@ -240,8 +311,8 @@ onMounted(() => {
     const ts = (window as any).turnstile
     if (ts && turnstileEl.value) {
       clearInterval(check)
-      ts.render(turnstileEl.value, {
-        sitekey: '0x4AAAAAADLaTYMVN6qFivFT',  // ← 替换为 Cloudflare Turnstile Site Key
+      turnstileWidgetId.value = ts.render(turnstileEl.value, {
+        sitekey: '0x4AAAAAADLaTYMVN6qFivFT',
         callback: (token: string) => { cfToken.value = token; turnstileError.value = '' },
         'expired-callback': () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA expired, please verify again.' },
         'error-callback': () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA verification error.' },
@@ -257,10 +328,17 @@ onUnmounted(() => {
 
 async function handleSubmit() {
   if (submitting.value) return
-  submitting.value = true
   submitError.value = ''
 
+  if (!form.submitterEmail.trim()) {
+    submitError.value = 'Contact Email is required'
+    return
+  }
+
+  submitting.value = true
+
   try {
+    const screenshotUrls = form.screenshots.filter(Boolean)
     const res = await post('/api/submit', {
         name: form.name,
         website: form.website,
@@ -273,11 +351,21 @@ async function handleSubmit() {
         use_cases: form.useCases.join(','),
         submitter_site: form.submitterSite || undefined,
         submitter_github: form.submitterGithub || undefined,
+        submitter_email: form.submitterEmail || undefined,
+        cover_image: form.coverImage || undefined,
+        screenshot_urls: screenshotUrls.length > 0 ? screenshotUrls.join(',') : undefined,
+        demo_video_url: form.demoVideo || undefined,
         turnstileToken: cfToken.value,
       })
     navigateTo(`/submit?success=1`)
   } catch (e: any) {
     submitError.value = e?.data?.error || 'Submission failed. Please try again.'
+    // Reset Turnstile so user can get a fresh token
+    if (!isDev) {
+      const ts = (window as any).turnstile
+      if (ts && turnstileWidgetId.value) ts.reset(turnstileWidgetId.value)
+      cfToken.value = ''
+    }
   } finally {
     submitting.value = false
   }

@@ -6,6 +6,7 @@ import { verifyTurnstile, slugify } from '~/server/utils/utils'
 import type { UserRecord } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
+	console.info('xxxx')
   const env = getEnv(event)
 
   let submitterId: number | null = null
@@ -32,11 +33,15 @@ export default defineEventHandler(async (event) => {
   const platformsRaw = body.platforms
   const submitterSite = String(body.submitter_site || body.submitterSite || '').trim()
   const submitterGithub = String(body.submitter_github || body.submitterGithub || '').trim()
+  const submitterEmailRaw = String(body.submitter_email || body.submitterEmail || '').trim()
   const turnstileToken = String(body.turnstileToken || '').trim()
   const bodyContent = String(body.detailDescription || body.body || '').trim()
   const useCases = String(body.use_cases || '').trim()
   const targetUsers = String(body.target_users || '').trim()
   const hasFreeTrial = body.has_free_trial ? 1 : 0
+  const coverImage = String(body.cover_image || '').trim()
+  const screenshotUrls = String(body.screenshot_urls || '').trim()
+  const demoVideoUrl = String(body.demo_video_url || '').trim()
 
   if (!['free', 'freemium', 'paid'].includes(pricing)) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid pricing value. Must be free, freemium, or paid' })
@@ -46,8 +51,7 @@ export default defineEventHandler(async (event) => {
   if (!validCategories.includes(category)) {
     throw createError({ statusCode: 400, statusMessage: `Invalid category. Must be one of: ${validCategories.join(', ')}` })
   }
-
-  if (env.TURNSTILE_SECRET) {
+  if (env.TURNSTILE_SECRET && !import.meta.dev) {
     if (!turnstileToken) {
       throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification required' })
     }
@@ -65,7 +69,7 @@ export default defineEventHandler(async (event) => {
   }
   const catKw = catSuffix[category] || 'ai-tool'
   const nameSlug = slugify(name)
-  const baseSlug = nameSlug.includes(catKw.split('-')[0]) ? nameSlug : `${nameSlug}-${catKw}`
+  const baseSlug = nameSlug.includes(catKw.split('-')[0] as string) ? nameSlug : `${nameSlug}-${catKw}`
   if (!baseSlug) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid tool name' })
   }
@@ -88,10 +92,23 @@ export default defineEventHandler(async (event) => {
     platformsStr = platformsRaw.trim()
   }
 
+  // Append media URLs to body for review visibility
+  let fullBody = bodyContent || ''
+  if (screenshotUrls) {
+    const urls = screenshotUrls.split(',').filter(Boolean)
+    if (urls.length > 0) {
+      fullBody += '\n\n## Screenshots\n'
+      urls.forEach((u, i) => { fullBody += `- ![Screenshot ${i + 1}](${u})\n` })
+    }
+  }
+  if (demoVideoUrl) {
+    fullBody += `\n\n## Demo Video\n${demoVideoUrl}\n`
+  }
+
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   await env.DB.prepare(`
-    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, body, submitter_site, submitter_github, submitter_id, use_cases, target_users, data_source, submitted_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, 'user_submit', ?)
+    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, cover_image, body, submitter_site, submitter_github, submitter_id, use_cases, target_users, data_source, submitted_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, 'user_submit', ?)
   `).bind(
     slug,
     name,
@@ -102,7 +119,8 @@ export default defineEventHandler(async (event) => {
     hasFreeTrial,
     platformsStr,
     description,
-    bodyContent || null,
+    coverImage || null,
+    fullBody || null,
     submitterSite || null,
     submitterGithub || null,
     submitterId,
@@ -113,7 +131,9 @@ export default defineEventHandler(async (event) => {
 
   // B-01: Confirmation to submitter
   let submitterEmail: string | null = null
-  if (submitterId) {
+  if (submitterEmailRaw) {
+    submitterEmail = submitterEmailRaw
+  } else if (submitterId) {
     const submitterUser = await env.DB.prepare(
       'SELECT * FROM users WHERE id = ?'
     ).bind(submitterId).first<UserRecord>()
