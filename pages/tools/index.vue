@@ -45,7 +45,7 @@
           <div class="nav-section-title !mt-0">Category</div>
           <div class="space-y-1.5 max-h-48 overflow-y-auto">
             <label v-for="cat in categories" :key="cat.slug"
-              class="flex items-center gap-2 font-body text-[12px] cursor-pointer" style="color: var(--color-text-secondary)">
+              class="flex items-center gap-2 font-body text-[13px] cursor-pointer" style="color: var(--color-text-secondary)">
               <input type="checkbox" :value="cat.slug" v-model="filterCategories"
                 class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
               <span>{{ cat.emoji }} {{ cat.name }}</span>
@@ -57,7 +57,7 @@
           <div class="nav-section-title !mt-0">Pricing</div>
           <div class="space-y-1.5">
             <label v-for="p in pricingOptions" :key="p.value"
-              class="flex items-center gap-2 font-body text-[12px] cursor-pointer" style="color: var(--color-text-secondary)">
+              class="flex items-center gap-2 font-body text-[13px] cursor-pointer" style="color: var(--color-text-secondary)">
               <input type="checkbox" :value="p.value" v-model="filterPricing"
                 class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
               {{ p.label }}
@@ -69,7 +69,7 @@
           <div class="nav-section-title !mt-0">Platform</div>
           <div class="space-y-1.5">
             <label v-for="p in platformOptions" :key="p.value"
-              class="flex items-center gap-2 font-body text-[12px] cursor-pointer" style="color: var(--color-text-secondary)">
+              class="flex items-center gap-2 font-body text-[13px] cursor-pointer" style="color: var(--color-text-secondary)">
               <input type="checkbox" :value="p.value" v-model="filterPlatforms"
                 class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
               {{ p.label }}
@@ -81,7 +81,7 @@
           <div class="nav-section-title !mt-0">Tags</div>
           <div class="flex flex-wrap gap-1.5">
             <button v-for="tag in popularTags" :key="tag"
-              class="filter-tab !h-7 !px-2.5 !text-[10px]"
+              class="filter-tab !h-8 !px-3 !text-[11px]"
               :class="{ active: filterTags.includes(tag) }"
               @click="toggleTag(tag)">
               {{ tag }}
@@ -97,11 +97,11 @@
     </div>
 
     <!-- Tool grid -->
-    <div v-if="pending" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading tools...</div>
+    <div v-if="pending" class="text-center py-20 font-body text-[13px]" style="color: var(--color-text-muted)">Loading tools...</div>
     <div v-else-if="tools.length === 0" class="text-center py-20">
       <div class="text-3xl mb-3">🔍</div>
       <h3 class="font-sans font-bold text-[16px]" style="color: var(--color-text-primary)">No tools found</h3>
-      <p class="font-body text-[12px] mt-1 mb-4" style="color: var(--color-text-muted)">Try adjusting your filters.</p>
+      <p class="font-body text-[13px] mt-1 mb-4" style="color: var(--color-text-muted)">Try adjusting your filters.</p>
       <button class="btn-secondary" @click="clearFilters">Browse All Tools</button>
     </div>
     <ToolGrid v-else>

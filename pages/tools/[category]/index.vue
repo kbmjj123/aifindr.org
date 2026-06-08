@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Breadcrumb -->
-    <NuxtLink to="/tools" class="font-body text-[11px] mb-4 inline-block" style="color: var(--color-text-secondary)">
+    <NuxtLink to="/tools" class="font-body text-[12px] mb-4 inline-block" style="color: var(--color-text-secondary)">
       &larr; All Tools
     </NuxtLink>
 
@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <div v-if="pending" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading tools...</div>
+    <div v-if="pending" class="text-center py-20 font-body text-[13px]" style="color: var(--color-text-muted)">Loading tools...</div>
     <ToolGrid v-else>
       <ToolCard v-for="t in tools" :key="t.slug" :tool="t" />
     </ToolGrid>

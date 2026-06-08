@@ -9,7 +9,7 @@
       <span class="current">{{ tool?.name || slug }}</span>
     </nav>
 
-    <div v-if="pending" class="text-center py-20 font-body text-[12px]" style="color: var(--color-text-muted)">Loading...</div>
+    <div v-if="pending" class="text-center py-20 font-body text-[13px]" style="color: var(--color-text-muted)">Loading...</div>
     <template v-else-if="tool">
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Main content -->
@@ -47,11 +47,11 @@
             <h3 class="font-sans font-semibold text-[13px] mb-3" style="color: var(--color-text-primary)">Screenshots</h3>
             <div v-if="toolImages.length === 1" class="rounded-lg overflow-hidden"
               :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-              <div class="aspect-video flex items-center justify-center font-body text-[11px]"
+              <div class="aspect-video flex items-center justify-center font-body text-[12px]"
                 :style="{ color: 'var(--color-text-muted)' }">
                 🖼️ {{ toolImages[0].alt || 'Screenshot' }}
               </div>
-              <div v-if="toolImages[0].caption" class="px-3 py-2 font-body text-[10px]"
+              <div v-if="toolImages[0].caption" class="px-3 py-2 font-body text-[11px]"
                 :style="{ color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border)' }">
                 {{ toolImages[0].caption }}
               </div>
@@ -60,11 +60,11 @@
               <div v-for="img in toolImages" :key="img.id || img.url"
                 class="rounded-lg overflow-hidden"
                 :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-                <div class="aspect-video flex items-center justify-center font-body text-[11px]"
+                <div class="aspect-video flex items-center justify-center font-body text-[12px]"
                   :style="{ color: 'var(--color-text-muted)' }">
                   🖼️ {{ img.alt || 'Screenshot' }}
                 </div>
-                <div v-if="img.caption" class="px-3 py-2 font-body text-[10px]"
+                <div v-if="img.caption" class="px-3 py-2 font-body text-[11px]"
                   :style="{ color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border)' }">
                   {{ img.caption }}
                 </div>
@@ -82,7 +82,7 @@
                 <div class="aspect-video flex flex-col items-center justify-center gap-2 font-body text-[11px]"
                   :style="{ color: 'var(--color-text-muted)' }">
                   ▶️ {{ v.title || 'Demo Video' }}
-                  <span class="text-[10px]">({{ v.platform }} — {{ formatDuration(v.duration) }})</span>
+                  <span class="text-[11px]">({{ v.platform }} — {{ formatDuration(v.duration) }})</span>
                 </div>
               </div>
             </div>
@@ -94,7 +94,7 @@
               <div class="markdown" v-html="mdBody" />
             </template>
             <template v-else>
-              <p class="font-body text-[12px]" style="color: var(--color-text-muted)">
+              <p class="font-body text-[13px]" style="color: var(--color-text-muted)">
                 No detailed description available.
               </p>
             </template>
@@ -176,11 +176,11 @@
               <div class="flex items-center gap-2 mt-1">
                 <div class="w-5 h-5 rounded-full shrink-0" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }" />
                 <div>
-                  <div class="font-body text-[12px]" style="color: var(--color-text-secondary)">
+                  <div class="font-body text-[13px]" style="color: var(--color-text-secondary)">
                     {{ tool.submitter_github || 'Anonymous' }}
                   </div>
                   <a v-if="tool.submitter_site" :href="tool.submitter_site" target="_blank"
-                    class="font-body text-[12px]" style="color: var(--color-text-link)">
+                    class="font-body text-[13px]" style="color: var(--color-text-link)">
                     {{ tool.submitter_site.replace(/^https?:\/\//, '') }}
                   </a>
                 </div>
