@@ -19,6 +19,27 @@
       </button>
     </div>
 
+    <!-- Browse by Category -->
+    <div class="mb-8">
+      <h2 class="font-sans font-bold text-[16px] mb-3" style="color: var(--color-text-primary)">
+        Browse by Category
+      </h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
+        <NuxtLink v-for="cat in categories" :key="cat.slug" :to="`/tools/${cat.slug}`"
+          class="flex items-center gap-2.5 px-3 rounded-lg h-[56px] transition-all duration-150"
+          :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }"
+          @mouseenter="($event.currentTarget as HTMLElement).style.borderColor = 'var(--color-border-hover)'"
+          @mouseleave="($event.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)'">
+          <span class="text-lg shrink-0">{{ cat.icon }}</span>
+          <div class="min-w-0">
+            <div class="font-sans font-semibold text-[12px] leading-tight" style="color: var(--color-text-primary)">
+              {{ cat.title }}
+            </div>
+          </div>
+        </NuxtLink>
+      </div>
+    </div>
+
     <!-- Pricing quick filter + Filter button -->
     <div class="flex flex-wrap items-center gap-2 mb-6">
       <button v-for="p in pricingFilters" :key="p.key"
@@ -118,7 +139,7 @@
 </template>
 
 <script setup lang="ts">
-import { CATEGORIES } from '~/types/tool'
+import { CATEGORIES } from '~/types/category'
 import type { Tool } from '~/types/tool'
 
 const route = useRoute()
