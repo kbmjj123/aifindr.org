@@ -5,10 +5,68 @@ import { getNotifyEmail, sendEmail } from '~/server/utils/email'
 import { verifyTurnstile, slugify } from '~/server/utils/utils'
 import type { UserRecord } from '~/server/utils/jwt'
 
+// 子分类白名单，与前端 CATEGORIES 配置保持一致
+const VALID_SUB_CATEGORIES: Record<string, string[]> = {
+  image:        ['image-generation', 'image-upscaling', 'background-removal', 'logo-branding', 'illustration'],
+  writing:      ['ai-writing', 'essay-longform', 'copywriting', 'blog-seo', 'paraphrasing', 'email-writing', 'product-description'],
+  video:        ['video-generation', 'video-editing', 'video-enhancement', 'avatar-talking-head', 'subtitles-captions', 'animation'],
+  audio:        ['music-generation', 'text-to-speech', 'voice-cloning', 'transcription', 'audio-enhancement'],
+  code:         ['ai-coding-assistants', 'code-generation', 'code-review', 'sql-database', 'testing', 'documentation', 'code-explanation', 'utilities'],
+  productivity: ['meeting-notes', 'pdf-document', 'workflow-automation', 'calendar-scheduling', 'task-management', 'inbox-email', 'time-tracking'],
+  marketing:    ['seo-tools', 'social-media', 'ad-copy', 'landing-pages', 'content-repurposing', 'competitor-analysis', 'youtube-video-seo'],
+  data:         ['data-analysis', 'charts-visualization', 'spreadsheets', 'dashboards-bi', 'reports'],
+  education:    ['homework-tutoring', 'math', 'flashcards-quizzes', 'summarization', 'study-planning', 'language-learning', 'course-creation'],
+  business:     ['business-planning', 'legal-contracts', 'finance-invoicing', 'pitch-presentations', 'hr-recruiting', 'customer-support', 'crm-sales'],
+  research:     ['ai-search-engines', 'academic-research', 'paper-summarization', 'citation-references', 'fact-checking', 'knowledge-base', 'web-scraping', 'academic-writing'],
+  other:        ['ai-directory', 'open-source-tools', 'ai-for-students', 'ai-for-small-business', 'ai-for-freelancers', 'ai-for-creators'],
+}
+
+const VALID_TAG_TYPES = ['use_case', 'audience', 'feature'] as const
+
+const VALID_TAGS: Record<string, string[]> = {
+  feature:  ['free-tier', 'no-signup', 'open-source', 'api-available', 'browser-based', 'offline-local', 'freemium'],
+  audience: ['developer', 'designer', 'marketer', 'student', 'content-creator', 'small-business', 'freelancer', 'researcher'],
+  use_case: [
+    // image
+    'image-generation', 'image-upscaling', 'background-removal', 'logo-design', 'illustration',
+    // writing
+    'copywriting', 'blog-writing', 'email-writing', 'paraphrasing', 'seo-content', 'product-description',
+    // video
+    'video-generation', 'video-editing', 'subtitles-captions', 'avatar-video', 'animation',
+    // audio
+    'music-generation', 'text-to-speech', 'voice-cloning', 'transcription', 'audio-enhancement',
+    // code
+    'code-completion', 'code-review', 'sql-generation', 'test-generation', 'documentation',
+    // productivity
+    'meeting-notes', 'pdf-summarization', 'workflow-automation', 'scheduling', 'task-management',
+    // marketing
+    'seo-optimization', 'social-media', 'ad-copy', 'landing-page', 'competitor-analysis',
+    // data
+    'data-analysis', 'chart-visualization', 'spreadsheet', 'dashboard', 'report-generation',
+    // education
+    'homework-help', 'math-solving', 'flashcards', 'language-learning', 'course-creation',
+    // business
+    'business-planning', 'contract-review', 'invoicing', 'pitch-deck', 'recruiting', 'customer-support',
+    // research
+    'academic-research', 'paper-summarization', 'citation', 'fact-checking', 'web-scraping',
+    // other
+    'local-llm', 'rag', 'ai-directory', 'open-source-tool',
+  ],
+}
+
+const VALID_CATEGORIES = Object.keys(VALID_SUB_CATEGORIES)
+
+const CAT_SUFFIX: Record<string, string> = {
+  image: 'ai-image-generator', writing: 'ai-writing-tool', video: 'ai-video-generator',
+  audio: 'ai-audio-tool', code: 'ai-coding-tool', productivity: 'ai-productivity-tool',
+  marketing: 'ai-marketing-tool', data: 'ai-data-tool', education: 'ai-learning-tool',
+  business: 'ai-business-tool', research: 'ai-research-tool', other: 'ai-tool',
+}
+
 export default defineEventHandler(async (event) => {
-	console.info('xxxx')
   const env = getEnv(event)
 
+  // 获取登录用户（可选）
   let submitterId: number | null = null
   const authToken = getTokenFromEvent(event)
   if (authToken) {
@@ -18,39 +76,48 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody<Record<string, unknown>>(event)
 
+  // ── 必填字段校验 ──────────────────────────────────────────
   const required = ['name', 'website', 'category', 'pricing', 'description'] as const
   const missing = required.filter(f => !body[f] || !String(body[f]).trim())
   if (missing.length > 0) {
     throw createError({ statusCode: 400, statusMessage: `Missing required fields: ${missing.join(', ')}` })
   }
 
-  const name = String(body.name).trim()
-  const website = String(body.website).trim()
-  const category = String(body.category).trim()
-  const pricing = String(body.pricing).trim()
-  const description = String(body.description).trim()
-  const priceDetail = String(body.price_detail || body.priceDetail || '').trim()
-  const platformsRaw = body.platforms
-  const submitterSite = String(body.submitter_site || body.submitterSite || '').trim()
+  // ── 基础字段解析 ──────────────────────────────────────────
+  const name            = String(body.name).trim()
+  const website         = String(body.website).trim()
+  const category        = String(body.category).trim()
+  const subCategory     = String(body.sub_category || body.subCategory || '').trim()
+  const pricing         = String(body.pricing).trim()
+  const description     = String(body.description).trim()
+  const priceDetail     = String(body.price_detail || body.priceDetail || '').trim()
+  const launched        = String(body.launched || '').trim()
+  const hasFreeTrial    = body.has_free_trial ? 1 : 0
+  const platformsRaw    = body.platforms
+  const submitterSite   = String(body.submitter_site || body.submitterSite || '').trim()
   const submitterGithub = String(body.submitter_github || body.submitterGithub || '').trim()
   const submitterEmailRaw = String(body.submitter_email || body.submitterEmail || '').trim()
-  const turnstileToken = String(body.turnstileToken || '').trim()
-  const bodyContent = String(body.detailDescription || body.body || '').trim()
-  const useCases = String(body.use_cases || '').trim()
-  const targetUsers = String(body.target_users || '').trim()
-  const hasFreeTrial = body.has_free_trial ? 1 : 0
-  const coverImage = String(body.cover_image || '').trim()
-  const screenshotUrls = String(body.screenshot_urls || '').trim()
-  const demoVideoUrl = String(body.demo_video_url || '').trim()
+  const turnstileToken  = String(body.turnstileToken || '').trim()
+  const bodyContent     = String(body.detailDescription || body.body || '').trim()
+  const coverImage      = String(body.cover_image || '').trim()
+  const screenshotUrls  = String(body.screenshot_urls || '').trim()
+  const demoVideoUrl    = String(body.demo_video_url || '').trim()
+  const tagsRaw         = body.tags  // [{ type: 'feature'|'audience'|'use_case', tag: string }]
 
+  // ── 枚举值校验 ────────────────────────────────────────────
   if (!['free', 'freemium', 'paid'].includes(pricing)) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid pricing value. Must be free, freemium, or paid' })
   }
 
-  const validCategories = ['image', 'writing', 'video', 'audio', 'code', 'productivity', 'marketing', 'data', 'education', 'business', 'research', 'other']
-  if (!validCategories.includes(category)) {
-    throw createError({ statusCode: 400, statusMessage: `Invalid category. Must be one of: ${validCategories.join(', ')}` })
+  if (!VALID_CATEGORIES.includes(category)) {
+    throw createError({ statusCode: 400, statusMessage: `Invalid category. Must be one of: ${VALID_CATEGORIES.join(', ')}` })
   }
+
+  if (subCategory && !VALID_SUB_CATEGORIES[category]?.includes(subCategory)) {
+    throw createError({ statusCode: 400, statusMessage: `Invalid sub_category "${subCategory}" for category "${category}"` })
+  }
+
+  // ── Turnstile 验证 ────────────────────────────────────────
   if (env.TURNSTILE_SECRET && !import.meta.dev) {
     if (!turnstileToken) {
       throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification required' })
@@ -61,20 +128,33 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const catSuffix: Record<string, string> = {
-    image: 'ai-image-generator', writing: 'ai-writing-tool', video: 'ai-video-generator',
-    audio: 'ai-audio-tool', code: 'ai-coding-tool', productivity: 'ai-productivity-tool',
-    marketing: 'ai-marketing-tool', data: 'ai-data-tool', education: 'ai-learning-tool',
-    business: 'ai-business-tool', research: 'ai-research-tool', other: 'ai-tool',
+  // ── 标签校验 ──────────────────────────────────────────────
+  type TagItem = { type: string; tag: string }
+  const validTags: TagItem[] = []
+  if (Array.isArray(tagsRaw)) {
+    for (const t of tagsRaw as TagItem[]) {
+      if (
+        t?.type && t?.tag &&
+        VALID_TAG_TYPES.includes(t.type as typeof VALID_TAG_TYPES[number]) &&
+        VALID_TAGS[t.type]?.includes(t.tag)
+      ) {
+        validTags.push({ type: t.type, tag: t.tag })
+      }
+    }
   }
-  const catKw = catSuffix[category] || 'ai-tool'
+
+  // ── slug 生成（去重） ─────────────────────────────────────
+  const catKw    = CAT_SUFFIX[category] || 'ai-tool'
   const nameSlug = slugify(name)
-  const baseSlug = nameSlug.includes(catKw.split('-')[0] as string) ? nameSlug : `${nameSlug}-${catKw}`
+  const baseSlug = nameSlug.includes(catKw.split('-')[0] as string)
+    ? nameSlug
+    : `${nameSlug}-${catKw}`
+
   if (!baseSlug) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid tool name' })
   }
 
-  let slug = baseSlug
+  let slug   = baseSlug
   let suffix = 0
   while (true) {
     const existing = await env.DB.prepare(
@@ -85,6 +165,7 @@ export default defineEventHandler(async (event) => {
     slug = `${baseSlug}-${suffix}`
   }
 
+  // ── platforms 格式化 ──────────────────────────────────────
   let platformsStr = ''
   if (Array.isArray(platformsRaw)) {
     platformsStr = platformsRaw.map(String).join(',')
@@ -92,7 +173,7 @@ export default defineEventHandler(async (event) => {
     platformsStr = platformsRaw.trim()
   }
 
-  // Append media URLs to body for review visibility
+  // ── body 拼接媒体内容 ─────────────────────────────────────
   let fullBody = bodyContent || ''
   if (screenshotUrls) {
     const urls = screenshotUrls.split(',').filter(Boolean)
@@ -105,31 +186,54 @@ export default defineEventHandler(async (event) => {
     fullBody += `\n\n## Demo Video\n${demoVideoUrl}\n`
   }
 
+  // ── 写入 tools 表 ─────────────────────────────────────────
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
-  await env.DB.prepare(`
-    INSERT INTO tools (slug, name, category, website, pricing, price_detail, has_free_trial, platforms, status, meta_description, cover_image, body, submitter_site, submitter_github, submitter_id, use_cases, target_users, data_source, submitted_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, 'user_submit', ?)
+
+  const insertResult = await env.DB.prepare(`
+    INSERT INTO tools (
+      slug, name, category, sub_category, website,
+      pricing, price_detail, has_free_trial, platforms,
+      status, launched, meta_description, cover_image,
+      body, submitter_site, submitter_github, submitter_id,
+      data_source, submitted_at
+    ) VALUES (
+      ?, ?, ?, ?, ?,
+      ?, ?, ?, ?,
+      'pending', ?, ?, ?,
+      ?, ?, ?, ?,
+      'user_submit', ?
+    )
   `).bind(
     slug,
     name,
     category,
+    subCategory || null,
     website,
     pricing,
     priceDetail || null,
     hasFreeTrial,
     platformsStr,
+    launched || null,
     description,
     coverImage || null,
     fullBody || null,
     submitterSite || null,
     submitterGithub || null,
     submitterId,
-    useCases || null,
-    targetUsers || null,
     now,
   ).run()
 
-  // B-01: Confirmation to submitter
+  // ── 写入 tool_tags 表 ─────────────────────────────────────
+  const toolId = insertResult.meta?.last_row_id
+  if (toolId && validTags.length > 0) {
+    for (const t of validTags) {
+      await env.DB.prepare(
+        'INSERT OR IGNORE INTO tool_tags (tool_id, tag, type) VALUES (?, ?, ?)'
+      ).bind(toolId, t.tag, t.type).run()
+    }
+  }
+
+  // ── 邮件通知：提交者确认 (B-01) ───────────────────────────
   let submitterEmail: string | null = null
   if (submitterEmailRaw) {
     submitterEmail = submitterEmailRaw
@@ -161,7 +265,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // B-02: Notification to admins
+  // ── 邮件通知：管理员审核 (B-02) ───────────────────────────
   const adminGhIds = (env.ADMIN_GITHUB_IDS || '').split(',').map(Number).filter(Boolean)
   if (adminGhIds.length > 0) {
     const placeholders = adminGhIds.map(() => '?').join(',')
@@ -182,6 +286,7 @@ export default defineEventHandler(async (event) => {
             `<tr><td><strong>Name:</strong></td><td>${name}</td></tr>`,
             `<tr><td><strong>Website:</strong></td><td><a href="${website}">${website}</a></td></tr>`,
             `<tr><td><strong>Category:</strong></td><td>${category}</td></tr>`,
+            `<tr><td><strong>Sub-category:</strong></td><td>${subCategory || '—'}</td></tr>`,
             `<tr><td><strong>Pricing:</strong></td><td>${pricing}</td></tr>`,
             `<tr><td><strong>Submitted:</strong></td><td>${now}</td></tr>`,
             `</table>`,

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS tools (
   slug             TEXT NOT NULL UNIQUE,
   name             TEXT NOT NULL,
   category         TEXT NOT NULL,
+  sub_category     TEXT DEFAULT '',
   website          TEXT NOT NULL,
   pricing          TEXT NOT NULL CHECK(pricing IN ('free','freemium','paid')),
   price_starting   REAL DEFAULT 0,
@@ -30,28 +31,32 @@ CREATE TABLE IF NOT EXISTS tools (
   content_path     TEXT,
   body             TEXT,
   submitter_id     INTEGER REFERENCES users(id),
-  reject_reason    TEXT,                    -- 拒绝原因
-  reviewer_note    TEXT,                    -- 管理员备注
-  reviewed_at      TEXT,                    -- 审核时间
-  use_cases        TEXT DEFAULT '',         -- 场景标签，逗号分隔
-  target_users     TEXT DEFAULT '',         -- 角色标签，逗号分隔
-  data_source      TEXT                     -- 数据来源（futurepedia/producthunt等）
+  reject_reason    TEXT,       -- 拒绝原因
+  reviewer_note    TEXT,       -- 管理员备注
+  reviewed_at      TEXT,       -- 审核时间
+  data_source      TEXT        -- 数据来源（futurepedia/producthunt/user_submit等）
 );
 
-CREATE INDEX IF NOT EXISTS idx_tools_category   ON tools(category);
-CREATE INDEX IF NOT EXISTS idx_tools_pricing    ON tools(pricing);
-CREATE INDEX IF NOT EXISTS idx_tools_status     ON tools(status);
-CREATE INDEX IF NOT EXISTS idx_tools_featured   ON tools(featured);
-CREATE INDEX IF NOT EXISTS idx_tools_submitted  ON tools(submitted_at DESC);
-CREATE INDEX IF NOT EXISTS idx_tools_clicks     ON tools(click_count DESC);
-CREATE INDEX IF NOT EXISTS idx_tools_cat_status ON tools(category, status);
+CREATE INDEX IF NOT EXISTS idx_tools_category    ON tools(category);
+CREATE INDEX IF NOT EXISTS idx_tools_subcat      ON tools(sub_category);
+CREATE INDEX IF NOT EXISTS idx_tools_pricing     ON tools(pricing);
+CREATE INDEX IF NOT EXISTS idx_tools_status      ON tools(status);
+CREATE INDEX IF NOT EXISTS idx_tools_featured    ON tools(featured);
+CREATE INDEX IF NOT EXISTS idx_tools_submitted   ON tools(submitted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_tools_clicks      ON tools(click_count DESC);
+CREATE INDEX IF NOT EXISTS idx_tools_cat_status  ON tools(category, status);
+CREATE INDEX IF NOT EXISTS idx_tools_cat_subcat  ON tools(category, sub_category);
 
 CREATE TABLE IF NOT EXISTS tool_tags (
-  tool_id INTEGER NOT NULL REFERENCES tools(id) ON DELETE CASCADE,
-  tag     TEXT NOT NULL,
+  tool_id  INTEGER NOT NULL REFERENCES tools(id) ON DELETE CASCADE,
+  tag      TEXT NOT NULL,
+  type     TEXT NOT NULL CHECK(type IN ('use_case','audience','feature')),
   PRIMARY KEY (tool_id, tag)
 );
-CREATE INDEX IF NOT EXISTS idx_tool_tags_tag ON tool_tags(tag);
+
+CREATE INDEX IF NOT EXISTS idx_tool_tags_tag     ON tool_tags(tag);
+CREATE INDEX IF NOT EXISTS idx_tool_tags_type    ON tool_tags(type);
+CREATE INDEX IF NOT EXISTS idx_tool_tags_tool    ON tool_tags(tool_id);
 
 CREATE TABLE IF NOT EXISTS users (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
