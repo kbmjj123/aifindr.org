@@ -26,7 +26,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    preset: process.env.NODE_ENV === 'production' ? 'cloudflare_module' : undefined,
+    preset: 'cloudflare_module',
 		cloudflare: {
 			nodeCompat: true,
 		},

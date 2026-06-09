@@ -35,7 +35,7 @@
     "playwright": "^1.60.0",
     "satori": "^0.26.0",
     "typescript": "^5.7.0",
-    "wrangler": "^4.0.0"
+    "wrangler": "^4.88.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
