@@ -12,7 +12,7 @@
           Review pending tool submissions
         </p>
       </div>
-      <span class="font-body text-[11px] px-2.5 py-1 rounded-full"
+      <span class="font-body text-[13px] px-2.5 py-1 rounded-full"
         :style="{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)', border: '1px solid var(--color-accent-border)' }">
         {{ total }} pending
       </span>
@@ -77,11 +77,11 @@
                 :style="{ color: 'var(--color-text-primary)' }">
                 {{ tool.name }}
               </h3>
-              <span class="font-body text-[10px] px-1.5 py-0.5 rounded-full"
+              <span class="font-body text-[12px] px-1.5 py-0.5 rounded-full"
                 :style="{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)' }">
                 {{ tool.category }}
               </span>
-              <span class="font-body text-[10px] px-1.5 py-0.5 rounded-full"
+              <span class="font-body text-[12px] px-1.5 py-0.5 rounded-full"
                 :style="{
                   background: pricingBg(tool.pricing),
                   color: pricingColor(tool.pricing),
@@ -91,7 +91,7 @@
               </span>
             </div>
             <a :href="tool.website" target="_blank" rel="noopener noreferrer"
-              class="font-body text-[11px] mb-2 inline-block"
+              class="font-body text-[13px] mb-2 inline-block"
               :style="{ color: 'var(--color-text-link)' }">
               {{ tool.website }}
             </a>
@@ -99,7 +99,7 @@
               :style="{ color: 'var(--color-text-secondary)' }">
               {{ tool.meta_description }}
             </p>
-            <div class="flex items-center gap-3 mt-2 font-body text-[10px]"
+            <div class="flex items-center gap-3 mt-2 font-body text-[12px]"
               :style="{ color: 'var(--color-text-muted)' }">
               <span v-if="tool.submitter_github">by @{{ tool.submitter_github }}</span>
               <span v-if="tool.submitter_site">
@@ -112,13 +112,13 @@
 
           <!-- Action Buttons -->
           <div class="flex items-center gap-2 flex-shrink-0">
-            <button class="btn-primary !h-[30px] !px-[14px] !text-[11px]"
+            <button class="btn-primary !h-[30px] !px-[14px] !text-[13px]"
               :disabled="acting === tool.id"
               @click="approve(tool)">
               {{ acting === tool.id && reviewStatus === 'active' ? 'Approving...' : 'Approve' }}
             </button>
             <button
-              class="h-[30px] px-[14px] rounded-md font-body text-[11px] font-medium border cursor-pointer transition-all"
+              class="h-[30px] px-[14px] rounded-md font-body text-[13px] font-medium border cursor-pointer transition-all"
               :disabled="acting === tool.id"
               :style="{
                 background: 'transparent',
@@ -134,13 +134,13 @@
         <!-- Rejection Form -->
         <div v-if="rejectingTool?.id === tool.id" class="mt-4 pt-4"
           :style="{ borderTop: '1px solid var(--color-border)' }">
-          <label class="block font-body text-[10px] uppercase tracking-[0.1em] mb-2"
+          <label class="block font-body text-[12px] uppercase tracking-[0.1em] mb-2"
             :style="{ color: 'var(--color-text-muted)' }">
             Rejection Reason
           </label>
           <div class="flex flex-wrap gap-2 mb-3">
             <button v-for="r in rejectReasons" :key="r.value"
-              class="px-3 py-1 rounded-full font-body text-[11px] border cursor-pointer transition-all"
+              class="px-3 py-1 rounded-full font-body text-[13px] border cursor-pointer transition-all"
               :style="{
                 background: rejectReason === r.value ? 'var(--color-accent-dim)' : 'transparent',
                 color: rejectReason === r.value ? 'var(--color-accent)' : 'var(--color-text-muted)',
@@ -150,7 +150,7 @@
               {{ r.label }}
             </button>
           </div>
-          <label class="block font-body text-[10px] uppercase tracking-[0.1em] mb-1.5"
+          <label class="block font-body text-[12px] uppercase tracking-[0.1em] mb-1.5"
             :style="{ color: 'var(--color-text-muted)' }">
             Reviewer Note (optional)
           </label>
@@ -164,7 +164,7 @@
             placeholder="Add a note to the submitter..." />
           <div class="flex gap-2 mt-3">
             <button
-              class="h-[30px] px-[14px] rounded-md font-body text-[11px] font-medium cursor-pointer transition-all"
+              class="h-[30px] px-[14px] rounded-md font-body text-[13px] font-medium cursor-pointer transition-all"
               :disabled="acting === tool.id || !rejectReason"
               :style="{
                 background: 'var(--color-danger)',
@@ -175,7 +175,7 @@
               @click="reject(tool)">
               {{ acting === tool.id ? 'Rejecting...' : 'Confirm Reject' }}
             </button>
-            <button class="btn-ghost !h-[30px] !text-[11px]" @click="cancelReject">
+            <button class="btn-ghost !h-[30px] !text-[13px]" @click="cancelReject">
               Cancel
             </button>
           </div>

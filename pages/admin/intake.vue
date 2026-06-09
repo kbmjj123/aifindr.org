@@ -45,9 +45,9 @@
       </p>
       <textarea
         v-model="rawJson"
-        rows="8"
+        rows="12"
         placeholder='{ "name": "...", "website": "...", ... }'
-        class="w-full font-mono text-[11px] p-3 rounded-lg resize-none outline-none"
+        class="w-full font-mono text-[13px] p-3 rounded-lg resize-none outline-none"
         :style="{
           background: 'var(--color-bg-input)',
           border: '1px solid var(--color-border)',
@@ -56,12 +56,12 @@
       />
       <div class="flex items-center gap-3">
         <button
-          class="btn-primary !h-[34px] !text-[12px] px-4"
+          class="btn-primary !h-[44px] !text-[12px] px-4"
           :disabled="!rawJson.trim() || parsing"
           @click="parseJson">
           {{ parsing ? 'Parsing...' : 'Parse & Fill' }}
         </button>
-        <p v-if="parseError" class="font-body text-[11px]" style="color: var(--color-danger)">
+        <p v-if="parseError" class="font-body text-[13px]" style="color: var(--color-danger)">
           {{ parseError }}
         </p>
       </div>
@@ -76,9 +76,9 @@
         </p>
 
         <!-- 基础字段预览 -->
-        <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+        <div class="grid grid-cols-1 gap-x-6 gap-y-3">
           <div v-for="field in previewFields" :key="field.key">
-            <p class="font-body text-[10px] mb-0.5" style="color: var(--color-text-muted)">
+            <p class="font-body text-[12px] mb-0.5" style="color: var(--color-text-muted)">
               {{ field.label }}
             </p>
             <p class="font-body text-[12px] truncate" style="color: var(--color-text-primary)">
@@ -88,12 +88,12 @@
         </div>
 
         <!-- 图片上传区 -->
-        <div class="grid grid-cols-2 gap-4 pt-4 border-t"
+        <div class="grid grid-cols-1 gap-4 pt-4 border-t"
           :style="{ borderColor: 'var(--color-border)' }">
 
           <!-- Logo -->
           <div class="space-y-2">
-            <p class="font-body text-[11px] font-medium" style="color: var(--color-text-primary)">
+            <p class="font-body text-[13px] font-medium" style="color: var(--color-text-primary)">
               Logo (cover_image)
             </p>
             <div class="flex items-center gap-3">
@@ -104,33 +104,33 @@
               <div v-else
                 class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
                 :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
-                <span class="font-body text-[10px]" style="color: var(--color-text-muted)">—</span>
+                <span class="font-body text-[12px]" style="color: var(--color-text-muted)">—</span>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="font-mono text-[10px] truncate" style="color: var(--color-text-muted)">
+                <p class="font-mono text-[12px] truncate" style="color: var(--color-text-muted)">
                   {{ parsed.logo_url || '—' }}
                 </p>
                 <p v-if="uploadedLogoUrl"
-                  class="font-mono text-[10px] truncate mt-0.5"
+                  class="font-mono text-[12px] truncate mt-0.5"
                   style="color: var(--color-success)">
                   ✓ Uploaded
                 </p>
               </div>
             </div>
             <button
-              class="btn-secondary !h-[28px] !text-[11px] px-3"
+              class="btn-secondary !h-[40px] !text-[13px] px-3"
               :disabled="!parsed.logo_url || uploadingLogo"
               @click="uploadImage('logo')">
               {{ uploadingLogo ? 'Uploading...' : uploadedLogoUrl ? 'Re-upload' : 'Upload to R2' }}
             </button>
-            <p v-if="logoError" class="font-body text-[11px]" style="color: var(--color-danger)">
+            <p v-if="logoError" class="font-body text-[13px]" style="color: var(--color-danger)">
               {{ logoError }}
             </p>
           </div>
 
           <!-- OG Image -->
           <div class="space-y-2">
-            <p class="font-body text-[11px] font-medium" style="color: var(--color-text-primary)">
+            <p class="font-body text-[13px] font-medium" style="color: var(--color-text-primary)">
               OG Image (og_image)
             </p>
             <div class="flex items-center gap-3">
@@ -141,26 +141,26 @@
               <div v-else
                 class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
                 :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
-                <span class="font-body text-[10px]" style="color: var(--color-text-muted)">—</span>
+                <span class="font-body text-[12px]" style="color: var(--color-text-muted)">—</span>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="font-mono text-[10px] truncate" style="color: var(--color-text-muted)">
+                <p class="font-mono text-[12px] truncate" style="color: var(--color-text-muted)">
                   {{ parsed.og_image_url || '—' }}
                 </p>
                 <p v-if="uploadedOgUrl"
-                  class="font-mono text-[10px] truncate mt-0.5"
+                  class="font-mono text-[12px] truncate mt-0.5"
                   style="color: var(--color-success)">
                   ✓ Uploaded
                 </p>
               </div>
             </div>
             <button
-              class="btn-secondary !h-[28px] !text-[11px] px-3"
+              class="btn-secondary !h-[40px] !text-[13px] px-3"
               :disabled="!parsed.og_image_url || uploadingOg"
               @click="uploadImage('og_image')">
               {{ uploadingOg ? 'Uploading...' : uploadedOgUrl ? 'Re-upload' : 'Upload to R2' }}
             </button>
-            <p v-if="ogError" class="font-body text-[11px]" style="color: var(--color-danger)">
+            <p v-if="ogError" class="font-body text-[13px]" style="color: var(--color-danger)">
               {{ ogError }}
             </p>
           </div>
@@ -168,12 +168,12 @@
 
         <!-- 标签预览 -->
         <div class="pt-4 border-t" :style="{ borderColor: 'var(--color-border)' }">
-          <p class="font-body text-[11px] font-medium mb-2" style="color: var(--color-text-primary)">
+          <p class="font-body text-[13px] font-medium mb-2" style="color: var(--color-text-primary)">
             Tags
           </p>
           <div class="flex flex-wrap gap-1.5">
             <span v-for="t in (parsed.tags || [])" :key="`${t.type}-${t.tag}`"
-              class="font-body text-[10px] px-2 py-0.5 rounded-full"
+              class="font-body text-[12px] px-2 py-0.5 rounded-full"
               :style="{
                 background: tagTypeColor(t.type).bg,
                 color: tagTypeColor(t.type).text,
@@ -182,7 +182,7 @@
               {{ t.type }}: {{ t.tag }}
             </span>
             <span v-if="!parsed.tags?.length"
-              class="font-body text-[11px]"
+              class="font-body text-[13px]"
               style="color: var(--color-text-muted)">
               No tags
             </span>
@@ -191,11 +191,11 @@
 
         <!-- Body 预览 -->
         <div class="pt-4 border-t" :style="{ borderColor: 'var(--color-border)' }">
-          <p class="font-body text-[11px] font-medium mb-2" style="color: var(--color-text-primary)">
+          <p class="font-body text-[13px] font-medium mb-2" style="color: var(--color-text-primary)">
             Body Preview
           </p>
           <div
-            class="font-mono text-[11px] p-3 rounded-lg max-h-48 overflow-y-auto whitespace-pre-wrap"
+            class="font-mono text-[13px] p-3 rounded-lg max-h-48 overflow-y-auto whitespace-pre-wrap"
             :style="{
               background: 'var(--color-bg-elevated)',
               color: 'var(--color-text-secondary)',
@@ -216,18 +216,18 @@
         <!-- 图片上传状态提示 -->
         <div class="flex items-center gap-4 p-3 rounded-lg mb-4"
           :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
-          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">
+          <span class="font-body text-[13px]" style="color: var(--color-text-muted)">
             Images:
           </span>
-          <span class="font-body text-[11px]"
+          <span class="font-body text-[13px]"
             :style="{ color: uploadedLogoUrl ? 'var(--color-success)' : 'var(--color-text-muted)' }">
             {{ uploadedLogoUrl ? '✓' : '○' }} Logo
           </span>
-          <span class="font-body text-[11px]"
+          <span class="font-body text-[13px]"
             :style="{ color: uploadedOgUrl ? 'var(--color-success)' : 'var(--color-text-muted)' }">
             {{ uploadedOgUrl ? '✓' : '○' }} OG Image
           </span>
-          <span class="font-body text-[10px] ml-auto" style="color: var(--color-text-muted)">
+          <span class="font-body text-[12px] ml-auto" style="color: var(--color-text-muted)">
             Images are optional — tool will publish without them
           </span>
         </div>
@@ -240,12 +240,12 @@
         </button>
 
         <p v-if="submitError"
-          class="font-body text-[11px] text-center mt-2"
+          class="font-body text-[13px] text-center mt-2"
           style="color: var(--color-danger)">
           {{ submitError }}
         </p>
         <p v-if="submitSuccess"
-          class="font-body text-[11px] text-center mt-2"
+          class="font-body text-[13px] text-center mt-2"
           style="color: var(--color-success)">
           ✓ Published! Slug: <span class="font-mono">{{ submitSuccess }}</span>
         </p>
