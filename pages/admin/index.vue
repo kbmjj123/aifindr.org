@@ -1,7 +1,7 @@
 <template>
   <div class="admin-page">
     <!-- Page Header -->
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center justify-between mb-6">
       <div>
         <h1 class="font-sans font-extrabold text-[22px] tracking-[-0.5px]"
           :style="{ color: 'var(--color-text-primary)' }">
@@ -16,6 +16,29 @@
         :style="{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)', border: '1px solid var(--color-accent-border)' }">
         {{ total }} pending
       </span>
+    </div>
+
+    <!-- Nav Tabs -->
+    <div class="flex gap-1 mb-6 p-1 rounded-lg w-fit"
+      :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
+      <NuxtLink to="/admin"
+        class="font-body text-[12px] font-medium px-4 py-1.5 rounded-md transition-all"
+        :style="{
+          background: 'var(--color-bg-surface)',
+          color: 'var(--color-text-primary)',
+          border: '1px solid var(--color-border)',
+        }">
+        Review Submissions
+      </NuxtLink>
+      <NuxtLink to="/admin/intake"
+        class="font-body text-[12px] font-medium px-4 py-1.5 rounded-md transition-all"
+        :style="{
+          background: 'transparent',
+          color: 'var(--color-text-muted)',
+          border: '1px solid transparent',
+        }">
+        Tool Intake
+      </NuxtLink>
     </div>
 
     <!-- Error / Unauthorized -->
@@ -50,7 +73,8 @@
           <!-- Tool Info -->
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 mb-1">
-              <h3 class="font-sans font-semibold text-[14px] tracking-[-0.2px]" :style="{ color: 'var(--color-text-primary)' }">
+              <h3 class="font-sans font-semibold text-[14px] tracking-[-0.2px]"
+                :style="{ color: 'var(--color-text-primary)' }">
                 {{ tool.name }}
               </h3>
               <span class="font-body text-[10px] px-1.5 py-0.5 rounded-full"
@@ -58,7 +82,11 @@
                 {{ tool.category }}
               </span>
               <span class="font-body text-[10px] px-1.5 py-0.5 rounded-full"
-                :style="{ background: pricingBg(tool.pricing), color: pricingColor(tool.pricing), border: '1px solid ' + pricingBorder(tool.pricing) }">
+                :style="{
+                  background: pricingBg(tool.pricing),
+                  color: pricingColor(tool.pricing),
+                  border: '1px solid ' + pricingBorder(tool.pricing),
+                }">
                 {{ tool.pricing }}
               </span>
             </div>
@@ -73,9 +101,7 @@
             </p>
             <div class="flex items-center gap-3 mt-2 font-body text-[10px]"
               :style="{ color: 'var(--color-text-muted)' }">
-              <span v-if="tool.submitter_github">
-                by @{{ tool.submitter_github }}
-              </span>
+              <span v-if="tool.submitter_github">by @{{ tool.submitter_github }}</span>
               <span v-if="tool.submitter_site">
                 · <a :href="tool.submitter_site" target="_blank" rel="noopener noreferrer"
                   :style="{ color: 'var(--color-text-link)' }">{{ tool.submitter_site }}</a>
@@ -91,7 +117,8 @@
               @click="approve(tool)">
               {{ acting === tool.id && reviewStatus === 'active' ? 'Approving...' : 'Approve' }}
             </button>
-            <button class="h-[30px] px-[14px] rounded-md font-body text-[11px] font-medium border cursor-pointer transition-all"
+            <button
+              class="h-[30px] px-[14px] rounded-md font-body text-[11px] font-medium border cursor-pointer transition-all"
               :disabled="acting === tool.id"
               :style="{
                 background: 'transparent',
@@ -104,7 +131,7 @@
           </div>
         </div>
 
-        <!-- Rejection Form (inline, shown when rejecting) -->
+        <!-- Rejection Form -->
         <div v-if="rejectingTool?.id === tool.id" class="mt-4 pt-4"
           :style="{ borderTop: '1px solid var(--color-border)' }">
           <label class="block font-body text-[10px] uppercase tracking-[0.1em] mb-2"
@@ -136,7 +163,8 @@
             }"
             placeholder="Add a note to the submitter..." />
           <div class="flex gap-2 mt-3">
-            <button class="h-[30px] px-[14px] rounded-md font-body text-[11px] font-medium cursor-pointer transition-all"
+            <button
+              class="h-[30px] px-[14px] rounded-md font-body text-[11px] font-medium cursor-pointer transition-all"
               :disabled="acting === tool.id || !rejectReason"
               :style="{
                 background: 'var(--color-danger)',
@@ -147,8 +175,7 @@
               @click="reject(tool)">
               {{ acting === tool.id ? 'Rejecting...' : 'Confirm Reject' }}
             </button>
-            <button class="btn-ghost !h-[30px] !text-[11px]"
-              @click="cancelReject">
+            <button class="btn-ghost !h-[30px] !text-[11px]" @click="cancelReject">
               Cancel
             </button>
           </div>
@@ -175,7 +202,7 @@ usePageSeo({
   description: 'Admin panel for reviewing tool submissions.',
 })
 
-const { isLoggedIn, token } = useAuth()
+const { isLoggedIn } = useAuth()
 
 interface PendingTool {
   id: number
@@ -191,38 +218,31 @@ interface PendingTool {
   status: string
 }
 
-const tools = ref<PendingTool[]>([])
-const total = ref(0)
-const page = ref(1)
-const pageSize = 20
-const loading = ref(true)
-const forbidden = ref(false)
-const acting = ref<number | null>(null)
+const tools      = ref<PendingTool[]>([])
+const total      = ref(0)
+const page       = ref(1)
+const pageSize   = 20
+const loading    = ref(true)
+const forbidden  = ref(false)
+const acting     = ref<number | null>(null)
 const reviewStatus = ref('')
 
-// Rejection state
 const rejectingTool = ref<PendingTool | null>(null)
-const rejectReason = ref('')
-const reviewerNote = ref('')
+const rejectReason  = ref('')
+const reviewerNote  = ref('')
 
 const totalPages = computed(() => Math.ceil(total.value / pageSize))
 
 const rejectReasons = [
   { value: 'info_incomplete', label: 'Info Incomplete' },
-  { value: 'not_qualified', label: 'Not Qualified' },
-  { value: 'duplicate', label: 'Duplicate' },
-  { value: 'other', label: 'Other' },
+  { value: 'not_qualified',   label: 'Not Qualified' },
+  { value: 'duplicate',       label: 'Duplicate' },
+  { value: 'other',           label: 'Other' },
 ]
 
-function pricingBg(p: string) {
-  return `var(--color-pricing-${p}-bg)`
-}
-function pricingColor(p: string) {
-  return `var(--color-pricing-${p}-text)`
-}
-function pricingBorder(p: string) {
-  return `var(--color-pricing-${p}-border)`
-}
+function pricingBg(p: string)     { return `var(--color-pricing-${p}-bg)` }
+function pricingColor(p: string)  { return `var(--color-pricing-${p}-text)` }
+function pricingBorder(p: string) { return `var(--color-pricing-${p}-border)` }
 
 function formatDate(dateStr: string) {
   if (!dateStr) return ''
@@ -230,7 +250,7 @@ function formatDate(dateStr: string) {
 }
 
 async function fetchPending() {
-  loading.value = true
+  loading.value  = true
   forbidden.value = false
   try {
     const data = await get<{ tools: PendingTool[]; total: number }>(
@@ -239,9 +259,7 @@ async function fetchPending() {
     tools.value = data.tools || []
     total.value = data.total || 0
   } catch (e: any) {
-    if (e?.status === 403 || e?.statusCode === 403) {
-      forbidden.value = true
-    }
+    if (e?.status === 403 || e?.statusCode === 403) forbidden.value = true
   } finally {
     loading.value = false
   }
@@ -254,9 +272,8 @@ async function approve(tool: PendingTool) {
     await post('/api/admin/review', { tool_id: tool.id, status: 'active' })
     tools.value = tools.value.filter(t => t.id !== tool.id)
     total.value--
-  } catch {
-    // Error handled silently
-  } finally {
+  } catch {}
+  finally {
     acting.value = null
     reviewStatus.value = ''
   }
@@ -264,14 +281,14 @@ async function approve(tool: PendingTool) {
 
 function openRejectModal(tool: PendingTool) {
   rejectingTool.value = tool
-  rejectReason.value = ''
-  reviewerNote.value = ''
+  rejectReason.value  = ''
+  reviewerNote.value  = ''
 }
 
 function cancelReject() {
   rejectingTool.value = null
-  rejectReason.value = ''
-  reviewerNote.value = ''
+  rejectReason.value  = ''
+  reviewerNote.value  = ''
 }
 
 async function reject(tool: PendingTool) {
@@ -280,17 +297,16 @@ async function reject(tool: PendingTool) {
   reviewStatus.value = 'rejected'
   try {
     await post('/api/admin/review', {
-        tool_id: tool.id,
-        status: 'rejected',
-        reject_reason: rejectReason.value,
-        reviewer_note: reviewerNote.value || undefined,
-      })
+      tool_id:       tool.id,
+      status:        'rejected',
+      reject_reason: rejectReason.value,
+      reviewer_note: reviewerNote.value || undefined,
+    })
     tools.value = tools.value.filter(t => t.id !== tool.id)
     total.value--
     cancelReject()
-  } catch {
-    // Error handled silently
-  } finally {
+  } catch {}
+  finally {
     acting.value = null
     reviewStatus.value = ''
   }
@@ -298,10 +314,7 @@ async function reject(tool: PendingTool) {
 
 onMounted(() => {
   setTimeout(() => {
-		if (isLoggedIn.value) {
-			fetchPending()
-		}
-	}, 3000)
+    if (isLoggedIn.value) fetchPending()
+  }, 3000)
 })
-
 </script>
