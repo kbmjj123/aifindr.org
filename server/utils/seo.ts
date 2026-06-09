@@ -1,3 +1,4 @@
+import { logger } from './logger'
 import type { CloudflareEnv } from './env'
 import { siteUrl } from './env'
 
@@ -9,16 +10,16 @@ export async function notifySearchEngines(env: CloudflareEnv, newUrl: string): P
 
   try {
     await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`)
-    console.log('SEO: Google sitemap ping sent for', newUrl)
+    logger.info('seo', 'Google sitemap ping sent', { url: newUrl })
   } catch (e) {
-    console.error('SEO: Google ping failed:', e)
+    logger.error('seo', 'Google ping failed', { error: e })
   }
 
   try {
     await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`)
-    console.log('SEO: Bing sitemap ping sent for', newUrl)
+    logger.info('seo', 'Bing sitemap ping sent', { url: newUrl })
   } catch (e) {
-    console.error('SEO: Bing ping failed:', e)
+    logger.error('seo', 'Bing ping failed', { error: e })
   }
 
   try {
@@ -29,10 +30,10 @@ export async function notifySearchEngines(env: CloudflareEnv, newUrl: string): P
     await fetch(`https://pubsubhubbub.appspot.com/publish?${hubParams.toString()}`, {
       method: 'POST',
     })
-    console.log('SEO: PubSubHubbub ping sent for', newUrl)
+    logger.info('seo', 'PubSubHubbub ping sent', { url: newUrl })
   } catch (e) {
-    console.error('SEO: PubSubHubbub ping failed:', e)
+    logger.error('seo', 'PubSubHubbub ping failed', { error: e })
   }
 
-  console.log(`SEO: Search engines notified for ${newUrl}`)
+  logger.info('seo', 'Search engines notified', { url: newUrl })
 }

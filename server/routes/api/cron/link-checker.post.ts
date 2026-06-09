@@ -1,3 +1,4 @@
+import { logger } from '~/server/utils/logger'
 import { getEnv, siteUrl } from '~/server/utils/env'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
 import type { UserRecord } from '~/server/utils/jwt'
@@ -62,6 +63,6 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  console.log(`Cron 2: Checked ${links.length} links, ${deadCount} dead`)
+  logger.info('cron', `Cron 2: Checked ${links.length} links, ${deadCount} dead`)
   return { success: true, total: links.length, dead: deadCount }
 })

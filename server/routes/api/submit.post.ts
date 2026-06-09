@@ -2,6 +2,7 @@ import { createError, readBody } from 'h3'
 import { getEnv, siteUrl } from '~/server/utils/env'
 import { verifyJWT, getTokenFromEvent } from '~/server/utils/jwt'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
+import { logger } from '~/server/utils/logger'
 import { verifyTurnstile, slugify } from '~/server/utils/utils'
 import { VALID_SUBCATEGORY_VALUES, VALID_TAG_VALUES } from '~/types/category'
 import type { UserRecord } from '~/server/utils/jwt'
@@ -70,8 +71,7 @@ export default defineEventHandler(async (event) => {
   if (subCategory && !VALID_SUBCATEGORY_VALUES[category]?.includes(subCategory)) {
     throw createError({ statusCode: 400, statusMessage: `Invalid sub_category "${subCategory}" for category "${category}"` })
   }
-	console.log('isDev:', import.meta.dev)
-	console.log('TURNSTILE_SECRET:', env.TURNSTILE_SECRET)
+	logger.debug('submit', 'submit handler started', { isDev: import.meta.dev })
   // ── Turnstile 验证 ────────────────────────────────────────
   // if (env.TURNSTILE_SECRET && !import.meta.dev) {
   //   if (!turnstileToken) {

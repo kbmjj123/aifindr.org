@@ -1,3 +1,4 @@
+import { logger } from './logger'
 import type { CloudflareEnv } from './env'
 import { siteUrl } from './env'
 import { getNotifyEmail, sendEmail } from './email'
@@ -38,11 +39,11 @@ export async function handleCronDailyOps(env: CloudflareEnv): Promise<void> {
       }
     }
 
-    console.log(`Cron 1: Found ${staleTools.length} stale pending tools, sent B-07 reminders`)
+    logger.info('cron', `Cron 1: Found ${staleTools.length} stale pending tools, sent B-07 reminders`)
   }
 
   await env.CACHE.delete('stats')
-  console.log('Cron 1: KV stats cache cleared')
+  logger.info('cron', 'Cron 1: KV stats cache cleared')
 }
 
 /** Cron 2: Link checker — verify published backlinks and alert on failures (E-01) */
@@ -105,7 +106,7 @@ export async function handleCronLinkChecker(env: CloudflareEnv): Promise<{ total
     }
   }
 
-  console.log(`Cron 2: Checked ${links.length} links, ${deadCount} dead`)
+  logger.info('cron', `Cron 2: Checked ${links.length} links, ${deadCount} dead`)
   return { total: links.length, dead: deadCount }
 }
 
@@ -155,7 +156,7 @@ export async function handleCronMonthlyReport(env: CloudflareEnv): Promise<{ rec
     })
   }
 
-  console.log(`Cron 3: Sent monthly reports to ${recipients} recipients`)
+  logger.info('cron', `Cron 3: Sent monthly reports to ${recipients} recipients`)
   return { recipients }
 }
 
@@ -187,6 +188,6 @@ export async function handleCronNewsletter(env: CloudflareEnv, subject?: string,
     })
   }
 
-  console.log(`Cron 4: Sent newsletter to ${recipients} recipients`)
+  logger.info('cron', `Cron 4: Sent newsletter to ${recipients} recipients`)
   return { recipients }
 }

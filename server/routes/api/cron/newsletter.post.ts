@@ -1,4 +1,5 @@
 import { readBody } from 'h3'
+import { logger } from '~/server/utils/logger'
 import { getEnv, siteUrl } from '~/server/utils/env'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
 import type { UserRecord } from '~/server/utils/jwt'
@@ -35,6 +36,6 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  console.log(`Cron 4: Sent newsletter to ${recipients} recipients`)
+  logger.info('cron', `Cron 4: Sent newsletter to ${recipients} recipients`)
   return { success: true, recipients }
 })
