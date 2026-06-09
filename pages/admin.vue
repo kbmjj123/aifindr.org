@@ -296,7 +296,12 @@ async function reject(tool: PendingTool) {
   }
 }
 
-if (import.meta.client && isLoggedIn.value) {
-  fetchPending()
-}
+onMounted(() => {
+  setTimeout(() => {
+		if (isLoggedIn.value) {
+			fetchPending()
+		}
+	}, 3000)
+})
+
 </script>

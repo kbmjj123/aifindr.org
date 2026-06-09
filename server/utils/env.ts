@@ -18,6 +18,8 @@ export interface CloudflareEnv {
 }
 
 export function getEnv(event: H3Event): CloudflareEnv {
+	console.info(event.req)
+	
   return event.context.cloudflare.env as CloudflareEnv
 }
 

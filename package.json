@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "nuxi dev",
-    "dev:remote": "API_PROXY_TARGET=https://aifindr.org API_BASE=https://aifindr.org nuxi dev",
     "build": "nuxi build",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
@@ -35,7 +34,7 @@
     "playwright": "^1.60.0",
     "satori": "^0.26.0",
     "typescript": "^5.7.0",
-    "wrangler": "^4.0.0"
+    "wrangler": "^4.91.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
