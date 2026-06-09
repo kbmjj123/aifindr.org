@@ -30,9 +30,7 @@ export const useAuth = () => {
     }
     loading.value = true
     try {
-      const data = await get<AuthUser>('/api/auth/me', {
-        headers: { Authorization: `Bearer ${t}` },
-      })
+      const data = await get<AuthUser>('/api/auth/me')
       user.value = data
     } catch {
       user.value = null
