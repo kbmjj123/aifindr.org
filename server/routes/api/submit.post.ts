@@ -70,17 +70,18 @@ export default defineEventHandler(async (event) => {
   if (subCategory && !VALID_SUBCATEGORY_VALUES[category]?.includes(subCategory)) {
     throw createError({ statusCode: 400, statusMessage: `Invalid sub_category "${subCategory}" for category "${category}"` })
   }
-
+	console.log('isDev:', import.meta.dev)
+	console.log('TURNSTILE_SECRET:', env.TURNSTILE_SECRET)
   // ── Turnstile 验证 ────────────────────────────────────────
-  if (env.TURNSTILE_SECRET && !import.meta.dev) {
-    if (!turnstileToken) {
-      throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification required' })
-    }
-    const captchaValid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET)
-    if (!captchaValid) {
-      throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification failed' })
-    }
-  }
+  // if (env.TURNSTILE_SECRET && !import.meta.dev) {
+  //   if (!turnstileToken) {
+  //     throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification required' })
+  //   }
+  //   const captchaValid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET)
+  //   if (!captchaValid) {
+  //     throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification failed' })
+  //   }
+  // }
 
   // ── 标签校验 ──────────────────────────────────────────────
   type TagItem = { type: string; tag: string }
@@ -142,7 +143,6 @@ export default defineEventHandler(async (event) => {
 
   // ── 写入 tools 表 ─────────────────────────────────────────
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
-
   const insertResult = await env.DB.prepare(`
     INSERT INTO tools (
       slug, name, category, sub_category, website,
