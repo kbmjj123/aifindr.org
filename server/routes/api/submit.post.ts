@@ -3,58 +3,12 @@ import { getEnv, siteUrl } from '~/server/utils/env'
 import { verifyJWT, getTokenFromEvent } from '~/server/utils/jwt'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
 import { verifyTurnstile, slugify } from '~/server/utils/utils'
+import { VALID_SUBCATEGORY_VALUES, VALID_TAG_VALUES } from '~/types/category'
 import type { UserRecord } from '~/server/utils/jwt'
-
-// 子分类白名单，与前端 CATEGORIES 配置保持一致
-const VALID_SUB_CATEGORIES: Record<string, string[]> = {
-  image:        ['image-generation', 'image-upscaling', 'background-removal', 'logo-branding', 'illustration'],
-  writing:      ['ai-writing', 'essay-longform', 'copywriting', 'blog-seo', 'paraphrasing', 'email-writing', 'product-description'],
-  video:        ['video-generation', 'video-editing', 'video-enhancement', 'avatar-talking-head', 'subtitles-captions', 'animation'],
-  audio:        ['music-generation', 'text-to-speech', 'voice-cloning', 'transcription', 'audio-enhancement'],
-  code:         ['ai-coding-assistants', 'code-generation', 'code-review', 'sql-database', 'testing', 'documentation', 'code-explanation', 'utilities'],
-  productivity: ['meeting-notes', 'pdf-document', 'workflow-automation', 'calendar-scheduling', 'task-management', 'inbox-email', 'time-tracking'],
-  marketing:    ['seo-tools', 'social-media', 'ad-copy', 'landing-pages', 'content-repurposing', 'competitor-analysis', 'youtube-video-seo'],
-  data:         ['data-analysis', 'charts-visualization', 'spreadsheets', 'dashboards-bi', 'reports'],
-  education:    ['homework-tutoring', 'math', 'flashcards-quizzes', 'summarization', 'study-planning', 'language-learning', 'course-creation'],
-  business:     ['business-planning', 'legal-contracts', 'finance-invoicing', 'pitch-presentations', 'hr-recruiting', 'customer-support', 'crm-sales'],
-  research:     ['ai-search-engines', 'academic-research', 'paper-summarization', 'citation-references', 'fact-checking', 'knowledge-base', 'web-scraping', 'academic-writing'],
-  other:        ['ai-directory', 'open-source-tools', 'ai-for-students', 'ai-for-small-business', 'ai-for-freelancers', 'ai-for-creators'],
-}
 
 const VALID_TAG_TYPES = ['use_case', 'audience', 'feature'] as const
 
-const VALID_TAGS: Record<string, string[]> = {
-  feature:  ['free-tier', 'no-signup', 'open-source', 'api-available', 'browser-based', 'offline-local', 'freemium'],
-  audience: ['developer', 'designer', 'marketer', 'student', 'content-creator', 'small-business', 'freelancer', 'researcher'],
-  use_case: [
-    // image
-    'image-generation', 'image-upscaling', 'background-removal', 'logo-design', 'illustration',
-    // writing
-    'copywriting', 'blog-writing', 'email-writing', 'paraphrasing', 'seo-content', 'product-description',
-    // video
-    'video-generation', 'video-editing', 'subtitles-captions', 'avatar-video', 'animation',
-    // audio
-    'music-generation', 'text-to-speech', 'voice-cloning', 'transcription', 'audio-enhancement',
-    // code
-    'code-completion', 'code-review', 'sql-generation', 'test-generation', 'documentation',
-    // productivity
-    'meeting-notes', 'pdf-summarization', 'workflow-automation', 'scheduling', 'task-management',
-    // marketing
-    'seo-optimization', 'social-media', 'ad-copy', 'landing-page', 'competitor-analysis',
-    // data
-    'data-analysis', 'chart-visualization', 'spreadsheet', 'dashboard', 'report-generation',
-    // education
-    'homework-help', 'math-solving', 'flashcards', 'language-learning', 'course-creation',
-    // business
-    'business-planning', 'contract-review', 'invoicing', 'pitch-deck', 'recruiting', 'customer-support',
-    // research
-    'academic-research', 'paper-summarization', 'citation', 'fact-checking', 'web-scraping',
-    // other
-    'local-llm', 'rag', 'ai-directory', 'open-source-tool',
-  ],
-}
-
-const VALID_CATEGORIES = Object.keys(VALID_SUB_CATEGORIES)
+const VALID_CATEGORIES = Object.keys(VALID_SUBCATEGORY_VALUES)
 
 const CAT_SUFFIX: Record<string, string> = {
   image: 'ai-image-generator', writing: 'ai-writing-tool', video: 'ai-video-generator',
@@ -113,7 +67,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: `Invalid category. Must be one of: ${VALID_CATEGORIES.join(', ')}` })
   }
 
-  if (subCategory && !VALID_SUB_CATEGORIES[category]?.includes(subCategory)) {
+  if (subCategory && !VALID_SUBCATEGORY_VALUES[category]?.includes(subCategory)) {
     throw createError({ statusCode: 400, statusMessage: `Invalid sub_category "${subCategory}" for category "${category}"` })
   }
 
@@ -136,7 +90,7 @@ export default defineEventHandler(async (event) => {
       if (
         t?.type && t?.tag &&
         VALID_TAG_TYPES.includes(t.type as typeof VALID_TAG_TYPES[number]) &&
-        VALID_TAGS[t.type]?.includes(t.tag)
+        VALID_TAG_VALUES[t.type]?.includes(t.tag)
       ) {
         validTags.push({ type: t.type, tag: t.tag })
       }
