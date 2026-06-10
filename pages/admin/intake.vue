@@ -35,6 +35,15 @@
         }">
         Tool Intake
       </NuxtLink>
+      <NuxtLink to="/admin/users"
+        class="font-body text-[12px] font-medium px-4 py-1.5 rounded-md transition-all"
+        :style="{
+          background: 'transparent',
+          color: 'var(--color-text-muted)',
+          border: '1px solid transparent',
+        }">
+        Users
+      </NuxtLink>
     </div>
 
     <!-- Step 1：粘贴 JSON -->
