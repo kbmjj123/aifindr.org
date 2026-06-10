@@ -213,6 +213,22 @@
       </div>
 
       <div class="p-6 space-y-5 font-body text-[12px]">
+        <!-- Media Preview -->
+        <div v-if="viewingTool.cover_image || viewingTool.og_image" class="flex gap-3">
+          <div v-if="viewingTool.cover_image" class="flex-1">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">Cover</div>
+            <img :src="viewingTool.cover_image" alt="Cover"
+              class="w-full h-[140px] object-cover rounded-lg"
+              :style="{ border: '1px solid var(--color-border)' }" />
+          </div>
+          <div v-if="viewingTool.og_image" class="flex-1">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">OG Image</div>
+            <img :src="viewingTool.og_image" alt="OG"
+              class="w-full h-[140px] object-cover rounded-lg"
+              :style="{ border: '1px solid var(--color-border)' }" />
+          </div>
+        </div>
+
         <!-- Slug + Status -->
         <div class="flex items-center gap-3">
           <code class="px-2 py-0.5 rounded text-[11px]"
@@ -301,10 +317,9 @@
         <!-- Body / Full Content -->
         <div v-if="viewingTool.body">
           <div class="text-[11px] uppercase tracking-[0.08em] mb-1" :style="{ color: 'var(--color-text-muted)' }">Full Content</div>
-          <div class="p-4 rounded-lg text-[13px] leading-relaxed whitespace-pre-wrap overflow-y-auto"
-            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-primary)', maxHeight: '320px' }">
-            {{ viewingTool.body }}
-          </div>
+          <div class="p-4 rounded-lg text-[13px] leading-relaxed overflow-y-auto markdown-preview"
+            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-primary)', maxHeight: '360px' }"
+            v-html="renderMarkdown(viewingTool.body)" />
         </div>
 
         <!-- Submitter -->
@@ -346,6 +361,7 @@
 
 <script setup lang="ts">
 const { get, post } = useApi()
+import { marked } from 'marked'
 usePageSeo({
   title: 'Admin Panel',
   template: 'prefix',
@@ -422,6 +438,11 @@ function pricingBg(p: string)     { return `var(--color-pricing-${p}-bg)` }
 function pricingColor(p: string)  { return `var(--color-pricing-${p}-text)` }
 function pricingBorder(p: string) { return `var(--color-pricing-${p}-border)` }
 
+function renderMarkdown(text: string): string {
+  if (!text) return ''
+  return marked.parse(text, { async: false }) as string
+}
+
 function formatDate(dateStr: string) {
   if (!dateStr) return ''
   return dateStr.slice(0, 10)
@@ -496,3 +517,59 @@ onMounted(() => {
   }, 3000)
 })
 </script>
+
+<style scoped>
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+.markdown-preview h1 { font-size: 17px; }
+.markdown-preview h2 { font-size: 15px; letter-spacing: -0.3px; }
+.markdown-preview h3 { font-size: 14px; }
+.markdown-preview p  { margin-bottom: 8px; line-height: 1.7; }
+.markdown-preview ul,
+.markdown-preview ol { margin-left: 18px; margin-bottom: 8px; }
+.markdown-preview li { margin-bottom: 3px; line-height: 1.6; }
+.markdown-preview a  { color: var(--color-text-link); }
+.markdown-preview code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--color-accent);
+}
+.markdown-preview pre {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  overflow-x: auto;
+  margin-bottom: 12px;
+}
+.markdown-preview pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-text-primary);
+}
+.markdown-preview strong { color: var(--color-text-primary); }
+.markdown-preview hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 12px 0;
+}
+.markdown-preview blockquote {
+  border-left: 2px solid var(--color-accent);
+  padding-left: 12px;
+  margin: 8px 0;
+  color: var(--color-text-secondary);
+}
+</style>
