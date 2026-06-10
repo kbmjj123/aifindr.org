@@ -34,7 +34,7 @@ export async function sendEmail(env: CloudflareEnv, params: SendEmailParams): Pr
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'aifindr <noreply@aifindr.org>',
+        from: 'aifindr <team@aifindr.org>',
         to: [params.to],
         subject: params.subject,
         html: params.html,
