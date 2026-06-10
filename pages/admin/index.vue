@@ -9,13 +9,9 @@
         </h1>
         <p class="font-body text-[12px] mt-1"
           :style="{ color: 'var(--color-text-muted)' }">
-          Review pending tool submissions
+          Manage tool submissions
         </p>
       </div>
-      <span class="font-body text-[13px] px-2.5 py-1 rounded-full"
-        :style="{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)', border: '1px solid var(--color-accent-border)' }">
-        {{ total }} pending
-      </span>
     </div>
 
     <!-- Nav Tabs -->
@@ -41,6 +37,24 @@
       </NuxtLink>
     </div>
 
+    <!-- Status Filter Tabs -->
+    <div class="flex items-center gap-2 mb-6">
+      <div class="flex gap-1 p-1 rounded-lg"
+        :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
+        <button v-for="s in statusFilters" :key="s.value"
+          class="font-body text-[12px] font-medium px-3 py-1.5 rounded-md transition-all cursor-pointer whitespace-nowrap"
+          :style="{
+            background: statusFilter === s.value ? 'var(--color-bg-surface)' : 'transparent',
+            color: statusFilter === s.value ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+            border: statusFilter === s.value ? '1px solid var(--color-border)' : '1px solid transparent',
+          }"
+          @click="statusFilter = s.value; page = 1; fetchAdminTools()">
+          {{ s.label }}
+          <span class="ml-1 font-mono" :style="{ color: 'var(--color-text-muted)' }">({{ s.count }})</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Error / Unauthorized -->
     <div v-if="forbidden" class="text-center py-16">
       <p class="font-body text-[14px]" :style="{ color: 'var(--color-text-secondary)' }">
@@ -55,12 +69,12 @@
 
     <!-- Empty State -->
     <div v-else-if="tools.length === 0" class="text-center py-16">
-      <p class="font-body text-[28px] mb-3">✅</p>
+      <p class="font-body text-[28px] mb-3">📭</p>
       <h3 class="font-sans font-bold text-[16px]" :style="{ color: 'var(--color-text-primary)' }">
-        All caught up!
+        No tools found
       </h3>
       <p class="font-body text-[12px] mt-1" :style="{ color: 'var(--color-text-muted)' }">
-        No pending submissions to review.
+        No {{ statusFilter === 'pending' ? 'pending' : statusFilter === 'active' ? 'approved' : 'rejected' }} submissions.
       </p>
     </div>
 
@@ -77,6 +91,15 @@
                 :style="{ color: 'var(--color-text-primary)' }">
                 {{ tool.name }}
               </h3>
+              <span v-if="tool.status !== 'pending'"
+                class="font-body text-[10px] px-1.5 py-0.5 rounded-full uppercase tracking-[0.05em]"
+                :style="{
+                  background: tool.status === 'active' ? 'var(--color-verified-bg)' : 'var(--color-featured-bg)',
+                  color: tool.status === 'active' ? 'var(--color-verified-text)' : 'var(--color-featured-text)',
+                  border: '1px solid ' + (tool.status === 'active' ? 'var(--color-verified-border)' : 'var(--color-featured-border)'),
+                }">
+                {{ tool.status === 'active' ? 'Approved' : 'Rejected' }}
+              </span>
               <span class="font-body text-[12px] px-1.5 py-0.5 rounded-full"
                 :style="{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)' }">
                 {{ tool.category }}
@@ -116,22 +139,24 @@
               @click="openView(tool)">
               View
             </button>
-            <button class="btn-primary !h-[30px] !px-[14px] !text-[13px]"
-              :disabled="acting === tool.id"
-              @click="approve(tool)">
-              {{ acting === tool.id && reviewStatus === 'active' ? 'Approving...' : 'Approve' }}
-            </button>
-            <button
-              class="h-[30px] px-[14px] rounded-md font-body text-[13px] font-medium border cursor-pointer transition-all"
-              :disabled="acting === tool.id"
-              :style="{
-                background: 'transparent',
-                color: 'var(--color-danger)',
-                borderColor: 'var(--color-danger)',
-              }"
-              @click="openRejectModal(tool)">
-              Reject
-            </button>
+            <template v-if="tool.status === 'pending'">
+              <button class="btn-primary !h-[30px] !px-[14px] !text-[13px]"
+                :disabled="acting === tool.id"
+                @click="approve(tool)">
+                {{ acting === tool.id && reviewStatus === 'active' ? 'Approving...' : 'Approve' }}
+              </button>
+              <button
+                class="h-[30px] px-[14px] rounded-md font-body text-[13px] font-medium border cursor-pointer transition-all"
+                :disabled="acting === tool.id"
+                :style="{
+                  background: 'transparent',
+                  color: 'var(--color-danger)',
+                  borderColor: 'var(--color-danger)',
+                }"
+                @click="openRejectModal(tool)">
+                Reject
+              </button>
+            </template>
           </div>
         </div>
 
@@ -411,6 +436,14 @@ const forbidden  = ref(false)
 const acting     = ref<number | null>(null)
 const reviewStatus = ref('')
 
+const statusFilter = ref('pending')
+
+const statusFilters = ref([
+  { value: 'pending',  label: 'Pending',  count: 0 },
+  { value: 'active',   label: 'Approved', count: 0 },
+  { value: 'rejected', label: 'Rejected', count: 0 },
+])
+
 const rejectingTool = ref<PendingTool | null>(null)
 const rejectReason  = ref('')
 const reviewerNote  = ref('')
@@ -448,12 +481,12 @@ function formatDate(dateStr: string) {
   return dateStr.slice(0, 10)
 }
 
-async function fetchPending() {
+async function fetchAdminTools() {
   loading.value  = true
   forbidden.value = false
   try {
     const data = await get<{ tools: PendingTool[]; total: number }>(
-      `/api/admin/pending?page=${page.value}&pageSize=${pageSize}`
+      `/api/admin/pending?status=${statusFilter.value}&page=${page.value}&pageSize=${pageSize}`
     )
     tools.value = data.tools || []
     total.value = data.total || 0
@@ -464,13 +497,25 @@ async function fetchPending() {
   }
 }
 
+async function fetchCounts() {
+  try {
+    const data = await get<{ pending: number; active: number; rejected: number }>('/api/admin/pending?counts=true')
+    if (data) {
+      const counts = statusFilters.value
+      counts[0].count = data.pending || 0
+      counts[1].count = data.active || 0
+      counts[2].count = data.rejected || 0
+    }
+  } catch {}
+}
+
 async function approve(tool: PendingTool) {
   acting.value = tool.id
   reviewStatus.value = 'active'
   try {
     await post('/api/admin/review', { tool_id: tool.id, status: 'active' })
-    tools.value = tools.value.filter(t => t.id !== tool.id)
-    total.value--
+    await fetchAdminTools()
+    await fetchCounts()
   } catch {}
   finally {
     acting.value = null
@@ -501,8 +546,8 @@ async function reject(tool: PendingTool) {
       reject_reason: rejectReason.value,
       reviewer_note: reviewerNote.value || undefined,
     })
-    tools.value = tools.value.filter(t => t.id !== tool.id)
-    total.value--
+    await fetchAdminTools()
+    await fetchCounts()
     cancelReject()
   } catch {}
   finally {
@@ -513,7 +558,10 @@ async function reject(tool: PendingTool) {
 
 onMounted(() => {
   setTimeout(() => {
-    if (isLoggedIn.value) fetchPending()
+    if (isLoggedIn.value) {
+      fetchAdminTools()
+      fetchCounts()
+    }
   }, 3000)
 })
 </script>
