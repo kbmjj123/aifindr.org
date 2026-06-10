@@ -10,11 +10,17 @@ export function useImageUpload() {
     previewUrl.value = URL.createObjectURL(file)
 
     try {
+      // Convert to WebP before upload
+      const { toWebPFile } = useWebp()
+      const { file: webpFile } = await toWebPFile(file, file.name, 0.85)
+
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', webpFile)
       const res = await $fetch<{ url: string }>('/api/upload', {
         method: 'POST',
         body: formData,
+        // Allow timeout for image conversion + upload
+        timeout: 30000,
       })
       uploadedUrl.value = res.url
       return res.url

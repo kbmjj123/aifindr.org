@@ -332,7 +332,7 @@ function tagTypeColor(type: string) {
   return                          { bg: 'var(--color-success-dim)', text: 'var(--color-success)', border: 'var(--color-success-border)' }
 }
 
-// ── 上传图片到 R2 ──────────────────────────────────────────────
+// ── 上传图片到 R2（自动转 WebP）───────────────────────────────
 async function uploadImage(type: 'logo' | 'og_image') {
   if (!parsed.value) return
   const url  = type === 'logo' ? parsed.value.logo_url : parsed.value.og_image_url
@@ -343,13 +343,31 @@ async function uploadImage(type: 'logo' | 'og_image') {
   else                 { uploadingOg.value   = true; ogError.value   = '' }
 
   try {
-    const res = await post('/api/admin/upload-from-url', { url, type, slug })
+    // 1) 客户端 fetch → 转 WebP → 上传
+    const { toWebPFile } = useWebp()
+    const { file } = await toWebPFile(url, `${slug}-${type}.webp`, 0.85)
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const res = await $fetch<{ url: string }>('/api/upload', {
+      method: 'POST',
+      body: formData,
+    })
+
     if (type === 'logo') uploadedLogoUrl.value = res.url
     else                 uploadedOgUrl.value   = res.url
-  } catch (e: any) {
-    const msg = e?.data?.message || e?.data?.statusMessage || 'Upload failed'
-    if (type === 'logo') logoError.value = msg
-    else                 ogError.value   = msg
+  } catch {
+    // 2) 客户端失败（CORS 等）→ 降级到服务端上传（原格式）
+    try {
+      const res = await post('/api/admin/upload-from-url', { url, type, slug })
+      if (type === 'logo') uploadedLogoUrl.value = res.url
+      else                 uploadedOgUrl.value   = res.url
+    } catch (e2: any) {
+      const msg = e2?.data?.message || e2?.data?.statusMessage || 'Upload failed'
+      if (type === 'logo') logoError.value = msg
+      else                 ogError.value   = msg
+    }
   } finally {
     if (type === 'logo') uploadingLogo.value = false
     else                 uploadingOg.value   = false
