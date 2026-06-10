@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
   const isProduction = cf?.env?.R2_PUBLIC_URL
   const url = isProduction
     ? `${cf.env.R2_PUBLIC_URL.replace(/\/+$/, '')}/${key}`
-    : `/files/${key}` // 本地走 server route
+    : `/api/file/${key}` // 本地走 server route
 
   return { url }
 })
