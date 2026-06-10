@@ -73,15 +73,15 @@ export default defineEventHandler(async (event) => {
   }
 	logger.debug('submit', 'submit handler started', { isDev: import.meta.dev })
   // ── Turnstile 验证 ────────────────────────────────────────
-  // if (env.TURNSTILE_SECRET && !import.meta.dev) {
-  //   if (!turnstileToken) {
-  //     throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification required' })
-  //   }
-  //   const captchaValid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET)
-  //   if (!captchaValid) {
-  //     throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification failed' })
-  //   }
-  // }
+  if (env.TURNSTILE_SECRET && !import.meta.dev) {
+    if (!turnstileToken) {
+      throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification required' })
+    }
+    const captchaValid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET)
+    if (!captchaValid) {
+      throw createError({ statusCode: 400, statusMessage: 'CAPTCHA verification failed' })
+    }
+  }
 
   // ── 重复检测（通过 website URL）───────────────────────────
   const existing = await env.DB.prepare(
