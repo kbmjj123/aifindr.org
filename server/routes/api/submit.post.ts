@@ -83,6 +83,20 @@ export default defineEventHandler(async (event) => {
   //   }
   // }
 
+  // ── 重复检测（通过 website URL）───────────────────────────
+  const existing = await env.DB.prepare(
+    'SELECT id, name, status, submitted_at FROM tools WHERE website = ? ORDER BY submitted_at DESC LIMIT 1'
+  ).bind(website).first<{ id: number; name: string; status: string; submitted_at: string }>()
+  if (existing) {
+    if (existing.status === 'active' || existing.status === 'pending') {
+      throw createError({
+        statusCode: 409,
+        statusMessage: `Tool already exists: "${existing.name}" (status: ${existing.status}). Please wait for review.`,
+      })
+    }
+    // rejected 的可以重新提交
+  }
+
   // ── 标签校验 ──────────────────────────────────────────────
   type TagItem = { type: string; tag: string }
   const validTags: TagItem[] = []
