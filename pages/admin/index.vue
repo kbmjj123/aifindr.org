@@ -112,6 +112,10 @@
 
           <!-- Action Buttons -->
           <div class="flex items-center gap-2 flex-shrink-0">
+            <button class="btn-ghost !h-[30px] !text-[13px]"
+              @click="openView(tool)">
+              View
+            </button>
             <button class="btn-primary !h-[30px] !px-[14px] !text-[13px]"
               :disabled="acting === tool.id"
               @click="approve(tool)">
@@ -192,6 +196,152 @@
       </div>
     </div>
   </div>
+
+  <!-- Detail Modal (teleported to body) -->
+  <div v-if="viewingTool" class="fixed inset-0 z-[100] flex items-start justify-center pt-[5vh] pb-8"
+    @click.self="closeView">
+    <div class="absolute inset-0" :style="{ background: 'rgba(0,0,0,0.7)' }" />
+    <div class="relative w-full max-w-[680px] max-h-[90vh] overflow-y-auto rounded-xl"
+      :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
+      <!-- Header -->
+      <div class="sticky top-0 flex items-center justify-between px-6 py-4 z-10"
+        :style="{ background: 'var(--color-bg-elevated)', borderBottom: '1px solid var(--color-border)' }">
+        <h2 class="font-sans font-bold text-[16px]" :style="{ color: 'var(--color-text-primary)' }">
+          {{ viewingTool.name }}
+        </h2>
+        <button class="btn-ghost !h-[28px] !px-[10px] !text-[14px]" @click="closeView">✕</button>
+      </div>
+
+      <div class="p-6 space-y-5 font-body text-[12px]">
+        <!-- Slug + Status -->
+        <div class="flex items-center gap-3">
+          <code class="px-2 py-0.5 rounded text-[11px]"
+            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)' }">
+            {{ viewingTool.slug }}
+          </code>
+          <span class="px-2 py-0.5 rounded-full text-[11px] uppercase tracking-[0.05em]"
+            :style="{
+              background: 'var(--color-accent-dim)',
+              color: 'var(--color-accent)',
+              border: '1px solid var(--color-accent-border)',
+            }">
+            {{ viewingTool.status }}
+          </span>
+        </div>
+
+        <!-- Grid: Basic Info -->
+        <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+          <div>
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Category</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ viewingTool.category }}</div>
+          </div>
+          <div v-if="viewingTool.sub_category">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Sub Category</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ viewingTool.sub_category }}</div>
+          </div>
+          <div>
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Pricing</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ viewingTool.pricing }}</div>
+          </div>
+          <div v-if="viewingTool.price_starting">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Starting Price</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">${{ viewingTool.price_starting }}</div>
+          </div>
+          <div v-if="viewingTool.price_detail">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Price Detail</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ viewingTool.price_detail }}</div>
+          </div>
+          <div>
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Free Trial</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ viewingTool.has_free_trial ? 'Yes' : 'No' }}</div>
+          </div>
+          <div v-if="viewingTool.platforms">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Platforms</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ viewingTool.platforms }}</div>
+          </div>
+          <div v-if="viewingTool.launched">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Launched</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ viewingTool.launched }}</div>
+          </div>
+          <div>
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Submitted</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ formatDate(viewingTool.submitted_at) }}</div>
+          </div>
+          <div v-if="viewingTool.last_verified">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Last Verified</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ formatDate(viewingTool.last_verified) }}</div>
+          </div>
+          <div v-if="viewingTool.updated_at">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Updated</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ formatDate(viewingTool.updated_at) }}</div>
+          </div>
+          <div v-if="viewingTool.data_source">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-0.5" :style="{ color: 'var(--color-text-muted)' }">Data Source</div>
+            <div class="text-[13px]" :style="{ color: 'var(--color-text-primary)' }">{{ viewingTool.data_source }}</div>
+          </div>
+        </div>
+
+        <!-- Website -->
+        <div>
+          <div class="text-[11px] uppercase tracking-[0.08em] mb-1" :style="{ color: 'var(--color-text-muted)' }">Website</div>
+          <a :href="viewingTool.website" target="_blank" rel="noopener noreferrer"
+            class="text-[13px]" :style="{ color: 'var(--color-text-link)' }">
+            {{ viewingTool.website }}
+          </a>
+        </div>
+
+        <!-- Meta Description -->
+        <div v-if="viewingTool.meta_description">
+          <div class="text-[11px] uppercase tracking-[0.08em] mb-1" :style="{ color: 'var(--color-text-muted)' }">Description</div>
+          <p class="text-[13px] leading-relaxed" :style="{ color: 'var(--color-text-primary)' }">
+            {{ viewingTool.meta_description }}
+          </p>
+        </div>
+
+        <!-- Body / Full Content -->
+        <div v-if="viewingTool.body">
+          <div class="text-[11px] uppercase tracking-[0.08em] mb-1" :style="{ color: 'var(--color-text-muted)' }">Full Content</div>
+          <div class="p-4 rounded-lg text-[13px] leading-relaxed whitespace-pre-wrap overflow-y-auto"
+            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-primary)', maxHeight: '320px' }">
+            {{ viewingTool.body }}
+          </div>
+        </div>
+
+        <!-- Submitter -->
+        <div v-if="viewingTool.submitter_github || viewingTool.submitter_site">
+          <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">Submitter</div>
+          <div class="flex items-center gap-3 text-[13px]">
+            <span v-if="viewingTool.submitter_github" :style="{ color: 'var(--color-text-primary)' }">
+              @{{ viewingTool.submitter_github }}
+            </span>
+            <a v-if="viewingTool.submitter_site" :href="viewingTool.submitter_site" target="_blank" rel="noopener noreferrer"
+              :style="{ color: 'var(--color-text-link)' }">
+              {{ viewingTool.submitter_site }}
+            </a>
+          </div>
+        </div>
+
+        <!-- Flags -->
+        <div v-if="viewingTool.featured || viewingTool.verified || viewingTool.editor_pick" class="flex gap-2">
+          <span v-if="viewingTool.featured" class="badge badge-featured">Featured</span>
+          <span v-if="viewingTool.verified" class="badge badge-verified">Verified</span>
+          <span v-if="viewingTool.editor_pick" class="badge badge-new">Editor Pick</span>
+        </div>
+
+        <!-- Analytics -->
+        <div class="flex gap-6 text-[12px]" :style="{ color: 'var(--color-text-muted)' }">
+          <span>{{ viewingTool.click_count || 0 }} clicks</span>
+          <span>{{ viewingTool.view_count || 0 }} views</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="sticky bottom-0 flex items-center justify-end gap-2 px-6 py-3"
+        :style="{ background: 'var(--color-bg-elevated)', borderTop: '1px solid var(--color-border)' }">
+        <button class="btn-ghost !h-[30px] !text-[13px]" @click="closeView">Close</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -210,12 +360,30 @@ interface PendingTool {
   slug: string
   website: string
   category: string
+  sub_category: string
   pricing: string
+  price_starting: number | null
+  price_detail: string | null
+  has_free_trial: number
+  platforms: string
+  status: string
+  launched: string | null
   meta_description: string | null
+  body: string | null
+  og_image: string | null
+  cover_image: string | null
+  featured: number
+  verified: number
+  editor_pick: number
+  click_count: number
+  view_count: number
   submitter_github: string | null
   submitter_site: string | null
+  submitter_id: number | null
   submitted_at: string
-  status: string
+  last_verified: string | null
+  updated_at: string | null
+  data_source: string | null
 }
 
 const tools      = ref<PendingTool[]>([])
@@ -230,6 +398,16 @@ const reviewStatus = ref('')
 const rejectingTool = ref<PendingTool | null>(null)
 const rejectReason  = ref('')
 const reviewerNote  = ref('')
+
+const viewingTool = ref<PendingTool | null>(null)
+
+function openView(tool: PendingTool) {
+  viewingTool.value = tool
+}
+
+function closeView() {
+  viewingTool.value = null
+}
 
 const totalPages = computed(() => Math.ceil(total.value / pageSize))
 
