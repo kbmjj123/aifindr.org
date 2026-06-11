@@ -123,10 +123,7 @@ watchEffect(() => {
   }
 })
 
-const isDev = import.meta.dev
-function handleLogin() {
-  window.location.href = isDev ? '/api/auth/dev-login' : '/api/auth/github'
-}
+const { login: handleLogin } = useAuth()
 
 async function saveEmail() {
   if (!contactEmail.value.trim()) return

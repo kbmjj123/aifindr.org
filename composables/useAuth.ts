@@ -40,7 +40,8 @@ export const useAuth = () => {
   }
 
   function login() {
-    window.location.href = '/api/auth/github'
+    const url = import.meta.dev ? '/api/auth/dev-login' : '/api/auth/github'
+    window.location.href = url
   }
 
   function logout() {
