@@ -2,7 +2,7 @@
   <div class="min-h-screen">
     <AppHeader />
     <AppSidebar />
-    <main class="pt-13 lg:pl-55">
+    <main class="pt-13 lg:pl-55 pb-[calc(56px+env(safe-area-inset-bottom))] lg:pb-0">
       <div class="mx-auto max-w-350 px-6 py-6">
         <NuxtPage />
       </div>
