@@ -37,7 +37,11 @@
                 {{ tool.meta_description }}
               </p>
               <div class="flex flex-wrap gap-1.5 mt-3">
-                <ToolTag v-for="tag in toolTags" :key="tag">{{ tag }}</ToolTag>
+                <NuxtLink v-for="tag in toolTags" :key="tag"
+                  :to="`/tools/${category}/tags/${tag}`"
+                  class="tag no-underline cursor-pointer hover:opacity-70 transition-opacity">
+                  {{ tag }}
+                </NuxtLink>
                 <ToolTag :type="tool.pricing">{{ pricingLabel(tool.pricing) }}</ToolTag>
               </div>
             </div>
@@ -190,8 +194,8 @@
                 <div class="detail-sidebar-label">Best For</div>
                 <div class="flex flex-wrap gap-1.5 mt-1 mb-3">
                   <NuxtLink v-for="u in toolTargetUsers" :key="u"
-                    :to="`/tools?tags=${u}`"
-                    class="tag cursor-pointer" style="background: var(--color-verified-bg); color: var(--color-verified-text); border-color: var(--color-verified-border)">
+                    :to="`/tools/${category}/tags/${u}`"
+                    class="tag cursor-pointer no-underline" style="background: var(--color-verified-bg); color: var(--color-verified-text); border-color: var(--color-verified-border)">
                     {{ formatUserLabel(u) }}
                   </NuxtLink>
                 </div>
@@ -201,8 +205,8 @@
                 <div class="detail-sidebar-label">Use Cases</div>
                 <div class="flex flex-wrap gap-1.5 mt-1 mb-3">
                   <NuxtLink v-for="uc in toolUseCases" :key="uc"
-                    :to="`/tools?tags=${uc}`"
-                    class="tag cursor-pointer" style="background: var(--color-accent-dim); color: var(--color-accent); border-color: var(--color-accent-border)">
+                    :to="`/tools/${category}/tags/${uc}`"
+                    class="tag cursor-pointer no-underline" style="background: var(--color-accent-dim); color: var(--color-accent); border-color: var(--color-accent-border)">
                     {{ formatUseCaseLabel(uc) }}
                   </NuxtLink>
                 </div>
