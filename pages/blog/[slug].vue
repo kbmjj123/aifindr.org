@@ -62,6 +62,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
+const siteUrl = 'https://aifindr.org'
 
 const post = ref<any>(null)
 const loading = ref(true)
@@ -91,6 +92,11 @@ function formatDate(ts: number | string) {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
+// Canonical URL (known from route, no need to wait)
+useHead({
+  link: [{ rel: 'canonical', href: `${siteUrl}/blog/${slug.value}` }],
+})
+
 onMounted(async () => {
   try {
     const res = await $fetch(`/api/blog/${slug.value}`)
@@ -108,4 +114,44 @@ usePageSeo(() => ({
   template: 'blog',
   description: post.value?.translations?.en?.meta_desc || 'Blog post on aifindr.org',
 }))
+
+// Article-level SEO: Schema + OG meta
+watch(post, (val) => {
+  if (!val) return
+  const en = val.translations?.en || {}
+  const title = en.title || val.translations?.zh?.title || ''
+  const description = en.meta_desc || ''
+  const cover = en.cover_image || ''
+  const url = `${siteUrl}/blog/${val.slug}`
+  const publishedAt = val.published_at ? new Date(val.published_at * 1000).toISOString() : ''
+  const updatedAt = val.updated_at ? new Date(val.updated_at * 1000).toISOString() : ''
+
+  useHead({
+    meta: [
+      { property: 'og:type', content: 'article' },
+      ...(publishedAt ? [{ property: 'article:published_time', content: publishedAt }] : []),
+      ...(updatedAt ? [{ property: 'article:modified_time', content: updatedAt }] : []),
+      ...(cover ? [
+        { property: 'og:image', content: cover },
+        { name: 'twitter:image', content: cover },
+      ] : []),
+    ],
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: title,
+          description,
+          image: cover || undefined,
+          datePublished: publishedAt || undefined,
+          dateModified: updatedAt || undefined,
+          author: { '@type': 'Organization', name: 'aifindr.org', url: siteUrl },
+          mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+        }),
+      },
+    ],
+  })
+})
 </script>
