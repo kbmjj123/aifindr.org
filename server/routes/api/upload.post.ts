@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'R2 bucket not available' })
   }
 
-  await bucket.put(key, file.stream(), {
+  await bucket.put(key, await file.arrayBuffer(), {
     httpMetadata: { contentType: file.type },
   })
 
