@@ -26,6 +26,8 @@ export default defineEventHandler(async (event) => {
     jpeg: 'image/jpeg',
     webp: 'image/webp',
     gif: 'image/gif',
+    ico: 'image/x-icon',
+    avif: 'image/avif',
   }
   const ext = key.split('.').pop()?.toLowerCase() || ''
   const contentType = extMap[ext] || 'application/octet-stream'
