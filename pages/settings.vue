@@ -21,7 +21,7 @@
       <p class="font-body text-[12px] mt-1 mb-6" :style="{ color: 'var(--color-text-muted)' }">
         Connect your GitHub account to set up notifications and email preferences.
       </p>
-      <button class="btn-primary !h-[36px] !px-[20px] !text-[12px]" @click="login">
+      <button class="btn-primary !h-[36px] !px-[20px] !text-[12px]" @click="handleLogin">
         Sign in with GitHub
       </button>
     </div>
@@ -122,6 +122,11 @@ watchEffect(() => {
     contactEmail.value = user.value.contact_email
   }
 })
+
+const isDev = import.meta.dev
+function handleLogin() {
+  window.location.href = isDev ? '/api/auth/dev-login' : '/api/auth/github'
+}
 
 async function saveEmail() {
   if (!contactEmail.value.trim()) return
