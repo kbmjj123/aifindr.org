@@ -132,3 +132,43 @@ CREATE TABLE IF NOT EXISTS published_links (
 CREATE INDEX IF NOT EXISTS idx_links_user       ON published_links(user_id);
 CREATE INDEX IF NOT EXISTS idx_links_is_active  ON published_links(is_active);
 CREATE INDEX IF NOT EXISTS idx_links_checked    ON published_links(last_checked);
+
+-- ─── CMS 博客文章（v1.5） ──────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS posts (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug         TEXT UNIQUE NOT NULL,
+  status       TEXT DEFAULT 'draft' CHECK(status IN ('draft','published')),
+  author_id    INTEGER REFERENCES users(id),
+  created_at   INTEGER DEFAULT (unixepoch()),
+  updated_at   INTEGER DEFAULT (unixepoch()),
+  published_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_posts_status     ON posts(status);
+CREATE INDEX IF NOT EXISTS idx_posts_slug       ON posts(slug);
+CREATE INDEX IF NOT EXISTS idx_posts_author     ON posts(author_id);
+CREATE INDEX IF NOT EXISTS idx_posts_published  ON posts(published_at DESC);
+
+CREATE TABLE IF NOT EXISTS post_translations (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  post_id     INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  locale      TEXT NOT NULL CHECK(locale IN ('zh','en')),
+  title       TEXT NOT NULL,
+  content     TEXT,
+  cover_image TEXT,
+  meta_desc   TEXT,
+  UNIQUE(post_id, locale)
+);
+
+CREATE INDEX IF NOT EXISTS idx_pt_post ON post_translations(post_id);
+CREATE INDEX IF NOT EXISTS idx_pt_locale ON post_translations(locale);
+
+CREATE TABLE IF NOT EXISTS custom_fields (
+  id       INTEGER PRIMARY KEY AUTOINCREMENT,
+  post_id  INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  key      TEXT NOT NULL,
+  value    TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_cf_post ON custom_fields(post_id);

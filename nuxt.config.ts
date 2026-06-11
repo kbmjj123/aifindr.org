@@ -55,6 +55,12 @@ export default defineNuxtConfig({
     autoLastmod: true,
   },
 
+  routeRules: {
+    '/admin/**': { ssr: false },
+    '/blog':     { ssr: false },
+    '/blog/*':   { ssr: false },
+  },
+
   postcss: {
     plugins: {
       '@tailwindcss/postcss': {},
