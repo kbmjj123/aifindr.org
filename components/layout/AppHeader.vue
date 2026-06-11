@@ -16,9 +16,9 @@
       <!-- Right: Actions -->
       <div class="flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto">
         <!-- Desktop: Submit + Auth -->
-        <NuxtLink to="/submit" class="btn-header-submit hidden sm:inline-flex">
+        <button class="btn-header-submit hidden sm:inline-flex" @click="handleSubmitClick">
           + Submit
-        </NuxtLink>
+        </button>
         <div class="hidden sm:flex"><AuthButton /></div>
         <ThemeToggle />
         <!-- Mobile hamburger -->
@@ -35,4 +35,14 @@
 
 <script setup lang="ts">
 const isMobileMenuOpen = useState('mobileMenuOpen', () => false)
+const { isLoggedIn, login } = useAuth()
+
+function handleSubmitClick() {
+  if (isLoggedIn.value) {
+    navigateTo('/submit')
+  } else {
+    sessionStorage.setItem('login-redirect', '/submit')
+    login()
+  }
+}
 </script>

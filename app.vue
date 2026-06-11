@@ -56,5 +56,19 @@ useKeyboardShortcuts()
 
 onMounted(() => {
   handleUrlToken()
+
+  // 登录后重定向到之前要访问的页面
+  const redirect = sessionStorage.getItem('login-redirect')
+  if (redirect) {
+    sessionStorage.removeItem('login-redirect')
+    navigateTo(redirect)
+  }
+
+  // 清除历史项目遗留的 Service Worker，防止缓存干扰
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(r => r.unregister())
+    })
+  }
 })
 </script>
