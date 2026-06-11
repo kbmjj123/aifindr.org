@@ -2,29 +2,15 @@ import { createError, readBody } from 'h3'
 import { getEnv } from '~/server/utils/env'
 import { verifyJWT, getTokenFromEvent } from '~/server/utils/jwt'
 import { slugify } from '~/server/utils/utils'
+import { CATEGORIES } from '~/types/category'
 
 const ADMIN_GITHUB_IDS_ENV = 'ADMIN_GITHUB_IDS'
 
-const VALID_CATEGORIES = [
-  'image', 'writing', 'video', 'audio', 'code',
-  'productivity', 'marketing', 'data', 'education',
-  'business', 'research', 'other',
-]
+const VALID_CATEGORIES = CATEGORIES.map(c => c.id)
 
-const VALID_SUB_CATEGORIES: Record<string, string[]> = {
-  image:        ['image-generation', 'image-upscaling', 'background-removal', 'logo-branding', 'illustration'],
-  writing:      ['ai-writing', 'essay-longform', 'copywriting', 'blog-seo', 'paraphrasing', 'email-writing', 'product-description'],
-  video:        ['video-generation', 'video-editing', 'video-enhancement', 'avatar-talking-head', 'subtitles-captions', 'animation'],
-  audio:        ['music-generation', 'text-to-speech', 'voice-cloning', 'transcription', 'audio-enhancement'],
-  code:         ['ai-coding-assistants', 'code-generation', 'code-review', 'sql-database', 'testing', 'documentation', 'code-explanation', 'utilities'],
-  productivity: ['meeting-notes', 'pdf-document', 'workflow-automation', 'calendar-scheduling', 'task-management', 'inbox-email', 'time-tracking'],
-  marketing:    ['seo-tools', 'social-media', 'ad-copy', 'landing-pages', 'content-repurposing', 'competitor-analysis', 'youtube-video-seo'],
-  data:         ['data-analysis', 'charts-visualization', 'spreadsheets', 'dashboards-bi', 'reports'],
-  education:    ['homework-tutoring', 'math', 'flashcards-quizzes', 'summarization', 'study-planning', 'language-learning', 'course-creation'],
-  business:     ['business-planning', 'legal-contracts', 'finance-invoicing', 'pitch-presentations', 'hr-recruiting', 'customer-support', 'crm-sales'],
-  research:     ['ai-search-engines', 'academic-research', 'paper-summarization', 'citation-references', 'fact-checking', 'knowledge-base', 'web-scraping', 'academic-writing'],
-  other:        ['ai-directory', 'open-source-tools', 'ai-for-students', 'ai-for-small-business', 'ai-for-freelancers', 'ai-for-creators'],
-}
+const VALID_SUB_CATEGORIES: Record<string, string[]> = Object.fromEntries(
+  CATEGORIES.map(c => [c.id, c.subcategories.map(s => s.id)])
+)
 
 const VALID_TAG_TYPES = ['use_case', 'audience', 'feature'] as const
 
