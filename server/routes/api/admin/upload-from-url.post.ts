@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
   const adminGhIds = (env[ADMIN_GITHUB_IDS_ENV] || '').split(',').map(Number).filter(Boolean)
-  if (!adminGhIds.includes(payload.github_id)) {
+  if (!adminGhIds.includes(payload.gh_id)) {
     throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
   }
 
