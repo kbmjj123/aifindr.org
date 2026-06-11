@@ -97,81 +97,19 @@
         </div>
 
         <!-- 图片上传区 -->
-        <div class="grid grid-cols-1 gap-4 pt-4 border-t"
+        <div class="grid grid-cols-2 gap-4 pt-4 border-t"
           :style="{ borderColor: 'var(--color-border)' }">
-
-          <!-- Logo -->
           <div class="space-y-2">
             <p class="font-body text-[13px] font-medium" style="color: var(--color-text-primary)">
               Logo (cover_image)
             </p>
-            <div class="flex items-center gap-3">
-              <img v-if="uploadedLogoUrl"
-                :src="uploadedLogoUrl"
-                class="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                :style="{ border: '1px solid var(--color-border)' }" />
-              <div v-else
-                class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
-                <span class="font-body text-[12px]" style="color: var(--color-text-muted)">—</span>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-mono text-[12px] truncate" style="color: var(--color-text-muted)">
-                  {{ parsed.logo_url || '—' }}
-                </p>
-                <p v-if="uploadedLogoUrl"
-                  class="font-mono text-[12px] truncate mt-0.5"
-                  style="color: var(--color-success)">
-                  ✓ Uploaded
-                </p>
-              </div>
-            </div>
-            <button
-              class="btn-secondary !h-[40px] !text-[13px] px-3"
-              :disabled="!parsed.logo_url || uploadingLogo"
-              @click="uploadImage('logo')">
-              {{ uploadingLogo ? 'Uploading...' : uploadedLogoUrl ? 'Re-upload' : 'Upload to R2' }}
-            </button>
-            <p v-if="logoError" class="font-body text-[13px]" style="color: var(--color-danger)">
-              {{ logoError }}
-            </p>
+            <ImageUploadSlot v-model="uploadedLogoUrl" aspect="square" />
           </div>
-
-          <!-- OG Image -->
           <div class="space-y-2">
             <p class="font-body text-[13px] font-medium" style="color: var(--color-text-primary)">
               OG Image (og_image)
             </p>
-            <div class="flex items-center gap-3">
-              <img v-if="uploadedOgUrl"
-                :src="uploadedOgUrl"
-                class="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                :style="{ border: '1px solid var(--color-border)' }" />
-              <div v-else
-                class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
-                <span class="font-body text-[12px]" style="color: var(--color-text-muted)">—</span>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-mono text-[12px] truncate" style="color: var(--color-text-muted)">
-                  {{ parsed.og_image_url || '—' }}
-                </p>
-                <p v-if="uploadedOgUrl"
-                  class="font-mono text-[12px] truncate mt-0.5"
-                  style="color: var(--color-success)">
-                  ✓ Uploaded
-                </p>
-              </div>
-            </div>
-            <button
-              class="btn-secondary !h-[40px] !text-[13px] px-3"
-              :disabled="!parsed.og_image_url || uploadingOg"
-              @click="uploadImage('og_image')">
-              {{ uploadingOg ? 'Uploading...' : uploadedOgUrl ? 'Re-upload' : 'Upload to R2' }}
-            </button>
-            <p v-if="ogError" class="font-body text-[13px]" style="color: var(--color-danger)">
-              {{ ogError }}
-            </p>
+            <ImageUploadSlot v-model="uploadedOgUrl" aspect="screenshot" />
           </div>
         </div>
 
@@ -278,12 +216,8 @@ const parsing         = ref(false)
 const parseError      = ref('')
 const parsed          = ref<any>(null)
 
-const uploadingLogo   = ref(false)
-const uploadingOg     = ref(false)
 const uploadedLogoUrl = ref('')
 const uploadedOgUrl   = ref('')
-const logoError       = ref('')
-const ogError         = ref('')
 
 const submitting      = ref(false)
 const submitError     = ref('')
@@ -304,8 +238,6 @@ function parseJson() {
     parsed.value          = data
     uploadedLogoUrl.value = ''
     uploadedOgUrl.value   = ''
-    logoError.value       = ''
-    ogError.value         = ''
     submitError.value     = ''
     submitSuccess.value   = ''
   } catch {
@@ -339,48 +271,6 @@ function tagTypeColor(type: string) {
   if (type === 'feature')  return { bg: 'var(--color-accent-dim)',  text: 'var(--color-accent)',  border: 'var(--color-accent-border)' }
   if (type === 'audience') return { bg: 'var(--color-warning-dim)', text: 'var(--color-warning)', border: 'var(--color-warning-border)' }
   return                          { bg: 'var(--color-success-dim)', text: 'var(--color-success)', border: 'var(--color-success-border)' }
-}
-
-// ── 上传图片到 R2（自动转 WebP）───────────────────────────────
-async function uploadImage(type: 'logo' | 'og_image') {
-  if (!parsed.value) return
-  const url  = type === 'logo' ? parsed.value.logo_url : parsed.value.og_image_url
-  if (!url) return
-  const slug = parsed.value.slug || parsed.value.name?.toLowerCase().replace(/\s+/g, '-')
-
-  if (type === 'logo') { uploadingLogo.value = true; logoError.value = '' }
-  else                 { uploadingOg.value   = true; ogError.value   = '' }
-
-  try {
-    // 1) 客户端 fetch → 转 WebP → 上传
-    const { toWebPFile } = useWebp()
-    const { file } = await toWebPFile(url, `${slug}-${type}.webp`, 0.85)
-
-    const formData = new FormData()
-    formData.append('file', file)
-
-    const res = await $fetch<{ url: string }>('/api/upload', {
-      method: 'POST',
-      body: formData,
-    })
-
-    if (type === 'logo') uploadedLogoUrl.value = res.url
-    else                 uploadedOgUrl.value   = res.url
-  } catch {
-    // 2) 客户端失败（CORS 等）→ 降级到服务端上传（原格式）
-    try {
-      const res = await post('/api/admin/upload-from-url', { url, type, slug })
-      if (type === 'logo') uploadedLogoUrl.value = res.url
-      else                 uploadedOgUrl.value   = res.url
-    } catch (e2: any) {
-      const msg = e2?.data?.message || e2?.data?.statusMessage || 'Upload failed'
-      if (type === 'logo') logoError.value = msg
-      else                 ogError.value   = msg
-    }
-  } finally {
-    if (type === 'logo') uploadingLogo.value = false
-    else                 uploadingOg.value   = false
-  }
 }
 
 // ── 发布工具 ──────────────────────────────────────────────────
