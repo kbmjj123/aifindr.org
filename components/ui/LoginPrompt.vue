@@ -26,5 +26,10 @@ defineProps<{
   message?: string
 }>()
 
-const { login } = useAuth()
+const isDev = import.meta.dev
+const authUrl = isDev ? '/api/auth/dev-login' : '/api/auth/github'
+
+function login() {
+  window.location.href = authUrl
+}
 </script>
