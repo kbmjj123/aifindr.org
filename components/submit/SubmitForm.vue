@@ -1,7 +1,9 @@
 <template>
   <div class="p-6 rounded-xl"
     :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
-    <form class="space-y-5" @submit.prevent="handleSubmit">
+    <LoginPrompt v-if="!isLoggedIn" message="Sign in with GitHub to submit your AI tool." />
+
+    <form v-else class="space-y-5" @submit.prevent="handleSubmit">
 
       <!-- Tool Name -->
       <div>
@@ -291,7 +293,7 @@ import { CATEGORIES } from '~/types/tool'
 import { SUBCATEGORIES, FEATURE_TAGS, AUDIENCE_TAGS, USE_CASE_TAGS } from '~/types/category'
 
 const { post, get } = useApi()
-const { user } = useAuth()
+const { user, isLoggedIn } = useAuth()
 
 // ── form state ────────────────────────────────────────────────
 const form = reactive({
@@ -453,7 +455,7 @@ async function handleSubmit() {
       ...form.useCaseTags.map(t  => ({ type: 'use_case', tag: t })),
     ]
 
-    await post('/api/submit', {
+    const res = await post<{ success: boolean; slug: string; category: string }>('/api/submit', {
       name:             form.name,
       website:          form.website,
       category:         form.category,
@@ -475,7 +477,11 @@ async function handleSubmit() {
       turnstileToken:   cfToken.value,
     })
 
-    navigateTo('/submit?success=1')
+    if (res?.slug && res?.category) {
+      navigateTo(`/tools/${res.category}/${res.slug}?preview=1`)
+    } else {
+      navigateTo('/submit?success=1')
+    }
   } catch (e: any) {
     submitError.value = e?.data?.error || 'Submission failed. Please try again.'
     if (!isDev) {

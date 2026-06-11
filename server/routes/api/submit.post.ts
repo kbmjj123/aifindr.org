@@ -266,5 +266,5 @@ export default defineEventHandler(async (event) => {
   }
 
   setResponseStatus(event, 201)
-  return { success: true, slug }
+  return { success: true, slug, category }
 })
