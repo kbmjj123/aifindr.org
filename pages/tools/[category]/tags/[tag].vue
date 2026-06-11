@@ -4,32 +4,26 @@
     <nav class="breadcrumb">
       <NuxtLink to="/tools" class="no-underline">All Tools</NuxtLink>
       <span class="sep">/</span>
-      <NuxtLink :to="`/tools/${cat.slug}`" class="no-underline">{{ cat.title }}</NuxtLink>
+      <NuxtLink :to="`/tools/${category}`" class="no-underline">{{ catTitle }}</NuxtLink>
       <span class="sep">/</span>
-      <span class="current">{{ subcat.title }}</span>
+      <span class="current">{{ tagLabel }}</span>
     </nav>
 
     <!-- Hero -->
     <div class="flex items-start gap-3 mb-3">
-      <span class="text-xl mt-1 shrink-0">{{ cat.icon }}</span>
       <div class="min-w-0">
-        <h1 class="font-sans font-extrabold text-[24px]" style="letter-spacing: -1.5px; line-height: 1.05; color: var(--color-text-primary)">
-          {{ subcat.title }}
-        </h1>
-        <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">{{ toolCount }} tools</span>
+        <div class="flex items-center gap-2 mb-1">
+          <h1 class="font-sans font-extrabold text-[24px]" style="letter-spacing: -1.5px; line-height: 1.05; color: var(--color-text-primary)">
+            {{ tagLabel }}
+          </h1>
+          <span v-if="tagType" class="badge capitalize"
+            :style="{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)', border: '1px solid var(--color-accent-border)' }">
+            {{ tagType }}
+          </span>
+        </div>
+        <span class="font-body text-[14px]" style="color: var(--color-text-muted)">{{ toolCount }} tools</span>
       </div>
     </div>
-
-    <p class="font-body text-[13px] leading-relaxed max-w-[720px] mb-6" style="color: var(--color-text-secondary)">
-      {{ subcat.hero }}
-    </p>
-
-    <!-- Subcategory nav -->
-    <SubcategoryNav
-      :subcategories="cat.subcategories"
-      :category-slug="cat.slug"
-      :active-tag="subcat.id"
-    />
 
     <!-- Filter -->
     <CategoryFilterBar v-model="filters" />
@@ -42,58 +36,67 @@
       <ToolCard v-for="t in filteredTools" :key="t.slug" :tool="t" />
     </ToolGrid>
     <div v-else class="flex flex-col items-center py-16 gap-3">
-      <span class="text-2xl">{{ cat.icon }}</span>
+      <span class="text-2xl">🏷️</span>
       <h3 class="font-sans font-bold text-[16px] text-center" style="letter-spacing: -0.3px; color: var(--color-text-primary)">
         {{ hasTools ? 'No tools match your filters' : 'No tools yet' }}
       </h3>
-      <p class="font-body text-[12px] text-center max-w-[320px]" style="color: var(--color-text-muted)">
-        {{ hasTools ? 'Try adjusting your filter criteria.' : 'No tools have been added to this subcategory yet.' }}
+      <p class="font-body text-[12px] text-center max-w-[320px]" style="color: var(--color-text-secondary)">
+        {{ hasTools ? 'Try adjusting your filter criteria.' : 'No tools have been tagged with this label yet.' }}
       </p>
       <button v-if="hasTools && !isDefaultFilters" class="btn-secondary" @click="resetFilters">
         Clear Filters
       </button>
-      <NuxtLink v-else :to="`/tools/${cat.slug}`" class="btn-secondary no-underline">
-        Browse All {{ cat.title }} Tools
+      <NuxtLink v-else :to="`/tools/${category}`" class="btn-secondary no-underline">
+        Browse All {{ catTitle }} Tools
       </NuxtLink>
     </div>
-
-    <!-- Guide -->
-    <CategoryGuide :guides="subcat.guides" :category-title="subcat.title" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { CATEGORIES } from '~/types/category'
-import type { Category, Subcategory } from '~/types/category'
 import type { Tool } from '~/types/tool'
+import { FEATURE_TAGS, AUDIENCE_TAGS, USE_CASE_TAGS, CATEGORIES } from '~/types/category'
 
 const route = useRoute()
 const { get } = useApi()
 const category = computed(() => route.params.category as string)
 const tag = computed(() => route.params.tag as string)
 
-const cat = computed((): Category => {
+const catTitle = computed(() => {
   const found = CATEGORIES.find(c => c.slug === category.value)
-  if (!found) throw createError({ statusCode: 404, message: 'Category not found' })
-  return found
+  return found?.title || category.value
 })
 
-const subcat = computed((): Subcategory => {
-  const found = cat.value.subcategories.find(s => s.id === tag.value)
-  if (!found) throw createError({ statusCode: 404, message: 'Subcategory not found' })
-  return found
-})
+function findTagInfo(cat: string, tagVal: string): { label: string; type: string } {
+  const ft = FEATURE_TAGS.find(t => t.value === tagVal)
+  if (ft) return { label: ft.label, type: 'feature' }
+
+  const at = AUDIENCE_TAGS.find(t => t.value === tagVal)
+  if (at) return { label: at.label, type: 'audience' }
+
+  const uc = USE_CASE_TAGS[cat]?.find(t => t.value === tagVal)
+  if (uc) return { label: uc.label, type: 'use_case' }
+
+  return {
+    label: tagVal.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+    type: '',
+  }
+}
+
+const tagInfo = computed(() => findTagInfo(category.value, tag.value))
+const tagLabel = computed(() => tagInfo.value.label)
+const tagType = computed(() => tagInfo.value.type)
 
 const filters = ref({ pricing: 'all', sort: 'latest' })
 
 const fetchKey = computed(() =>
-  `category-${category.value}-${tag.value}-p${filters.value.pricing}-s${filters.value.sort}`
+  `tags-${category.value}-${tag.value}-p${filters.value.pricing}-s${filters.value.sort}`
 )
 
 function buildQueryString(): string {
   const params = new URLSearchParams()
   params.set('category', category.value)
-  params.set('sub_category', tag.value)
+  params.set('tags', tag.value)
   params.set('pageSize', '100')
   if (filters.value.pricing !== 'all') params.set('pricing', filters.value.pricing)
   if (filters.value.sort !== 'latest') params.set('sort', filters.value.sort)
@@ -141,8 +144,8 @@ function resetFilters() {
 }
 
 usePageSeo(() => ({
-  title: `${subcat.value.title} — ${cat.value.title}`,
+  title: `${tagLabel.value} ${catTitle.value} AI Tools`,
   template: 'prefix',
-  description: subcat.value.description,
+  description: `Browse AI tools tagged with "${tagLabel.value}" in the ${catTitle.value} category.`,
 }))
 </script>

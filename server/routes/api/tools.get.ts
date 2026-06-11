@@ -32,6 +32,12 @@ export default defineEventHandler(async (event) => {
     params.push(`%${platform}%`)
   }
 
+  const subCategory = query.sub_category as string | undefined
+  if (subCategory) {
+    conditions.push('t.sub_category = ?')
+    params.push(subCategory)
+  }
+
   if (tags) {
     const tagList = tags.split(',').filter(Boolean)
     if (tagList.length > 0) {

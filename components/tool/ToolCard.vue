@@ -23,7 +23,11 @@
 
         <!-- Tags -->
         <div class="flex flex-wrap gap-1.5">
-          <span v-for="tag in visibleTags" :key="tag" class="tag">{{ tag }}</span>
+          <span v-for="tag in visibleTags" :key="tag"
+            class="tag cursor-pointer hover:opacity-70 transition-opacity"
+            @click.stop="navigateTo(`/tools/${t.category}/tags/${tag}`)">
+            {{ tag }}
+          </span>
           <span v-if="t.pricing" :class="['tag', `tag-${t.pricing}`]" class="tag-pricing">{{ pricingLabel }}</span>
         </div>
       </div>
