@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS tools (
   price_detail     TEXT,
   has_free_trial   INTEGER DEFAULT 0,
   platforms        TEXT DEFAULT '',
-  status           TEXT DEFAULT 'active'
-                   CHECK(status IN ('active','beta','discontinued','pending')),
+  status           TEXT DEFAULT 'pending'
+                   CHECK(status IN ('active','beta','discontinued','pending','rejected','needs_info')),
   launched         TEXT,
   submitted_at     TEXT NOT NULL,
   last_verified    TEXT,
