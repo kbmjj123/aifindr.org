@@ -332,7 +332,7 @@ async function checkDuplicate() {
       duplicateWarning.value = {
         name: res.tool.name,
         slug: res.tool.slug,
-        link: `/tools/${res.tool.category}/${res.tool.slug}`,
+        link: `/tools/${res.tool.category}/${res.tool.slug}?preview=1`,
         status: res.tool.status,
       }
     }

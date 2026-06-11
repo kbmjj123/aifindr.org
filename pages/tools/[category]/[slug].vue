@@ -9,7 +9,14 @@
       <span class="current">{{ tool?.name || slug }}</span>
     </nav>
 
+    <div v-if="isPreview" class="mb-4 p-3 rounded-lg flex items-center gap-2 font-body text-[13px]"
+      :style="{ background: 'var(--color-featured-bg)', border: '1px solid var(--color-featured-border)', color: 'var(--color-featured-text)' }">
+      🔍 Preview — This tool is <strong>{{ tool?.status || 'pending' }}</strong> and not publicly visible yet.
+    </div>
+
     <div v-if="pending" class="text-center py-20 font-body text-[13px]" style="color: var(--color-text-muted)">Loading...</div>
+    <LoginPrompt v-if="authRequired" message="Sign in with GitHub to preview pending tools." />
+
     <template v-else-if="tool">
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Main content -->
@@ -260,6 +267,7 @@ import type { Tool, ToolPricing } from '~/types/tool'
 const route = useRoute()
 const category = computed(() => route.params.category as string)
 const slug = computed(() => route.params.slug as string)
+const isPreview = computed(() => route.query.preview === '1')
 const { get, post } = useApi()
 
 const categoryInfo = computed(() => CATEGORIES.find(c => c.slug === category.value))
@@ -271,6 +279,7 @@ function toggleGuide(idx: number) {
 
 const toolTags = ref<string[]>([])
 const alternatives = ref<Tool[]>([])
+const authRequired = ref(false)
 
 const toolPlatforms = computed(() => {
   const p = tool.value?.platforms
@@ -334,23 +343,32 @@ function formatDuration(seconds?: number): string {
 }
 
 const { data: tool, pending } = useAsyncData<Tool>(
-  `tool-${slug.value}`,
+  `tool-${slug.value}${isPreview.value ? '-preview' : ''}`,
   async () => {
-    const result = await get<Tool>(`/api/tools/${category.value}/${slug.value}`)
-
-    // Load alternatives (same category, exclude current)
+    authRequired.value = false
+    const previewParam = isPreview.value ? '?preview=1' : ''
     try {
-      const altData = await get<{ tools: Tool[] }>(
-        `/api/tools?category=${category.value}&pageSize=7`
-      )
-      if (altData?.tools) {
-        alternatives.value = altData.tools.filter(t => t.slug !== slug.value).slice(0, 6)
-      }
-    } catch {
-      // alternatives optional
-    }
+      const result = await get<Tool>(`/api/tools/${category.value}/${slug.value}${previewParam}`)
 
-    return result
+      // Load alternatives (same category, exclude current)
+      try {
+        const altData = await get<{ tools: Tool[] }>(
+          `/api/tools?category=${category.value}&pageSize=7`
+        )
+        if (altData?.tools) {
+          alternatives.value = altData.tools.filter(t => t.slug !== slug.value).slice(0, 6)
+        }
+      } catch {
+        // alternatives optional
+      }
+
+      return result
+    } catch (e: any) {
+      if (e?.response?.status === 401) {
+        authRequired.value = true
+      }
+      return null as unknown as Tool
+    }
   },
   { watch: [category, slug] }
 )
