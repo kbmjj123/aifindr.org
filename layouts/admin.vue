@@ -25,7 +25,13 @@
 </template>
 
 <script setup lang="ts">
-const { user, fetchUser: checkAuth } = useAuth()
+const { user, isLoggedIn, fetchUser: checkAuth, login } = useAuth()
 
-onMounted(() => checkAuth())
+onMounted(async () => {
+  await checkAuth()
+  if (!isLoggedIn.value) {
+    // Local dev: auto-redirect to dev-login
+    login()
+  }
+})
 </script>

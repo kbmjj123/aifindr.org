@@ -8,13 +8,15 @@ import { logger } from '~/server/utils/logger'
 export async function verifyAdmin(event: H3Event): Promise<JWTPayload | null> {
   const env = getEnv(event)
   const authToken = getTokenFromEvent(event)
-	logger.debug('auth', 'verifyAdmin', { authToken })
+  logger.debug('auth', 'verifyAdmin', { authToken })
   if (!authToken) return null
   const payload = await verifyJWT(authToken, env.JWT_SECRET)
-	logger.debug('auth', 'verifyAdmin', { payload })
+  logger.debug('auth', 'verifyAdmin', { payload })
   if (!payload) return null
+  // Dev mode: any authenticated user passes (local dev only)
+  if (import.meta.dev) return payload
   const adminIds = (env.ADMIN_GITHUB_IDS || '').split(',').map(Number).filter(Boolean)
-	logger.debug('auth', 'verifyAdmin', { adminIds })
+  logger.debug('auth', 'verifyAdmin', { adminIds })
   if (!adminIds.includes(payload.gh_id)) return null
   return payload
 }

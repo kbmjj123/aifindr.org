@@ -11,7 +11,7 @@
           Save Draft
         </button>
         <button class="btn-primary h-7 text-[10px] px-3" :disabled="saving" @click="save('published')">
-          {{ isNew ? 'Publish' : post?.status === 'draft' ? 'Publish' : 'Update' }}
+          {{ isNew ? 'Publish' : currentPost?.status === 'draft' ? 'Publish' : 'Update' }}
         </button>
       </div>
     </div>
@@ -93,13 +93,13 @@
         </div>
 
         <!-- Status info -->
-        <div v-if="post" class="p-4 rounded-lg" :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
+        <div v-if="currentPost" class="p-4 rounded-lg" :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
           <div class="font-body text-[9px] uppercase tracking-wider mb-1" style="color: var(--color-text-muted)">Status</div>
-          <div class="font-body text-[12px] mb-3" style="color: var(--color-text-primary)">{{ post.status }}</div>
+          <div class="font-body text-[12px] mb-3" style="color: var(--color-text-primary)">{{ currentPost.status }}</div>
 
           <div class="font-body text-[9px] uppercase tracking-wider mb-1" style="color: var(--color-text-muted)">Created</div>
           <div class="font-body text-[12px] mb-3" style="color: var(--color-text-primary)">
-            {{ post.created_at ? new Date(post.created_at * 1000).toLocaleDateString() : '-' }}
+            {{ currentPost.created_at ? new Date(currentPost.created_at * 1000).toLocaleDateString() : '-' }}
           </div>
 
           <button class="btn-ghost h-7 text-[10px] px-3" style="color: var(--color-danger)" @click="remove">
@@ -114,6 +114,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'admin' })
 
+const { get, post } = useApi()
 const route = useRoute()
 const isNew = computed(() => route.params.id === 'new')
 
@@ -146,7 +147,7 @@ const currentT = computed(() =>
   form.translations[activeLocale.value] || form.translations.en
 )
 
-const post = ref<any>(null)
+const currentPost = ref<any>(null)
 const saving = ref(false)
 
 const currentTitle = computed(() =>
@@ -157,14 +158,14 @@ onMounted(async () => {
   if (!isNew.value) {
     const id = route.params.id
     try {
-      post.value = await $fetch(`/api/admin/posts/${id}`)
-      form.slug = post.value.slug
+      currentPost.value = await get<any>(`/api/admin/posts/${id}`)
+      form.slug = currentPost.value.slug
       for (const locale of locales) {
-        if (post.value.translations?.[locale]) {
-          form.translations[locale] = { ...post.value.translations[locale] }
+        if (currentPost.value.translations?.[locale]) {
+          form.translations[locale] = { ...currentPost.value.translations[locale] }
         }
       }
-      form.custom_fields = (post.value.custom_fields || []).map((cf: any) => ({
+      form.custom_fields = (currentPost.value.custom_fields || []).map((cf: any) => ({
         key: cf.key,
         value: cf.value,
       }))
@@ -185,17 +186,16 @@ async function save(status: 'draft' | 'published') {
     }
 
     if (isNew.value) {
-      const res = await $fetch('/api/admin/posts', {
-        method: 'POST',
-        body,
-      })
-      navigateTo(`/admin/posts/${(res as any).id}`, { replace: true })
+      const res = await post<any>('/api/admin/posts', body)
+      navigateTo(`/admin/posts/${res.id}`, { replace: true })
     } else {
+      const token = localStorage.getItem('aifindr-token')
       await $fetch(`/api/admin/posts/${route.params.id}`, {
         method: 'PUT',
         body,
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
-      post.value = { ...post.value, status }
+      currentPost.value = { ...currentPost.value, status }
     }
 
     // Publish: clear blog cache
@@ -211,7 +211,11 @@ async function save(status: 'draft' | 'published') {
 
 async function remove() {
   if (!confirm('Delete this post permanently?')) return
-  await $fetch(`/api/admin/posts/${route.params.id}`, { method: 'DELETE' })
+  const token = localStorage.getItem('aifindr-token')
+  await $fetch(`/api/admin/posts/${route.params.id}`, {
+    method: 'DELETE',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
   navigateTo('/admin/posts')
 }
 </script>

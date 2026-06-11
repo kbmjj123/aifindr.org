@@ -10,7 +10,15 @@
       </button>
     </div>
 
+    <!-- Forbidden -->
+    <div v-if="forbidden" class="text-center py-16">
+      <p class="font-body text-[14px]" :style="{ color: 'var(--color-text-secondary)' }">
+        Admin access required. Sign in with an authorized GitHub account.
+      </p>
+    </div>
+
     <!-- Search + filter -->
+    <template v-else>
     <div class="flex items-center gap-3 mb-5">
       <input v-model="search" type="text" placeholder="Search by title or slug..."
         class="input h-9 text-[12px] flex-1 max-w-80" @input="debouncedLoad" />
@@ -76,11 +84,14 @@
         <button class="page-btn text-[11px]" :disabled="page >= totalPages" @click="page++; loadPosts()">›</button>
       </div>
     </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 definePageMeta({ layout: 'admin' })
+
+const { get, post } = useApi()
 
 const search = ref('')
 const filterStatus = ref('')
@@ -89,6 +100,7 @@ const pageSize = 20
 const posts = ref<any[]>([])
 const total = ref(0)
 const loading = ref(true)
+const forbidden = ref(false)
 
 const statuses = [
   { label: 'All', value: '' },
@@ -112,29 +124,29 @@ function debouncedLoad() {
 
 async function loadPosts() {
   loading.value = true
+  forbidden.value = false
   try {
     const params = new URLSearchParams()
     if (filterStatus.value) params.set('status', filterStatus.value)
     if (search.value) params.set('q', search.value)
     params.set('page', String(page.value))
     params.set('pageSize', String(pageSize))
-    const res = await $fetch(`/api/admin/posts?${params}`)
-    posts.value = (res as any).posts || []
-    total.value = (res as any).total || 0
-  } catch { /* toast? */ }
+    const res = await get<any>(`/api/admin/posts?${params}`)
+    posts.value = res.posts || []
+    total.value = res.total || 0
+  } catch (e: any) {
+    if (e?.status === 403 || e?.statusCode === 403) forbidden.value = true
+  }
   finally { loading.value = false }
 }
 
 async function createPost() {
-  const res = await $fetch('/api/admin/posts', {
-    method: 'POST',
-    body: {
-      slug: `post-${Date.now()}`,
-      status: 'draft',
-      translations: { en: { title: 'New Post' } },
-    },
+  const res = await post<any>('/api/admin/posts', {
+    slug: `post-${Date.now()}`,
+    status: 'draft',
+    translations: { en: { title: 'New Post' } },
   }).catch(() => null)
-  if (res) navigateTo(`/admin/posts/${(res as any).id}`)
+  if (res) navigateTo(`/admin/posts/${res.id}`)
 }
 
 function editPost(id: number) {
@@ -143,7 +155,11 @@ function editPost(id: number) {
 
 async function deletePost(id: number) {
   if (!confirm('Delete this post? This cannot be undone.')) return
-  await $fetch(`/api/admin/posts/${id}`, { method: 'DELETE' })
+  const token = localStorage.getItem('aifindr-token')
+  await $fetch(`/api/admin/posts/${id}`, {
+    method: 'DELETE',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
   loadPosts()
 }
 
