@@ -14,13 +14,16 @@ export default defineEventHandler(async (event) => {
   }
 
   const { results: tagRows } = await env.DB.prepare(
-    'SELECT tag FROM tool_tags WHERE tool_id = ?'
+    'SELECT tag, type FROM tool_tags WHERE tool_id = ?'
   ).bind((tool as Record<string, unknown>).id).all()
 
-  const tags = (tagRows as { tag: string }[]).map(r => r.tag)
+  const typedTags = (tagRows as { tag: string; type: string }[]).map(r => ({
+    tag: r.tag,
+    type: r.type,
+  }))
 
   return {
     ...tool as Record<string, unknown>,
-    tags,
+    tags: typedTags,
   }
 })

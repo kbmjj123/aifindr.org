@@ -183,7 +183,7 @@
                 <div class="detail-sidebar-label">Best For</div>
                 <div class="flex flex-wrap gap-1.5 mt-1 mb-3">
                   <NuxtLink v-for="u in toolTargetUsers" :key="u"
-                    :to="`/tools?target_users=${u}`"
+                    :to="`/tools?tags=${u}`"
                     class="tag cursor-pointer" style="background: var(--color-verified-bg); color: var(--color-verified-text); border-color: var(--color-verified-border)">
                     {{ formatUserLabel(u) }}
                   </NuxtLink>
@@ -194,7 +194,7 @@
                 <div class="detail-sidebar-label">Use Cases</div>
                 <div class="flex flex-wrap gap-1.5 mt-1 mb-3">
                   <NuxtLink v-for="uc in toolUseCases" :key="uc"
-                    :to="`/tools?use_cases=${uc}`"
+                    :to="`/tools?tags=${uc}`"
                     class="tag cursor-pointer" style="background: var(--color-accent-dim); color: var(--color-accent); border-color: var(--color-accent-border)">
                     {{ formatUseCaseLabel(uc) }}
                   </NuxtLink>
@@ -222,7 +222,12 @@
                 <div class="w-5 h-5 rounded-full shrink-0" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }" />
                 <div>
                   <div class="font-body text-[13px]" style="color: var(--color-text-secondary)">
-                    {{ tool.submitter_github || 'Anonymous' }}
+                  <NuxtLink v-if="tool.submitter_github"
+                    :to="`/contributors/${tool.submitter_github}`"
+                    class="font-body text-[13px]" style="color: var(--color-text-secondary)">
+                    {{ tool.submitter_github }}
+                  </NuxtLink>
+                  <span v-else class="font-body text-[13px]" style="color: var(--color-text-secondary)">Anonymous</span>
                   </div>
                   <a v-if="tool.submitter_site" :href="tool.submitter_site" target="_blank"
                     class="font-body text-[13px]" style="color: var(--color-text-link)">
@@ -275,17 +280,15 @@ const toolPlatforms = computed(() => {
 })
 
 const toolTargetUsers = computed(() => {
-  const u = (tool.value as any)?.target_users
-  if (!u) return []
-  if (Array.isArray(u)) return u
-  return String(u).split(',').filter(Boolean)
+  const t = (tool.value as any)?.tags
+  if (!Array.isArray(t)) return []
+  return t.filter((x: any) => x.type === 'audience').map((x: any) => x.tag)
 })
 
 const toolUseCases = computed(() => {
-  const uc = (tool.value as any)?.use_cases
-  if (!uc) return []
-  if (Array.isArray(uc)) return uc
-  return String(uc).split(',').filter(Boolean)
+  const t = (tool.value as any)?.tags
+  if (!Array.isArray(t)) return []
+  return t.filter((x: any) => x.type === 'use_case').map((x: any) => x.tag)
 })
 
 function formatUserLabel(slug: string) {
@@ -356,10 +359,11 @@ const { data: tool, pending } = useAsyncData<Tool>(
 const { render } = useMarkdown()
 const mdBody = computed(() => tool.value?.body ? render(tool.value.body as string) : '')
 
-// Extract tags from tool data
+// Extract feature tags from structured tags
 watchEffect(() => {
-  if (!tool.value) return
-  toolTags.value = (tool.value as any).tags || []
+  const t = (tool.value as any)?.tags
+  if (!Array.isArray(t)) { toolTags.value = []; return }
+  toolTags.value = t.filter((x: any) => x.type === 'feature').map((x: any) => x.tag)
 })
 
 async function recordClick() {

@@ -61,8 +61,15 @@ export default defineEventHandler(async (event) => {
 
   const offset = (page - 1) * pageSize
   const { results: tools } = await env.DB.prepare(
-    `SELECT t.* FROM tools t WHERE ${where} ORDER BY ${orderBy} LIMIT ? OFFSET ?`
+    `SELECT t.*, COALESCE((SELECT json_group_array(tt.tag) FROM tool_tags tt WHERE tt.tool_id = t.id), '[]') as _tags_json
+     FROM tools t WHERE ${where} ORDER BY ${orderBy} LIMIT ? OFFSET ?`
   ).bind(...params, pageSize, offset).all()
 
-  return { tools, total, page, pageSize }
+  const toolsWithTags = (tools as Record<string, unknown>[]).map(t => ({
+    ...t,
+    tags: JSON.parse((t._tags_json as string) || '[]'),
+    _tags_json: undefined,
+  }))
+
+  return { tools: toolsWithTags, total, page, pageSize }
 })
