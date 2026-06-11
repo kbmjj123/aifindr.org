@@ -290,7 +290,7 @@
 import { CATEGORIES } from '~/types/tool'
 import { SUBCATEGORIES, FEATURE_TAGS, AUDIENCE_TAGS, USE_CASE_TAGS } from '~/types/category'
 
-const { post } = useApi()
+const { post, get } = useApi()
 const { user } = useAuth()
 
 // ── form state ────────────────────────────────────────────────
