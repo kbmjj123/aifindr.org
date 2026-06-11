@@ -142,19 +142,8 @@ export default defineEventHandler(async (event) => {
     platformsStr = platformsRaw.trim()
   }
 
-  // ── body 拼接媒体内容 ─────────────────────────────────────
-  let fullBody = bodyContent || ''
-  if (screenshotUrls) {
-    const urls = screenshotUrls.split(',').filter(Boolean)
-    if (urls.length > 0) {
-      fullBody += '\n\n## Screenshots\n'
-      urls.forEach((u, i) => { fullBody += `- ![Screenshot ${i + 1}](${u})\n` })
-    }
-  }
-  if (demoVideoUrl) {
-    fullBody += `\n\n## Demo Video\n${demoVideoUrl}\n`
-  }
-
+  // ── body: only bodyContent, no media (consistent with intake ─────────────────────────────────────
+	  const fullBody = bodyContent || null
   // ── 写入 tools 表 ─────────────────────────────────────────
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   const insertResult = await env.DB.prepare(`
