@@ -4,9 +4,6 @@
       <h1 class="font-sans font-extrabold text-[24px] tracking-tight" style="color: var(--color-text-primary)">
         All AI Tools <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">({{ total }})</span>
       </h1>
-      <NuxtLink to="/submit" class="btn-header-submit hidden sm:inline-flex">
-        + Submit Tool
-      </NuxtLink>
     </div>
 
     <!-- Sort tabs -->
