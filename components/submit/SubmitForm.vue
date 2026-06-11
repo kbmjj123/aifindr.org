@@ -8,7 +8,22 @@
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Tool Name <span style="color: var(--color-danger)">*</span>
         </label>
-        <BaseInput v-model="form.name" placeholder="e.g. Midjourney" />
+        <BaseInput v-model="form.name" placeholder="e.g. Midjourney" @blur="checkDuplicate" />
+        <div v-if="duplicateWarning" class="flex items-start gap-2 mt-2 p-3 rounded-lg"
+          :style="{ background: 'var(--color-featured-bg)', border: '1px solid var(--color-featured-border)' }">
+          <span class="text-base shrink-0 mt-0.5">⚠️</span>
+          <div class="font-body text-[12px] leading-relaxed" style="color: var(--color-featured-text)">
+            <strong>Already exists:</strong>
+            <NuxtLink v-if="duplicateWarning.slug" :to="duplicateWarning.link"
+              class="font-medium ml-1" style="color: var(--color-text-link); text-decoration: underline">
+              {{ duplicateWarning.name }}
+            </NuxtLink>
+            <span v-else class="ml-1">{{ duplicateWarning.name }}</span>
+            ({{ duplicateWarning.status }}).
+            <button type="button" class="underline ml-1" style="color: var(--color-text-muted)"
+              @click="duplicateWarning = null">Dismiss</button>
+          </div>
+        </div>
       </div>
 
       <!-- Website -->
@@ -301,6 +316,30 @@ const form = reactive({
   submitterSite:    '',
   submitterGithub:  '',
 })
+
+// ── duplicate check ──────────────────────────────────────────
+const duplicateWarning = ref<{ name: string; slug: string; link: string; status: string } | null>(null)
+let checkTimeout: ReturnType<typeof setTimeout> | null = null
+
+async function checkDuplicate() {
+  const name = form.name.trim()
+  if (!name || name.length < 2) return
+  try {
+    const res = await get<{ exists: boolean; tool?: { name: string; slug: string; category: string; status: string } }>(
+      `/api/tools/check-name?name=${encodeURIComponent(name)}`
+    )
+    if (res.exists && res.tool) {
+      duplicateWarning.value = {
+        name: res.tool.name,
+        slug: res.tool.slug,
+        link: `/tools/${res.tool.category}/${res.tool.slug}`,
+        status: res.tool.status,
+      }
+    }
+  } catch {
+    // silent — non-blocking check
+  }
+}
 
 // ── computed options ──────────────────────────────────────────
 const categoryOptions = computed(() => [
