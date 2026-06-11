@@ -2,8 +2,8 @@
 import { createError, readFormData } from 'h3'
 
 const MAX_SIZE = 5 * 1024 * 1024
-const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
-const EXT_MAP: Record<string, string> = { png: 'png', jpeg: 'jpg', webp: 'webp', gif: 'gif' }
+const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/vnd.microsoft.icon', 'image/avif']
+const EXT_MAP: Record<string, string> = { png: 'png', jpeg: 'jpg', webp: 'webp', gif: 'gif', 'vnd.microsoft.icon': 'ico', avif: 'avif' }
 
 export default defineEventHandler(async (event) => {
   const formData = await readFormData(event)
