@@ -163,6 +163,7 @@ usePageSeo({
   title: 'Users — Admin',
   template: 'prefix',
   description: 'Admin user management.',
+  noOg: true,
 })
 
 interface AdminUser {

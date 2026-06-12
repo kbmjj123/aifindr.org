@@ -208,6 +208,7 @@ usePageSeo({
   title: 'Tool Intake — Admin',
   template: 'prefix',
   description: 'Admin tool intake page for publishing tools directly.',
+  noOg: true,
 })
 
 // ── state ─────────────────────────────────────────────────────

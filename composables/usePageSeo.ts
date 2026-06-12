@@ -27,6 +27,8 @@ interface PageSeoOptions {
   category?: string
   /** 模板变量：子标题（详情页一行描述等） */
   subtitle?: string
+  /** 跳过 OG image 生成（Admin SPA 页面需开启） */
+  noOg?: boolean
 }
 
 function buildTitle(opts: PageSeoOptions): string {
@@ -94,9 +96,12 @@ export function usePageSeo(opts: MaybeRefOrGetter<PageSeoOptions>) {
     ]),
   })
 
-  defineOgImage('AppOgImage', () => ({
-    title: resolved.value.ogTitle,
-    description: resolved.value.ogDescription,
-    type: resolved.value.ogType,
-  }))
+  const o = toValue(opts)
+  if (!o.noOg) {
+    (defineOgImage as any)('AppOgImage', () => ({
+      title: resolved.value.ogTitle,
+      description: resolved.value.ogDescription,
+      type: resolved.value.ogType,
+    }))
+  }
 }

@@ -400,6 +400,7 @@ usePageSeo({
   title: 'Admin Panel',
   template: 'prefix',
   description: 'Admin panel for reviewing tool submissions.',
+  noOg: true,
 })
 
 const { isLoggedIn } = useAuth()
