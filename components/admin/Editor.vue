@@ -55,7 +55,8 @@ async function imageHandler() {
     console.log('[Editor] image uploaded:', url)
     const sel = _quill.getSelection()
     const idx = sel ? sel.index : _quill.getLength()
-    _quill.insertEmbed(idx, 'image', url)
+    // Use pasteHTML to avoid Quill blot issues with insertEmbed
+    _quill.clipboard.dangerouslyPasteHTML(idx, `<img src="${url}" style="max-width:100%;border-radius:6px" />`)
     _quill.setSelection(idx + 1)
   }
   input.click()
