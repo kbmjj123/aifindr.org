@@ -29,51 +29,28 @@
       <div class="flex-1 min-w-0 p-6 rounded-lg"
         :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
 
-        <!-- Steps (compact row) -->
+        <!-- Steps -->
         <div class="flex items-center justify-between gap-1 mb-6">
           <div v-for="(step, i) in githubSteps" :key="i" class="flex items-center gap-1.5 flex-1 min-w-0">
             <div class="w-6 h-6 rounded-full flex items-center justify-center font-sans font-bold text-[10px] shrink-0"
-              :style="{ background: 'var(--color-accent)', color: '#000' }">
+              :style="{ background: 'var(--color-accent)', color: '#000' }}">
               {{ i + 1 }}
             </div>
-            <span class="font-body text-[11px] truncate" :style="{ color: i < 3 ? 'var(--color-text-primary)' : 'var(--color-accent)' }">
+            <span class="font-body text-[11px] truncate" :style="{ color: 'var(--color-text-primary)' }">
               {{ step.short }}
             </span>
             <span v-if="i < githubSteps.length - 1" class="hidden sm:block flex-1 h-px mx-1" :style="{ background: 'var(--color-border)' }"></span>
           </div>
         </div>
 
-        <!-- Card Preview -->
-        <div class="mb-6">
-          <p class="font-body text-[10px] mb-2 uppercase tracking-wider" :style="{ color: 'var(--color-text-muted)' }">
-            Preview
-          </p>
-          <div class="tool-card !cursor-default !no-underline">
-            <div class="flex gap-3">
-              <div class="tool-logo">
-                <span class="font-sans font-bold text-[11px]" :style="{ color: 'var(--color-text-muted)' }">T</span>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="tool-name">Your Tool Name</h3>
-                <p class="tool-desc">One-line description</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Template -->
-        <div class="mb-6">
-          <p class="font-body text-[10px] mb-2 uppercase tracking-wider" :style="{ color: 'var(--color-text-muted)' }">
-            Template — copy into your .md file:
-          </p>
-          <div class="p-3 rounded-md font-body text-[11px] leading-relaxed overflow-x-auto"
-            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)' }}">
-            <pre class="text-[11px]">{{ templateMd }}</pre>
-          </div>
+        <div class="p-3 rounded-md font-body text-[12px] leading-relaxed overflow-x-auto"
+          :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)' }">
+          <pre class="text-[12px]">{{ templateMd }}</pre>
         </div>
 
         <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
-          class="btn-primary inline-flex items-center gap-2">
+          class="btn-primary inline-flex items-center gap-2 mt-6">
           Fork &amp; Submit on GitHub →
         </a>
       </div>

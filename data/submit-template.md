@@ -1,11 +1,1 @@
----
-name: "Tool Name"
-slug: "tool-name"
-website: "https://tool.com"
-category: "image"
-description: "One-line description."
----
-
-## What is this?
-
-Brief description.
+- [Tool Name](https://tool.com) — One-line description. (category: image)
