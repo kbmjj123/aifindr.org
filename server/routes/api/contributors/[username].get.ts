@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
       COALESCE(u.created_at, MIN(t.submitted_at)) AS joined
     FROM tools t
     LEFT JOIN users u ON u.username = t.submitter_github
-    WHERE t.status = 'active'
+    WHERE t.status IN ('active', 'pending')
       AND t.submitter_github = ?
     GROUP BY t.submitter_github
   `).bind(username).first<{
@@ -31,12 +31,24 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Contributor not found' })
   }
 
-  const { results: tools } = await env.DB.prepare(`
+  const { results: activeTools } = await env.DB.prepare(`
     SELECT t.* FROM tools t
     WHERE t.status = 'active'
       AND t.submitter_github = ?
     ORDER BY t.submitted_at DESC
   `).bind(username).all()
 
-  return { ...contributor, tools }
+  const { results: pendingTools } = await env.DB.prepare(`
+    SELECT t.* FROM tools t
+    WHERE t.status = 'pending'
+      AND t.submitter_github = ?
+    ORDER BY t.submitted_at DESC
+  `).bind(username).all()
+
+  return {
+    ...contributor,
+    toolCount: activeTools.length + pendingTools.length,
+    tools: activeTools,
+    pendingTools,
+  }
 })
