@@ -35,7 +35,7 @@ type ToolbarAction = (e: any) => any
 const isActive = (btn: ToolbarItem) => {
   if (!editor.value) return false
   if (btn.isActiveCheck) return btn.isActiveCheck(editor.value)
-  return btn.action(editor.value)
+  return false  // ← 改这里，不再调用 action
 }
 
 function execAction(action: ToolbarAction) {
@@ -52,17 +52,61 @@ interface ToolbarItem {
 }
 
 const toolbar: ToolbarItem[] = [
-  { icon: '&#x1d41a;', title: 'Bold', action: (e: any) => e.chain().focus().toggleBold().run() },
-  { icon: '&#x1d43c;', title: 'Italic', action: (e: any) => e.chain().focus().toggleItalic().run() },
-  { icon: 'H1', title: 'Heading 1', action: (e: any) => e.chain().focus().toggleHeading({ level: 1 }).run() },
-  { icon: 'H2', title: 'Heading 2', action: (e: any) => e.chain().focus().toggleHeading({ level: 2 }).run() },
-  { icon: 'H3', title: 'Heading 3', action: (e: any) => e.chain().focus().toggleHeading({ level: 3 }).run() },
-  { icon: '&#x2022;', title: 'Bullet List', action: (e: any) => e.chain().focus().toggleBulletList().run() },
-  { icon: '1.', title: 'Ordered List', action: (e: any) => e.chain().focus().toggleOrderedList().run() },
-  { icon: '&#x21e7;', title: 'Blockquote', action: (e: any) => e.chain().focus().toggleBlockquote().run() },
-  { icon: '_', title: 'Horizontal Rule', action: (e: any) => e.chain().focus().setHorizontalRule().run() },
-  { icon: '&#x2197;', title: 'Link', action: toggleLink, isActiveCheck: (e: any) => e.isActive('link') },
-  { icon: '&#x1f5bc;', title: 'Image', action: insertImage, isActiveCheck: (e: any) => e.isActive('image') },
+  {
+    icon: '&#x1d41a;', title: 'Bold',
+    action: (e) => e.chain().focus().toggleBold().run(),
+    isActiveCheck: (e) => e.isActive('bold'),
+  },
+  {
+    icon: '&#x1d43c;', title: 'Italic',
+    action: (e) => e.chain().focus().toggleItalic().run(),
+    isActiveCheck: (e) => e.isActive('italic'),
+  },
+  {
+    icon: 'H1', title: 'Heading 1',
+    action: (e) => e.chain().focus().toggleHeading({ level: 1 }).run(),
+    isActiveCheck: (e) => e.isActive('heading', { level: 1 }),
+  },
+  {
+    icon: 'H2', title: 'Heading 2',
+    action: (e) => e.chain().focus().toggleHeading({ level: 2 }).run(),
+    isActiveCheck: (e) => e.isActive('heading', { level: 2 }),
+  },
+  {
+    icon: 'H3', title: 'Heading 3',
+    action: (e) => e.chain().focus().toggleHeading({ level: 3 }).run(),
+    isActiveCheck: (e) => e.isActive('heading', { level: 3 }),
+  },
+  {
+    icon: '&#x2022;', title: 'Bullet List',
+    action: (e) => e.chain().focus().toggleBulletList().run(),
+    isActiveCheck: (e) => e.isActive('bulletList'),
+  },
+  {
+    icon: '1.', title: 'Ordered List',
+    action: (e) => e.chain().focus().toggleOrderedList().run(),
+    isActiveCheck: (e) => e.isActive('orderedList'),
+  },
+  {
+    icon: '&#x21e7;', title: 'Blockquote',
+    action: (e) => e.chain().focus().toggleBlockquote().run(),
+    isActiveCheck: (e) => e.isActive('blockquote'),
+  },
+  {
+    icon: '_', title: 'Horizontal Rule',
+    action: (e) => e.chain().focus().setHorizontalRule().run(),
+    // 无状态，不需要高亮
+  },
+  {
+    icon: '&#x2197;', title: 'Link',
+    action: toggleLink,
+    isActiveCheck: (e) => e.isActive('link'),
+  },
+  {
+    icon: '&#x1f5bc;', title: 'Image',
+    action: insertImage,
+    // image 通常不需要高亮状态
+  },
 ]
 
 function toggleLink(e: any) {
@@ -126,11 +170,11 @@ onBeforeUnmount(() => {
 
 // Sync external modelValue changes
 watch(() => props.modelValue, (val) => {
-  if (!editor.value || updating) return
-  if (val !== editor.value.getHTML()) {
-    updating = true
-    editor.value.commands.setContent(val || '')
-    updating = false
+  if (!editor.value) return
+  // 用 transaction 比较更安全
+  const currentHTML = editor.value.getHTML()
+  if (val !== currentHTML) {
+    editor.value.commands.setContent(val || '', false) // false = 不触发 onUpdate
   }
 })
 </script>
