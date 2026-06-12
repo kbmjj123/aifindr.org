@@ -28,32 +28,54 @@
     <div v-if="activeTab === 'github'" class="flex flex-col lg:flex-row gap-8">
       <div class="flex-1 min-w-0 p-6 rounded-lg"
         :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
-        <div class="space-y-6">
-          <div v-for="(step, i) in githubSteps" :key="i" class="flex gap-4">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center font-sans font-bold text-[13px] shrink-0"
+
+        <!-- Steps (compact row) -->
+        <div class="flex items-center justify-between gap-1 mb-6">
+          <div v-for="(step, i) in githubSteps" :key="i" class="flex items-center gap-1.5 flex-1 min-w-0">
+            <div class="w-6 h-6 rounded-full flex items-center justify-center font-sans font-bold text-[10px] shrink-0"
               :style="{ background: 'var(--color-accent)', color: '#000' }">
               {{ i + 1 }}
             </div>
-            <div>
-              <h3 class="font-sans font-semibold text-[13px] mb-1" style="color: var(--color-text-primary)">
-                {{ step.title }}
-              </h3>
-              <p class="font-body text-[12px]" style="color: var(--color-text-secondary)">
-                {{ step.description }}
-              </p>
+            <span class="font-body text-[11px] truncate" :style="{ color: i < 3 ? 'var(--color-text-primary)' : 'var(--color-accent)' }">
+              {{ step.short }}
+            </span>
+            <span v-if="i < githubSteps.length - 1" class="hidden sm:block flex-1 h-px mx-1" :style="{ background: 'var(--color-border)' }"></span>
+          </div>
+        </div>
+
+        <!-- Card Preview -->
+        <div class="mb-6">
+          <p class="font-body text-[10px] mb-2 uppercase tracking-wider" :style="{ color: 'var(--color-text-muted)' }">
+            Preview
+          </p>
+          <div class="tool-card !cursor-default !no-underline">
+            <div class="flex gap-3">
+              <div class="tool-logo">
+                <span class="font-sans font-bold text-[11px]" :style="{ color: 'var(--color-text-muted)' }">T</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="tool-name">Your Tool Name</h3>
+                <p class="tool-desc">One-line description</p>
+              </div>
             </div>
           </div>
-
-          <!-- Template preview from data/submit-template.md -->
-          <div class="p-4 rounded-md font-body text-[12px] leading-relaxed"
-            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)' }">
-            <pre class="text-[11px]">{{ templateMd }}</pre>          </div>
-
-          <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
-            class="btn-primary inline-flex items-center gap-2">
-            Fork &amp; Submit on GitHub →
-          </a>
         </div>
+
+        <!-- Template -->
+        <div class="mb-6">
+          <p class="font-body text-[10px] mb-2 uppercase tracking-wider" :style="{ color: 'var(--color-text-muted)' }">
+            Template — copy into your .md file:
+          </p>
+          <div class="p-3 rounded-md font-body text-[11px] leading-relaxed overflow-x-auto"
+            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)' }}">
+            <pre class="text-[11px]">{{ templateMd }}</pre>
+          </div>
+        </div>
+
+        <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
+          class="btn-primary inline-flex items-center gap-2">
+          Fork &amp; Submit on GitHub →
+        </a>
       </div>
       <div class="w-full lg:w-[280px] shrink-0 lg:sticky lg:top-[76px] lg:self-start">
         <BacklinkIncentive />
@@ -84,10 +106,10 @@ const tabs = [
 ]
 
 const githubSteps = [
-  { title: 'Fork the Repository', description: 'Fork the aifindr.org GitHub repository to your account.' },
-  { title: 'Create a Markdown File', description: 'Create a new .md file in content/tools/[category]/ directory using the template from data/submit-template.md (shown below).' },
-  { title: 'Submit a Pull Request', description: 'Open a PR with your new tool file. We\'ll review and merge it within 48 hours.' },
-  { title: 'Get Your Backlinks', description: 'Once merged, you\'ll receive 3 dofollow backlinks automatically.' },
+  { short: 'Fork' },
+  { short: 'Create File' },
+  { short: 'Submit PR' },
+  { short: 'Get Links' },
 ]
 
 usePageSeo({
