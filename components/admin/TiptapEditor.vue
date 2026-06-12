@@ -5,7 +5,7 @@
       :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)' }">
       <button v-for="(btn, i) in toolbar" :key="i"
         class="w-7 h-7 flex items-center justify-center rounded text-[12px] font-body cursor-pointer select-none"
-        :style="{ background: isActive(btn.action) ? 'var(--color-accent-dim)' : 'transparent', color: isActive(btn.action) ? 'var(--color-accent)' : 'var(--color-text-secondary)', border: 'none' }"
+        :style="{ background: isActive(btn) ? 'var(--color-accent-dim)' : 'transparent', color: isActive(btn) ? 'var(--color-accent)' : 'var(--color-text-secondary)', border: 'none' }"
         :title="btn.title"
         @click="execAction(btn.action)"
         v-html="btn.icon"></button>
@@ -32,9 +32,10 @@ let PlaceholderExt: any = null
 
 type ToolbarAction = (e: any) => any
 
-const isActive = (action: ToolbarAction) => {
+const isActive = (btn: ToolbarItem) => {
   if (!editor.value) return false
-  return action(editor.value)
+  if (btn.isActiveCheck) return btn.isActiveCheck(editor.value)
+  return btn.action(editor.value)
 }
 
 function execAction(action: ToolbarAction) {
@@ -46,6 +47,8 @@ interface ToolbarItem {
   icon: string
   title: string
   action: ToolbarAction
+  /** Safe active check — action itself may have side effects (prompt, file picker) */
+  isActiveCheck?: (e: any) => boolean
 }
 
 const toolbar: ToolbarItem[] = [
@@ -58,7 +61,7 @@ const toolbar: ToolbarItem[] = [
   { icon: '1.', title: 'Ordered List', action: (e: any) => e.chain().focus().toggleOrderedList().run() },
   { icon: '&#x21e7;', title: 'Blockquote', action: (e: any) => e.chain().focus().toggleBlockquote().run() },
   { icon: '_', title: 'Horizontal Rule', action: (e: any) => e.chain().focus().setHorizontalRule().run() },
-  { icon: '&#x2197;', title: 'Link', action: toggleLink },
+  { icon: '&#x2197;', title: 'Link', action: toggleLink, isActiveCheck: (e: any) => e.isActive('link') },
   { icon: '&#x1f5bc;', title: 'Image', action: insertImage },
 ]
 
