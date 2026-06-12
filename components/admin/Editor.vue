@@ -33,12 +33,13 @@ const toolbar = [
   ['clean'],
 ]
 
-function onReady() {
-  const quill = quillRef.value?.getQuill()
-  if (!quill) return
-  const tb = quill.getModule('toolbar') as any
+let _quill: any = null
+
+function onReady(quill: any) {
+  _quill = quill
+  const tb = quill.getModule('toolbar')
   if (!tb) return
-  tb.addHandler('image', imageHandler)
+  ;(tb as any).addHandler('image', imageHandler)
 }
 
 async function imageHandler() {
@@ -50,11 +51,12 @@ async function imageHandler() {
     if (!file) return
     const { uploadFile } = useImageUpload()
     const url = await uploadFile(file, 'blog')
-    if (!url) return
-    const quill = quillRef.value?.getQuill()
-    if (!quill) return
-    const range = quill.getSelection()
-    quill.insertEmbed(range?.index || quill.getLength(), 'image', url)
+    if (!url) { console.warn('[Editor] upload returned empty url'); return }
+    console.log('[Editor] image uploaded:', url)
+    const sel = _quill.getSelection()
+    const idx = sel ? sel.index : _quill.getLength()
+    _quill.insertEmbed(idx, 'image', url)
+    _quill.setSelection(idx + 1)
   }
   input.click()
 }
