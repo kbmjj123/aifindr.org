@@ -68,7 +68,7 @@
         <div>
           <label class="font-body text-[10px] uppercase tracking-wider mb-1 block"
             style="color: var(--color-text-muted)">Content ({{ activeLocale }})</label>
-          <TiptapEditor v-model="form.translations[activeLocale].content" />
+          <Editor v-model="form.translations[activeLocale].content" />
         </div>
       </div>
 
