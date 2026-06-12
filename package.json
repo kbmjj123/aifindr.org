@@ -17,7 +17,6 @@
     "@oxc-transform/binding-darwin-x64": "0.128.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/postcss": "^4",
-    "@tinymce/tinymce-vue": "^6.3.0",
     "@vueup/vue-quill": "^1.5.3",
     "better-sqlite3": "^12.5.0",
     "marked": "^18.0.5",

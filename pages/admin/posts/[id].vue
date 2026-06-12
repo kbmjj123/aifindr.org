@@ -64,7 +64,7 @@
           <ImageUploadSlot v-model="form.translations[activeLocale].cover_image" aspect="screenshot" />
         </div>
 
-        <!-- Tiptap content -->
+        <!-- Content -->
         <div>
           <label class="font-body text-[10px] uppercase tracking-wider mb-1 block"
             style="color: var(--color-text-muted)">Content ({{ activeLocale }})</label>
