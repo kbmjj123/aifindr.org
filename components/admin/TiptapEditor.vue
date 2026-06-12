@@ -24,11 +24,11 @@ const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
 const editorRef = ref<HTMLElement>()
 const editor = ref<any>(null)
-let EditorClass: any = null
 let StarterKit: any = null
 let LinkExt: any = null
 let ImageExt: any = null
 let PlaceholderExt: any = null
+let updating = false
 
 type ToolbarAction = (e: any) => any
 
@@ -126,8 +126,11 @@ onBeforeUnmount(() => {
 
 // Sync external modelValue changes
 watch(() => props.modelValue, (val) => {
-  if (editor.value && val !== editor.value.getHTML()) {
+  if (!editor.value || updating) return
+  if (val !== editor.value.getHTML()) {
+    updating = true
     editor.value.commands.setContent(val || '')
+    updating = false
   }
 })
 </script>
