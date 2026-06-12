@@ -30,16 +30,20 @@
         :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
 
         <!-- Steps -->
-        <div class="flex items-center justify-between gap-1 mb-6">
-          <div v-for="(step, i) in githubSteps" :key="i" class="flex items-center gap-1.5 flex-1 min-w-0">
-            <div class="w-6 h-6 rounded-full flex items-center justify-center font-sans font-bold text-[10px] shrink-0"
-              :style="{ background: 'var(--color-accent)', color: '#000' }}">
+        <div class="space-y-6 mb-6">
+          <div v-for="(step, i) in githubSteps" :key="i" class="flex gap-4">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center font-sans font-bold text-[13px] shrink-0"
+              :style="{ background: 'var(--color-accent)', color: '#000' }">
               {{ i + 1 }}
             </div>
-            <span class="font-body text-[11px] truncate" :style="{ color: 'var(--color-text-primary)' }">
-              {{ step.short }}
-            </span>
-            <span v-if="i < githubSteps.length - 1" class="hidden sm:block flex-1 h-px mx-1" :style="{ background: 'var(--color-border)' }"></span>
+            <div>
+              <h3 class="font-sans font-semibold text-[13px] mb-1" style="color: var(--color-text-primary)">
+                {{ step.title }}
+              </h3>
+              <p class="font-body text-[12px]" style="color: var(--color-text-secondary)">
+                {{ step.desc }}
+              </p>
+            </div>
           </div>
         </div>
 
