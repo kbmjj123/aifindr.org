@@ -27,6 +27,13 @@
             class="input h-8 text-[12px]" placeholder="post-url-slug" />
         </div>
 
+        <!-- Cover image (共享) -->
+        <div>
+          <label class="font-body text-[10px] uppercase tracking-wider mb-1 block"
+            style="color: var(--color-text-muted)">Cover Image</label>
+          <ImageUploadSlot v-model="sharedCover" aspect="screenshot" />
+        </div>
+
         <!-- Language tabs -->
         <div class="flex gap-1 mb-3">
           <button v-for="l in locales" :key="l"
@@ -55,13 +62,6 @@
           <span class="font-body text-[9px]" style="color: var(--color-text-muted)">
             {{ (form.translations[activeLocale].meta_desc || '').length }}/160
           </span>
-        </div>
-
-        <!-- Cover image -->
-        <div>
-          <label class="font-body text-[10px] uppercase tracking-wider mb-1 block"
-            style="color: var(--color-text-muted)">Cover Image ({{ activeLocale }})</label>
-          <ImageUploadSlot v-model="form.translations[activeLocale].cover_image" aspect="screenshot" />
         </div>
 
         <!-- Content -->
@@ -149,6 +149,13 @@ const currentT = computed(() =>
 
 const currentPost = ref<any>(null)
 const saving = ref(false)
+const sharedCover = ref('')
+
+// Sync sharedCover ↔ both locales
+watch(sharedCover, (val) => {
+  form.translations.en.cover_image = val
+  form.translations.zh.cover_image = val
+})
 
 const currentTitle = computed(() =>
   form.translations.en?.title || form.translations.zh?.title || ''
@@ -165,6 +172,8 @@ onMounted(async () => {
           form.translations[locale] = { ...currentPost.value.translations[locale] }
         }
       }
+      // Shared cover: pick first non-empty from any locale
+      sharedCover.value = form.translations.en.cover_image || form.translations.zh.cover_image || ''
       form.custom_fields = (currentPost.value.custom_fields || []).map((cf: any) => ({
         key: cf.key,
         value: cf.value,
