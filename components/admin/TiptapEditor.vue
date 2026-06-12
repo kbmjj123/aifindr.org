@@ -62,7 +62,7 @@ const toolbar: ToolbarItem[] = [
   { icon: '&#x21e7;', title: 'Blockquote', action: (e: any) => e.chain().focus().toggleBlockquote().run() },
   { icon: '_', title: 'Horizontal Rule', action: (e: any) => e.chain().focus().setHorizontalRule().run() },
   { icon: '&#x2197;', title: 'Link', action: toggleLink, isActiveCheck: (e: any) => e.isActive('link') },
-  { icon: '&#x1f5bc;', title: 'Image', action: insertImage },
+  { icon: '&#x1f5bc;', title: 'Image', action: insertImage, isActiveCheck: (e: any) => e.isActive('image') },
 ]
 
 function toggleLink(e: any) {
