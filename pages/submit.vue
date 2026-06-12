@@ -44,34 +44,10 @@
             </div>
           </div>
 
-          <!-- Template preview -->
+          <!-- Template preview from data/submit-template.md -->
           <div class="p-4 rounded-md font-body text-[12px] leading-relaxed"
             :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)' }">
-            <pre class="text-[11px]">---
-name: "Your Tool Name"
-slug: "your-tool-slug"
-website: "https://your-tool.com"
-category: "image"
-tags: ["tag1", "tag2"]
-pricing: "free"
-platforms: ["web"]
-submitter_site: "https://your-site.com"
-submitter_github: "your-username"
----
-
-## What is [Your Tool]?
-
-Write a detailed description of your tool here (Markdown supported).
-
-## Key Features
-
-- Feature 1
-- Feature 2
-- Feature 3
-
-## Pricing
-
-Brief description of your pricing model.</pre>          </div>
+            <pre class="text-[11px]">{{ templateMd }}</pre>          </div>
 
           <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
             class="btn-primary inline-flex items-center gap-2">
@@ -97,6 +73,8 @@ Brief description of your pricing model.</pre>          </div>
 </template>
 
 <script setup lang="ts">
+import templateMd from '~/data/submit-template.md?raw'
+
 const route = useRoute()
 const activeTab = ref('form')
 
@@ -107,7 +85,7 @@ const tabs = [
 
 const githubSteps = [
   { title: 'Fork the Repository', description: 'Fork the aifindr.org GitHub repository to your account.' },
-  { title: 'Create a Markdown File', description: 'Create a new .md file in content/tools/[category]/ directory with the frontmatter template below.' },
+  { title: 'Create a Markdown File', description: 'Create a new .md file in content/tools/[category]/ directory using the template from data/submit-template.md (shown below).' },
   { title: 'Submit a Pull Request', description: 'Open a PR with your new tool file. We\'ll review and merge it within 48 hours.' },
   { title: 'Get Your Backlinks', description: 'Once merged, you\'ll receive 3 dofollow backlinks automatically.' },
 ]
