@@ -23,26 +23,11 @@
     <article v-else-if="post">
       <header class="mb-8">
         <h1 class="font-sans font-extrabold text-[24px] tracking-tight mb-2" style="color: var(--color-text-primary)">
-          {{ post.translations?.en?.title || post.translations?.zh?.title }}
+          {{ postTitle }}
         </h1>
-        <div class="flex items-center gap-3">
-          <span class="font-body text-[12px]" style="color: var(--color-text-muted)">
-            {{ formatDate(post.published_at) }}
-          </span>
-          <span class="font-body text-[10px] px-2 py-0.5 rounded-full"
-            :style="{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)' }">
-            {{ activeLocale === 'en' ? 'English' : '中文' }}
-          </span>
-        </div>
-        <!-- Language switcher -->
-        <div v-if="hasZh" class="flex gap-2 mt-3">
-          <button v-for="l in availableLocales" :key="l"
-            class="filter-tab h-6 text-[9px] px-2"
-            :class="{ active: activeLocale === l }"
-            @click="activeLocale = l">
-            {{ l === 'en' ? 'English' : '中文' }}
-          </button>
-        </div>
+        <span class="font-body text-[12px]" style="color: var(--color-text-muted)">
+          {{ formatDate(post.published_at) }}
+        </span>
       </header>
 
       <!-- Cover image -->
@@ -67,23 +52,15 @@ const siteUrl = 'https://aifindr.org'
 const post = ref<any>(null)
 const loading = ref(true)
 const error = ref(false)
-const activeLocale = ref('en')
 
-const availableLocales = ref<string[]>([])
-
-const hasZh = computed(() => availableLocales.value.includes('zh'))
 const postTitle = computed(() =>
-  post.value?.translations?.[activeLocale.value]?.title
-  || post.value?.translations?.en?.title
-  || ''
+  post.value?.translations?.en?.title || ''
 )
 const content = computed(() =>
-  post.value?.translations?.[activeLocale.value]?.content
-  || ''
+  post.value?.translations?.en?.content || ''
 )
 const coverImage = computed(() =>
-  post.value?.translations?.[activeLocale.value]?.cover_image
-  || ''
+  post.value?.translations?.en?.cover_image || ''
 )
 
 function formatDate(ts: number | string) {
@@ -99,9 +76,7 @@ useHead({
 
 onMounted(async () => {
   try {
-    const res = await $fetch(`/api/blog/${slug.value}`)
-    post.value = res
-    availableLocales.value = Object.keys((res as any).translations || {})
+    post.value = await $fetch(`/api/blog/${slug.value}`)
   } catch {
     error.value = true
   } finally {
@@ -112,14 +87,14 @@ onMounted(async () => {
 usePageSeo(() => ({
   title: postTitle.value || 'Blog Post',
   template: 'blog',
-  description: post.value?.translations?.en?.meta_desc || 'Blog post on aifindr.org',
+  description: post.value?.translations?.en?.meta_desc || '',
 }))
 
 // Article-level SEO: Schema + OG meta
 watch(post, (val) => {
   if (!val) return
   const en = val.translations?.en || {}
-  const title = en.title || val.translations?.zh?.title || ''
+  const title = en.title || ''
   const description = en.meta_desc || ''
   const cover = en.cover_image || ''
   const url = `${siteUrl}/blog/${val.slug}`
