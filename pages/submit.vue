@@ -83,10 +83,10 @@ const tabs = [
 ]
 
 const githubSteps = [
-  { short: 'Fork' },
-  { short: 'Create File' },
-  { short: 'Submit PR' },
-  { short: 'Get Links' },
+  { short: 'Fork', title: 'Fork the Repository', desc: 'Fork the aifindr.org GitHub repository to your account.' },
+  { short: 'Create File', title: 'Create a Markdown File', desc: 'Add a new .md file to content/tools/ with your tool info.' },
+  { short: 'Submit PR', title: 'Submit a Pull Request', desc: 'Open a PR with your new file. We\'ll review and merge within 48 hours.' },
+  { short: 'Get Links', title: 'Get Your Backlinks', desc: 'Once merged, you\'ll receive 3 dofollow backlinks automatically.' },
 ]
 
 usePageSeo({
