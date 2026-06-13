@@ -2,7 +2,7 @@ import { createError, readBody } from 'h3'
 import { getEnv } from '~/server/utils/env'
 import { verifyJWT, getTokenFromEvent } from '~/server/utils/jwt'
 
-const ALLOWED_TYPES = ['logo', 'og_image'] as const
+const ALLOWED_TYPES = ['logo'] as const
 type ImageType = typeof ALLOWED_TYPES[number]
 
 const ADMIN_GITHUB_IDS_ENV = 'ADMIN_GITHUB_IDS'

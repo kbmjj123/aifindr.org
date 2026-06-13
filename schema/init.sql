@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS tools (
   last_verified    TEXT,
   updated_at       TEXT,
   meta_description TEXT,
-  og_image         TEXT,
-  cover_image      TEXT,
+  logo             TEXT,
+  screenshots      TEXT,       -- JSON 数组，如 ["url1","url2"]
   featured         INTEGER DEFAULT 0,
   verified         INTEGER DEFAULT 0,
   editor_pick      INTEGER DEFAULT 0,

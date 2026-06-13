@@ -43,8 +43,8 @@ export interface Tool {
   last_verified?: string
   updated_at?: string
   meta_description?: string
-  og_image?: string
-  cover_image?: string
+  logo?: string
+  screenshots?: string[]
   featured: boolean
   verified: boolean
   editor_pick: boolean

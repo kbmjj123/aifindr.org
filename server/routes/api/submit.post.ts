@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
   const submitterEmailRaw = String(body.submitter_email || body.submitterEmail || '').trim()
   const turnstileToken  = String(body.turnstileToken || '').trim()
   const bodyContent     = String(body.detailDescription || body.body || '').trim()
-  const coverImage      = String(body.cover_image || '').trim()
+  const logo            = String(body.logo || '').trim()
   const screenshotUrls  = String(body.screenshot_urls || '').trim()
   const demoVideoUrl    = String(body.demo_video_url || '').trim()
   const tagsRaw         = body.tags  // [{ type: 'feature'|'audience'|'use_case', tag: string }]
@@ -150,7 +150,7 @@ export default defineEventHandler(async (event) => {
     INSERT INTO tools (
       slug, name, category, sub_category, website,
       pricing, price_detail, has_free_trial, platforms,
-      status, launched, meta_description, cover_image,
+      status, launched, meta_description, logo,
       body, submitter_site, submitter_github, submitter_id,
       data_source, submitted_at
     ) VALUES (
@@ -172,7 +172,7 @@ export default defineEventHandler(async (event) => {
     platformsStr,
     launched || null,
     description,
-    coverImage || null,
+    logo || null,
     fullBody || null,
     submitterSite || null,
     submitterGithub || null,

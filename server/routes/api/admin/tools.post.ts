@@ -29,8 +29,8 @@ interface ToolPayload {
   platforms?: string[]
   launched?: string
   meta_description?: string
-  cover_image?: string   // R2 URL（logo）
-  og_image?: string      // R2 URL（og_image）
+  logo?: string          // R2 URL（logo）
+  screenshots?: string[] // R2 URLs（screenshots）
   body?: string
   tags?: TagItem[]
   data_source?: string
@@ -71,8 +71,8 @@ export default defineEventHandler(async (event) => {
   const priceDetail = String(body.price_detail || '').trim()
   const launched    = String(body.launched || '').trim()
   const metaDesc    = String(body.meta_description || '').trim()
-  const coverImage  = String(body.cover_image || '').trim()   // R2 logo URL
-  const ogImage     = String(body.og_image || '').trim()      // R2 og_image URL
+  const logo        = String(body.logo || '').trim()          // R2 logo URL
+  const screenshots = Array.isArray(body.screenshots) ? JSON.stringify(body.screenshots) : ''
   const bodyContent = String(body.body || '').trim()
   const priceStart  = Number(body.price_starting ?? 0)
   const hasFreeTrial = body.has_free_trial ? 1 : 0
@@ -137,12 +137,12 @@ export default defineEventHandler(async (event) => {
     INSERT INTO tools (
       slug, name, category, sub_category, website,
       pricing, price_starting, price_detail, has_free_trial, platforms,
-      status, launched, meta_description, og_image, cover_image,
+      status, launched, meta_description, logo, screenshots,
       body, verified, editor_pick, data_source, submitted_at, updated_at
     ) VALUES (
       ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?,
-      'active', ?, ?, ?, ?,
+      'active', ?, ?, ?,
       ?, 1, 0, ?, ?, ?
     )
   `).bind(
@@ -158,8 +158,8 @@ export default defineEventHandler(async (event) => {
     platformsStr,
     launched || null,
     metaDesc || null,
-    ogImage || null,
-    coverImage || null,
+    logo || null,
+    screenshots || null,
     bodyContent || null,
     body.data_source || 'admin_intake',
     now,

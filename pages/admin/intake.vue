@@ -101,15 +101,17 @@
           :style="{ borderColor: 'var(--color-border)' }">
           <div class="space-y-2">
             <p class="font-body text-[13px] font-medium" style="color: var(--color-text-primary)">
-              Logo (cover_image)
+              Logo
             </p>
             <ImageUploadSlot v-model="uploadedLogoUrl" aspect="square" />
           </div>
           <div class="space-y-2">
             <p class="font-body text-[13px] font-medium" style="color: var(--color-text-primary)">
-              OG Image (og_image)
+              Screenshots (from JSON)
             </p>
-            <ImageUploadSlot v-model="uploadedOgUrl" aspect="screenshot" />
+            <p class="font-body text-[12px]" style="color: var(--color-text-muted)">
+              Include screenshots as JSON array in the "screenshots" field
+            </p>
           </div>
         </div>
 
@@ -170,9 +172,8 @@
             :style="{ color: uploadedLogoUrl ? 'var(--color-success)' : 'var(--color-text-muted)' }">
             {{ uploadedLogoUrl ? '✓' : '○' }} Logo
           </span>
-          <span class="font-body text-[13px]"
-            :style="{ color: uploadedOgUrl ? 'var(--color-success)' : 'var(--color-text-muted)' }">
-            {{ uploadedOgUrl ? '✓' : '○' }} OG Image
+          <span class="font-body text-[13px]" style="color: var(--color-text-muted)">
+            ○ Screenshots
           </span>
           <span class="font-body text-[12px] ml-auto" style="color: var(--color-text-muted)">
             Images are optional — tool will publish without them
@@ -218,7 +219,6 @@ const parseError      = ref('')
 const parsed          = ref<any>(null)
 
 const uploadedLogoUrl = ref('')
-const uploadedOgUrl   = ref('')
 
 const submitting      = ref(false)
 const submitError     = ref('')
@@ -238,7 +238,6 @@ function parseJson() {
     }
     parsed.value          = data
     uploadedLogoUrl.value = ''
-    uploadedOgUrl.value   = ''
     submitError.value     = ''
     submitSuccess.value   = ''
   } catch {
@@ -282,11 +281,11 @@ async function publish() {
   submitSuccess.value = ''
 
   try {
-    const { logo_url, og_image_url, ...rest } = parsed.value
+    const { screenshots, ...rest } = parsed.value
     const payload = {
       ...rest,
-      cover_image: uploadedLogoUrl.value || undefined,
-      og_image:    uploadedOgUrl.value   || undefined,
+      logo:       uploadedLogoUrl.value || undefined,
+      screenshots: Array.isArray(screenshots) ? screenshots : undefined,
     }
     const res = await post('/api/admin/tools', payload)
     submitSuccess.value = res.slug
@@ -296,7 +295,6 @@ async function publish() {
       rawJson.value       = ''
       parsed.value        = null
       uploadedLogoUrl.value = ''
-      uploadedOgUrl.value   = ''
       submitSuccess.value   = ''
     }, 3000)
   } catch (e: any) {

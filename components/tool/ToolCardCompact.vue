@@ -2,7 +2,7 @@
   <NuxtLink :to="detailLink" class="tool-card min-w-[180px] lg:min-w-0 text-center no-underline block">
     <div class="flex flex-col items-center gap-2.5">
       <div class="tool-logo !w-9 !h-9 !rounded-[7px] !text-[11px]">
-        <img v-if="t.cover_image" :src="t.cover_image" :alt="`${t.name} logo`" class="w-full h-full object-cover rounded-[7px]" />
+        <img v-if="t.logo" :src="t.logo" :alt="`${t.name} logo`" class="w-full h-full object-cover rounded-[7px]" />
         <span v-else class="font-sans font-bold text-[11px]" :style="{ color: 'var(--color-text-muted)' }">{{ (t.name || '?')[0] }}</span>
       </div>
       <div class="min-w-0 w-full">

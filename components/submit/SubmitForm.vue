@@ -471,7 +471,7 @@ async function handleSubmit() {
       submitter_site:   form.submitterSite   || undefined,
       submitter_github: form.submitterGithub || undefined,
       submitter_email:  form.submitterEmail  || undefined,
-      cover_image:      form.coverImage      || undefined,
+      logo:             form.coverImage      || undefined,
       screenshot_urls:  screenshotUrls.length > 0 ? screenshotUrls.join(',') : undefined,
       demo_video_url:   form.demoVideo       || undefined,
       turnstileToken:   cfToken.value,

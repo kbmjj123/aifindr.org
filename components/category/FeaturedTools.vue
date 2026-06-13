@@ -27,8 +27,8 @@
             }"
           >
             <img
-              v-if="tool.cover_image"
-              :src="tool.cover_image"
+              v-if="tool.logo"
+              :src="tool.logo"
               :alt="`${tool.name} logo`"
               class="w-full h-full object-cover"
             />

@@ -24,7 +24,7 @@
           <div class="flex items-start gap-4 mb-6">
             <div class="tool-detail-logo shrink-0 flex items-center justify-center"
               :style="{ background: 'var(--color-bg-elevated)' }">
-              <img v-if="tool.cover_image" :src="tool.cover_image" :alt="`${tool.name} logo`" class="w-full h-full object-cover rounded-[var(--radius-lg)]" />
+              <img v-if="tool.logo" :src="tool.logo" :alt="`${tool.name} logo`" class="w-full h-full object-cover rounded-[var(--radius-lg)]" />
               <span v-else class="font-sans font-bold text-xl" :style="{ color: 'var(--color-text-muted)' }">{{ (tool.name || 'T')[0] }}</span>
             </div>
             <div class="min-w-0">
@@ -47,10 +47,10 @@
             </div>
           </div>
 
-          <!-- Cover image -->
-          <div v-if="tool.og_image" class="mb-6 rounded-lg overflow-hidden"
+          <!-- Screenshots: first as cover -->
+          <div v-if="firstScreenshot" class="mb-6 rounded-lg overflow-hidden"
             :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-            <img :src="tool.og_image" :alt="`${tool.name} cover`" class="w-full object-cover" />
+            <img :src="firstScreenshot" :alt="`${tool.name} screenshot`" class="w-full object-cover" />
           </div>
 
           <!-- Media: Screenshots -->
@@ -334,6 +334,17 @@ const toolImages = computed(() => {
   return Array.isArray(imgs) ? imgs : []
 })
 
+const toolScreenshots = computed<string[]>(() => {
+  const s = (tool.value as any)?.screenshots
+  if (Array.isArray(s)) return s
+  if (typeof s === 'string') {
+    try { return JSON.parse(s) as string[] } catch { return [] }
+  }
+  return []
+})
+
+const firstScreenshot = computed(() => toolScreenshots.value[0])
+
 const toolVideos = computed(() => {
   const vids = (tool.value as any)?.videos
   return Array.isArray(vids) ? vids : []
@@ -428,7 +439,7 @@ useHead(() => {
           description: t.meta_description || '',
           url: t.website,
           applicationCategory: categoryInfo.value?.title || t.category,
-          image: t.cover_image || t.og_image || undefined,
+          image: t.logo || t.screenshots?.[0] || undefined,
           operatingSystem: toolPlatforms.value.length ? toolPlatforms.value.join(', ') : undefined,
           offers: {
             '@type': 'Offer',

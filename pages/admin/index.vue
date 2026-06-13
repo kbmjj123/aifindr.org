@@ -248,16 +248,16 @@
 
       <div class="p-6 space-y-5 font-body text-[12px]">
         <!-- Media Preview -->
-        <div v-if="viewingTool.cover_image || viewingTool.og_image" class="flex gap-3">
-          <div v-if="viewingTool.cover_image" class="flex-1">
-            <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">Cover</div>
-            <img :src="viewingTool.cover_image" alt="Cover"
+        <div v-if="viewingTool.logo || viewingTool.screenshots" class="flex gap-3">
+          <div v-if="viewingTool.logo" class="flex-1">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">Logo</div>
+            <img :src="viewingTool.logo" alt="Logo"
               class="w-full h-[140px] object-cover rounded-lg"
               :style="{ border: '1px solid var(--color-border)' }" />
           </div>
-          <div v-if="viewingTool.og_image" class="flex-1">
-            <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">OG Image</div>
-            <img :src="viewingTool.og_image" alt="OG"
+          <div v-if="viewingTool.screenshots" class="flex-1">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">Screenshots</div>
+            <img :src="viewingTool.screenshots" alt="Screenshots"
               class="w-full h-[140px] object-cover rounded-lg"
               :style="{ border: '1px solid var(--color-border)' }" />
           </div>
@@ -421,8 +421,8 @@ interface PendingTool {
   launched: string | null
   meta_description: string | null
   body: string | null
-  og_image: string | null
-  cover_image: string | null
+  logo: string | null
+  screenshots: string | null
   featured: number
   verified: number
   editor_pick: number

@@ -3,7 +3,7 @@
     <div class="flex gap-3 pr-5">
       <!-- Logo / Icon -->
       <div class="tool-logo">
-        <img v-if="t.cover_image" :src="t.cover_image" :alt="`${t.name} logo`" class="w-full h-full object-cover rounded-[7px]" />
+        <img v-if="t.logo" :src="t.logo" :alt="`${t.name} logo`" class="w-full h-full object-cover rounded-[7px]" />
         <span v-else class="font-sans font-bold text-[11px]" :style="{ color: 'var(--color-text-muted)' }">{{ (t.name || '?')[0] }}</span>
       </div>
 
