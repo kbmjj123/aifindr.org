@@ -1,4 +1,5 @@
 -- aifindr.org — D1 数据库初始化
+-- 用法：npx wrangler d1 execute aifindr-db --remote --file=./schema/init.sql
 
 CREATE TABLE IF NOT EXISTS tools (
   id               INTEGER PRIMARY KEY AUTOINCREMENT,
