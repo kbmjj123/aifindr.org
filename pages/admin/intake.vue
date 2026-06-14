@@ -97,21 +97,21 @@
         </div>
 
         <!-- 图片上传区 -->
-        <div class="grid grid-cols-2 gap-4 pt-4 border-t"
+        <div class="pt-4 border-t space-y-4"
           :style="{ borderColor: 'var(--color-border)' }">
-          <div class="space-y-2">
-            <p class="font-body text-[13px] font-medium" style="color: var(--color-text-primary)">
+          <div>
+            <p class="font-body text-[13px] font-medium mb-2" style="color: var(--color-text-primary)">
               Logo
             </p>
             <ImageUploadSlot v-model="uploadedLogoUrl" aspect="square" />
           </div>
-          <div class="space-y-2">
-            <p class="font-body text-[13px] font-medium" style="color: var(--color-text-primary)">
-              Screenshots (from JSON)
+          <div>
+            <p class="font-body text-[13px] font-medium mb-2" style="color: var(--color-text-primary)">
+              Screenshots <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(up to 3)</span>
             </p>
-            <p class="font-body text-[12px]" style="color: var(--color-text-muted)">
-              Include screenshots as JSON array in the "screenshots" field
-            </p>
+            <div class="flex flex-wrap gap-3">
+              <ImageUploadSlot v-for="i in 3" :key="i" v-model="uploadedScreenshots[i - 1]" aspect="screenshot" />
+            </div>
           </div>
         </div>
 
@@ -172,8 +172,9 @@
             :style="{ color: uploadedLogoUrl ? 'var(--color-success)' : 'var(--color-text-muted)' }">
             {{ uploadedLogoUrl ? '✓' : '○' }} Logo
           </span>
-          <span class="font-body text-[13px]" style="color: var(--color-text-muted)">
-            ○ Screenshots
+          <span class="font-body text-[13px]"
+            :style="{ color: screenshotCount > 0 ? 'var(--color-success)' : 'var(--color-text-muted)' }">
+            {{ screenshotCount > 0 ? '✓' : '○' }} {{ screenshotCount }}/3 Screenshots
           </span>
           <span class="font-body text-[12px] ml-auto" style="color: var(--color-text-muted)">
             Images are optional — tool will publish without them
@@ -219,6 +220,7 @@ const parseError      = ref('')
 const parsed          = ref<any>(null)
 
 const uploadedLogoUrl = ref('')
+const uploadedScreenshots = reactive<string[]>(['', '', ''])
 
 const submitting      = ref(false)
 const submitError     = ref('')
@@ -238,6 +240,7 @@ function parseJson() {
     }
     parsed.value          = data
     uploadedLogoUrl.value = ''
+    uploadedScreenshots.fill('')
     submitError.value     = ''
     submitSuccess.value   = ''
   } catch {
@@ -266,6 +269,9 @@ const previewFields = computed(() => {
   ]
 })
 
+// ── 截图计数 ─────────────────────────────────────────────────
+const screenshotCount = computed(() => uploadedScreenshots.filter(Boolean).length)
+
 // ── 标签颜色 ──────────────────────────────────────────────────
 function tagTypeColor(type: string) {
   if (type === 'feature')  return { bg: 'var(--color-accent-dim)',  text: 'var(--color-accent)',  border: 'var(--color-accent-border)' }
@@ -281,12 +287,17 @@ async function publish() {
   submitSuccess.value = ''
 
   try {
-    const { screenshots, ...rest } = parsed.value
+    const jsonSs = Array.isArray(parsed.value.screenshots) ? parsed.value.screenshots : []
+    const uploadedSs = uploadedScreenshots.filter(Boolean)
+    const allScreenshots = [...jsonSs, ...uploadedSs].slice(0, 3)
+
     const payload = {
-      ...rest,
+      ...parsed.value,
       logo:       uploadedLogoUrl.value || undefined,
-      screenshots: Array.isArray(screenshots) ? screenshots : undefined,
+      screenshots: allScreenshots.length > 0 ? allScreenshots : undefined,
     }
+    delete payload.screenshots_url
+
     const res = await post('/api/admin/tools', payload)
     submitSuccess.value = res.slug
 
@@ -295,6 +306,7 @@ async function publish() {
       rawJson.value       = ''
       parsed.value        = null
       uploadedLogoUrl.value = ''
+      uploadedScreenshots.fill('')
       submitSuccess.value   = ''
     }, 3000)
   } catch (e: any) {
