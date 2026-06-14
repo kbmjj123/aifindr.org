@@ -47,38 +47,13 @@
             </div>
           </div>
 
-          <!-- Screenshots: first as cover -->
-          <div v-if="firstScreenshot" class="mb-6 rounded-lg overflow-hidden"
-            :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-            <img :src="firstScreenshot" :alt="`${tool.name} screenshot`" class="w-full object-cover" />
-          </div>
-
-          <!-- Media: Screenshots -->
-          <div v-if="toolImages.length" class="mb-6">
-            <h3 class="font-sans font-semibold text-[13px] mb-3" style="color: var(--color-text-primary)">Screenshots</h3>
-            <div v-if="toolImages.length === 1" class="rounded-lg overflow-hidden"
-              :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-              <div class="aspect-video flex items-center justify-center font-body text-[12px]"
-                :style="{ color: 'var(--color-text-muted)' }">
-                🖼️ {{ toolImages[0].alt || 'Screenshot' }}
-              </div>
-              <div v-if="toolImages[0].caption" class="px-3 py-2 font-body text-[11px]"
-                :style="{ color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border)' }">
-                {{ toolImages[0].caption }}
-              </div>
-            </div>
-            <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div v-for="img in toolImages" :key="img.id || img.url"
+          <!-- Screenshots gallery -->
+          <div v-if="toolScreenshots.length" class="mb-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div v-for="(url, i) in toolScreenshots" :key="i"
                 class="rounded-lg overflow-hidden"
                 :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-                <div class="aspect-video flex items-center justify-center font-body text-[12px]"
-                  :style="{ color: 'var(--color-text-muted)' }">
-                  🖼️ {{ img.alt || 'Screenshot' }}
-                </div>
-                <div v-if="img.caption" class="px-3 py-2 font-body text-[11px]"
-                  :style="{ color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border)' }">
-                  {{ img.caption }}
-                </div>
+                <img :src="url" :alt="`${tool.name} screenshot ${i + 1}`" class="w-full object-cover" />
               </div>
             </div>
           </div>
@@ -331,11 +306,6 @@ function pricingLabel(p: ToolPricing) {
   return p.charAt(0).toUpperCase() + p.slice(1)
 }
 
-const toolImages = computed(() => {
-  const imgs = (tool.value as any)?.images
-  return Array.isArray(imgs) ? imgs : []
-})
-
 const toolScreenshots = computed<string[]>(() => {
   const s = (tool.value as any)?.screenshots
   if (Array.isArray(s)) return s
@@ -344,8 +314,6 @@ const toolScreenshots = computed<string[]>(() => {
   }
   return []
 })
-
-const firstScreenshot = computed(() => toolScreenshots.value[0])
 
 const toolVideos = computed(() => {
   const vids = (tool.value as any)?.videos
