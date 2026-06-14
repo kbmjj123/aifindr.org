@@ -55,7 +55,8 @@ export default defineEventHandler(async (event) => {
   const turnstileToken  = String(body.turnstileToken || '').trim()
   const bodyContent     = String(body.detailDescription || body.body || '').trim()
   const logo            = String(body.logo || '').trim()
-  const screenshotUrls  = String(body.screenshot_urls || '').trim()
+  const screenshotRaw   = String(body.screenshot_urls || '').trim()
+  const screenshots     = screenshotRaw ? JSON.stringify(screenshotRaw.split(',').map(s => s.trim()).filter(Boolean)) : null
   const demoVideoUrl    = String(body.demo_video_url || '').trim()
   const tagsRaw         = body.tags  // [{ type: 'feature'|'audience'|'use_case', tag: string }]
 
@@ -150,13 +151,13 @@ export default defineEventHandler(async (event) => {
     INSERT INTO tools (
       slug, name, category, sub_category, website,
       pricing, price_detail, has_free_trial, platforms,
-      status, launched, meta_description, logo,
+      status, launched, meta_description, logo, screenshots,
       body, submitter_site, submitter_github, submitter_id,
       data_source, submitted_at
     ) VALUES (
       ?, ?, ?, ?, ?,
-      ?, ?, ?, ?,
-      'pending', ?, ?, ?,
+      ?, ?, ?, ?, ?,
+      'pending', ?, ?, ?, ?,
       ?, ?, ?, ?,
       'user_submit', ?
     )
@@ -173,6 +174,7 @@ export default defineEventHandler(async (event) => {
     launched || null,
     description,
     logo || null,
+    screenshots,
     fullBody || null,
     submitterSite || null,
     submitterGithub || null,
