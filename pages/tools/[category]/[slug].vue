@@ -223,15 +223,6 @@
         </div>
       </div>
 
-      <!-- Alternatives -->
-      <section v-if="alternatives.length" class="mt-12">
-        <h2 class="font-sans font-bold text-[15px] mb-4" style="color: var(--color-text-primary)">
-          Looking for Alternatives to {{ tool.name }}?
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[10px]">
-          <ToolCardCompact v-for="t in alternatives" :key="t.slug" :tool="t" />
-        </div>
-      </section>
     </template>
   </div>
 </template>
@@ -254,7 +245,6 @@ function toggleGuide(idx: number) {
 }
 
 const toolTags = ref<string[]>([])
-const alternatives = ref<Tool[]>([])
 const authRequired = ref(false)
 
 const toolPlatforms = computed(() => {
@@ -329,19 +319,6 @@ const { data: tool, pending } = useAsyncData<Tool>(
     const previewParam = isPreview.value ? '?preview=1' : ''
     try {
       const result = await get<Tool>(`/api/tools/${category.value}/${slug.value}${previewParam}`)
-
-      // Load alternatives (same category, exclude current)
-      try {
-        const altData = await get<{ tools: Tool[] }>(
-          `/api/tools?category=${category.value}&pageSize=7`
-        )
-        if (altData?.tools) {
-          alternatives.value = altData.tools.filter(t => t.slug !== slug.value).slice(0, 6)
-        }
-      } catch {
-        // alternatives optional
-      }
-
       return result
     } catch (e: any) {
       if (e?.response?.status === 401) {
