@@ -4,7 +4,7 @@
     <div class="mx-auto flex h-full items-center gap-3 sm:gap-4 px-4 lg:px-6 max-w-[1400px] w-full">
       <!-- Left: Logo -->
       <NuxtLink to="/" class="flex items-center gap-2 shrink-0">
-        <div class="logo-icon">A</div>
+        <img src="/web-app-manifest-192x192.png" alt="aifindr" class="logo-icon object-cover" />
         <span class="logo-text">aifindr<span class="org">.org</span></span>
       </NuxtLink>
 
