@@ -80,50 +80,6 @@
             </template>
           </div>
 
-          <!-- Category guides -->
-          <div v-if="categoryGuides.length" class="mt-10 mb-8">
-            <h2 class="font-sans font-bold text-[16px] mb-4" style="color: var(--color-text-primary)">
-              {{ categoryInfo?.icon }} {{ categoryInfo?.title }} Guides
-            </h2>
-            <div class="space-y-3">
-              <div v-for="(guide, gi) in categoryGuides" :key="gi"
-                class="rounded-lg overflow-hidden transition-all duration-150"
-                :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
-                <button
-                  class="w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors"
-                  :style="{ color: 'var(--color-text-primary)' }"
-                  @click="toggleGuide(gi)">
-                  <span class="text-xl shrink-0">{{ guide.icon }}</span>
-                  <div class="flex-1 min-w-0">
-                    <div class="font-sans font-semibold text-[13px]">{{ guide.title }}</div>
-                    <div class="font-body text-[11px] line-clamp-1" style="color: var(--color-text-muted)">{{ guide.description }}</div>
-                  </div>
-                  <svg
-                    class="shrink-0 transition-transform duration-200"
-                    :class="{ 'rotate-180': openGuide === gi }"
-                    width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    :style="{ stroke: 'var(--color-text-muted)' }" stroke-width="2">
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </button>
-                <div v-if="openGuide === gi" class="px-4 pb-4 space-y-3">
-                  <p class="font-body text-[12px]" style="color: var(--color-text-secondary); line-height: 1.6">
-                    {{ guide.description }}
-                  </p>
-                  <div v-for="(faq, fi) in guide.faq" :key="fi"
-                    class="rounded-md p-3"
-                    :style="{ background: 'var(--color-bg-elevated)' }">
-                    <div class="font-sans font-semibold text-[12px] mb-1.5" style="color: var(--color-text-primary)">
-                      Q: {{ faq.question }}
-                    </div>
-                    <div class="font-body text-[12px]" style="color: var(--color-text-secondary); line-height: 1.6">
-                      {{ faq.answer }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Right sidebar -->
@@ -237,12 +193,6 @@ const isPreview = computed(() => route.query.preview === '1')
 const { get, post } = useApi()
 
 const categoryInfo = computed(() => CATEGORIES.find(c => c.slug === category.value))
-const categoryGuides = computed(() => categoryInfo.value?.guides || [])
-const openGuide = ref<number | null>(null)
-function toggleGuide(idx: number) {
-  openGuide.value = openGuide.value === idx ? null : idx
-}
-
 const toolTags = ref<string[]>([])
 const authRequired = ref(false)
 
@@ -365,43 +315,41 @@ usePageSeo(() => ({
   description: tool.value?.meta_description || '',
 }))
 
-// ─── SoftwareApplication Schema ──────────────────────────────────────
+// ─── SEO: keywords + canonical ──────────────────────────────────────
+
+const canonical = computed(() =>
+  `https://aifindr.org/tools/${category.value}/${tool.value?.slug || slug.value}`
+)
 
 useHead(() => {
   const t = tool.value
   if (!t) return {}
 
-  const price = t.pricing === 'free' ? '0' : String(t.price_starting || 0)
-  const kw = toolTags.value.length ? toolTags.value.join(', ') : t.category
-  const canonical = `https://aifindr.org/tools/${category.value}/${t.slug || slug.value}`
-
   return {
     meta: [
-      { name: 'keywords', content: kw },
+      { name: 'keywords', content: toolTags.value.length ? toolTags.value.join(', ') : t.category },
     ],
     link: [
-      { rel: 'canonical', href: canonical },
+      { rel: 'canonical', href: canonical.value },
     ],
-    script: [
-      {
-        type: 'application/ld+json',
-        children: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'SoftwareApplication',
-          name: t.name,
-          description: t.meta_description || '',
-          url: t.website,
-          applicationCategory: categoryInfo.value?.title || t.category,
-          image: t.logo || t.screenshots?.[0] || undefined,
-          operatingSystem: toolPlatforms.value.length ? toolPlatforms.value.join(', ') : undefined,
-          offers: {
-            '@type': 'Offer',
-            price,
-            priceCurrency: 'USD',
-          },
-        }),
-      },
-    ],
+  }
+})
+
+// ─── Schema: SoftwareApplication (via @nuxtjs/seo) ─────────────────
+
+defineSchemaOrg(() => {
+  const t = tool.value
+  if (!t) return {}
+  const price = t.pricing === 'free' ? '0' : String(t.price_starting || 0)
+  return {
+    '@type': 'SoftwareApplication',
+    name: t.name,
+    description: t.meta_description || '',
+    url: t.website,
+    applicationCategory: categoryInfo.value?.title || t.category,
+    image: t.logo || (Array.isArray(t.screenshots) ? t.screenshots[0] : undefined),
+    operatingSystem: toolPlatforms.value.length ? toolPlatforms.value.join(', ') : undefined,
+    offers: { '@type': 'Offer', price, priceCurrency: 'USD' },
   }
 })
 </script>

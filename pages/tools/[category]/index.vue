@@ -179,4 +179,23 @@ usePageSeo(() => ({
   description: categoryInfo.value?.description
     || `Browse the best ${categoryInfo.value?.title || category.value} AI tools. Compare pricing, read reviews, and find the perfect tool.`,
 }))
+
+// FAQPage schema for SEO rich results
+const categoryFaqs = computed(() => {
+  const guides = categoryGuides.value
+  if (!guides.length) return []
+  return guides.flatMap((g: any) =>
+    (g.faq || []).map((f: any) => ({
+      '@type': 'Question' as const,
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer' as const, text: f.answer },
+    }))
+  )
+})
+
+defineSchemaOrg(() => {
+  const faqs = categoryFaqs.value
+  if (!faqs.length) return {}
+  return { '@type': 'FAQPage', mainEntity: faqs }
+})
 </script>
