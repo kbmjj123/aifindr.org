@@ -45,8 +45,9 @@
           Under Review ({{ data.pendingTools.length }})
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[10px]">
-          <div v-for="tool in data.pendingTools" :key="tool.id"
-            class="rounded-lg p-4 opacity-60"
+          <NuxtLink v-for="tool in data.pendingTools" :key="tool.id"
+            :to="`/tools/${tool.category}/${tool.slug}?preview=1`"
+            class="rounded-lg p-4 opacity-60 hover:opacity-100 transition-opacity no-underline block"
             :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
             <div class="flex gap-3">
               <div class="w-9 h-9 rounded-[7px] flex items-center justify-center font-sans font-bold text-[11px] shrink-0"
@@ -65,7 +66,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </NuxtLink>
         </div>
       </div>
 
