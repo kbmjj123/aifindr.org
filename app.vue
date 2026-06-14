@@ -12,6 +12,12 @@
     <MobileTabBar />
     <!-- Search Modal -->
     <SearchModal />
+    <!-- Toast -->
+    <Teleport to="body">
+      <div v-if="toast.visible" :class="['toast', toast.type]">
+        {{ toast.message }}
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -39,7 +45,7 @@ useHead({
     },
     {
       // Capture OAuth token from URL BEFORE Nuxt hydration clears query params
-      innerHTML: `(function(){var p=new URLSearchParams(window.location.search).get('token');if(p){localStorage.setItem('aifindr-token',p);var u=new URL(window.location);u.searchParams.delete('token');window.history.replaceState({},'',u.toString())}})()`,
+      innerHTML: `(function(){var p=new URLSearchParams(window.location.search).get('token');if(p){localStorage.setItem('aifindr-token',p);sessionStorage.setItem('login-just-happened','1');var u=new URL(window.location);u.searchParams.delete('token');window.history.replaceState({},'',u.toString())}})()`,
       type: 'text/javascript',
       tagPosition: 'head',
     },
@@ -51,11 +57,24 @@ useHead({
   ],
 })
 
-const { handleUrlToken } = useAuth()
+const { handleUrlToken, user } = useAuth()
+const { show, toast } = useToast()
 useKeyboardShortcuts()
 
 onMounted(() => {
   handleUrlToken()
+
+  // 登录成功 toast
+  const justLoggedIn = sessionStorage.getItem('login-just-happened')
+  if (justLoggedIn) {
+    sessionStorage.removeItem('login-just-happened')
+    const unwatch = watch(user, (val) => {
+      if (val) {
+        nextTick(() => show(`Welcome, ${val.username}!`, 'success'))
+        unwatch()
+      }
+    })
+  }
 
   // 登录后重定向到之前要访问的页面
   const redirect = sessionStorage.getItem('login-redirect')

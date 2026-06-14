@@ -262,7 +262,8 @@ const previewFields = computed(() => {
     { key: 'sub_category',   label: 'Sub Category',   value: p.sub_category },
     { key: 'pricing',        label: 'Pricing',        value: p.pricing },
     { key: 'price_detail',   label: 'Price Detail',   value: p.price_detail },
-    { key: 'has_free_trial', label: 'Free Trial',     value: p.has_free_trial ? 'Yes' : 'No' },
+    { key: 'price_tiers', label: 'Price Tiers', value: formatPriceTiers(p.price_tiers) },
+    { key: 'has_free_trial', label: 'Free Trial', value: p.has_free_trial ? 'Yes' : 'No' },
     { key: 'platforms',      label: 'Platforms',      value: Array.isArray(p.platforms) ? p.platforms.join(', ') : p.platforms },
     { key: 'launched',       label: 'Launched',       value: p.launched },
     { key: 'meta_description', label: 'Meta Description', value: p.meta_description },
@@ -271,6 +272,21 @@ const previewFields = computed(() => {
 
 // ── 截图计数 ─────────────────────────────────────────────────
 const screenshotCount = computed(() => uploadedScreenshots.filter(Boolean).length)
+
+// ── 格式化 price_tiers 预览 ────────────────────────────────
+function formatPriceTiers(tiers: unknown): string {
+  if (!tiers) return '—'
+  let arr: any[] = []
+  if (typeof tiers === 'string') { try { arr = JSON.parse(tiers) } catch { return tiers } }
+  else if (Array.isArray(tiers)) arr = tiers
+  if (!arr.length) return '—'
+  return arr.map((t: any) => {
+    const price = t.price != null ? `$${t.price}` : ''
+    const period = t.period === 'month' ? '/mo' : t.period === 'year' ? '/yr' : t.period || ''
+    const features = t.features?.length ? ` [${t.features.slice(0, 2).join(', ')}${t.features.length > 2 ? '…' : ''}]` : ''
+    return `${t.name}: ${price}${period}${features}`
+  }).join(' | ')
+}
 
 // ── 标签颜色 ──────────────────────────────────────────────────
 function tagTypeColor(type: string) {
