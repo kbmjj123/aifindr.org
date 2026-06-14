@@ -12,7 +12,7 @@ routes = [
 [[d1_databases]]
 binding = "DB"
 database_name = "aifindr-db"
-database_id = "8e365acb-9ac4-4fb4-99c6-cfcaa4ed633d"
+database_id = "a8f4f867-a347-43a3-bc86-29fedd632d89"
 
 [[kv_namespaces]]
 binding = "CACHE"
