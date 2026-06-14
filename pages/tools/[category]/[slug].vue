@@ -337,19 +337,20 @@ useHead(() => {
 
 // ─── Schema: SoftwareApplication (via @nuxtjs/seo) ─────────────────
 
-defineSchemaOrg(() => {
-  const t = tool.value
-  if (!t) return {}
-  const price = t.pricing === 'free' ? '0' : String(t.price_starting || 0)
-  return {
-    '@type': 'SoftwareApplication',
-    name: t.name,
-    description: t.meta_description || '',
-    url: t.website,
-    applicationCategory: categoryInfo.value?.title || t.category,
-    image: t.logo || (Array.isArray(t.screenshots) ? t.screenshots[0] : undefined),
-    operatingSystem: toolPlatforms.value.length ? toolPlatforms.value.join(', ') : undefined,
-    offers: { '@type': 'Offer', price, priceCurrency: 'USD' },
-  }
-})
+useSchemaOrg([
+  defineSoftwareApp(() => {
+    const t = tool.value
+    if (!t) return {}
+    const price = t.pricing === 'free' ? '0' : String(t.price_starting || 0)
+    return {
+      name: t.name,
+      description: t.meta_description || '',
+      url: t.website,
+      applicationCategory: categoryInfo.value?.title || t.category,
+      image: t.logo || (Array.isArray(t.screenshots) ? t.screenshots[0] : undefined),
+      operatingSystem: toolPlatforms.value.length ? toolPlatforms.value.join(', ') : undefined,
+      offers: { '@type': 'Offer', price, priceCurrency: 'USD' },
+    }
+  }),
+])
 </script>
