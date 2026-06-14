@@ -55,8 +55,14 @@ const detailLink = computed(() => `/tools/${t.value.category}/${t.value.slug}`)
 const visibleTags = computed(() => {
   const tags = t.value.tags
   if (!tags) return []
-  if (Array.isArray(tags)) return tags.slice(0, 3)
-  return String(tags).split(',').slice(0, 3).filter(Boolean)
+  if (Array.isArray(tags)) {
+    // Structured tags: filter feature type only
+    const featureTags = tags
+      .filter((x: any) => x.type === 'feature' || typeof x === 'string')
+      .map((x: any) => (typeof x === 'string' ? x : x.tag))
+    return featureTags.slice(0, 2)
+  }
+  return String(tags).split(',').slice(0, 2).filter(Boolean)
 })
 
 const pricingLabel = computed(() => {

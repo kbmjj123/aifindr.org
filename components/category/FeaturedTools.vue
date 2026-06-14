@@ -46,11 +46,9 @@
               {{ tool.meta_description || '' }}
             </p>
             <div class="flex items-center gap-1.5 flex-wrap">
-              <span
-                v-for="tag in (tool.tags || []).slice(0, 2)"
-                :key="tag"
-                class="tag"
-              >{{ tag }}</span>
+              <template v-for="tag in (tool.tags || []).filter(t => typeof t === 'string' || t.type === 'feature').slice(0, 2)" :key="typeof tag === 'string' ? tag : tag.tag">
+                <span v-if="(typeof tag === 'string' ? tag : tag.type === 'feature')" class="tag">{{ typeof tag === 'string' ? tag : tag.tag }}</span>
+              </template>
               <span v-if="tool.pricing" :class="['tag', `tag-${tool.pricing}`]">{{ tool.pricing }}</span>
             </div>
           </div>
