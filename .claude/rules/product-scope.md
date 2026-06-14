@@ -37,6 +37,7 @@ CREATE TABLE tools (
   pricing          TEXT NOT NULL CHECK(pricing IN ('free','freemium','paid')),
   price_starting   REAL DEFAULT 0,
   price_detail     TEXT,
+  price_tiers      TEXT,                   -- JSON 数组，结构化价格方案（见下方格式说明）
   has_free_trial   INTEGER DEFAULT 0,
   platforms        TEXT DEFAULT '',        -- 逗号分隔：web,desktop,mobile,api
   status           TEXT DEFAULT 'active'

@@ -45,6 +45,7 @@ export interface Tool {
   meta_description?: string
   logo?: string
   screenshots?: string[]
+  price_tiers?: string
   featured: boolean
   verified: boolean
   editor_pick: boolean

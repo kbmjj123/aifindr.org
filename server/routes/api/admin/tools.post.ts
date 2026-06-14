@@ -73,6 +73,12 @@ export default defineEventHandler(async (event) => {
   const metaDesc    = String(body.meta_description || '').trim()
   const logo        = String(body.logo || '').trim()          // R2 logo URL
   const screenshots = Array.isArray(body.screenshots) ? JSON.stringify(body.screenshots) : ''
+  let priceTiers    = null
+  if (body.price_tiers) {
+    const raw = body.price_tiers
+    if (typeof raw === 'string') priceTiers = raw
+    else if (Array.isArray(raw)) priceTiers = JSON.stringify(raw)
+  }
   const bodyContent = String(body.body || '').trim()
   const priceStart  = Number(body.price_starting ?? 0)
   const hasFreeTrial = body.has_free_trial ? 1 : 0
@@ -136,12 +142,12 @@ export default defineEventHandler(async (event) => {
   const insertResult = await env.DB.prepare(`
     INSERT INTO tools (
       slug, name, category, sub_category, website,
-      pricing, price_starting, price_detail, has_free_trial, platforms,
+      pricing, price_starting, price_detail, price_tiers, has_free_trial, platforms,
       status, launched, meta_description, logo, screenshots,
       body, verified, editor_pick, data_source, submitted_at, updated_at
     ) VALUES (
       ?, ?, ?, ?, ?,
-      ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?,
       'active', ?, ?, ?,
       ?, 1, 0, ?, ?, ?
     )
@@ -154,6 +160,7 @@ export default defineEventHandler(async (event) => {
     pricing,
     priceStart,
     priceDetail || null,
+    priceTiers,
     hasFreeTrial,
     platformsStr,
     launched || null,

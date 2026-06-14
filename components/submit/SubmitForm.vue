@@ -74,9 +74,33 @@
       <!-- Price Detail（freemium / paid 时显示） -->
       <div v-if="form.pricing !== 'free'">
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Pricing Detail
+          Pricing Tiers
         </label>
-        <BaseInput v-model="form.priceDetail" placeholder="e.g. Free 10 credits/day / Pro $12/month" />
+        <div class="space-y-2">
+          <div v-for="(tier, i) in form.priceTiers" :key="i"
+            class="p-3 rounded-lg"
+            :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
+            <div class="flex items-center gap-2 mb-2">
+              <BaseInput v-model="tier.name" placeholder="Tier name (e.g. Pro)" class="!h-[32px] !text-[12px]" />
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="font-body text-[11px]" style="color: var(--color-text-muted)">$</span>
+                <BaseInput v-model="tier.price" type="number" min="0" placeholder="0"
+                  class="!h-[32px] !w-[70px] !text-[12px]" />
+              </div>
+              <BaseSelect v-model="tier.period" :options="periodOptions" class="!h-[32px] !text-[12px] !w-auto" />
+              <button type="button" class="w-6 h-6 flex items-center justify-center rounded-md shrink-0 cursor-pointer"
+                :style="{ color: 'var(--color-danger)' }" @click="form.priceTiers.splice(i, 1)">✕</button>
+            </div>
+            <BaseInput v-model="tier.featuresStr" placeholder="Features (comma separated)"
+              class="!h-[32px] !text-[12px]" />
+          </div>
+        </div>
+        <button type="button"
+          class="mt-2 h-[30px] px-3 rounded-md font-body text-[11px] cursor-pointer transition-all"
+          :style="{ background: 'var(--color-bg-elevated)', border: '1px dashed var(--color-border)', color: 'var(--color-text-secondary)' }"
+          @click="addTier">
+          + Add Tier
+        </button>
       </div>
 
       <!-- Has Free Trial（paid 时显示） -->
@@ -303,6 +327,7 @@ const form = reactive({
   subCategory:      '',
   pricing:          'free' as 'free' | 'freemium' | 'paid',
   priceDetail:      '',
+  priceTiers:       [] as { name: string; price: number; period: string; featuresStr: string }[],
   hasFreeTrial:     false,
   description:      '',
   detailDescription:'',
@@ -365,6 +390,37 @@ const pricingOptions = [
   { value: 'paid',     label: 'Paid' },
 ]
 
+const periodOptions = [
+  { value: '',          label: '—' },
+  { value: 'month',     label: '/mo' },
+  { value: 'year',      label: '/yr' },
+  { value: 'one-time',  label: 'one-time' },
+]
+
+function addTier() {
+  form.priceTiers.push({ name: '', price: 0, period: 'month', featuresStr: '' })
+}
+
+function serializeTiers(tiers: typeof form.priceTiers): string | undefined {
+  const valid = tiers.filter(t => t.name.trim())
+  if (!valid.length) return undefined
+  return JSON.stringify(valid.map(t => {
+    const tier: Record<string, unknown> = {
+      name: t.name.trim(),
+      price: Number(t.price) || 0,
+      period: t.period || null,
+      features: t.featuresStr ? t.featuresStr.split(',').map(s => s.trim()).filter(Boolean) : [],
+    }
+    // auto-detect type
+    const price = tier.price as number
+    if (price === 0 && !tier.period) tier.type = 'free'
+    else if (tier.period === 'one-time') tier.type = 'subscription'
+    else if (tier.period) tier.type = 'subscription'
+    else tier.type = 'credits'
+    return tier
+  }))
+}
+
 const platformOptions = [
   { value: 'web',     label: 'Web' },
   { value: 'desktop', label: 'Desktop' },
@@ -383,6 +439,7 @@ watch(() => form.category, () => {
 watch(() => form.pricing, (val) => {
   if (val === 'free') {
     form.priceDetail  = ''
+    form.priceTiers   = []
     form.hasFreeTrial = false
   }
 })
@@ -462,6 +519,7 @@ async function handleSubmit() {
       sub_category:     form.subCategory || undefined,
       pricing:          form.pricing,
       price_detail:     form.priceDetail || undefined,
+      price_tiers:      serializeTiers(form.priceTiers),
       has_free_trial:   form.hasFreeTrial ? 1 : 0,
       description:      form.description,
       detailDescription:form.detailDescription,

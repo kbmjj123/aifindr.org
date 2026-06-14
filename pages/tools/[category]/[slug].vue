@@ -173,9 +173,9 @@
                 <div class="detail-sidebar-label">Pricing</div>
                 <div class="detail-sidebar-value">{{ pricingLabel(tool.pricing) }}</div>
               </div>
-              <div v-if="tool.price_detail">
+              <div v-if="tool.price_tiers || tool.price_detail">
                 <div class="detail-sidebar-label">Price Details</div>
-                <div class="detail-sidebar-value">{{ tool.price_detail }}</div>
+                <PriceTiersDisplay :tiers="(tool as any).price_tiers" :fallback="tool.price_detail" />
               </div>
               <div>
                 <div class="detail-sidebar-label">Category</div>

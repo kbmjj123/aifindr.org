@@ -46,6 +46,12 @@ export default defineEventHandler(async (event) => {
   const pricing         = String(body.pricing).trim()
   const description     = String(body.description).trim()
   const priceDetail     = String(body.price_detail || body.priceDetail || '').trim()
+  let priceTiers        = null
+  if (body.price_tiers) {
+    const raw = body.price_tiers
+    if (typeof raw === 'string') priceTiers = raw
+    else if (Array.isArray(raw)) priceTiers = JSON.stringify(raw)
+  }
   const launched        = String(body.launched || '').trim()
   const hasFreeTrial    = body.has_free_trial ? 1 : 0
   const platformsRaw    = body.platforms
@@ -150,7 +156,7 @@ export default defineEventHandler(async (event) => {
   const insertResult = await env.DB.prepare(`
     INSERT INTO tools (
       slug, name, category, sub_category, website,
-      pricing, price_detail, has_free_trial, platforms,
+      pricing, price_detail, price_tiers, has_free_trial, platforms,
       status, launched, meta_description, logo, screenshots,
       body, submitter_site, submitter_github, submitter_id,
       data_source, submitted_at
@@ -169,6 +175,7 @@ export default defineEventHandler(async (event) => {
     website,
     pricing,
     priceDetail || null,
+    priceTiers,
     hasFreeTrial,
     platformsStr,
     launched || null,
