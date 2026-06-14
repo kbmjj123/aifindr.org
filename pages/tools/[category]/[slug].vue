@@ -49,13 +49,8 @@
 
           <!-- Screenshots gallery -->
           <div v-if="toolScreenshots.length" class="mb-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div v-for="(url, i) in toolScreenshots" :key="i"
-                class="rounded-lg overflow-hidden"
-                :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)' }">
-                <img :src="url" :alt="`${tool.name} screenshot ${i + 1}`" class="w-full object-cover" />
-              </div>
-            </div>
+            <h3 class="font-sans font-semibold text-[13px] mb-3" style="color: var(--color-text-primary)">Screenshots</h3>
+            <ScreenshotGallery :urls="toolScreenshots" :alt="tool.name" />
           </div>
 
           <!-- Media: Videos -->
