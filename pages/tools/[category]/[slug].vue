@@ -31,7 +31,6 @@
               <h1 class="tool-detail-name mb-1">{{ tool.name }}</h1>
               <div class="flex flex-wrap gap-2 mb-2">
                 <ToolBadge v-if="tool.featured" type="featured" />
-                <ToolBadge v-if="tool.verified" type="verified" />
               </div>
               <p class="font-body text-[13px]" style="color: var(--color-text-secondary)">
                 {{ tool.meta_description }}

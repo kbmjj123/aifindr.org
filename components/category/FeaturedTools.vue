@@ -40,7 +40,6 @@
                 {{ tool.name }}
               </h3>
               <ToolBadge v-if="tool.featured" type="featured" />
-              <ToolBadge v-else-if="tool.verified" type="verified" />
             </div>
             <p class="font-body text-[11px] leading-relaxed mb-2" style="color: var(--color-text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
               {{ tool.meta_description || '' }}

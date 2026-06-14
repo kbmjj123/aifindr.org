@@ -13,7 +13,6 @@
           <h3 class="tool-name flex-1 min-w-0">{{ t.name }}</h3>
           <div class="flex items-center gap-1 shrink-0">
             <ToolBadge v-if="t.featured" type="featured" />
-            <ToolBadge v-if="t.verified" type="verified" />
             <span v-if="t.has_free_trial" class="badge badge-verified" style="font-size: 9px;">Free Trial</span>
           </div>
         </div>
