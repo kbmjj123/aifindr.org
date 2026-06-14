@@ -355,7 +355,19 @@ const { data: tool, pending } = useAsyncData<Tool>(
 
 // Render markdown body
 const { render } = useMarkdown()
-const mdBody = computed(() => tool.value?.body ? render(tool.value.body as string) : '')
+const toolLinksMap = ref<Record<string, { slug: string; category: string }>>({})
+const mdBody = computed(() => {
+  const body = tool.value?.body
+  if (!body) return ''
+  const html = render(body as string)
+  return replaceToolLinks(html, toolLinksMap.value)
+})
+
+// Fetch tool website → internal path mapping for link replacement
+try {
+  const links = await get<Record<string, { slug: string; category: string }>>('/api/tools/links')
+  if (links) toolLinksMap.value = links
+} catch {}
 
 // Extract feature tags from structured tags
 watchEffect(() => {
