@@ -19,7 +19,10 @@
 
     <template v-else-if="data">
       <div class="flex items-center gap-4 mb-8">
-        <div class="w-20 h-20 rounded-full flex items-center justify-center font-sans font-bold text-[22px]"
+        <img v-if="data.avatar_url" :src="data.avatar_url" :alt="data.username"
+          class="w-20 h-20 rounded-full object-cover"
+          :style="{ border: '1px solid var(--color-border)' }" />
+        <div v-else class="w-20 h-20 rounded-full flex items-center justify-center font-sans font-bold text-[22px]"
           :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
           {{ (data.username[0] || 'U').toUpperCase() }}
         </div>
@@ -88,6 +91,7 @@ import type { Tool } from '~/types/tool'
 interface ContributorData {
   username: string
   website: string | null
+  avatar_url: string | null
   toolCount: number
   tools: Tool[]
   pendingTools: Tool[]

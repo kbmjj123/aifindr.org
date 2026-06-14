@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
     SELECT
       t.submitter_github AS username,
       t.submitter_site AS website,
+      u.avatar_url,
       COUNT(*) AS toolCount,
       COALESCE(u.created_at, MIN(t.submitted_at)) AS joined
     FROM tools t
@@ -23,6 +24,7 @@ export default defineEventHandler(async (event) => {
   `).bind(username).first<{
     username: string
     website: string | null
+    avatar_url: string | null
     toolCount: number
     joined: string
   }>()

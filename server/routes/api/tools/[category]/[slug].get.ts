@@ -23,7 +23,10 @@ export default defineEventHandler(async (event) => {
   }
 
   const tool = await env.DB.prepare(
-    `SELECT * FROM tools WHERE slug = ? AND category = ? AND ${statusFilter}`
+    `SELECT t.*, u.avatar_url AS submitter_avatar
+     FROM tools t
+     LEFT JOIN users u ON u.id = t.submitter_id
+     WHERE t.slug = ? AND t.category = ? AND ${statusFilter}`
   ).bind(slug, category).first()
 
   if (!tool) {

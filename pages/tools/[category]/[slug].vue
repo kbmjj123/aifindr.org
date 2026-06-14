@@ -230,7 +230,9 @@
             <div v-if="tool.submitter_site || tool.submitter_github" :style="{ borderTop: '1px solid var(--color-border)', margin: '14px 0', paddingTop: '14px' }">
               <div class="detail-sidebar-label">Submitted by</div>
               <div class="flex items-center gap-2 mt-1">
-                <div class="w-5 h-5 rounded-full shrink-0" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }" />
+                <img v-if="(tool as any).submitter_avatar" :src="(tool as any).submitter_avatar" :alt="tool.submitter_github"
+                  class="w-5 h-5 rounded-full shrink-0 object-cover" />
+                <div v-else class="w-5 h-5 rounded-full shrink-0" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }" />
                 <div>
                   <div class="font-body text-[13px]" style="color: var(--color-text-secondary)">
                   <NuxtLink v-if="tool.submitter_github"
