@@ -100,7 +100,15 @@
               </div>
               <div v-if="tool.price_tiers || tool.price_detail">
                 <div class="detail-sidebar-label">Price Details</div>
-                <PriceTiersDisplay :tiers="(tool as any).price_tiers" :fallback="tool.price_detail" />
+                <div :class="{ 'max-h-[100px] overflow-hidden': !priceExpanded }">
+                  <PriceTiersDisplay :tiers="(tool as any).price_tiers" :fallback="tool.price_detail" />
+                </div>
+                <button v-if="priceTierCount > 3" type="button"
+                  class="mt-1.5 font-body text-[11px] cursor-pointer transition-opacity hover:opacity-70"
+                  :style="{ color: 'var(--color-accent)' }"
+                  @click="priceExpanded = !priceExpanded">
+                  {{ priceExpanded ? 'Show less ↑' : `Show all ${priceTierCount} tiers ↓` }}
+                </button>
               </div>
               <div>
                 <div class="detail-sidebar-label">Category</div>
@@ -201,6 +209,15 @@ const toolPlatforms = computed(() => {
   if (!p) return []
   if (Array.isArray(p)) return p
   return String(p).split(',').filter(Boolean)
+})
+
+// Price accordion
+const priceExpanded = ref(false)
+const priceTierCount = computed(() => {
+  const t = (tool.value as any)?.price_tiers
+  if (!t) return 0
+  if (Array.isArray(t)) return t.length
+  try { return JSON.parse(t as string).length } catch { return 0 }
 })
 
 const toolTargetUsers = computed(() => {
