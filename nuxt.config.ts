@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     name: 'aifindr.org – Discover AI Tools',
   },
 
-  css: ['~/assets/css/main.css', '~/assets/css/markdown.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/markdown.css', '@vueup/vue-quill/dist/vue-quill.snow.css'],
 
   compatibilityDate: '2026-05-07',
 
