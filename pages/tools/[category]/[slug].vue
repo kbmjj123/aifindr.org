@@ -285,13 +285,13 @@ function pricingLabel(p: ToolPricing) {
   return p.charAt(0).toUpperCase() + p.slice(1)
 }
 
-const toolScreenshots = computed<string[]>(() => {
+const toolScreenshots = computed(() => {
   const s = (tool.value as any)?.screenshots
   if (Array.isArray(s)) return s
   if (typeof s === 'string') {
-    try { return JSON.parse(s) as string[] } catch { return [] }
+    try { return JSON.parse(s) as (string | { url: string; alt?: string })[] } catch { return [] }
   }
-  return []
+  return [] as (string | { url: string; alt?: string })[]
 })
 
 const toolVideos = computed(() => {

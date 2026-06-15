@@ -5,11 +5,11 @@
       class="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth rounded-lg"
       :style="{ scrollbarWidth: 'none', msOverflowStyle: 'none' }"
       @scroll="updateArrows">
-      <div v-for="(url, i) in urls" :key="i"
+      <div v-for="(item, i) in normalized" :key="i"
         class="flex-none w-full snap-center rounded-lg overflow-hidden cursor-pointer"
         :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)', aspectRatio: '16/9' }"
         @click="open(i)">
-        <img :src="url" :alt="`${alt} ${i + 1}`" class="w-full h-full object-cover" />
+        <img :src="item.url" :alt="item.alt || `${fallbackAlt} ${i + 1}`" class="w-full h-full object-cover" />
       </div>
     </div>
 
@@ -34,8 +34,8 @@
     </button>
 
     <!-- Dots indicator -->
-    <div v-if="urls.length > 1" class="flex items-center justify-center gap-1.5 mt-2">
-      <button v-for="(_, i) in urls" :key="i"
+    <div v-if="normalized.length > 1" class="flex items-center justify-center gap-1.5 mt-2">
+      <button v-for="(_, i) in normalized" :key="i"
         class="w-1.5 h-1.5 rounded-full transition-all cursor-pointer"
         :style="{
           background: i === currentPage ? 'var(--color-accent)' : 'var(--color-border)',
@@ -60,10 +60,10 @@
 
         <div class="absolute top-4 left-4 font-body text-[13px] z-10"
           style="color: rgba(255,255,255,0.6)">
-          {{ activeIndex + 1 }} / {{ urls.length }}
+          {{ activeIndex + 1 }} / {{ normalized.length }}
         </div>
 
-        <button v-if="urls.length > 1"
+        <button v-if="normalized.length > 1"
           class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full z-10 cursor-pointer"
           style="color: #fff; background: rgba(255,255,255,0.1)" @click="prev">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -71,10 +71,10 @@
           </svg>
         </button>
 
-        <img :src="urls[activeIndex]" :alt="`${alt} ${activeIndex + 1}`"
+        <img :src="normalized[activeIndex].url" :alt="normalized[activeIndex].alt || `${fallbackAlt} ${activeIndex + 1}`"
           class="relative max-w-[90vw] max-h-[90vh] object-contain rounded-lg" />
 
-        <button v-if="urls.length > 1"
+        <button v-if="normalized.length > 1"
           class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full z-10 cursor-pointer"
           style="color: #fff; background: rgba(255,255,255,0.1)" @click="next">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -88,9 +88,15 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  urls: string[]
+  urls: (string | { url: string; alt?: string })[]
   alt?: string
 }>()
+
+const fallbackAlt = props.alt || 'Screenshot'
+
+const normalized = computed(() =>
+  props.urls.map(u => typeof u === 'string' ? { url: u, alt: '' } : { url: u.url, alt: u.alt || '' })
+)
 
 const scrollEl = ref<HTMLDivElement | null>(null)
 const currentPage = ref(0)
@@ -104,14 +110,14 @@ function updateArrows() {
   showPrev.value = el.scrollLeft > 10
   showNext.value = el.scrollLeft < el.scrollWidth - el.clientWidth - 10
   const idx = Math.round(el.scrollLeft / el.clientWidth)
-  currentPage.value = Math.min(idx, props.urls.length - 1)
+  currentPage.value = Math.min(idx, normalized.value.length - 1)
 }
 
 function scrollBy(dir: number) {
   const el = scrollEl.value
   if (!el) return
   const idx = currentPage.value + dir
-  if (idx < 0 || idx >= props.urls.length) return
+  if (idx < 0 || idx >= normalized.value.length) return
   el.scrollTo({ left: idx * el.clientWidth, behavior: 'smooth' })
 }
 
@@ -125,11 +131,11 @@ function open(i: number) { activeIndex.value = i }
 function close() { activeIndex.value = null }
 function prev() {
   if (activeIndex.value === null) return
-  activeIndex.value = activeIndex.value > 0 ? activeIndex.value - 1 : props.urls.length - 1
+  activeIndex.value = activeIndex.value > 0 ? activeIndex.value - 1 : normalized.value.length - 1
 }
 function next() {
   if (activeIndex.value === null) return
-  activeIndex.value = activeIndex.value < props.urls.length - 1 ? activeIndex.value + 1 : 0
+  activeIndex.value = activeIndex.value < normalized.value.length - 1 ? activeIndex.value + 1 : 0
 }
 
 function onKeydown(e: KeyboardEvent) {

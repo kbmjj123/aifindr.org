@@ -109,8 +109,16 @@
             <p class="font-body text-[13px] font-medium mb-2" style="color: var(--color-text-primary)">
               Screenshots <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(up to 3)</span>
             </p>
-            <div class="flex flex-wrap gap-3">
-              <ImageUploadSlot v-for="i in 3" :key="i" v-model="uploadedScreenshots[i - 1]" aspect="screenshot" />
+            <div class="flex flex-col gap-3">
+              <div v-for="i in 3" :key="i" class="flex items-start gap-2">
+                <div class="flex-1 min-w-0">
+                  <ImageUploadSlot v-model="uploadedScreenshots[i - 1].url" aspect="screenshot" />
+                </div>
+                <input v-model="uploadedScreenshots[i - 1].alt"
+                  placeholder="Alt text"
+                  class="input !h-[38px] !text-[11px] !w-[130px] shrink-0"
+                  maxlength="120" />
+              </div>
             </div>
           </div>
         </div>
@@ -220,7 +228,11 @@ const parseError      = ref('')
 const parsed          = ref<any>(null)
 
 const uploadedLogoUrl = ref('')
-const uploadedScreenshots = reactive<string[]>(['', '', ''])
+const uploadedScreenshots = reactive<{ url: string; alt: string }[]>([
+  { url: '', alt: '' },
+  { url: '', alt: '' },
+  { url: '', alt: '' },
+])
 
 const submitting      = ref(false)
 const submitError     = ref('')
@@ -240,7 +252,7 @@ function parseJson() {
     }
     parsed.value          = data
     uploadedLogoUrl.value = ''
-    uploadedScreenshots.fill('')
+    uploadedScreenshots.forEach(s => { s.url = ''; s.alt = '' })
     submitError.value     = ''
     submitSuccess.value   = ''
   } catch {
@@ -272,7 +284,7 @@ const previewFields = computed(() => {
 })
 
 // ── 截图计数 ─────────────────────────────────────────────────
-const screenshotCount = computed(() => uploadedScreenshots.filter(Boolean).length)
+const screenshotCount = computed(() => uploadedScreenshots.filter(s => s.url).length)
 
 // ── 格式化 price_tiers 预览 ────────────────────────────────
 function formatPriceTiers(tiers: unknown): string {
@@ -328,8 +340,8 @@ async function publish() {
 
   try {
     const jsonSs = Array.isArray(parsed.value.screenshots) ? parsed.value.screenshots : []
-    const uploadedSs = uploadedScreenshots.filter(Boolean)
-    const allScreenshots = [...jsonSs, ...uploadedSs].slice(0, 3)
+    const uploadedSs = uploadedScreenshots.filter(s => s.url)
+    const allScreenshots = [...jsonSs.map((s) => typeof s === "string" ? { url: s, alt: "" } : s), ...uploadedSs].slice(0, 3)
 
     const payload = {
       ...parsed.value,
