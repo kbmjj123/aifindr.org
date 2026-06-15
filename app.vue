@@ -39,8 +39,8 @@ useHead({
   ],
   script: [
     {
-      src: 'https://cloud.umami.is/script.js',
-      'data-website-id': '0521130a-ecf4-4412-9546-26c4adf2c4bd',
+      src: 'https://umami-serve.vercel.app/script.js',
+      'data-website-id': '1aa17710-60e0-4de1-afc4-3c5624e53b1f',
       defer: true,
     },
     {
