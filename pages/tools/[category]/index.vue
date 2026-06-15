@@ -181,21 +181,18 @@ usePageSeo(() => ({
 }))
 
 // FAQPage schema for SEO rich results
-const categoryFaqs = computed(() => {
+const faqSchema = computed(() => {
   const guides = categoryGuides.value
   if (!guides.length) return []
-  return guides.flatMap((g: any) =>
+  const faqs = guides.flatMap((g: any) =>
     (g.faq || []).map((f: any) => ({
       '@type': 'Question' as const,
       name: f.question,
       acceptedAnswer: { '@type': 'Answer' as const, text: f.answer },
     }))
   )
+  if (!faqs.length) return []
+  return [{ '@type': 'FAQPage' as const, mainEntity: faqs }]
 })
-
-defineSchemaOrg(() => {
-  const faqs = categoryFaqs.value
-  if (!faqs.length) return {}
-  return { '@type': 'FAQPage', mainEntity: faqs }
-})
+useSchemaOrg(faqSchema)
 </script>
