@@ -6,7 +6,8 @@ compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 assets = { directory = ".output/public" }
 
 routes = [
-  { pattern = "aifindr.org", zone_name = "aifindr.org", custom_domain = true, enabled = true, previews_enabled = false }
+  { pattern = "aifindr.org", zone_name = "aifindr.org", custom_domain = true },
+  { pattern = "www.aifindr.org", zone_name = "aifindr.org", custom_domain = true }
 ]
 
 [[d1_databases]]
@@ -23,14 +24,11 @@ binding = "CDN"
 bucket_name = "aifindr-cdn"
 
 [vars]
-API_BASE                    = "https://aifindr.org"
-R2_PUBLIC_URL               = ""
-ADMIN_GITHUB_IDS            = ""
-TURNSTILE_SECRET            = ""
-GITHUB_CLIENT_ID            = ""
-RESEND_API_KEY              = ""
-GITHUB_WEBHOOK_SECRET       = ""
-LEMONSQUEEZY_WEBHOOK_SECRET = ""
+# ✅ 只放非敏感的公开配置
+API_BASE      = "https://aifindr.org"
+R2_PUBLIC_URL = "https://cdn.aifindr.org"
+GITHUB_CLIENT_ID   = "Ov23lioNhw0LD6MXeMFJ"
+ADMIN_GITHUB_IDS   = "1559584,284824170"
 
 [triggers]
 crons = [
