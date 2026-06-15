@@ -125,6 +125,7 @@ const { get } = useApi()
 
 const categories = CATEGORIES
 const catCounts = ref<Record<string, number>>({})
+console.info(catCounts)
 
 const { data: homeData, error } = await useAsyncData('home', () =>
   Promise.all([
