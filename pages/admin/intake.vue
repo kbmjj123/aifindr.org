@@ -109,14 +109,12 @@
             <p class="font-body text-[13px] font-medium mb-2" style="color: var(--color-text-primary)">
               Screenshots <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(up to 3)</span>
             </p>
-            <div class="flex flex-col gap-3">
-              <div v-for="i in 3" :key="i" class="flex items-start gap-2">
-                <div class="flex-1 min-w-0">
-                  <ImageUploadSlot v-model="uploadedScreenshots[i - 1].url" aspect="screenshot" />
-                </div>
+            <div class="flex flex-wrap gap-3">
+              <div v-for="i in 3" :key="i" class="flex flex-col gap-1.5" style="width: 180px;">
+                <ImageUploadSlot v-model="uploadedScreenshots[i - 1].url" aspect="screenshot" />
                 <input v-model="uploadedScreenshots[i - 1].alt"
                   placeholder="Alt text"
-                  class="input !h-[38px] !text-[11px] !w-[130px] shrink-0"
+                  class="input !h-[30px] !text-[10px]"
                   maxlength="120" />
               </div>
             </div>
@@ -294,7 +292,11 @@ function formatFaq(faq: unknown): string {
   if (typeof faq === 'string') { try { arr = JSON.parse(faq) } catch { return faq } }
   else if (Array.isArray(faq)) arr = faq
   if (!arr.length) return '—'
-  return arr.map((q: any) => q.question || q.q || '(untitled)').join(' | ')
+  return arr.map((q: any) => {
+    const question = q.question || q.q || '(untitled)'
+    const answer = q.answer || q.a || ''
+    return answer ? `Q: ${question} / A: ${answer.slice(0, 80)}${answer.length > 80 ? '…' : ''}` : `Q: ${question}`
+  }).join(' | ')
 }
 
 // ── 格式化 price_tiers 预览 ────────────────────────────────
