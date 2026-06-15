@@ -28,10 +28,7 @@
               <span v-else class="font-sans font-bold text-xl" :style="{ color: 'var(--color-text-muted)' }">{{ (tool.name || 'T')[0] }}</span>
             </div>
             <div class="min-w-0">
-              <h1 class="tool-detail-name mb-1">{{ tool.name }}</h1>
-              <div class="flex flex-wrap gap-2 mb-2">
-                <ToolBadge v-if="tool.featured" type="featured" />
-              </div>
+              <h1 class="tool-detail-name mb-1">{{ tool.name }}<span v-if="tool.short_description" class="font-normal" style="color: var(--color-text-secondary); font-size: 0.65em; letter-spacing: -0.3px"> — {{ tool.short_description }}</span></h1>
               <p class="font-body text-[13px]" style="color: var(--color-text-secondary)">
                 {{ tool.meta_description }}
               </p>
@@ -328,7 +325,7 @@ async function recordClick() {
 usePageSeo(() => ({
   title: tool.value?.name || slug.value,
   template: 'tool',
-  subtitle: tool.value?.meta_description || '',
+  subtitle: (tool.value as any)?.short_description || tool.value?.meta_description || '',
   description: tool.value?.meta_description || '',
 }))
 

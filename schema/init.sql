@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS tools (
   last_verified    TEXT,
   updated_at       TEXT,
   meta_description TEXT,
+  short_description TEXT,  -- max 80 chars, used in title/H1
   logo             TEXT,
   screenshots      TEXT,       -- JSON 数组，如 ["url1","url2"]
   featured         INTEGER DEFAULT 0,

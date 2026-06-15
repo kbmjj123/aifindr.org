@@ -266,6 +266,7 @@ const previewFields = computed(() => {
     { key: 'has_free_trial', label: 'Free Trial', value: p.has_free_trial ? 'Yes' : 'No' },
     { key: 'platforms',      label: 'Platforms',      value: Array.isArray(p.platforms) ? p.platforms.join(', ') : p.platforms },
     { key: 'launched',       label: 'Launched',       value: p.launched },
+    { key: 'short_description', label: 'Short Description', value: p.short_description },
     { key: 'meta_description', label: 'Meta Description', value: p.meta_description },
   ]
 })

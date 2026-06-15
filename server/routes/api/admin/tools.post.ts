@@ -25,6 +25,7 @@ interface ToolPayload {
   pricing: 'free' | 'freemium' | 'paid'
   price_starting?: number
   price_detail?: string
+  short_description?: string
   has_free_trial?: number
   platforms?: string[]
   launched?: string
@@ -71,6 +72,7 @@ export default defineEventHandler(async (event) => {
   const priceDetail = String(body.price_detail || '').trim()
   const launched    = String(body.launched || '').trim()
   const metaDesc    = String(body.meta_description || '').trim()
+  const shortDesc   = String(body.short_description || '').trim().slice(0, 80)  // max 80 chars
   const logo        = String(body.logo || '').trim()          // R2 logo URL
   const screenshots = Array.isArray(body.screenshots) ? JSON.stringify(body.screenshots) : ''
   let priceTiers    = null
@@ -143,12 +145,12 @@ export default defineEventHandler(async (event) => {
     INSERT INTO tools (
       slug, name, category, sub_category, website,
       pricing, price_starting, price_detail, price_tiers, has_free_trial, platforms,
-      status, launched, meta_description, logo, screenshots,
+      status, launched, meta_description, short_description, logo, screenshots,
       body, verified, editor_pick, data_source, submitted_at, updated_at
     ) VALUES (
       ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?,
-      'active', ?, ?, ?,
+      'active', ?, ?, ?, ?,
       ?, ?, 1, 0, ?, ?, ?
     )
   `).bind(
@@ -165,6 +167,7 @@ export default defineEventHandler(async (event) => {
     platformsStr,
     launched || null,
     metaDesc || null,
+    shortDesc || null,
     logo || null,
     screenshots || null,
     bodyContent || null,

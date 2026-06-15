@@ -43,6 +43,7 @@ export interface Tool {
   last_verified?: string
   updated_at?: string
   meta_description?: string
+  short_description?: string  // max 80 chars, used in title/H1
   logo?: string
   screenshots?: string[]
   price_tiers?: string
