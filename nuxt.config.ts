@@ -6,14 +6,6 @@ export default defineNuxtConfig({
         '@vue/devtools-kit',
       ]
     },
-    server: {
-      proxy: {
-        '/api': {
-          target: process.env.API_PROXY_TARGET || 'https://aifindr.org',
-          changeOrigin: true,
-        }
-      }
-    }
   },
   modules: ['@nuxt/content', '@nuxtjs/seo'],
 
@@ -34,16 +26,10 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    preset: process.env.NODE_ENV === 'production' ? 'cloudflare_module' : undefined,
+    preset: 'cloudflare_module',
 		cloudflare: {
 			nodeCompat: true,
 		},
-    devProxy: {
-      '/api': {
-        target: process.env.API_PROXY_TARGET || 'https://aifindr.org',
-        changeOrigin: true,
-      }
-    }
   },
 	runtimeConfig: {
 		apiBase: '',  // 服务端用，本地开发由 .env.local 注入
@@ -67,6 +53,12 @@ export default defineNuxtConfig({
       '/api/__sitemap__/urls'
     ],
     autoLastmod: true,
+  },
+
+  routeRules: {
+    '/admin/**': { ssr: false },
+    '/blog':     { ssr: false },
+    '/blog/*':   { ssr: false },
   },
 
   postcss: {

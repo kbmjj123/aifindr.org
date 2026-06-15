@@ -1763,3 +1763,236 @@ export const CATEGORIES: Category[] = [
 		],
 	},
 ]
+
+
+// ── Submit form shared definitions ──────────────────────────
+// Canonical source for form display and server validation
+
+export const FEATURE_TAGS: { value: string; label: string }[] = [
+  { value: 'free-tier',      label: 'Free Tier' },
+  { value: 'no-signup',      label: 'No Signup' },
+  { value: 'open-source',    label: 'Open Source' },
+  { value: 'api-available',  label: 'API Available' },
+  { value: 'browser-based',  label: 'Browser Based' },
+  { value: 'offline-local',  label: 'Offline / Local' },
+  { value: 'freemium',       label: 'Freemium' },
+]
+
+export const AUDIENCE_TAGS: { value: string; label: string }[] = [
+  { value: 'developer',       label: 'Developer' },
+  { value: 'designer',        label: 'Designer' },
+  { value: 'marketer',        label: 'Marketer' },
+  { value: 'student',         label: 'Student' },
+  { value: 'content-creator', label: 'Content Creator' },
+  { value: 'small-business',  label: 'Small Business' },
+  { value: 'freelancer',      label: 'Freelancer' },
+  { value: 'researcher',      label: 'Researcher' },
+]
+
+export const USE_CASE_TAGS: Record<string, { value: string; label: string }[]> = {
+  image: [
+    { value: 'image-generation',   label: 'Image Generation' },
+    { value: 'image-upscaling',    label: 'Image Upscaling' },
+    { value: 'background-removal', label: 'Background Removal' },
+    { value: 'logo-design',        label: 'Logo Design' },
+    { value: 'illustration',       label: 'Illustration' },
+  ],
+  writing: [
+    { value: 'copywriting',          label: 'Copywriting' },
+    { value: 'blog-writing',         label: 'Blog Writing' },
+    { value: 'email-writing',        label: 'Email Writing' },
+    { value: 'paraphrasing',         label: 'Paraphrasing' },
+    { value: 'seo-content',          label: 'SEO Content' },
+    { value: 'product-description',  label: 'Product Description' },
+  ],
+  video: [
+    { value: 'video-generation',   label: 'Video Generation' },
+    { value: 'video-editing',      label: 'Video Editing' },
+    { value: 'subtitles-captions', label: 'Subtitles & Captions' },
+    { value: 'avatar-video',       label: 'Avatar Video' },
+    { value: 'animation',          label: 'Animation' },
+  ],
+  audio: [
+    { value: 'music-generation',   label: 'Music Generation' },
+    { value: 'text-to-speech',     label: 'Text to Speech' },
+    { value: 'voice-cloning',      label: 'Voice Cloning' },
+    { value: 'transcription',      label: 'Transcription' },
+    { value: 'audio-enhancement',  label: 'Audio Enhancement' },
+  ],
+  code: [
+    { value: 'code-completion', label: 'Code Completion' },
+    { value: 'code-review',     label: 'Code Review' },
+    { value: 'sql-generation',  label: 'SQL Generation' },
+    { value: 'test-generation', label: 'Test Generation' },
+    { value: 'documentation',   label: 'Documentation' },
+  ],
+  productivity: [
+    { value: 'meeting-notes',        label: 'Meeting Notes' },
+    { value: 'pdf-summarization',    label: 'PDF Summarization' },
+    { value: 'workflow-automation',  label: 'Workflow Automation' },
+    { value: 'scheduling',           label: 'Scheduling' },
+    { value: 'task-management',      label: 'Task Management' },
+  ],
+  marketing: [
+    { value: 'seo-optimization',   label: 'SEO Optimization' },
+    { value: 'social-media',       label: 'Social Media' },
+    { value: 'ad-copy',            label: 'Ad Copy' },
+    { value: 'landing-page',       label: 'Landing Page' },
+    { value: 'competitor-analysis',label: 'Competitor Analysis' },
+  ],
+  data: [
+    { value: 'data-analysis',      label: 'Data Analysis' },
+    { value: 'chart-visualization', label: 'Chart Visualization' },
+    { value: 'spreadsheet',        label: 'Spreadsheet' },
+    { value: 'dashboard',          label: 'Dashboard' },
+    { value: 'report-generation',  label: 'Report Generation' },
+  ],
+  education: [
+    { value: 'homework-help',      label: 'Homework Help' },
+    { value: 'math-solving',       label: 'Math Solving' },
+    { value: 'flashcards',         label: 'Flashcards' },
+    { value: 'language-learning',  label: 'Language Learning' },
+    { value: 'course-creation',    label: 'Course Creation' },
+  ],
+  business: [
+    { value: 'business-planning', label: 'Business Planning' },
+    { value: 'contract-review',   label: 'Contract Review' },
+    { value: 'invoicing',         label: 'Invoicing' },
+    { value: 'pitch-deck',        label: 'Pitch Deck' },
+    { value: 'recruiting',        label: 'Recruiting' },
+    { value: 'customer-support',  label: 'Customer Support' },
+  ],
+  research: [
+    { value: 'academic-research',    label: 'Academic Research' },
+    { value: 'paper-summarization',  label: 'Paper Summarization' },
+    { value: 'citation',             label: 'Citation' },
+    { value: 'fact-checking',        label: 'Fact Checking' },
+    { value: 'web-scraping',         label: 'Web Scraping' },
+  ],
+  other: [
+    { value: 'local-llm',        label: 'Local LLM' },
+    { value: 'rag',              label: 'RAG' },
+    { value: 'ai-directory',     label: 'AI Directory' },
+    { value: 'open-source-tool', label: 'Open Source Tool' },
+  ],
+}
+
+export const SUBCATEGORIES: Record<string, { value: string; label: string }[]> = {
+  image: [
+    { value: 'image-generation',  label: 'Image Generation' },
+    { value: 'image-upscaling',   label: 'Image Upscaling & Enhancement' },
+    { value: 'background-removal',label: 'Background Removal' },
+    { value: 'logo-branding',     label: 'Logo & Branding' },
+    { value: 'illustration',      label: 'Illustration & Art' },
+  ],
+  writing: [
+    { value: 'ai-writing',          label: 'AI Writing' },
+    { value: 'essay-longform',      label: 'Essay & Long-form' },
+    { value: 'copywriting',         label: 'Copywriting' },
+    { value: 'blog-seo',            label: 'Blog & SEO Writing' },
+    { value: 'paraphrasing',        label: 'Paraphrasing' },
+    { value: 'email-writing',       label: 'Email Writing' },
+    { value: 'product-description', label: 'Product Description' },
+  ],
+  video: [
+    { value: 'video-generation',    label: 'Video Generation' },
+    { value: 'video-editing',       label: 'Video Editing' },
+    { value: 'video-enhancement',   label: 'Video Enhancement' },
+    { value: 'avatar-talking-head', label: 'Avatar & Talking Head' },
+    { value: 'subtitles-captions',  label: 'Subtitles & Captions' },
+    { value: 'animation',           label: 'Animation' },
+  ],
+  audio: [
+    { value: 'music-generation',  label: 'Music Generation' },
+    { value: 'text-to-speech',    label: 'Text to Speech' },
+    { value: 'voice-cloning',     label: 'Voice Cloning' },
+    { value: 'transcription',     label: 'Transcription' },
+    { value: 'audio-enhancement', label: 'Audio Enhancement' },
+  ],
+  code: [
+    { value: 'ai-coding-assistants', label: 'AI Coding Assistants' },
+    { value: 'code-generation',      label: 'Code Generation' },
+    { value: 'code-review',          label: 'Code Review' },
+    { value: 'sql-database',         label: 'SQL & Database' },
+    { value: 'testing',              label: 'Testing' },
+    { value: 'documentation',        label: 'Documentation' },
+    { value: 'code-explanation',     label: 'Code Explanation' },
+    { value: 'utilities',            label: 'Utilities' },
+  ],
+  productivity: [
+    { value: 'meeting-notes',       label: 'Meeting Notes' },
+    { value: 'pdf-document',        label: 'PDF & Document' },
+    { value: 'workflow-automation', label: 'Workflow Automation' },
+    { value: 'calendar-scheduling', label: 'Calendar & Scheduling' },
+    { value: 'task-management',     label: 'Task Management' },
+    { value: 'inbox-email',         label: 'Inbox & Email' },
+    { value: 'time-tracking',       label: 'Time Tracking' },
+  ],
+  marketing: [
+    { value: 'seo-tools',           label: 'SEO Tools' },
+    { value: 'social-media',        label: 'Social Media' },
+    { value: 'ad-copy',             label: 'Ad Copy' },
+    { value: 'landing-pages',       label: 'Landing Pages' },
+    { value: 'content-repurposing', label: 'Content Repurposing' },
+    { value: 'competitor-analysis', label: 'Competitor Analysis' },
+    { value: 'youtube-video-seo',   label: 'YouTube & Video SEO' },
+  ],
+  data: [
+    { value: 'data-analysis',      label: 'Data Analysis' },
+    { value: 'charts-visualization',label: 'Charts & Visualization' },
+    { value: 'spreadsheets',        label: 'Spreadsheets' },
+    { value: 'dashboards-bi',       label: 'Dashboards & BI' },
+    { value: 'reports',             label: 'Reports' },
+  ],
+  education: [
+    { value: 'homework-tutoring', label: 'Homework & Tutoring' },
+    { value: 'math',              label: 'Math' },
+    { value: 'flashcards-quizzes',label: 'Flashcards & Quizzes' },
+    { value: 'summarization',     label: 'Summarization' },
+    { value: 'study-planning',    label: 'Study Planning' },
+    { value: 'language-learning', label: 'Language Learning' },
+    { value: 'course-creation',   label: 'Course Creation' },
+  ],
+  business: [
+    { value: 'business-planning',   label: 'Business Planning' },
+    { value: 'legal-contracts',     label: 'Legal & Contracts' },
+    { value: 'finance-invoicing',   label: 'Finance & Invoicing' },
+    { value: 'pitch-presentations', label: 'Pitch & Presentations' },
+    { value: 'hr-recruiting',       label: 'HR & Recruiting' },
+    { value: 'customer-support',    label: 'Customer Support' },
+    { value: 'crm-sales',           label: 'CRM & Sales' },
+  ],
+  research: [
+    { value: 'ai-search-engines',   label: 'AI Search Engines' },
+    { value: 'academic-research',   label: 'Academic Research' },
+    { value: 'paper-summarization', label: 'Paper Summarization' },
+    { value: 'citation-references', label: 'Citation & References' },
+    { value: 'fact-checking',       label: 'Fact Checking' },
+    { value: 'knowledge-base',      label: 'Knowledge Base' },
+    { value: 'web-scraping',        label: 'Web Scraping' },
+    { value: 'academic-writing',    label: 'Academic Writing' },
+  ],
+  other: [
+    { value: 'ai-directory',        label: 'AI Directory' },
+    { value: 'open-source-tools',   label: 'Open Source Tools' },
+    { value: 'ai-for-students',     label: 'AI for Students' },
+    { value: 'ai-for-small-business',label: 'AI for Small Business' },
+    { value: 'ai-for-freelancers',  label: 'AI for Freelancers' },
+    { value: 'ai-for-creators',     label: 'AI for Creators' },
+  ],
+}
+
+function getAllTagValues(grouped: Record<string, { value: string; label: string }[]>): string[] {
+  return Object.values(grouped).flatMap(items => items.map(i => i.value))
+}
+
+export const VALID_SUBCATEGORY_VALUES: Record<string, string[]> =
+  Object.fromEntries(
+    Object.entries(SUBCATEGORIES).map(([k, v]) => [k, v.map(i => i.value)])
+  )
+
+export const VALID_TAG_VALUES: Record<string, string[]> = {
+  feature:  FEATURE_TAGS.map(t => t.value),
+  audience: AUDIENCE_TAGS.map(t => t.value),
+  use_case: getAllTagValues(USE_CASE_TAGS),
+}

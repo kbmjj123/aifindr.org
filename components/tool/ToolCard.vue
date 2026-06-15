@@ -3,7 +3,7 @@
     <div class="flex gap-3 pr-5">
       <!-- Logo / Icon -->
       <div class="tool-logo">
-        <img v-if="t.cover_image" :src="t.cover_image" :alt="`${t.name} logo`" class="w-full h-full object-cover rounded-[7px]" />
+        <img v-if="t.logo" :src="t.logo" :alt="`${t.name} logo`" class="w-full h-full object-cover rounded-[7px]" />
         <span v-else class="font-sans font-bold text-[11px]" :style="{ color: 'var(--color-text-muted)' }">{{ (t.name || '?')[0] }}</span>
       </div>
 
@@ -13,7 +13,6 @@
           <h3 class="tool-name flex-1 min-w-0">{{ t.name }}</h3>
           <div class="flex items-center gap-1 shrink-0">
             <ToolBadge v-if="t.featured" type="featured" />
-            <ToolBadge v-if="t.verified" type="verified" />
             <span v-if="t.has_free_trial" class="badge badge-verified" style="font-size: 9px;">Free Trial</span>
           </div>
         </div>
@@ -23,7 +22,11 @@
 
         <!-- Tags -->
         <div class="flex flex-wrap gap-1.5">
-          <span v-for="tag in visibleTags" :key="tag" class="tag">{{ tag }}</span>
+          <span v-for="tag in visibleTags" :key="tag"
+            class="tag cursor-pointer hover:opacity-70 transition-opacity"
+            @click.stop="navigateTo(`/tools/${t.category}/tags/${tag}`)">
+            {{ tag }}
+          </span>
           <span v-if="t.pricing" :class="['tag', `tag-${t.pricing}`]" class="tag-pricing">{{ pricingLabel }}</span>
         </div>
       </div>
@@ -51,8 +54,14 @@ const detailLink = computed(() => `/tools/${t.value.category}/${t.value.slug}`)
 const visibleTags = computed(() => {
   const tags = t.value.tags
   if (!tags) return []
-  if (Array.isArray(tags)) return tags.slice(0, 3)
-  return String(tags).split(',').slice(0, 3).filter(Boolean)
+  if (Array.isArray(tags)) {
+    // Structured tags: filter feature type only
+    const featureTags = tags
+      .filter((x: any) => x.type === 'feature' || typeof x === 'string')
+      .map((x: any) => (typeof x === 'string' ? x : x.tag))
+    return featureTags.slice(0, 2)
+  }
+  return String(tags).split(',').slice(0, 2).filter(Boolean)
 })
 
 const pricingLabel = computed(() => {

@@ -45,7 +45,9 @@
             <td class="px-4 py-3">
               <NuxtLink :to="`/contributors/${c.username}`" class="flex items-center gap-2"
                 style="color: var(--color-text-primary)">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center font-sans font-bold text-[11px]"
+                <img v-if="c.avatar_url" :src="c.avatar_url" :alt="c.username"
+                  class="w-8 h-8 rounded-full object-cover" />
+                <div v-else class="w-8 h-8 rounded-full flex items-center justify-center font-sans font-bold text-[11px]"
                   :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
                   {{ c.username.charAt(0).toUpperCase() }}
                 </div>
@@ -75,7 +77,7 @@
 const { get } = useApi()
 
 const { data: contributors, pending, error } = await useAsyncData('contributors', () =>
-  get<{ username: string; website: string | null; toolCount: number; joined: string }[]>('/api/contributors')
+  get<{ username: string; website: string | null; avatar_url: string | null; toolCount: number; joined: string }[]>('/api/contributors')
 )
 
 usePageSeo({

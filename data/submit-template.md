@@ -1,0 +1,1 @@
+- [Tool Name](https://tool.com) — One-line description. (category: image)

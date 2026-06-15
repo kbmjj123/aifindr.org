@@ -30,9 +30,7 @@ export const useAuth = () => {
     }
     loading.value = true
     try {
-      const data = await get<AuthUser>('/api/auth/me', {
-        headers: { Authorization: `Bearer ${t}` },
-      })
+      const data = await get<AuthUser>('/api/auth/me')
       user.value = data
     } catch {
       user.value = null
@@ -42,7 +40,8 @@ export const useAuth = () => {
   }
 
   function login() {
-    window.location.href = '/api/auth/github'
+    const url = import.meta.dev ? '/api/auth/dev-login' : '/api/auth/github'
+    window.location.href = url
   }
 
   function logout() {

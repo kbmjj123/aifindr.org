@@ -28,7 +28,9 @@
     <div v-if="activeTab === 'github'" class="flex flex-col lg:flex-row gap-8">
       <div class="flex-1 min-w-0 p-6 rounded-lg"
         :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
-        <div class="space-y-6">
+
+        <!-- Steps -->
+        <div class="space-y-6 mb-6">
           <div v-for="(step, i) in githubSteps" :key="i" class="flex gap-4">
             <div class="w-8 h-8 rounded-full flex items-center justify-center font-sans font-bold text-[13px] shrink-0"
               :style="{ background: 'var(--color-accent)', color: '#000' }">
@@ -39,45 +41,22 @@
                 {{ step.title }}
               </h3>
               <p class="font-body text-[12px]" style="color: var(--color-text-secondary)">
-                {{ step.description }}
+                {{ step.desc }}
               </p>
             </div>
           </div>
-
-          <!-- Template preview -->
-          <div class="p-4 rounded-md font-body text-[12px] leading-relaxed"
-            :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)' }">
-            <pre class="text-[11px]">---
-name: "Your Tool Name"
-slug: "your-tool-slug"
-website: "https://your-tool.com"
-category: "image"
-tags: ["tag1", "tag2"]
-pricing: "free"
-platforms: ["web"]
-submitter_site: "https://your-site.com"
-submitter_github: "your-username"
----
-
-## What is [Your Tool]?
-
-Write a detailed description of your tool here (Markdown supported).
-
-## Key Features
-
-- Feature 1
-- Feature 2
-- Feature 3
-
-## Pricing
-
-Brief description of your pricing model.</pre>          </div>
-
-          <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
-            class="btn-primary inline-flex items-center gap-2">
-            Fork &amp; Submit on GitHub →
-          </a>
         </div>
+
+        <!-- Template -->
+        <div class="p-3 rounded-md font-body text-[12px] leading-relaxed overflow-x-auto"
+          :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)' }">
+          <pre class="text-[12px]">{{ templateMd }}</pre>
+        </div>
+
+        <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
+          class="btn-primary inline-flex items-center gap-2 mt-6">
+          Fork &amp; Submit on GitHub →
+        </a>
       </div>
       <div class="w-full lg:w-[280px] shrink-0 lg:sticky lg:top-[76px] lg:self-start">
         <BacklinkIncentive />
@@ -97,6 +76,8 @@ Brief description of your pricing model.</pre>          </div>
 </template>
 
 <script setup lang="ts">
+import templateMd from '~/data/submit-template.md?raw'
+
 const route = useRoute()
 const activeTab = ref('form')
 
@@ -106,10 +87,10 @@ const tabs = [
 ]
 
 const githubSteps = [
-  { title: 'Fork the Repository', description: 'Fork the aifindr.org GitHub repository to your account.' },
-  { title: 'Create a Markdown File', description: 'Create a new .md file in content/tools/[category]/ directory with the frontmatter template below.' },
-  { title: 'Submit a Pull Request', description: 'Open a PR with your new tool file. We\'ll review and merge it within 48 hours.' },
-  { title: 'Get Your Backlinks', description: 'Once merged, you\'ll receive 3 dofollow backlinks automatically.' },
+  { short: 'Fork', title: 'Fork the Repository', desc: 'Fork the aifindr.org GitHub repository to your account.' },
+  { short: 'Create File', title: 'Create a Markdown File', desc: 'Add a new .md file to content/tools/ with your tool info.' },
+  { short: 'Submit PR', title: 'Submit a Pull Request', desc: 'Open a PR with your new file. We\'ll review and merge within 48 hours.' },
+  { short: 'Get Links', title: 'Get Your Backlinks', desc: 'Once merged, you\'ll receive 3 dofollow backlinks automatically.' },
 ]
 
 usePageSeo({

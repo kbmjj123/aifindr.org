@@ -1,3 +1,4 @@
+import { logger } from '~/server/utils/logger'
 import { getEnv, siteUrl } from '~/server/utils/env'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
 import type { UserRecord } from '~/server/utils/jwt'
@@ -39,12 +40,12 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    console.log(`Cron 1: Found ${staleTools.length} stale pending tools, sent B-07 reminders`)
+    logger.info('cron', `Cron 1: Found ${staleTools.length} stale pending tools, sent B-07 reminders`)
   }
 
   // Refresh KV stats cache
   await env.CACHE.delete('stats')
-  console.log('Cron 1: KV stats cache cleared')
+  logger.info('cron', 'Cron 1: KV stats cache cleared')
 
   return { success: true, message: 'Daily ops completed' }
 })

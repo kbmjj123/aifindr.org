@@ -5,6 +5,9 @@
 DROP TABLE IF EXISTS published_links;
 DROP TABLE IF EXISTS generated_articles;
 DROP TABLE IF EXISTS email_logs;
+DROP TABLE IF EXISTS custom_fields;
+DROP TABLE IF EXISTS post_translations;
+DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS tool_tags;
 DROP TABLE IF EXISTS tools;
 DROP TABLE IF EXISTS users;

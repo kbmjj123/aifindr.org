@@ -1,3 +1,4 @@
+import { createError } from 'h3'
 import type { H3Event } from 'h3'
 
 export interface CloudflareEnv {
@@ -18,7 +19,19 @@ export interface CloudflareEnv {
 }
 
 export function getEnv(event: H3Event): CloudflareEnv {
-  return event.context.cloudflare.env as CloudflareEnv
+  // 1. CF Workers (production): native binding via event.context
+  if (event.context.cloudflare?.env) {
+    return event.context.cloudflare.env as CloudflareEnv
+  }
+
+  // 2. Local dev (Nitro + wrangler): Nitro emulates bindings via event.req.runtime
+  //    Requires preset: 'cloudflare_module' + wrangler installed + wrangler.toml configured
+  if (event.req?.runtime?.cloudflare?.env) {
+    return event.req.runtime.cloudflare.env as CloudflareEnv
+  }
+
+  // 3. Fallback (shouldn't reach here in normal usage)
+  throw createError({ statusCode: 500, statusMessage: 'Cloudflare bindings not available' })
 }
 
 /** Build an absolute URL for the site. */

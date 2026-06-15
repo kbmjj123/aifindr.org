@@ -20,7 +20,7 @@
 
       <div class="flex items-center gap-3 pb-3"
         :style="{ borderBottom: '1px solid var(--color-border)' }">
-        <div class="logo-icon !w-5 !h-5 !text-[9px]">A</div>
+        <img src="/web-app-manifest-192x192.png" alt="aifindr" class="logo-icon !w-5 !h-5 object-cover" />
         <div>
           <div class="font-body font-medium text-[12px]" style="color: var(--color-text-primary)">aifindr.org</div>
           <div class="font-body text-[11px]" style="color: var(--color-text-secondary)">

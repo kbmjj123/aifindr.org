@@ -27,6 +27,8 @@ interface PageSeoOptions {
   category?: string
   /** 模板变量：子标题（详情页一行描述等） */
   subtitle?: string
+  /** 跳过 OG image 生成（Admin SPA 页面需开启） */
+  noOg?: boolean
 }
 
 function buildTitle(opts: PageSeoOptions): string {
@@ -35,9 +37,7 @@ function buildTitle(opts: PageSeoOptions): string {
     case 'category':
       return `Best ${opts.category || t} AI Tools in 2026${TITLE_SEPARATOR}${SITE_NAME}`
     case 'tool':
-      // Use subtitle (short tagline) or truncate to keep title under 60 chars
-      const shortTag = opts.subtitle ? truncate(opts.subtitle, 60 - t.length - 4 - SITE_NAME.length) : ''
-      return `${t}${shortTag ? DESC_SEPARATOR + shortTag : ''}${TITLE_SEPARATOR}${SITE_NAME}`
+      return `${t}${opts.subtitle ? DESC_SEPARATOR + opts.subtitle : ''}${TITLE_SEPARATOR}${SITE_NAME}`
     case 'blog':
       return `${t}${TITLE_SEPARATOR}${SITE_NAME} Blog`
     case 'prefix':
@@ -94,9 +94,12 @@ export function usePageSeo(opts: MaybeRefOrGetter<PageSeoOptions>) {
     ]),
   })
 
-  defineOgImage('AppOgImage', () => ({
-    title: resolved.value.ogTitle,
-    description: resolved.value.ogDescription,
-    type: resolved.value.ogType,
-  }))
+  const o = toValue(opts)
+  if (!o.noOg) {
+    (defineOgImage as any)('AppOgImage', () => ({
+      title: resolved.value.ogTitle,
+      description: resolved.value.ogDescription,
+      type: resolved.value.ogType,
+    }))
+  }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen">
+  <div class="min-h-screen pb-[calc(56px+env(safe-area-inset-bottom))] lg:pb-0">
     <AppHeader />
     <AppSidebar />
     <main class="pt-13 lg:pl-55">
@@ -12,6 +12,12 @@
     <MobileTabBar />
     <!-- Search Modal -->
     <SearchModal />
+    <!-- Toast -->
+    <Teleport to="body">
+      <div v-if="toast.visible" :class="['toast', toast.type]">
+        {{ toast.message }}
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -33,13 +39,13 @@ useHead({
   ],
   script: [
     {
-      src: 'https://cloud.umami.is/script.js',
-      'data-website-id': '0521130a-ecf4-4412-9546-26c4adf2c4bd',
+      src: 'https://umami-serve.vercel.app/script.js',
+      'data-website-id': '1aa17710-60e0-4de1-afc4-3c5624e53b1f',
       defer: true,
     },
     {
       // Capture OAuth token from URL BEFORE Nuxt hydration clears query params
-      innerHTML: `(function(){var p=new URLSearchParams(window.location.search).get('token');if(p){localStorage.setItem('aifindr-token',p);var u=new URL(window.location);u.searchParams.delete('token');window.history.replaceState({},'',u.toString())}})()`,
+      innerHTML: `(function(){var p=new URLSearchParams(window.location.search).get('token');if(p){localStorage.setItem('aifindr-token',p);sessionStorage.setItem('login-just-happened','1');var u=new URL(window.location);u.searchParams.delete('token');window.history.replaceState({},'',u.toString())}})()`,
       type: 'text/javascript',
       tagPosition: 'head',
     },
@@ -51,10 +57,37 @@ useHead({
   ],
 })
 
-const { handleUrlToken } = useAuth()
+const { handleUrlToken, user } = useAuth()
+const { show, toast } = useToast()
 useKeyboardShortcuts()
 
 onMounted(() => {
   handleUrlToken()
+
+  // 登录成功 toast
+  const justLoggedIn = sessionStorage.getItem('login-just-happened')
+  if (justLoggedIn) {
+    sessionStorage.removeItem('login-just-happened')
+    const unwatch = watch(user, (val) => {
+      if (val) {
+        nextTick(() => show(`Welcome, ${val.username}!`, 'success'))
+        unwatch()
+      }
+    })
+  }
+
+  // 登录后重定向到之前要访问的页面
+  const redirect = sessionStorage.getItem('login-redirect')
+  if (redirect) {
+    sessionStorage.removeItem('login-redirect')
+    navigateTo(redirect)
+  }
+
+  // 清除历史项目遗留的 Service Worker，防止缓存干扰
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(r => r.unregister())
+    })
+  }
 })
 </script>

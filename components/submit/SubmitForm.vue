@@ -1,13 +1,31 @@
 <template>
   <div class="p-6 rounded-xl"
     :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
-    <form class="space-y-5" @submit.prevent="handleSubmit">
+    <LoginPrompt v-if="!isLoggedIn" message="Sign in with GitHub to submit your AI tool." />
+
+    <form v-else class="space-y-5" @submit.prevent="handleSubmit">
+
       <!-- Tool Name -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Tool Name <span style="color: var(--color-danger)">*</span>
         </label>
-        <BaseInput v-model="form.name" placeholder="e.g. Midjourney" />
+        <BaseInput v-model="form.name" placeholder="e.g. Midjourney" @blur="checkDuplicate" />
+        <div v-if="duplicateWarning" class="flex items-start gap-2 mt-2 p-3 rounded-lg"
+          :style="{ background: 'var(--color-featured-bg)', border: '1px solid var(--color-featured-border)' }">
+          <span class="text-base shrink-0 mt-0.5">⚠️</span>
+          <div class="font-body text-[12px] leading-relaxed" style="color: var(--color-featured-text)">
+            <strong>Already exists:</strong>
+            <NuxtLink v-if="duplicateWarning.slug" :to="duplicateWarning.link"
+              class="font-medium ml-1" style="color: var(--color-text-link); text-decoration: underline">
+              {{ duplicateWarning.name }}
+            </NuxtLink>
+            <span v-else class="ml-1">{{ duplicateWarning.name }}</span>
+            ({{ duplicateWarning.status }}).
+            <button type="button" class="underline ml-1" style="color: var(--color-text-muted)"
+              @click="duplicateWarning = null">Dismiss</button>
+          </div>
+        </div>
       </div>
 
       <!-- Website -->
@@ -24,6 +42,14 @@
           Category <span style="color: var(--color-danger)">*</span>
         </label>
         <BaseSelect v-model="form.category" :options="categoryOptions" />
+      </div>
+
+      <!-- Sub Category（联动 category） -->
+      <div v-if="form.category && subCategoryOptions.length > 0">
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Sub Category <span style="color: var(--color-danger)">*</span>
+        </label>
+        <BaseSelect v-model="form.subCategory" :options="subCategoryOptions" />
       </div>
 
       <!-- Pricing -->
@@ -45,16 +71,72 @@
         </div>
       </div>
 
+      <!-- Price Detail（freemium / paid 时显示） -->
+      <div v-if="form.pricing !== 'free'">
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Pricing Tiers
+        </label>
+        <div class="space-y-2">
+          <div v-for="(tier, i) in form.priceTiers" :key="i"
+            class="p-3 rounded-lg"
+            :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
+            <div class="flex items-center gap-2 mb-2">
+              <BaseInput v-model="tier.name" placeholder="Tier name (e.g. Pro)" class="!h-[32px] !text-[12px]" />
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="font-body text-[11px]" style="color: var(--color-text-muted)">$</span>
+                <BaseInput v-model="tier.price" type="number" min="0" placeholder="0"
+                  class="!h-[32px] !w-[70px] !text-[12px]" />
+              </div>
+              <BaseSelect v-model="tier.period" :options="periodOptions" class="!h-[32px] !text-[12px] !w-auto" />
+              <button type="button" class="w-6 h-6 flex items-center justify-center rounded-md shrink-0 cursor-pointer"
+                :style="{ color: 'var(--color-danger)' }" @click="form.priceTiers.splice(i, 1)">✕</button>
+            </div>
+            <BaseInput v-model="tier.featuresStr" placeholder="Features (comma separated)"
+              class="!h-[32px] !text-[12px]" />
+          </div>
+        </div>
+        <button type="button"
+          class="mt-2 h-[30px] px-3 rounded-md font-body text-[11px] cursor-pointer transition-all"
+          :style="{ background: 'var(--color-bg-elevated)', border: '1px dashed var(--color-border)', color: 'var(--color-text-secondary)' }"
+          @click="addTier">
+          + Add Tier
+        </button>
+      </div>
+
+      <!-- Has Free Trial（paid 时显示） -->
+      <div v-if="form.pricing === 'paid'">
+        <label class="flex items-center gap-2 font-body text-[12px] cursor-pointer" style="color: var(--color-text-secondary)">
+          <input type="checkbox" v-model="form.hasFreeTrial" class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
+          Offers a free trial
+        </label>
+      </div>
+
+      <!-- Short Description（for H1） -->
+      <div>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Short Description <span style="color: var(--color-danger)">*</span>
+        </label>
+        <BaseInput v-model="form.shortDescription" placeholder="e.g. AI Image Generator for Professionals" maxlength="80" />
+        <p class="font-body text-[11px] mt-1" style="color: var(--color-text-muted)">
+          Used in the page title, e.g. "Tool Name — {{ form.shortDescription || 'short description' }}"
+        </p>
+        <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">
+          {{ form.shortDescription.length }}/80
+        </p>
+      </div>
+
       <!-- One-line Description -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           One-line Description <span style="color: var(--color-danger)">*</span>
         </label>
         <BaseInput v-model="form.description" placeholder="Briefly describe your tool" maxlength="80" />
-        <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">{{ form.description.length }}/80</p>
+        <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">
+          {{ form.description.length }}/80
+        </p>
       </div>
 
-      <!-- Detailed Description (becomes markdown body) -->
+      <!-- Detailed Description -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Detailed Description <span style="color: var(--color-danger)">*</span>
@@ -69,7 +151,8 @@
         </label>
         <div class="flex flex-wrap gap-3">
           <label v-for="p in platformOptions" :key="p.value"
-            class="flex items-center gap-1.5 font-body text-[12px] cursor-pointer" style="color: var(--color-text-secondary)">
+            class="flex items-center gap-1.5 font-body text-[12px] cursor-pointer"
+            style="color: var(--color-text-secondary)">
             <input type="checkbox" :value="p.value" v-model="form.platforms"
               class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
             {{ p.label }}
@@ -77,41 +160,76 @@
         </div>
       </div>
 
-      <!-- Target Users -->
+      <!-- Launched -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Target Users
+          Launch Year
+          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
         </label>
-        <div class="flex flex-wrap gap-2">
-          <label v-for="u in userOptions" :key="u.value"
-            class="flex items-center gap-1 font-body text-[11px] cursor-pointer px-2 py-1 rounded-full"
-            :style="{
-              color: form.targetUsers.includes(u.value) ? 'var(--color-accent)' : 'var(--color-text-muted)',
-              background: form.targetUsers.includes(u.value) ? 'var(--color-accent-dim)' : 'var(--color-bg-elevated)',
-              border: '1px solid ' + (form.targetUsers.includes(u.value) ? 'var(--color-accent-border)' : 'var(--color-border)'),
-            }">
-            <input type="checkbox" :value="u.value" v-model="form.targetUsers" class="hidden" />
-            {{ u.label }}
-          </label>
-        </div>
+        <BaseInput v-model="form.launched" placeholder="e.g. 2023" maxlength="4" />
       </div>
 
-      <!-- Use Cases -->
-      <div>
-        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Use Cases
-        </label>
-        <div class="flex flex-wrap gap-2">
-          <label v-for="uc in useCaseOptions" :key="uc.value"
-            class="flex items-center gap-1 font-body text-[11px] cursor-pointer px-2 py-1 rounded-full"
-            :style="{
-              color: form.useCases.includes(uc.value) ? 'var(--color-accent)' : 'var(--color-text-muted)',
-              background: form.useCases.includes(uc.value) ? 'var(--color-accent-dim)' : 'var(--color-bg-elevated)',
-              border: '1px solid ' + (form.useCases.includes(uc.value) ? 'var(--color-accent-border)' : 'var(--color-border)'),
-            }">
-            <input type="checkbox" :value="uc.value" v-model="form.useCases" class="hidden" />
-            {{ uc.label }}
-          </label>
+      <!-- Tags -->
+      <div class="space-y-4">
+        <p class="font-body text-[12px] font-medium" style="color: var(--color-text-primary)">Tags</p>
+
+        <!-- Feature Tags -->
+        <div>
+          <p class="font-body text-[11px] mb-2" style="color: var(--color-text-muted)">Features</p>
+          <div class="flex flex-wrap gap-2">
+            <label v-for="t in FEATURE_TAGS" :key="t.value"
+              class="flex items-center gap-1 font-body text-[11px] cursor-pointer px-2 py-1 rounded-full"
+              :style="{
+                color: form.featureTags.includes(t.value) ? 'var(--color-accent)' : 'var(--color-text-muted)',
+                background: form.featureTags.includes(t.value) ? 'var(--color-accent-dim)' : 'var(--color-bg-elevated)',
+                border: '1px solid ' + (form.featureTags.includes(t.value) ? 'var(--color-accent-border)' : 'var(--color-border)'),
+              }">
+              <input type="checkbox" :value="t.value" v-model="form.featureTags" class="hidden" />
+              {{ t.label }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Audience Tags -->
+        <div>
+          <p class="font-body text-[11px] mb-2" style="color: var(--color-text-muted)">
+            Audience <span style="color: var(--color-text-muted)">(up to 3)</span>
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <label v-for="t in AUDIENCE_TAGS" :key="t.value"
+              class="flex items-center gap-1 font-body text-[11px] cursor-pointer px-2 py-1 rounded-full"
+              :style="{
+                color: form.audienceTags.includes(t.value) ? 'var(--color-accent)' : 'var(--color-text-muted)',
+                background: form.audienceTags.includes(t.value) ? 'var(--color-accent-dim)' : 'var(--color-bg-elevated)',
+                border: '1px solid ' + (form.audienceTags.includes(t.value) ? 'var(--color-accent-border)' : 'var(--color-border)'),
+                opacity: !form.audienceTags.includes(t.value) && form.audienceTags.length >= 3 ? '0.4' : '1',
+                pointerEvents: !form.audienceTags.includes(t.value) && form.audienceTags.length >= 3 ? 'none' : 'auto',
+              }">
+              <input type="checkbox" :value="t.value" v-model="form.audienceTags" class="hidden" />
+              {{ t.label }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Use Case Tags（根据父分类动态加载） -->
+        <div v-if="form.category && useCaseTagOptions.length > 0">
+          <p class="font-body text-[11px] mb-2" style="color: var(--color-text-muted)">
+            Use Cases <span style="color: var(--color-text-muted)">(up to 3)</span>
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <label v-for="t in useCaseTagOptions" :key="t.value"
+              class="flex items-center gap-1 font-body text-[11px] cursor-pointer px-2 py-1 rounded-full"
+              :style="{
+                color: form.useCaseTags.includes(t.value) ? 'var(--color-accent)' : 'var(--color-text-muted)',
+                background: form.useCaseTags.includes(t.value) ? 'var(--color-accent-dim)' : 'var(--color-bg-elevated)',
+                border: '1px solid ' + (form.useCaseTags.includes(t.value) ? 'var(--color-accent-border)' : 'var(--color-border)'),
+                opacity: !form.useCaseTags.includes(t.value) && form.useCaseTags.length >= 3 ? '0.4' : '1',
+                pointerEvents: !form.useCaseTags.includes(t.value) && form.useCaseTags.length >= 3 ? 'none' : 'auto',
+              }">
+              <input type="checkbox" :value="t.value" v-model="form.useCaseTags" class="hidden" />
+              {{ t.label }}
+            </label>
+          </div>
         </div>
       </div>
 
@@ -126,13 +244,12 @@
         </p>
       </div>
 
-      <!-- Media section -->
+      <!-- Media -->
       <div class="pt-4 border-t" :style="{ borderColor: 'var(--color-border)' }">
         <p class="font-body text-[12px] font-medium mb-4" style="color: var(--color-text-primary)">
           Media <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
         </p>
 
-        <!-- Cover Image -->
         <div class="mb-4">
           <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
             Tool Icon
@@ -140,7 +257,6 @@
           <ImageUploadSlot v-model="form.coverImage" aspect="square" />
         </div>
 
-        <!-- Screenshots -->
         <div class="mb-4">
           <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
             Screenshots <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(up to 3)</span>
@@ -151,7 +267,6 @@
           </div>
         </div>
 
-        <!-- Demo Video -->
         <div>
           <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
             Demo Video URL
@@ -160,17 +275,19 @@
         </div>
       </div>
 
-      <!-- Submitter fields -->
+      <!-- Submitter -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Your Website <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional — gets a dofollow backlink)</span>
+          Your Website
+          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional — gets a dofollow backlink)</span>
         </label>
         <BaseInput v-model="form.submitterSite" placeholder="https://your-site.com" />
       </div>
 
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          GitHub Username <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
+          GitHub Username
+          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
         </label>
         <div v-if="user" class="flex items-center gap-2 p-2 rounded-md"
           :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
@@ -188,123 +305,186 @@
 
       <!-- Turnstile -->
       <div v-if="!isDev" ref="turnstileEl" class="flex items-center justify-center min-h-[65px]"></div>
-      <p v-if="turnstileError" class="font-body text-[11px] text-center" style="color: var(--color-danger)">{{ turnstileError }}</p>
+      <p v-if="turnstileError" class="font-body text-[11px] text-center" style="color: var(--color-danger)">
+        {{ turnstileError }}
+      </p>
 
-      <button type="submit" class="btn-primary w-full flex items-center justify-center gap-2 !h-[40px] !text-[13px]"
+      <button type="submit"
+        class="btn-primary w-full flex items-center justify-center gap-2 !h-[40px] !text-[13px]"
         :disabled="submitting">
         {{ submitting ? 'Submitting...' : 'Submit for Review' }}
       </button>
 
-      <p v-if="submitError" class="font-body text-[11px] text-center mt-2" style="color: var(--color-danger)">{{ submitError }}</p>
+      <p v-if="submitError" class="font-body text-[11px] text-center mt-2" style="color: var(--color-danger)">
+        {{ submitError }}
+      </p>
       <p v-else class="font-body text-[11px] text-center" style="color: var(--color-text-muted)">
         Submitted tools will be reviewed by our team before publishing.
       </p>
+
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
 import { CATEGORIES } from '~/types/tool'
-const { post } = useApi()
-const { user } = useAuth()
+import { SUBCATEGORIES, FEATURE_TAGS, AUDIENCE_TAGS, USE_CASE_TAGS } from '~/types/category'
 
+const { post, get } = useApi()
+const { user, isLoggedIn } = useAuth()
+
+// ── form state ────────────────────────────────────────────────
 const form = reactive({
-  name: '',
-  website: '',
-  category: '',
-  pricing: 'free',
-  description: '',
-  detailDescription: '',
-  platforms: [] as string[],
-  targetUsers: [] as string[],
-  useCases: [] as string[],
-  submitterEmail: '',
-  coverImage: '',
-  screenshots: ['', '', ''],
-  demoVideo: '',
-  submitterSite: '',
-  submitterGithub: '',
+  name:             '',
+  website:          '',
+  category:         '',
+  subCategory:      '',
+  pricing:          'free' as 'free' | 'freemium' | 'paid',
+  priceDetail:      '',
+  priceTiers:       [] as { name: string; price: number; period: string; featuresStr: string }[],
+  hasFreeTrial:     false,
+  shortDescription: '',
+  description:      '',
+  detailDescription:'',
+  platforms:        [] as string[],
+  launched:         '',
+  featureTags:      [] as string[],
+  audienceTags:     [] as string[],
+  useCaseTags:      [] as string[],
+  submitterEmail:   '',
+  coverImage:       '',
+  screenshots:      ['', '', ''],
+  demoVideo:        '',
+  submitterSite:    '',
+  submitterGithub:  '',
 })
 
-const userOptions = [
-  { value: 'marketer', label: 'Marketer' },
-  { value: 'developer', label: 'Developer' },
-  { value: 'designer', label: 'Designer' },
-  { value: 'writer', label: 'Writer' },
-  { value: 'student', label: 'Student' },
-  { value: 'researcher', label: 'Researcher' },
-  { value: 'entrepreneur', label: 'Entrepreneur' },
-  { value: 'educator', label: 'Educator' },
-  { value: 'data-analyst', label: 'Data Analyst' },
-  { value: 'small-business', label: 'Small Business' },
-  { value: 'non-technical', label: 'Non-Technical' },
-]
+// ── duplicate check ──────────────────────────────────────────
+const duplicateWarning = ref<{ name: string; slug: string; link: string; status: string } | null>(null)
+let checkTimeout: ReturnType<typeof setTimeout> | null = null
 
-const useCaseOptions = [
-  { value: 'social-media-content', label: 'Social Media' },
-  { value: 'blog-writing', label: 'Blog Writing' },
-  { value: 'copywriting', label: 'Copywriting' },
-  { value: 'image-generation', label: 'Image Gen' },
-  { value: 'image-editing', label: 'Image Editing' },
-  { value: 'logo-design', label: 'Logo Design' },
-  { value: 'video-creation', label: 'Video Creation' },
-  { value: 'voice-generation', label: 'Voice Gen' },
-  { value: 'code-generation', label: 'Code Gen' },
-  { value: 'code-review', label: 'Code Review' },
-  { value: 'document-summary', label: 'Doc Summary' },
-  { value: 'email-writing', label: 'Email Writing' },
-  { value: 'data-analysis', label: 'Data Analysis' },
-  { value: 'translation', label: 'Translation' },
-  { value: 'seo-optimization', label: 'SEO' },
-  { value: 'customer-support', label: 'Customer Support' },
-  { value: 'meeting-summary', label: 'Meeting Summary' },
-  { value: 'presentation-design', label: 'Presentation' },
-]
+async function checkDuplicate() {
+  const name = form.name.trim()
+  if (!name || name.length < 2) return
+  try {
+    const res = await get<{ exists: boolean; tool?: { name: string; slug: string; category: string; status: string } }>(
+      `/api/tools/check-name?name=${encodeURIComponent(name)}`
+    )
+    if (res.exists && res.tool) {
+      duplicateWarning.value = {
+        name: res.tool.name,
+        slug: res.tool.slug,
+        link: `/tools/${res.tool.category}/${res.tool.slug}?preview=1`,
+        status: res.tool.status,
+      }
+    }
+  } catch {
+    // silent — non-blocking check
+  }
+}
 
+// ── computed options ──────────────────────────────────────────
 const categoryOptions = computed(() => [
   { value: '', label: 'Select a category...', disabled: true },
   ...CATEGORIES.map(c => ({ value: c.slug, label: `${c.emoji} ${c.name}` })),
 ])
 
+const subCategoryOptions = computed(() => {
+  if (!form.category) return []
+  return [
+    { value: '', label: 'Select a sub-category...', disabled: true },
+    ...(SUBCATEGORIES[form.category] || []),
+  ]
+})
+
+const useCaseTagOptions = computed(() => USE_CASE_TAGS[form.category] || [])
+
 const pricingOptions = [
-  { value: 'free', label: 'Free' },
+  { value: 'free',     label: 'Free' },
   { value: 'freemium', label: 'Freemium' },
-  { value: 'paid', label: 'Paid' },
+  { value: 'paid',     label: 'Paid' },
 ]
+
+const periodOptions = [
+  { value: '',          label: '—' },
+  { value: 'month',     label: '/mo' },
+  { value: 'year',      label: '/yr' },
+  { value: 'one-time',  label: 'one-time' },
+]
+
+function addTier() {
+  form.priceTiers.push({ name: '', price: 0, period: 'month', featuresStr: '' })
+}
+
+function serializeTiers(tiers: typeof form.priceTiers): string | undefined {
+  const valid = tiers.filter(t => t.name.trim())
+  if (!valid.length) return undefined
+  return JSON.stringify(valid.map(t => {
+    const tier: Record<string, unknown> = {
+      name: t.name.trim(),
+      price: Number(t.price) || 0,
+      period: t.period || null,
+      features: t.featuresStr ? t.featuresStr.split(',').map(s => s.trim()).filter(Boolean) : [],
+    }
+    // auto-detect type
+    const price = tier.price as number
+    if (price === 0 && !tier.period) tier.type = 'free'
+    else if (tier.period === 'one-time') tier.type = 'subscription'
+    else if (tier.period) tier.type = 'subscription'
+    else tier.type = 'credits'
+    return tier
+  }))
+}
 
 const platformOptions = [
-  { value: 'web', label: 'Web' },
+  { value: 'web',     label: 'Web' },
   { value: 'desktop', label: 'Desktop' },
-  { value: 'mobile', label: 'Mobile' },
-  { value: 'api', label: 'API' },
+  { value: 'mobile',  label: 'Mobile' },
+  { value: 'api',     label: 'API' },
 ]
 
-const isDev = import.meta.dev
-const submitting = ref(false)
-const submitError = ref('')
-const turnstileEl = ref<HTMLDivElement>()
-const cfToken = ref('')
-const turnstileError = ref('')
-const turnstileWidgetId = ref<string | undefined>()
+// ── watchers ──────────────────────────────────────────────────
+// category 变化时，重置子分类和 use_case 标签
+watch(() => form.category, () => {
+  form.subCategory = ''
+  form.useCaseTags = []
+})
 
-// Pre-fill from GitHub auth when user data loads
+// pricing 变化时，重置相关字段
+watch(() => form.pricing, (val) => {
+  if (val === 'free') {
+    form.priceDetail  = ''
+    form.priceTiers   = []
+    form.hasFreeTrial = false
+  }
+})
+
+// 预填登录用户信息
 watch(user, (u) => {
   if (!u) return
-  if (u.contact_email) form.submitterEmail = u.contact_email
-  else if (u.email) form.submitterEmail = u.email
-  if (u.username) form.submitterGithub = u.username
+  if (u.contact_email)  form.submitterEmail  = u.contact_email
+  else if (u.email)     form.submitterEmail  = u.email
+  if (u.username)       form.submitterGithub = u.username
 }, { immediate: true })
+
+// ── Turnstile ─────────────────────────────────────────────────
+const isDev              = import.meta.dev
+const submitting         = ref(false)
+const submitError        = ref('')
+const turnstileEl        = ref<HTMLDivElement>()
+const cfToken            = ref('')
+const turnstileError     = ref('')
+const turnstileWidgetId  = ref<string | undefined>()
 
 onMounted(() => {
   if (isDev) {
-    // Dev mode: use Turnstile test token (always passes)
     cfToken.value = '1x00000000000000000000'
     return
   }
-  const script = document.createElement('script')
-  script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad'
-  script.async = true
-  script.defer = true
+  const script    = document.createElement('script')
+  script.src      = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad'
+  script.async    = true
+  script.defer    = true
   document.head.appendChild(script)
 
   const check = setInterval(() => {
@@ -312,10 +492,10 @@ onMounted(() => {
     if (ts && turnstileEl.value) {
       clearInterval(check)
       turnstileWidgetId.value = ts.render(turnstileEl.value, {
-        sitekey: '0x4AAAAAADLaTYMVN6qFivFT',
-        callback: (token: string) => { cfToken.value = token; turnstileError.value = '' },
-        'expired-callback': () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA expired, please verify again.' },
-        'error-callback': () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA verification error.' },
+        sitekey:           '0x4AAAAAADLaTYMVN6qFivFT',
+        callback:          (token: string) => { cfToken.value = token; turnstileError.value = '' },
+        'expired-callback':() => { cfToken.value = ''; turnstileError.value = 'CAPTCHA expired, please verify again.' },
+        'error-callback':  () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA verification error.' },
       })
     }
   }, 200)
@@ -326,6 +506,7 @@ onUnmounted(() => {
   if (ts && turnstileEl.value) ts.remove(turnstileEl.value)
 })
 
+// ── submit ────────────────────────────────────────────────────
 async function handleSubmit() {
   if (submitting.value) return
   submitError.value = ''
@@ -339,28 +520,44 @@ async function handleSubmit() {
 
   try {
     const screenshotUrls = form.screenshots.filter(Boolean)
-    const res = await post('/api/submit', {
-        name: form.name,
-        website: form.website,
-        category: form.category,
-        pricing: form.pricing,
-        description: form.description,
-        detailDescription: form.detailDescription,
-        platforms: form.platforms,
-        target_users: form.targetUsers.join(','),
-        use_cases: form.useCases.join(','),
-        submitter_site: form.submitterSite || undefined,
-        submitter_github: form.submitterGithub || undefined,
-        submitter_email: form.submitterEmail || undefined,
-        cover_image: form.coverImage || undefined,
-        screenshot_urls: screenshotUrls.length > 0 ? screenshotUrls.join(',') : undefined,
-        demo_video_url: form.demoVideo || undefined,
-        turnstileToken: cfToken.value,
-      })
-    navigateTo(`/submit?success=1`)
+
+    const tags = [
+      ...form.featureTags.map(t  => ({ type: 'feature',  tag: t })),
+      ...form.audienceTags.map(t => ({ type: 'audience', tag: t })),
+      ...form.useCaseTags.map(t  => ({ type: 'use_case', tag: t })),
+    ]
+
+    const res = await post<{ success: boolean; slug: string; category: string }>('/api/submit', {
+      name:             form.name,
+      website:          form.website,
+      category:         form.category,
+      sub_category:     form.subCategory || undefined,
+      pricing:          form.pricing,
+      price_detail:     form.priceDetail || undefined,
+      price_tiers:      serializeTiers(form.priceTiers),
+      has_free_trial:   form.hasFreeTrial ? 1 : 0,
+      short_description: form.shortDescription || undefined,
+      description:      form.description,
+      detailDescription:form.detailDescription,
+      platforms:        form.platforms,
+      launched:         form.launched || undefined,
+      tags,
+      submitter_site:   form.submitterSite   || undefined,
+      submitter_github: form.submitterGithub || undefined,
+      submitter_email:  form.submitterEmail  || undefined,
+      logo:             form.coverImage      || undefined,
+      screenshot_urls:  screenshotUrls.length > 0 ? screenshotUrls.join(',') : undefined,
+      demo_video_url:   form.demoVideo       || undefined,
+      turnstileToken:   cfToken.value,
+    })
+
+    if (res?.slug && res?.category) {
+      navigateTo(`/tools/${res.category}/${res.slug}?preview=1`)
+    } else {
+      navigateTo('/submit?success=1')
+    }
   } catch (e: any) {
     submitError.value = e?.data?.error || 'Submission failed. Please try again.'
-    // Reset Turnstile so user can get a fresh token
     if (!isDev) {
       const ts = (window as any).turnstile
       if (ts && turnstileWidgetId.value) ts.reset(turnstileWidgetId.value)

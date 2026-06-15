@@ -43,8 +43,11 @@ export interface Tool {
   last_verified?: string
   updated_at?: string
   meta_description?: string
-  og_image?: string
-  cover_image?: string
+  short_description?: string  // max 80 chars, used in title/H1
+  faq?: string                // JSON array [{question, answer}]
+  logo?: string
+  screenshots?: string[]
+  price_tiers?: string
   featured: boolean
   verified: boolean
   editor_pick: boolean
@@ -52,8 +55,6 @@ export interface Tool {
   view_count?: number
   submitter_site?: string
   submitter_github?: string
-  use_cases?: string[]
-  target_users?: string[]
   data_source?: string
   images?: ToolImage[]
   videos?: ToolVideo[]

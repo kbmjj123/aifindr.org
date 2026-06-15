@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "API_PROXY_TARGET=http://localhost:8787 API_BASE=http://localhost:8787 nuxi dev",
-    "dev:remote": "API_PROXY_TARGET=https://aifindr.org API_BASE=https://aifindr.org nuxi dev",
+    "dev": "nuxi dev",
     "build": "nuxi build",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
@@ -18,10 +17,14 @@
     "@oxc-transform/binding-darwin-x64": "0.128.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/postcss": "^4",
+    "@vueup/vue-quill": "^1.5.3",
     "better-sqlite3": "^12.5.0",
+    "marked": "^18.0.5",
     "nuxt": "^4.0.0",
     "tailwindcss": "^4.0.0",
+    "tinymce": "^8.6.0",
     "vue": "^3.5.0",
+    "vue-quill.snow.css": "link:@vueup/vue-quill/dist/vue-quill.snow.css",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
@@ -35,7 +38,7 @@
     "playwright": "^1.60.0",
     "satori": "^0.26.0",
     "typescript": "^5.7.0",
-    "wrangler": "^4.0.0"
+    "wrangler": "^4.91.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

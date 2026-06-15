@@ -2,11 +2,11 @@
   <div>
     <div class="flex gap-1 mb-2 p-0.5 rounded-md"
       :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
-      <button class="filter-tab flex-1 justify-center text-[11px]"
+      <button type="button" class="filter-tab flex-1 justify-center text-[11px]"
         :class="{ active: mode === 'edit' }" @click="mode = 'edit'">
         Edit
       </button>
-      <button class="filter-tab flex-1 justify-center text-[11px]"
+      <button type="button" class="filter-tab flex-1 justify-center text-[11px]"
         :class="{ active: mode === 'preview' }" @click="mode = 'preview'">
         Preview
       </button>

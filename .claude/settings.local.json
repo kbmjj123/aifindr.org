@@ -64,7 +64,10 @@
       "Bash(rtk git *)",
       "Bash(rtk curl *)",
       "mcp__plugin_context-mode_context-mode__ctx_execute",
-      "Bash(rtk tsc *)"
+      "Bash(rtk tsc *)",
+      "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index",
+      "Bash(rtk ps *)",
+      "Bash(git rebase *)"
     ]
   }
 }

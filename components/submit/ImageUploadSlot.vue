@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="previewUrl || uploadedUrl" class="relative inline-block">
-      <img :src="previewUrl || uploadedUrl" :class="previewClass" class="rounded-md object-cover"
+    <div v-if="previewUrl || uploadedUrl || modelValue" class="relative inline-block">
+      <img :src="previewUrl || uploadedUrl || modelValue" :class="previewClass" class="rounded-md object-cover"
         :style="{ border: '1px solid var(--color-border)' }" />
       <!-- Uploading overlay -->
       <div v-if="uploading"

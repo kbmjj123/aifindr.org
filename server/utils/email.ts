@@ -1,3 +1,4 @@
+import { logger } from './logger'
 import type { CloudflareEnv } from './env'
 import type { UserRecord } from './jwt'
 
@@ -33,7 +34,7 @@ export async function sendEmail(env: CloudflareEnv, params: SendEmailParams): Pr
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'aifindr <noreply@aifindr.org>',
+        from: 'aifindr <team@aifindr.org>',
         to: [params.to],
         subject: params.subject,
         html: params.html,
@@ -45,10 +46,10 @@ export async function sendEmail(env: CloudflareEnv, params: SendEmailParams): Pr
       resendId = data.id
       status = 'sent'
     } else {
-      console.error('Resend API error:', data.error || res.statusText)
+      logger.error('email', 'Resend API error', { error: data.error || res.statusText })
     }
   } catch (e) {
-    console.error('sendEmail failed:', e)
+      logger.error('email', 'sendEmail failed', { error: e })
   }
 
   try {
@@ -56,7 +57,7 @@ export async function sendEmail(env: CloudflareEnv, params: SendEmailParams): Pr
       'INSERT INTO email_logs (scene_id, recipient, subject, status, resend_id) VALUES (?, ?, ?, ?, ?)'
     ).bind(params.sceneId, params.to, params.subject, status, resendId || null).run()
   } catch (e) {
-    console.error('email_logs insert failed:', e)
+      logger.error('email', 'email_logs insert failed', { error: e })
   }
 
   return { success: status === 'sent', resendId }

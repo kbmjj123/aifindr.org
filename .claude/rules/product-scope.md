@@ -37,6 +37,7 @@ CREATE TABLE tools (
   pricing          TEXT NOT NULL CHECK(pricing IN ('free','freemium','paid')),
   price_starting   REAL DEFAULT 0,
   price_detail     TEXT,
+  price_tiers      TEXT,                   -- JSON 数组，结构化价格方案（见下方格式说明）
   has_free_trial   INTEGER DEFAULT 0,
   platforms        TEXT DEFAULT '',        -- 逗号分隔：web,desktop,mobile,api
   status           TEXT DEFAULT 'active'
@@ -46,8 +47,8 @@ CREATE TABLE tools (
   last_verified    TEXT,
   updated_at       TEXT,
   meta_description TEXT,
-  og_image         TEXT,
-  cover_image      TEXT,
+  logo             TEXT,                   -- 工具图标 URL
+  screenshots      TEXT,                   -- JSON 数组，截图 URL 列表
   featured         INTEGER DEFAULT 0,
   verified         INTEGER DEFAULT 0,
   editor_pick      INTEGER DEFAULT 0,
@@ -178,8 +179,8 @@ last_verified: "2026-04"
 title: "Midjourney – AI Image Generator"
 meta_description: "Midjourney is a powerful AI image generation tool..."
 
-cover_image: "https://r2.aifindr.org/tools/image/midjourney/cover.webp"
-og_image:    "https://r2.aifindr.org/tools/image/midjourney/og.webp"
+logo: "https://r2.aifindr.org/tools/image/midjourney/logo.webp"
+screenshots: ["https://r2.aifindr.org/tools/image/midjourney/screenshot-01.webp"]
 
 images:
   - url: "https://r2.aifindr.org/tools/image/midjourney/screenshot-01.webp"

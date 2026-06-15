@@ -1,25 +1,30 @@
 -- aifindr.org — D1 数据库初始化
+-- 用法：npx wrangler d1 execute aifindr-db --remote --file=./schema/init.sql
 
 CREATE TABLE IF NOT EXISTS tools (
   id               INTEGER PRIMARY KEY AUTOINCREMENT,
   slug             TEXT NOT NULL UNIQUE,
   name             TEXT NOT NULL,
   category         TEXT NOT NULL,
+  sub_category     TEXT DEFAULT '',
   website          TEXT NOT NULL,
   pricing          TEXT NOT NULL CHECK(pricing IN ('free','freemium','paid')),
   price_starting   REAL DEFAULT 0,
   price_detail     TEXT,
+  price_tiers      TEXT,       -- JSON 数组，结构化价格方案
   has_free_trial   INTEGER DEFAULT 0,
   platforms        TEXT DEFAULT '',
-  status           TEXT DEFAULT 'active'
-                   CHECK(status IN ('active','beta','discontinued','pending')),
+  status           TEXT DEFAULT 'pending'
+                   CHECK(status IN ('active','beta','discontinued','pending','rejected','needs_info')),
   launched         TEXT,
   submitted_at     TEXT NOT NULL,
   last_verified    TEXT,
   updated_at       TEXT,
   meta_description TEXT,
-  og_image         TEXT,
-  cover_image      TEXT,
+  short_description TEXT,  -- max 80 chars, used in title/H1
+  faq              TEXT,       -- JSON 数组 [{question, answer}], 用于详情页手风琴
+  logo             TEXT,
+  screenshots      TEXT,       -- JSON 数组，支持 string[] 和 {url,alt}[]
   featured         INTEGER DEFAULT 0,
   verified         INTEGER DEFAULT 0,
   editor_pick      INTEGER DEFAULT 0,
@@ -30,28 +35,32 @@ CREATE TABLE IF NOT EXISTS tools (
   content_path     TEXT,
   body             TEXT,
   submitter_id     INTEGER REFERENCES users(id),
-  reject_reason    TEXT,                    -- 拒绝原因
-  reviewer_note    TEXT,                    -- 管理员备注
-  reviewed_at      TEXT,                    -- 审核时间
-  use_cases        TEXT DEFAULT '',         -- 场景标签，逗号分隔
-  target_users     TEXT DEFAULT '',         -- 角色标签，逗号分隔
-  data_source      TEXT                     -- 数据来源（futurepedia/producthunt等）
+  reject_reason    TEXT,       -- 拒绝原因
+  reviewer_note    TEXT,       -- 管理员备注
+  reviewed_at      TEXT,       -- 审核时间
+  data_source      TEXT        -- 数据来源（futurepedia/producthunt/user_submit等）
 );
 
-CREATE INDEX IF NOT EXISTS idx_tools_category   ON tools(category);
-CREATE INDEX IF NOT EXISTS idx_tools_pricing    ON tools(pricing);
-CREATE INDEX IF NOT EXISTS idx_tools_status     ON tools(status);
-CREATE INDEX IF NOT EXISTS idx_tools_featured   ON tools(featured);
-CREATE INDEX IF NOT EXISTS idx_tools_submitted  ON tools(submitted_at DESC);
-CREATE INDEX IF NOT EXISTS idx_tools_clicks     ON tools(click_count DESC);
-CREATE INDEX IF NOT EXISTS idx_tools_cat_status ON tools(category, status);
+CREATE INDEX IF NOT EXISTS idx_tools_category    ON tools(category);
+CREATE INDEX IF NOT EXISTS idx_tools_subcat      ON tools(sub_category);
+CREATE INDEX IF NOT EXISTS idx_tools_pricing     ON tools(pricing);
+CREATE INDEX IF NOT EXISTS idx_tools_status      ON tools(status);
+CREATE INDEX IF NOT EXISTS idx_tools_featured    ON tools(featured);
+CREATE INDEX IF NOT EXISTS idx_tools_submitted   ON tools(submitted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_tools_clicks      ON tools(click_count DESC);
+CREATE INDEX IF NOT EXISTS idx_tools_cat_status  ON tools(category, status);
+CREATE INDEX IF NOT EXISTS idx_tools_cat_subcat  ON tools(category, sub_category);
 
 CREATE TABLE IF NOT EXISTS tool_tags (
-  tool_id INTEGER NOT NULL REFERENCES tools(id) ON DELETE CASCADE,
-  tag     TEXT NOT NULL,
+  tool_id  INTEGER NOT NULL REFERENCES tools(id) ON DELETE CASCADE,
+  tag      TEXT NOT NULL,
+  type     TEXT NOT NULL CHECK(type IN ('use_case','audience','feature')),
   PRIMARY KEY (tool_id, tag)
 );
-CREATE INDEX IF NOT EXISTS idx_tool_tags_tag ON tool_tags(tag);
+
+CREATE INDEX IF NOT EXISTS idx_tool_tags_tag     ON tool_tags(tag);
+CREATE INDEX IF NOT EXISTS idx_tool_tags_type    ON tool_tags(type);
+CREATE INDEX IF NOT EXISTS idx_tool_tags_tool    ON tool_tags(tool_id);
 
 CREATE TABLE IF NOT EXISTS users (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -127,3 +136,43 @@ CREATE TABLE IF NOT EXISTS published_links (
 CREATE INDEX IF NOT EXISTS idx_links_user       ON published_links(user_id);
 CREATE INDEX IF NOT EXISTS idx_links_is_active  ON published_links(is_active);
 CREATE INDEX IF NOT EXISTS idx_links_checked    ON published_links(last_checked);
+
+-- ─── CMS 博客文章（v1.5） ──────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS posts (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug         TEXT UNIQUE NOT NULL,
+  status       TEXT DEFAULT 'draft' CHECK(status IN ('draft','published')),
+  author_id    INTEGER REFERENCES users(id),
+  created_at   INTEGER DEFAULT (unixepoch()),
+  updated_at   INTEGER DEFAULT (unixepoch()),
+  published_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_posts_status     ON posts(status);
+CREATE INDEX IF NOT EXISTS idx_posts_slug       ON posts(slug);
+CREATE INDEX IF NOT EXISTS idx_posts_author     ON posts(author_id);
+CREATE INDEX IF NOT EXISTS idx_posts_published  ON posts(published_at DESC);
+
+CREATE TABLE IF NOT EXISTS post_translations (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  post_id     INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  locale      TEXT NOT NULL CHECK(locale IN ('zh','en')),
+  title       TEXT NOT NULL,
+  content     TEXT,
+  cover_image TEXT,
+  meta_desc   TEXT,
+  UNIQUE(post_id, locale)
+);
+
+CREATE INDEX IF NOT EXISTS idx_pt_post ON post_translations(post_id);
+CREATE INDEX IF NOT EXISTS idx_pt_locale ON post_translations(locale);
+
+CREATE TABLE IF NOT EXISTS custom_fields (
+  id       INTEGER PRIMARY KEY AUTOINCREMENT,
+  post_id  INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  key      TEXT NOT NULL,
+  value    TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_cf_post ON custom_fields(post_id);

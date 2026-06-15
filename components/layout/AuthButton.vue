@@ -5,7 +5,9 @@
       <button class="flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors"
         :style="{ color: 'var(--color-text-secondary)' }"
         @click="dropdownOpen = !dropdownOpen">
-        <div class="w-6 h-6 rounded-full flex items-center justify-center font-sans font-bold text-[10px]"
+        <img v-if="user.avatar_url" :src="user.avatar_url" :alt="user.username"
+          class="w-6 h-6 rounded-full object-cover" />
+        <div v-else class="w-6 h-6 rounded-full flex items-center justify-center font-sans font-bold text-[10px]"
           :style="{ background: 'var(--color-accent)', color: '#000' }">
           {{ user.username[0]?.toUpperCase() }}
         </div>
@@ -19,6 +21,10 @@
         <div class="px-3 py-2 font-body text-[11px] truncate" :style="{ color: 'var(--color-text-muted)' }">
           {{ user.email || user.username }}
         </div>
+        <div :style="{ borderTop: '1px solid var(--color-border)' }" />
+        <NuxtLink :to="`/contributors/${user.username}`" class="block w-full text-left px-3 py-2 font-body text-[12px] transition-colors"
+          :style="{ color: 'var(--color-text-secondary)' }"
+          style="display: block;">My Contributions</NuxtLink>
         <div :style="{ borderTop: '1px solid var(--color-border)' }" />
         <NuxtLink to="/settings" class="block w-full text-left px-3 py-2 font-body text-[12px] transition-colors"
           :style="{ color: 'var(--color-text-secondary)' }"

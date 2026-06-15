@@ -57,7 +57,7 @@
         <aside class="sidebar-drawer px-3 py-4">
           <div class="flex items-center justify-between mb-4 px-3">
             <NuxtLink to="/" class="flex items-center gap-2" @click="isMobileMenuOpen = false">
-              <div class="logo-icon">A</div>
+              <img src="/web-app-manifest-192x192.png" alt="aifindr" class="logo-icon object-cover" />
               <span class="logo-text">aifindr</span>
             </NuxtLink>
             <button class="w-7 h-7 flex items-center justify-center rounded-md"
@@ -106,7 +106,6 @@
 import { CATEGORIES } from '~/types/category'
 
 const auth = useAuth()
-const { get } = useApi()
 const isMobileMenuOpen = useState('mobileMenuOpen')
 
 const mainNav = [
@@ -123,11 +122,13 @@ watch(isMobileMenuOpen, (open) => {
   }
 })
 
-const { data: statsData } = await useAsyncData('sidebar-stats', () =>
-  get<{ tools: number; categories: number; contributors: number }>('/api/stats')
-)
+const statsData = useState('global-stats', () => ({
+  tools: 0,
+  categories: 0,
+  contributors: 0,
+}))
 
-const stats = computed(() => statsData.value?.tools ?? 0)
-const categoriesCount = computed(() => statsData.value?.categories ?? 0)
-const contributors = computed(() => statsData.value?.contributors ?? 0)
+const stats = computed(() => statsData.value.tools)
+const categoriesCount = computed(() => statsData.value.categories)
+const contributors = computed(() => statsData.value.contributors)
 </script>

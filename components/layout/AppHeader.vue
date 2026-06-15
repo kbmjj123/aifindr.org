@@ -4,7 +4,7 @@
     <div class="mx-auto flex h-full items-center gap-3 sm:gap-4 px-4 lg:px-6 max-w-[1400px] w-full">
       <!-- Left: Logo -->
       <NuxtLink to="/" class="flex items-center gap-2 shrink-0">
-        <div class="logo-icon">A</div>
+        <img src="/web-app-manifest-192x192.png" alt="aifindr" class="logo-icon object-cover" />
         <span class="logo-text">aifindr<span class="org">.org</span></span>
       </NuxtLink>
 
@@ -16,9 +16,9 @@
       <!-- Right: Actions -->
       <div class="flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto">
         <!-- Desktop: Submit + Auth -->
-        <NuxtLink to="/submit" class="btn-header-submit hidden sm:inline-flex">
+        <button class="btn-header-submit hidden sm:inline-flex" @click="handleSubmitClick">
           + Submit
-        </NuxtLink>
+        </button>
         <div class="hidden sm:flex"><AuthButton /></div>
         <ThemeToggle />
         <!-- Mobile hamburger -->
@@ -35,4 +35,14 @@
 
 <script setup lang="ts">
 const isMobileMenuOpen = useState('mobileMenuOpen', () => false)
+const { isLoggedIn, login } = useAuth()
+
+function handleSubmitClick() {
+  if (isLoggedIn.value) {
+    navigateTo('/submit')
+  } else {
+    sessionStorage.setItem('login-redirect', '/submit')
+    login()
+  }
+}
 </script>

@@ -1,3 +1,4 @@
+import { logger } from '~/server/utils/logger'
 import { getEnv, siteUrl } from '~/server/utils/env'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
 import type { UserRecord } from '~/server/utils/jwt'
@@ -49,6 +50,6 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  console.log(`Cron 3: Sent monthly reports to ${recipients} recipients`)
+  logger.info('cron', `Cron 3: Sent monthly reports to ${recipients} recipients`)
   return { success: true, recipients }
 })
