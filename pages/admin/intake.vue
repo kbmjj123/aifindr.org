@@ -281,10 +281,33 @@ function formatPriceTiers(tiers: unknown): string {
   else if (Array.isArray(tiers)) arr = tiers
   if (!arr.length) return '—'
   return arr.map((t: any) => {
-    const price = t.price != null ? `$${t.price}` : ''
-    const period = t.period === 'month' ? '/mo' : t.period === 'year' ? '/yr' : t.period || ''
     const features = t.features?.length ? ` [${t.features.slice(0, 2).join(', ')}${t.features.length > 2 ? '…' : ''}]` : ''
-    return `${t.name}: ${price}${period}${features}`
+    switch (t.type) {
+      case 'free':
+        return `${t.name}: Free${features}`
+      case 'subscription': {
+        const p = t.price != null ? `$${t.price}` : ''
+        const period = t.period === 'month' ? '/mo' : t.period === 'year' ? '/yr' : t.period ? `/${t.period}` : ''
+        return `${t.name}: ${p}${period}${features}`
+      }
+      case 'credits': {
+        const p = t.price != null ? ` / $${t.price}` : ''
+        const c = t.credits != null ? `${t.credits} credits` : ''
+        return `${t.name}: ${c}${p}${features}`
+      }
+      case 'usage': {
+        const p = t.price != null ? `$${t.price}` : ''
+        const u = t.unit ? `/${t.unit}` : ''
+        return `${t.name}: ${p}${u}${features}`
+      }
+      case 'custom':
+        return `${t.name}: Contact us${features}`
+      default: {
+        const p = t.price != null ? `$${t.price}` : ''
+        const period = t.period === 'month' ? '/mo' : t.period === 'year' ? '/yr' : t.period ? `/${t.period}` : ''
+        return `${t.name}: ${p}${period}${features}`
+      }
+    }
   }).join(' | ')
 }
 
