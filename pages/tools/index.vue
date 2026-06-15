@@ -116,7 +116,7 @@ function goPage(p: number) {
 }
 
 usePageSeo({
-  title: 'All AI Tools',
+  title: 'Browse 500+ AI Tools — Find the Best AI Tools for Every Task',
   template: 'prefix',
   description: 'Browse our curated collection of 500+ AI tools. Filter by category, pricing, and platform to find the perfect tool for your needs.',
 })
