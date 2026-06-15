@@ -24,7 +24,6 @@
     "tailwindcss": "^4.0.0",
     "tinymce": "^8.6.0",
     "vue": "^3.5.0",
-    "vue-quill.snow.css": "link:@vueup/vue-quill/dist/vue-quill.snow.css",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
