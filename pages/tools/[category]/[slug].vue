@@ -45,13 +45,13 @@
 
           <!-- Screenshots gallery -->
           <div v-if="toolScreenshots.length" class="mb-6">
-            <h3 class="font-sans font-semibold text-[13px] mb-3" style="color: var(--color-text-primary)">Screenshots</h3>
+            <h2 class="font-sans font-semibold text-[15px] mb-3" style="color: var(--color-text-primary); letter-spacing: -0.3px">Screenshots</h2>
             <ScreenshotGallery :urls="toolScreenshots" :alt="tool.name" />
           </div>
 
           <!-- Media: Videos -->
           <div v-if="toolVideos.length" class="mb-6">
-            <h3 class="font-sans font-semibold text-[13px] mb-3" style="color: var(--color-text-primary)">Demo Videos</h3>
+            <h2 class="font-sans font-semibold text-[15px] mb-3" style="color: var(--color-text-primary); letter-spacing: -0.3px">Demo Videos</h2>
             <div class="space-y-3">
               <div v-for="v in toolVideos" :key="v.id || v.url"
                 class="rounded-lg overflow-hidden"
@@ -75,6 +75,37 @@
                 No detailed description available.
               </p>
             </template>
+          </div>
+
+          <!-- FAQ -->
+          <div v-if="toolFaq.length" class="mb-6">
+            <h2 class="font-sans font-semibold text-[15px] mb-3" style="color: var(--color-text-primary); letter-spacing: -0.3px">
+              Frequently Asked Questions
+            </h2>
+            <div class="space-y-2">
+              <div v-for="(faq, fi) in toolFaq" :key="fi"
+                class="rounded-lg overflow-hidden transition-all"
+                :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
+                <button
+                  class="w-full flex items-center justify-between px-4 py-3 text-left cursor-pointer transition-colors"
+                  :style="{ color: 'var(--color-text-primary)' }"
+                  @click="toggleFaq(fi)">
+                  <span class="font-sans font-semibold text-[13px] pr-4">{{ faq.question }}</span>
+                  <svg
+                    class="shrink-0 transition-transform duration-200"
+                    :class="{ 'rotate-180': openFaq === fi }"
+                    width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    :style="{ stroke: 'var(--color-text-muted)' }" stroke-width="2">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+                <div v-if="openFaq === fi" class="px-4 pb-3">
+                  <p class="font-body text-[13px] leading-relaxed" style="color: var(--color-text-secondary)">
+                    {{ faq.answer }}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -275,6 +306,16 @@ function formatDuration(seconds?: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`
 }
 
+// FAQ accordion
+const openFaq = ref<number | null>(null)
+function toggleFaq(idx: number) {
+  openFaq.value = openFaq.value === idx ? null : idx
+}
+const toolFaq = computed(() => {
+  const f = (tool.value as any)?.faq
+  return Array.isArray(f) ? f : []
+})
+
 const { data: tool, pending } = useAsyncData<Tool>(
   `tool-${slug.value}${isPreview.value ? '-preview' : ''}`,
   async () => {
@@ -349,6 +390,18 @@ useHead(() => {
   }
 })
 
+// ─── Schema: BreadcrumbList ───────────────────────────────────────
+
+useSchemaOrg([
+  defineBreadcrumb(() => ({
+    itemListElement: [
+      { name: 'All Tools', item: '/tools' },
+      { name: categoryInfo.value?.title || category.value, item: `/tools/${category.value}` },
+      { name: tool.value?.name || slug.value, item: `/tools/${category.value}/${tool.value?.slug || slug.value}` },
+    ],
+  })),
+])
+
 // ─── Schema: SoftwareApplication (via @nuxtjs/seo) ─────────────────
 
 useSchemaOrg([
@@ -367,4 +420,19 @@ useSchemaOrg([
     }
   }),
 ])
+
+// ─── FAQPage schema (reactive, separate call) ─────────────────────
+const faqSchema = computed(() => {
+  const f = toolFaq.value
+  if (!f.length) return []
+  return [{
+    '@type': 'FAQPage' as const,
+    mainEntity: f.map((q: any) => ({
+      '@type': 'Question' as const,
+      name: q.question,
+      acceptedAnswer: { '@type': 'Answer' as const, text: q.answer },
+    })),
+  }]
+})
+useSchemaOrg(faqSchema)
 </script>
