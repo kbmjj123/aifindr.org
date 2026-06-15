@@ -111,6 +111,20 @@
         </label>
       </div>
 
+      <!-- Short Description（for H1） -->
+      <div>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Short Description <span style="color: var(--color-danger)">*</span>
+        </label>
+        <BaseInput v-model="form.shortDescription" placeholder="e.g. AI Image Generator for Professionals" maxlength="80" />
+        <p class="font-body text-[11px] mt-1" style="color: var(--color-text-muted)">
+          Used in the page title, e.g. "Tool Name — {{ form.shortDescription || 'short description' }}"
+        </p>
+        <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">
+          {{ form.shortDescription.length }}/80
+        </p>
+      </div>
+
       <!-- One-line Description -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
@@ -329,6 +343,7 @@ const form = reactive({
   priceDetail:      '',
   priceTiers:       [] as { name: string; price: number; period: string; featuresStr: string }[],
   hasFreeTrial:     false,
+  shortDescription: '',
   description:      '',
   detailDescription:'',
   platforms:        [] as string[],
@@ -521,6 +536,7 @@ async function handleSubmit() {
       price_detail:     form.priceDetail || undefined,
       price_tiers:      serializeTiers(form.priceTiers),
       has_free_trial:   form.hasFreeTrial ? 1 : 0,
+      short_description: form.shortDescription || undefined,
       description:      form.description,
       detailDescription:form.detailDescription,
       platforms:        form.platforms,
