@@ -57,6 +57,20 @@ export default defineNuxtConfig({
 			'/api/**'
 		],
     autoLastmod: true,
+    urls: [
+      { loc: '/tools/audio/',        changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/image/',        changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/writing/',      changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/video/',        changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/code/',         changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/productivity/', changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/marketing/',    changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/data/',         changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/education/',    changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/business/',     changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/research/',     changefreq: 'weekly', priority: 0.6 },
+      { loc: '/tools/other/',        changefreq: 'weekly', priority: 0.6 },
+    ],
   },
 
   routeRules: {

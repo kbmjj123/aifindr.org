@@ -1,3 +1,4 @@
+import { CATEGORIES } from '~/types/category'
 import { getEnv, siteUrl } from '~/server/utils/env'
 
 export default defineEventHandler(async (event) => {
@@ -13,6 +14,17 @@ export default defineEventHandler(async (event) => {
     changefreq: 'weekly',
     priority: 0.8,
   }))
+
+  // Subcategory pages
+  for (const cat of CATEGORIES) {
+    for (const sub of cat.subcategories) {
+      urls.push({
+        url: siteUrl(env, `/tools/${cat.slug}/sub/${sub.id}`),
+        changefreq: 'weekly',
+        priority: 0.5,
+      })
+    }
+  }
 
   return urls
 })
