@@ -131,4 +131,25 @@ const statsData = useState('global-stats', () => ({
 const stats = computed(() => statsData.value.tools)
 const categoriesCount = computed(() => statsData.value.categories)
 const contributors = computed(() => statsData.value.contributors)
+
+// Client-side fetch: server plugin only runs during SSR, this ensures
+// stats refresh on client navigation when server value is stale.
+async function fetchStats() {
+  if (!import.meta.client) return
+  if (stats.value > 0 && categoriesCount.value > 0 && contributors.value > 0) return
+  try {
+    const res = await $fetch<{ tools: number; categories: number; contributors: number }>('/api/stats')
+    if (res) {
+      statsData.value = {
+        tools: res.tools || 0,
+        categories: res.categories || 0,
+        contributors: res.contributors || 0,
+      }
+    }
+  } catch {
+    // stats non-critical
+  }
+}
+
+onMounted(() => fetchStats())
 </script>
