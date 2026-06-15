@@ -1,4 +1,5 @@
 name = "aifindr"
+keep_vars = true
 main = ".output/server/index.mjs"
 compatibility_date = "2026-05-07"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
