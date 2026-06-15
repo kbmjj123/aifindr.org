@@ -1,9 +1,12 @@
 <template>
   <div>
-    <div class="flex items-center justify-between mb-6">
+    <div class="mb-6">
       <h1 class="font-sans font-extrabold text-[24px] tracking-tight" style="color: var(--color-text-primary)">
         All AI Tools <span class="font-body font-normal text-[14px]" style="color: var(--color-text-muted)">({{ total }})</span>
       </h1>
+      <p class="font-body text-[13px] mt-1" style="color: var(--color-text-secondary)">
+        Discover the best AI tools across {{ categories.length }} categories — from image generation to code assistants.
+      </p>
     </div>
 
     <!-- Filter bar -->
@@ -31,6 +34,9 @@
     </div>
 
     <!-- Tool grid -->
+    <h2 class="font-sans font-bold text-[16px] mb-3" style="color: var(--color-text-primary)">
+      All Listed Tools
+    </h2>
     <div v-if="pending" class="text-center py-20 font-body text-[13px]" style="color: var(--color-text-muted)">Loading tools...</div>
     <div v-else-if="tools.length === 0" class="text-center py-20">
       <div class="text-3xl mb-3">🔍</div>
