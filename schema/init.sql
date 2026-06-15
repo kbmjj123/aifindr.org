@@ -22,8 +22,9 @@ CREATE TABLE IF NOT EXISTS tools (
   updated_at       TEXT,
   meta_description TEXT,
   short_description TEXT,  -- max 80 chars, used in title/H1
+  faq              TEXT,       -- JSON 数组 [{question, answer}], 用于详情页手风琴
   logo             TEXT,
-  screenshots      TEXT,       -- JSON 数组，如 ["url1","url2"]
+  screenshots      TEXT,       -- JSON 数组，支持 string[] 和 {url,alt}[]
   featured         INTEGER DEFAULT 0,
   verified         INTEGER DEFAULT 0,
   editor_pick      INTEGER DEFAULT 0,

@@ -46,6 +46,7 @@ export default defineEventHandler(async (event) => {
   const pricing         = String(body.pricing).trim()
   const description     = String(body.description).trim()
   const shortDesc       = String(body.short_description || '').trim().slice(0, 80)
+  const faqStr         = body.faq ? (typeof body.faq === 'string' ? body.faq : JSON.stringify(body.faq)) : null
   const priceDetail     = String(body.price_detail || body.priceDetail || '').trim()
   let priceTiers        = null
   if (body.price_tiers) {
@@ -158,13 +159,13 @@ export default defineEventHandler(async (event) => {
     INSERT INTO tools (
       slug, name, category, sub_category, website,
       pricing, price_detail, price_tiers, has_free_trial, platforms,
-      status, launched, meta_description, short_description, logo, screenshots,
+      status, launched, meta_description, short_description, faq, logo, screenshots,
       body, submitter_site, submitter_github, submitter_id,
       data_source, submitted_at
     ) VALUES (
       ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?,
-      'pending', ?, ?, ?, ?, ?,
+      'pending', ?, ?, ?, ?, ?, ?,
       ?, ?, ?, ?,
       'user_submit', ?
     )
@@ -182,6 +183,7 @@ export default defineEventHandler(async (event) => {
     launched || null,
     description,
     shortDesc || null,
+    faqStr,
     logo || null,
     screenshots,
     fullBody || null,

@@ -279,12 +279,23 @@ const previewFields = computed(() => {
     { key: 'platforms',      label: 'Platforms',      value: Array.isArray(p.platforms) ? p.platforms.join(', ') : p.platforms },
     { key: 'launched',       label: 'Launched',       value: p.launched },
     { key: 'short_description', label: 'Short Description', value: p.short_description },
+    { key: 'faq', label: 'FAQ', value: formatFaq(p.faq) },
     { key: 'meta_description', label: 'Meta Description', value: p.meta_description },
   ]
 })
 
 // ── 截图计数 ─────────────────────────────────────────────────
 const screenshotCount = computed(() => uploadedScreenshots.filter(s => s.url).length)
+
+// ── 格式化 faq 预览 ────────────────────────────────────────
+function formatFaq(faq: unknown): string {
+  if (!faq) return '—'
+  let arr: any[] = []
+  if (typeof faq === 'string') { try { arr = JSON.parse(faq) } catch { return faq } }
+  else if (Array.isArray(faq)) arr = faq
+  if (!arr.length) return '—'
+  return arr.map((q: any) => q.question || q.q || '(untitled)').join(' | ')
+}
 
 // ── 格式化 price_tiers 预览 ────────────────────────────────
 function formatPriceTiers(tiers: unknown): string {

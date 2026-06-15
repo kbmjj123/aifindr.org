@@ -44,6 +44,7 @@ export interface Tool {
   updated_at?: string
   meta_description?: string
   short_description?: string  // max 80 chars, used in title/H1
+  faq?: string                // JSON array [{question, answer}]
   logo?: string
   screenshots?: string[]
   price_tiers?: string

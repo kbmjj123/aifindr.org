@@ -26,6 +26,7 @@ interface ToolPayload {
   price_starting?: number
   price_detail?: string
   short_description?: string
+  faq?: string
   has_free_trial?: number
   platforms?: string[]
   launched?: string
@@ -145,12 +146,12 @@ export default defineEventHandler(async (event) => {
     INSERT INTO tools (
       slug, name, category, sub_category, website,
       pricing, price_starting, price_detail, price_tiers, has_free_trial, platforms,
-      status, launched, meta_description, short_description, logo, screenshots,
+      status, launched, meta_description, short_description, faq, logo, screenshots,
       body, verified, editor_pick, data_source, submitted_at, updated_at
     ) VALUES (
       ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?,
-      'active', ?, ?, ?, ?,
+      'active', ?, ?, ?, ?, ?,
       ?, ?, 1, 0, ?, ?, ?
     )
   `).bind(
@@ -168,6 +169,7 @@ export default defineEventHandler(async (event) => {
     launched || null,
     metaDesc || null,
     shortDesc || null,
+    faqStr,
     logo || null,
     screenshots || null,
     bodyContent || null,
