@@ -313,7 +313,9 @@ function toggleFaq(idx: number) {
 }
 const toolFaq = computed(() => {
   const f = (tool.value as any)?.faq
-  return Array.isArray(f) ? f : []
+  if (Array.isArray(f)) return f
+  if (typeof f === 'string') { try { return JSON.parse(f) } catch { return [] } }
+  return []
 })
 
 const { data: tool, pending } = useAsyncData<Tool>(
