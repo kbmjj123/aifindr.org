@@ -74,6 +74,7 @@ export default defineEventHandler(async (event) => {
   const launched    = String(body.launched || '').trim()
   const metaDesc    = String(body.meta_description || '').trim()
   const shortDesc   = String(body.short_description || '').trim().slice(0, 80)  // max 80 chars
+  const faqStr      = body.faq ? (typeof body.faq === 'string' ? body.faq : JSON.stringify(body.faq)) : null
   const logo        = String(body.logo || '').trim()          // R2 logo URL
   const screenshots = Array.isArray(body.screenshots) ? JSON.stringify(body.screenshots) : ''
   let priceTiers    = null
