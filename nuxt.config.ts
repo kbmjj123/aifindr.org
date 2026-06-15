@@ -52,6 +52,10 @@ export default defineNuxtConfig({
     sources: [
       '/api/__sitemap__/urls'
     ],
+		exclude: [
+			'/admin/**',
+			'/api/**'
+		],
     autoLastmod: true,
   },
 
