@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import { useImageUpload } from '~/composables/useImageUpload'
 
-const props = withDefaults(defineProps<{ modelValue: string; aspect?: 'square' | 'screenshot' }>(), {
+const props = withDefaults(defineProps<{ modelValue?: string; aspect?: 'square' | 'screenshot' }>(), {
   aspect: 'square',
 })
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()

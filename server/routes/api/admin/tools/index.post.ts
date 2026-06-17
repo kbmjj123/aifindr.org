@@ -25,6 +25,7 @@ interface ToolPayload {
   pricing: 'free' | 'freemium' | 'paid'
   price_starting?: number
   price_detail?: string
+  price_tiers?: string
   short_description?: string
   faq?: string
   has_free_trial?: number

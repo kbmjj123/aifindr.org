@@ -1,31 +1,74 @@
 <template>
   <div class="p-6 rounded-xl"
     :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
-    <LoginPrompt v-if="!isLoggedIn" message="Sign in with GitHub to submit your AI tool." />
 
-    <form v-else class="space-y-5" @submit.prevent="handleSubmit">
+    <!-- Loading -->
+    <div v-if="loading" class="space-y-4">
+      <div v-for="i in 6" :key="i" class="h-10 rounded-lg skeleton" />
+    </div>
+
+    <!-- Error -->
+    <div v-else-if="error" class="text-center py-12">
+      <p class="font-body text-[13px]" style="color: var(--color-danger)">{{ error }}</p>
+    </div>
+
+    <!-- Form -->
+    <form v-else class="space-y-5" @submit.prevent="handleSave">
+
+      <!-- Admin status bar -->
+      <div class="flex items-center justify-between p-3 rounded-lg"
+        :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
+        <div class="flex items-center gap-3">
+          <span class="font-body text-[11px] uppercase tracking-[0.08em]"
+            :style="{ color: 'var(--color-text-muted)' }">Slug:</span>
+          <code class="font-body text-[12px] px-2 py-0.5 rounded"
+            :style="{ background: 'var(--color-bg-input)', color: 'var(--color-text-secondary)' }">
+            {{ toolSlug }}
+          </code>
+        </div>
+        <div class="flex items-center gap-2">
+          <label
+            class="font-body text-[11px] px-2 py-1 rounded-full cursor-pointer select-none transition-all"
+            :style="{
+              background: formFeatured ? 'var(--color-featured-bg)' : 'transparent',
+              color: formFeatured ? 'var(--color-featured-text)' : 'var(--color-text-muted)',
+              border: '1px solid ' + (formFeatured ? 'var(--color-featured-border)' : 'var(--color-border)'),
+            }">
+            <input type="checkbox" v-model="formFeatured" class="sr-only" />
+            ★ Featured
+          </label>
+          <label
+            class="font-body text-[11px] px-2 py-1 rounded-full cursor-pointer select-none transition-all"
+            :style="{
+              background: formVerified ? 'var(--color-verified-bg)' : 'transparent',
+              color: formVerified ? 'var(--color-verified-text)' : 'var(--color-text-muted)',
+              border: '1px solid ' + (formVerified ? 'var(--color-verified-border)' : 'var(--color-border)'),
+            }">
+            <input type="checkbox" v-model="formVerified" class="sr-only" />
+            ✓ Verified
+          </label>
+          <label
+            class="font-body text-[11px] px-2 py-1 rounded-full cursor-pointer select-none transition-all"
+            :style="{
+              background: formEditorPick ? 'var(--color-pricing-freemium-bg)' : 'transparent',
+              color: formEditorPick ? 'var(--color-pricing-freemium-text)' : 'var(--color-text-muted)',
+              border: '1px solid ' + (formEditorPick ? 'var(--color-pricing-freemium-border)' : 'var(--color-border)'),
+            }">
+            <input type="checkbox" v-model="formEditorPick" class="sr-only" />
+            ✏ Editor Pick
+          </label>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <hr :style="{ borderColor: 'var(--color-border)' }" />
 
       <!-- Tool Name -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Tool Name <span style="color: var(--color-danger)">*</span>
         </label>
-        <BaseInput v-model="form.name" placeholder="e.g. Midjourney" @blur="checkDuplicate" />
-        <div v-if="duplicateWarning" class="flex items-start gap-2 mt-2 p-3 rounded-lg"
-          :style="{ background: 'var(--color-featured-bg)', border: '1px solid var(--color-featured-border)' }">
-          <span class="text-base shrink-0 mt-0.5">⚠️</span>
-          <div class="font-body text-[12px] leading-relaxed" style="color: var(--color-featured-text)">
-            <strong>Already exists:</strong>
-            <NuxtLink v-if="duplicateWarning.slug" :to="duplicateWarning.link"
-              class="font-medium ml-1" style="color: var(--color-text-link); text-decoration: underline">
-              {{ duplicateWarning.name }}
-            </NuxtLink>
-            <span v-else class="ml-1">{{ duplicateWarning.name }}</span>
-            ({{ duplicateWarning.status }}).
-            <button type="button" class="underline ml-1" style="color: var(--color-text-muted)"
-              @click="duplicateWarning = null">Dismiss</button>
-          </div>
-        </div>
+        <BaseInput v-model="form.name" placeholder="e.g. Midjourney" />
       </div>
 
       <!-- Website -->
@@ -44,10 +87,10 @@
         <BaseSelect v-model="form.category" :options="categoryOptions" />
       </div>
 
-      <!-- Sub Category（联动 category） -->
+      <!-- Sub Category -->
       <div v-if="form.category && subCategoryOptions.length > 0">
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Sub Category <span style="color: var(--color-danger)">*</span>
+          Sub Category
         </label>
         <BaseSelect v-model="form.subCategory" :options="subCategoryOptions" />
       </div>
@@ -71,7 +114,7 @@
         </div>
       </div>
 
-      <!-- Price Detail（freemium / paid 时显示） -->
+      <!-- Price Tiers (freemium / paid) -->
       <div v-if="form.pricing !== 'free'">
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Pricing Tiers
@@ -103,7 +146,7 @@
         </button>
       </div>
 
-      <!-- Has Free Trial（paid 时显示） -->
+      <!-- Has Free Trial (paid) -->
       <div v-if="form.pricing === 'paid'">
         <label class="flex items-center gap-2 font-body text-[12px] cursor-pointer" style="color: var(--color-text-secondary)">
           <input type="checkbox" v-model="form.hasFreeTrial" class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
@@ -111,7 +154,7 @@
         </label>
       </div>
 
-      <!-- Short Description（for H1） -->
+      <!-- Short Description -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
           Short Description <span style="color: var(--color-danger)">*</span>
@@ -125,14 +168,14 @@
         </p>
       </div>
 
-      <!-- One-line Description -->
+      <!-- Meta Description -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          One-line Description <span style="color: var(--color-danger)">*</span>
+          Meta Description
         </label>
-        <BaseInput v-model="form.description" placeholder="Briefly describe your tool" maxlength="80" />
+        <BaseInput v-model="form.description" placeholder="One-line description for SEO" maxlength="160" />
         <p class="font-body text-[11px] mt-1 text-right" style="color: var(--color-text-muted)">
-          {{ form.description.length }}/80
+          {{ form.description.length }}/160
         </p>
       </div>
 
@@ -211,7 +254,7 @@
           </div>
         </div>
 
-        <!-- Use Case Tags（根据父分类动态加载） -->
+        <!-- Use Case Tags -->
         <div v-if="form.category && useCaseTagOptions.length > 0">
           <p class="font-body text-[11px] mb-2" style="color: var(--color-text-muted)">
             Use Cases <span style="color: var(--color-text-muted)">(up to 3)</span>
@@ -231,17 +274,6 @@
             </label>
           </div>
         </div>
-      </div>
-
-      <!-- Contact Email -->
-      <div>
-        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Contact Email <span style="color: var(--color-danger)">*</span>
-        </label>
-        <BaseInput v-model="form.submitterEmail" type="email" placeholder="you@example.com" />
-        <p class="font-body text-[11px] mt-1" style="color: var(--color-text-muted)">
-          Used only for submission status updates. Never shown publicly.
-        </p>
       </div>
 
       <!-- Media -->
@@ -275,60 +307,86 @@
         </div>
       </div>
 
-      <!-- Submitter -->
+      <!-- Submitter Info -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Your Website
-          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional — gets a dofollow backlink)</span>
+          Submitter Website
+          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(dofollow backlink)</span>
         </label>
         <BaseInput v-model="form.submitterSite" placeholder="https://your-site.com" />
       </div>
 
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          GitHub Username
-          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
+          Submitter GitHub
         </label>
-        <div v-if="user" class="flex items-center gap-2 p-2 rounded-md"
-          :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
-          <img v-if="user.avatar_url" :src="user.avatar_url" class="w-6 h-6 rounded-full" />
-          <div class="flex-1 min-w-0">
-            <p class="font-body text-[12px] truncate" style="color: var(--color-text-primary)">{{ user.username }}</p>
-          </div>
-          <span class="font-body text-[10px] px-1.5 py-0.5 rounded"
-            :style="{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)' }">GitHub</span>
-        </div>
-        <div v-else>
-          <BaseInput v-model="form.submitterGithub" placeholder="your-github-username" />
-        </div>
+        <BaseInput v-model="form.submitterGithub" placeholder="github-username" />
       </div>
 
-      <!-- Turnstile -->
-      <div v-if="!isDev" ref="turnstileEl" class="flex items-center justify-center min-h-[65px]"></div>
-      <p v-if="turnstileError" class="font-body text-[11px] text-center" style="color: var(--color-danger)">
-        {{ turnstileError }}
-      </p>
+      <!-- Notify checkbox -->
+      <div class="flex items-center gap-2 pt-2">
+        <input type="checkbox" id="notifyToggle" v-model="notifySubmitter"
+          class="rounded" :style="{ accentColor: 'var(--color-accent)' }" />
+        <label for="notifyToggle" class="font-body text-[11px] cursor-pointer" style="color: var(--color-text-secondary)">
+          Send notification email to submitter (if email available)
+        </label>
+      </div>
 
-      <button type="submit"
-        class="btn-primary w-full flex items-center justify-center gap-2 !h-[40px] !text-[13px]"
-        :disabled="submitting">
-        {{ submitting ? 'Submitting...' : 'Submit for Review' }}
-      </button>
+      <!-- Status dropdown -->
+      <div>
+        <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
+          Status
+        </label>
+        <select v-model="formStatus"
+          class="input !h-[36px] !text-[12px]"
+          :style="{ color: statusColor }">
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="beta">Beta</option>
+          <option value="discontinued">Discontinued</option>
+        </select>
+      </div>
 
-      <p v-if="submitError" class="font-body text-[11px] text-center mt-2" style="color: var(--color-danger)">
-        {{ submitError }}
+      <!-- Actions -->
+      <hr :style="{ borderColor: 'var(--color-border)' }" />
+
+      <div class="flex items-center gap-3">
+        <button type="submit"
+          class="btn-primary flex-1 flex items-center justify-center gap-2 !h-[40px] !text-[13px]"
+          :disabled="saving">
+          {{ saving ? 'Saving...' : 'Save Changes' }}
+        </button>
+        <button type="button"
+          class="btn-secondary !h-[40px] !px-[20px] !text-[13px]"
+          @click="$emit('close')">
+          Cancel
+        </button>
+      </div>
+
+      <p v-if="saveError" class="font-body text-[11px] text-center" style="color: var(--color-danger)">
+        {{ saveError }}
       </p>
       <p v-else class="font-body text-[11px] text-center" style="color: var(--color-text-muted)">
-        Submitted tools will be reviewed by our team before publishing.
+        Changes are saved immediately. The live page will be updated on next ISR cache expiry (~24h).
       </p>
-
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
-const { post, get } = useApi()
-const { user, isLoggedIn } = useAuth()
+import type { ApiToolData } from '~/composables/useToolForm'
+
+const props = defineProps<{
+  toolId: number
+}>()
+
+defineEmits<{
+  close: []
+  saved: [id: number]
+}>()
+
+const { get, post } = useApi()
+const { show: showToast } = useToast()
 
 const {
   form,
@@ -341,113 +399,89 @@ const {
   periodOptions,
   platformOptions,
   addTier,
-  toSubmitPayload,
+  loadFromTool,
+  toAdminPayload,
 } = useToolForm()
 
-// ── duplicate check ──────────────────────────────────────────
-const duplicateWarning = ref<{ name: string; slug: string; link: string; status: string } | null>(null)
+// ── admin-only state ─────────────────────────────────────────
+const formFeatured    = ref(false)
+const formVerified    = ref(false)
+const formEditorPick  = ref(false)
+const formStatus      = ref('active')
+const notifySubmitter = ref(false)
 
-async function checkDuplicate() {
-  const name = form.name.trim()
-  if (!name || name.length < 2) return
+const toolSlug = ref('')
+
+// ── ui state ─────────────────────────────────────────────────
+const loading  = ref(true)
+const error    = ref('')
+const saving   = ref(false)
+const saveError = ref('')
+
+const statusColor = computed(() => {
+  const colors: Record<string, string> = {
+    active: 'var(--color-verified-text)',
+    pending: 'var(--color-featured-text)',
+    beta: 'var(--color-pricing-freemium-text)',
+    discontinued: 'var(--color-danger)',
+  }
+  return colors[formStatus.value] || 'var(--color-text-primary)'
+})
+
+// ── load tool data ──────────────────────────────────────────
+async function loadTool() {
+  loading.value = true
+  error.value = ''
   try {
-    const res = await get<{ exists: boolean; tool?: { name: string; slug: string; category: string; status: string } }>(
-      `/api/tools/check-name?name=${encodeURIComponent(name)}`
-    )
-    if (res.exists && res.tool) {
-      duplicateWarning.value = {
-        name: res.tool.name,
-        slug: res.tool.slug,
-        link: `/tools/${res.tool.category}/${res.tool.slug}?preview=1`,
-        status: res.tool.status,
-      }
+    const tool = await get<ApiToolData>(`/api/admin/tools/${props.toolId}`)
+    if (!tool) {
+      error.value = 'Tool not found'
+      return
     }
-  } catch {
-    // silent — non-blocking check
+    loadFromTool(tool)
+    toolSlug.value = tool.slug || ''
+    formFeatured.value   = tool.featured === 1
+    formVerified.value   = tool.verified === 1
+    formEditorPick.value = tool.editor_pick === 1
+    formStatus.value     = tool.status || 'active'
+  } catch (e: any) {
+    error.value = e?.data?.statusMessage || e?.message || 'Failed to load tool'
+  } finally {
+    loading.value = false
   }
 }
 
-// 预填登录用户信息
-watch(user, (u) => {
-  if (!u) return
-  if (u.contact_email)  form.submitterEmail  = u.contact_email
-  else if (u.email)     form.submitterEmail  = u.email
-  if (u.username)       form.submitterGithub = u.username
-}, { immediate: true })
-
-// ── Turnstile ─────────────────────────────────────────────────
-const isDev              = import.meta.dev
-const submitting         = ref(false)
-const submitError        = ref('')
-const turnstileEl        = ref<HTMLDivElement>()
-const cfToken            = ref('')
-const turnstileError     = ref('')
-const turnstileWidgetId  = ref<string | undefined>()
-
-onMounted(() => {
-  if (isDev) {
-    cfToken.value = '1x00000000000000000000'
-    return
-  }
-  const script    = document.createElement('script')
-  script.src      = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad'
-  script.async    = true
-  script.defer    = true
-  document.head.appendChild(script)
-
-  const check = setInterval(() => {
-    const ts = (window as any).turnstile
-    if (ts && turnstileEl.value) {
-      clearInterval(check)
-      turnstileWidgetId.value = ts.render(turnstileEl.value, {
-        sitekey:           '0x4AAAAAADLaTYMVN6qFivFT',
-        callback:          (token: string) => { cfToken.value = token; turnstileError.value = '' },
-        'expired-callback':() => { cfToken.value = ''; turnstileError.value = 'CAPTCHA expired, please verify again.' },
-        'error-callback':  () => { cfToken.value = ''; turnstileError.value = 'CAPTCHA verification error.' },
-      })
-    }
-  }, 200)
-})
-
-onUnmounted(() => {
-  const ts = (window as any).turnstile
-  if (ts && turnstileEl.value) ts.remove(turnstileEl.value)
-})
-
-// ── submit ────────────────────────────────────────────────────
-async function handleSubmit() {
-  if (submitting.value) return
-  submitError.value = ''
-
-  if (!form.submitterEmail.trim()) {
-    submitError.value = 'Contact Email is required'
-    return
-  }
-
-  submitting.value = true
+// ── save ─────────────────────────────────────────────────────
+async function handleSave() {
+  if (saving.value) return
+  saveError.value = ''
+  saving.value = true
 
   try {
-    const payload = toSubmitPayload()
-
-    const res = await post<{ success: boolean; slug: string; category: string }>('/api/submit', {
-      ...payload,
-      turnstileToken: cfToken.value,
+    const payload = toAdminPayload({
+      featured:    formFeatured.value,
+      verified:    formVerified.value,
+      editor_pick: formEditorPick.value,
+      status:      formStatus.value,
     })
 
-    if (res?.slug && res?.category) {
-      navigateTo(`/tools/${res.category}/${res.slug}?preview=1`)
-    } else {
-      navigateTo('/submit?success=1')
+    await post(`/api/admin/tools/${props.toolId}`, payload)
+
+    showToast('Tool updated successfully', 'success')
+    // trigger search engine re-notification
+    if (notifySubmitter.value) {
+      // call review endpoint to send notification (updates updated_at only)
+      await post('/api/admin/review', {
+        tool_id: props.toolId,
+        status: formStatus.value,
+      }).catch(() => {}) // silent — notification is best-effort
     }
   } catch (e: any) {
-    submitError.value = e?.data?.error || 'Submission failed. Please try again.'
-    if (!isDev) {
-      const ts = (window as any).turnstile
-      if (ts && turnstileWidgetId.value) ts.reset(turnstileWidgetId.value)
-      cfToken.value = ''
-    }
+    saveError.value = e?.data?.statusMessage || e?.message || 'Save failed'
   } finally {
-    submitting.value = false
+    saving.value = false
   }
 }
+
+onMounted(loadTool)
 </script>

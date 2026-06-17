@@ -67,7 +67,14 @@
       "Bash(rtk tsc *)",
       "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index",
       "Bash(rtk ps *)",
-      "Bash(git rebase *)"
+      "Bash(git rebase *)",
+      "Bash(rtk wc *)",
+      "Bash(rm -rf /private/tmp/claude-501/-Users-kbmjj123-Desktop-fullstack-aifindr-org/e8c825be-e1c8-4d34-a282-8b53626f4440)",
+      "Bash(rtk df *)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "code-review-graph"
+  ]
 }

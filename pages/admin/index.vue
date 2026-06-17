@@ -148,6 +148,15 @@
               @click="openView(tool)">
               View
             </button>
+            <NuxtLink :to="`/admin/tools/${tool.id}`"
+              class="h-[30px] px-[10px] rounded-md font-body text-[13px] inline-flex items-center transition-all no-underline"
+              :style="{
+                background: 'transparent',
+                color: 'var(--color-text-secondary)',
+                border: '1px solid var(--color-border)',
+              }">
+              Edit
+            </NuxtLink>
             <template v-if="tool.status === 'pending'">
               <button class="btn-primary !h-[30px] !px-[14px] !text-[13px]"
                 :disabled="acting === tool.id"
@@ -224,7 +233,7 @@
       <div v-if="totalPages > 1" class="flex justify-center gap-2 pt-6">
         <button v-for="p in totalPages" :key="p" class="page-btn"
           :class="{ active: p === page }"
-          @click="page = p; fetchPending()">
+          @click="page = p; fetchAdminTools()">
           {{ p }}
         </button>
       </div>
@@ -385,9 +394,16 @@
       </div>
 
       <!-- Footer -->
-      <div class="sticky bottom-0 flex items-center justify-end gap-2 px-6 py-3"
+      <div class="sticky bottom-0 flex items-center justify-between px-6 py-3"
         :style="{ background: 'var(--color-bg-elevated)', borderTop: '1px solid var(--color-border)' }">
-        <button class="btn-ghost !h-[30px] !text-[13px]" @click="closeView">Close</button>
+        <NuxtLink v-if="viewingTool" :to="`/admin/tools/${viewingTool.id}`"
+          class="font-body text-[12px] hover:underline inline-flex items-center gap-1"
+          style="color: var(--color-text-link)">
+          ✏ Edit this tool
+        </NuxtLink>
+        <div class="flex items-center gap-2">
+          <button class="btn-ghost !h-[30px] !text-[13px]" @click="closeView">Close</button>
+        </div>
       </div>
     </div>
   </div>
