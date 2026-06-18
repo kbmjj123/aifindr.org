@@ -257,18 +257,16 @@
 
       <div class="p-6 space-y-5 font-body text-[12px]">
         <!-- Media Preview -->
-        <div v-if="viewingTool.logo || viewingTool.screenshots" class="flex gap-3">
-          <div v-if="viewingTool.logo" class="flex-1 max-w-[64px]">
-            <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">Logo</div>
+        <div v-if="viewingTool.logo || viewingToolScreenshots.length" class="space-y-3">
+          <div v-if="viewingTool.logo" class="flex items-start gap-3">
+            <div class="text-[11px] uppercase tracking-[0.08em] shrink-0 mt-1" :style="{ color: 'var(--color-text-muted)' }">Logo</div>
             <img :src="viewingTool.logo" alt="Logo"
               class="w-16 h-16 object-cover rounded-lg"
               :style="{ border: '1px solid var(--color-border)' }" />
           </div>
-          <div v-if="viewingToolFirstScreenshot" class="flex-1">
-            <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">Cover</div>
-            <img :src="viewingToolFirstScreenshot" alt="Cover"
-              class="w-full object-cover rounded-lg"
-              :style="{ border: '1px solid var(--color-border)', maxHeight: '320px' }" />
+          <div v-if="viewingToolScreenshots.length">
+            <div class="text-[11px] uppercase tracking-[0.08em] mb-2" :style="{ color: 'var(--color-text-muted)' }">Screenshots</div>
+            <ScreenshotGallery :urls="viewingToolScreenshots" :alt="viewingTool.name" />
           </div>
         </div>
 
@@ -489,8 +487,6 @@ const viewingToolScreenshots = computed<string[]>(() => {
   if (!s) return []
   try { return JSON.parse(s) as string[] } catch { return [] }
 })
-
-const viewingToolFirstScreenshot = computed(() => viewingToolScreenshots.value[0])
 
 const totalPages = computed(() => Math.ceil(total.value / pageSize))
 
