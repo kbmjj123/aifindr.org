@@ -36,11 +36,15 @@ export default defineEventHandler(async (event) => {
   }
 
   // Production — generate presigned PUT URL for browser direct upload
-  const uploadUrl = await (bucket as any).createSignedUrl(key, {
-    method: 'PUT',
-    expiresIn: 3600,
-  })
-  const publicUrl = `${env.R2_PUBLIC_URL.replace(/\/+$/, '')}/${key}`
-
-  return { mode: 'direct', uploadUrl, publicUrl, key }
+  try {
+    const uploadUrl = await (bucket as any).createSignedUrl(key, {
+      method: 'PUT',
+      expiresIn: 3600,
+    })
+    const publicUrl = `${env.R2_PUBLIC_URL.replace(/\/+$/, '')}/${key}`
+    return { mode: 'direct', uploadUrl, publicUrl, key }
+  } catch {
+    // Mock R2 doesn't support createSignedUrl — fall back to proxy
+    return { mode: 'proxy', uploadUrl: '/api/upload' }
+  }
 })
