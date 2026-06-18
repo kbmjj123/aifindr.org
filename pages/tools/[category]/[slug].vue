@@ -436,4 +436,12 @@ const faqSchema = computed(() => {
   }]
 })
 useSchemaOrg(faqSchema)
+
+// ── record view ──────────────────────────────────────────────
+watchEffect(() => {
+  const id = tool.value?.id
+  if (id && import.meta.client) {
+    post(`/api/view/${id}`, {}).catch(() => {}) // silent
+  }
+})
 </script>
