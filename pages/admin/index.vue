@@ -355,6 +355,42 @@
           </p>
         </div>
 
+        <!-- Short Description -->
+        <div v-if="viewingTool.short_description">
+          <div class="text-[11px] uppercase tracking-[0.08em] mb-1" :style="{ color: 'var(--color-text-muted)' }">Short Description</div>
+          <p class="font-body text-[13px]" :style="{ color: 'var(--color-text-primary)' }">
+            {{ viewingTool.short_description }}
+          </p>
+        </div>
+
+        <!-- Price Tiers -->
+        <div v-if="viewingToolPriceTiers.length">
+          <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">Price Tiers</div>
+          <div class="space-y-1.5">
+            <div v-for="(tier, i) in viewingToolPriceTiers" :key="i"
+              class="flex items-center justify-between px-3 py-1.5 rounded-md text-[13px]"
+              :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)' }">
+              <span :style="{ color: 'var(--color-text-primary)' }">{{ tier.name }}</span>
+              <span :style="{ color: 'var(--color-text-secondary)' }">
+                {{ formatTierPrice(tier) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQ -->
+        <div v-if="viewingToolFaq.length">
+          <div class="text-[11px] uppercase tracking-[0.08em] mb-1.5" :style="{ color: 'var(--color-text-muted)' }">FAQ</div>
+          <div class="space-y-2">
+            <div v-for="(item, i) in viewingToolFaq" :key="i"
+              class="p-3 rounded-md text-[13px]"
+              :style="{ background: 'var(--color-bg-input)', border: '1px solid var(--color-border)' }">
+              <p class="font-medium mb-0.5" :style="{ color: 'var(--color-text-primary)' }">{{ item.question }}</p>
+              <p :style="{ color: 'var(--color-text-secondary)' }">{{ truncate(item.answer, 120) }}</p>
+            </div>
+          </div>
+        </div>
+
         <!-- Body / Full Content -->
         <div v-if="viewingTool.body">
           <div class="text-[11px] uppercase tracking-[0.08em] mb-1" :style="{ color: 'var(--color-text-muted)' }">Full Content</div>
@@ -487,6 +523,48 @@ const viewingToolScreenshots = computed<string[]>(() => {
   if (!s) return []
   try { return JSON.parse(s) as string[] } catch { return [] }
 })
+
+interface PriceTierItem {
+  name: string; price?: number; period?: string; type?: string
+  credits?: number; unit?: string; features?: string[]
+}
+
+const viewingToolPriceTiers = computed<PriceTierItem[]>(() => {
+  const t = viewingTool.value?.price_tiers
+  if (!t) return []
+  try { return JSON.parse(t) as PriceTierItem[] } catch { return [] }
+})
+
+interface FaqItem { question: string; answer: string }
+const viewingToolFaq = computed<FaqItem[]>(() => {
+  const f = viewingTool.value?.faq
+  if (!f) return []
+  try { return JSON.parse(f) as FaqItem[] } catch { return [] }
+})
+
+function formatTierPrice(tier: PriceTierItem): string {
+  if (tier.type === 'free') return 'Free'
+  if (tier.type === 'custom') return 'Contact us'
+  if (tier.type === 'credits') {
+    const c = tier.credits ? `${tier.credits} credits` : ''
+    const p = tier.price != null ? ` / $${tier.price}` : ''
+    return `${c}${p}`
+  }
+  if (tier.type === 'usage') {
+    const p = tier.price != null ? `$${tier.price}` : ''
+    const u = tier.unit ? `/${tier.unit}` : ''
+    return `${p}${u}`
+  }
+  // subscription
+  const p = tier.price != null ? `$${tier.price}` : ''
+  const period = tier.period === 'month' ? '/mo' : tier.period === 'year' ? '/yr' : tier.period ? `/${tier.period}` : ''
+  return `${p}${period}`
+}
+
+function truncate(text: string, len: number): string {
+  if (!text) return ''
+  return text.length > len ? text.slice(0, len) + '…' : text
+}
 
 const totalPages = computed(() => Math.ceil(total.value / pageSize))
 
