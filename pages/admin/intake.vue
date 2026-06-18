@@ -118,6 +118,13 @@
                   maxlength="120" />
               </div>
             </div>
+            <!-- Gallery preview -->
+            <div v-if="screenshotCount > 0" class="mt-4 max-w-xl">
+              <p class="font-body text-[11px] mb-2" style="color: var(--color-text-muted)">
+                Preview
+              </p>
+              <ScreenshotGallery :urls="uploadedScreenshots.filter(s => s.url)" alt="Screenshot preview" />
+            </div>
           </div>
         </div>
 
