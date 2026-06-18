@@ -1,5 +1,5 @@
 // server/api/upload.post.ts
-import { createError, readFormData } from 'h3'
+import { createError, readFormData, getRequestURL } from 'h3'
 import { getEnv } from '~/server/utils/env'
 
 const MAX_SIZE = 5 * 1024 * 1024
@@ -26,15 +26,11 @@ export default defineEventHandler(async (event) => {
 
   // Try getEnv — same pattern as admin/upload-from-url.post.ts
   let bucket: any
-  let isProduction = false
-  let r2PublicUrl = ''
+  let publicUrlBase = ''
   try {
     const env = getEnv(event)
     bucket = env.CDN
-    r2PublicUrl = env.R2_PUBLIC_URL || ''
-    // event.context.cloudflare.env = 真实 Worker 环境 → CDN URL
-    // event.req.runtime.cloudflare.env  = 本地 mock → localhost
-    isProduction = !!(event.context as any).cloudflare?.env?.R2_PUBLIC_URL
+    publicUrlBase = env.R2_PUBLIC_URL || ''
   } catch {
     // No CF bindings — falls through to local filesystem fallback
   }
@@ -44,9 +40,12 @@ export default defineEventHandler(async (event) => {
     await bucket.put(key, await file.arrayBuffer(), {
       httpMetadata: { contentType: file.type },
     })
-    const url = isProduction
-      ? `${r2PublicUrl.replace(/\/+$/, '')}/${key}`
-      : `http://localhost:3000/api/file/${key}`
+    // 用请求域名判断：localhost → 本地 mock R2，其他 → CDN
+    const requestURL = getRequestURL(event)
+    const isLocalhost = requestURL.hostname === 'localhost' || requestURL.hostname === '127.0.0.1'
+    const url = isLocalhost
+      ? `http://localhost:3000/api/file/${key}`
+      : `${publicUrlBase.replace(/\/+$/, '')}/${key}`
     return { url }
   }
 
