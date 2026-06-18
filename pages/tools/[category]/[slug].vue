@@ -177,9 +177,6 @@
               </div>
               <!-- Data Source + Last Verified -->
               <div :style="{ borderTop: '1px solid var(--color-border)', paddingTop: '14px', marginTop: '4px' }">
-                <div v-if="tool.data_source" class="detail-sidebar-value" style="font-size: 10px; margin-bottom: 4px;">
-                  Data from {{ tool.data_source }}
-                </div>
                 <div v-if="tool.last_verified" class="detail-sidebar-value" style="font-size: 10px;">
                   Verified {{ formatDate(tool.last_verified) }}
                 </div>
@@ -187,12 +184,12 @@
             </div>
 
             <!-- Submitter info (dofollow backlink) -->
-            <div v-if="tool.submitter_site || tool.submitter_github" :style="{ borderTop: '1px solid var(--color-border)', margin: '14px 0', paddingTop: '14px' }">
+            <div v-if="tool.submitter_github" :style="{ borderTop: '1px solid var(--color-border)', margin: '14px 0', paddingTop: '14px' }">
               <div class="detail-sidebar-label">Submitted by</div>
               <div class="flex items-center gap-2 mt-1">
-                <img v-if="(tool as any).submitter_avatar" :src="(tool as any).submitter_avatar" :alt="tool.submitter_github"
+                <img :src="(tool as any).submitter_avatar || `https://github.com/${tool.submitter_github}.png`"
+                  :alt="tool.submitter_github"
                   class="w-5 h-5 rounded-full shrink-0 object-cover" />
-                <div v-else class="w-5 h-5 rounded-full shrink-0" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }" />
                 <div>
                   <div class="font-body text-[13px]" style="color: var(--color-text-secondary)">
                   <NuxtLink v-if="tool.submitter_github"

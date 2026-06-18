@@ -144,17 +144,20 @@ export default defineEventHandler(async (event) => {
   // ── 写入 tools 表（status 直接为 active）─────────────────
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
+  // JWT payload 中的 sub 是用户 ID（来自 users 表）
+  const adminUserId = payload.sub || null
+
   const insertResult = await env.DB.prepare(`
     INSERT INTO tools (
       slug, name, category, sub_category, website,
       pricing, price_starting, price_detail, price_tiers, has_free_trial, platforms,
       status, launched, meta_description, short_description, faq, logo, screenshots,
-      body, verified, editor_pick, data_source, submitted_at, updated_at
+      body, verified, editor_pick, data_source, submitter_id, submitted_at, updated_at
     ) VALUES (
       ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?,
       'active', ?, ?, ?, ?, ?,
-      ?, ?, 1, 0, ?, ?, ?
+      ?, ?, 1, 0, ?, ?, ?, ?
     )
   `).bind(
     slug,
@@ -176,6 +179,7 @@ export default defineEventHandler(async (event) => {
     screenshots || null,
     bodyContent || null,
     body.data_source || 'admin_intake',
+    adminUserId,
     now,
     now,
   ).run()
