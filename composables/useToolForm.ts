@@ -318,14 +318,6 @@ export function useToolForm() {
     form.useCaseTags = []
   })
 
-  watch(() => form.pricing, (val) => {
-    if (val === 'free') {
-      form.priceDetail  = ''
-      form.priceTiers   = []
-      form.hasFreeTrial = false
-    }
-  })
-
   return {
     // state
     form,
