@@ -54,3 +54,6 @@ public/tmp/
 scripts/scraper/futurepedia.ts
 # Added by code-review-graph
 .code-review-graph/
+
+# Local dev uploads
+public/_uploads/

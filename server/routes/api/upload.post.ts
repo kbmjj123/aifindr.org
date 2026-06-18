@@ -26,18 +26,27 @@ export default defineEventHandler(async (event) => {
   const cf = (event.context as any).cloudflare
   const bucket = cf?.env?.CDN
 
-  if (!bucket) {
-    throw createError({ statusCode: 500, statusMessage: 'R2 bucket not available' })
+  if (bucket) {
+    // Production — R2
+    await bucket.put(key, await file.arrayBuffer(), {
+      httpMetadata: { contentType: file.type },
+    })
+    const isProduction = cf?.env?.R2_PUBLIC_URL
+    if (isProduction) {
+      const url = `${cf.env.R2_PUBLIC_URL.replace(/\/+$/, '')}/${key}`
+      return { url }
+    }
   }
 
-  await bucket.put(key, await file.arrayBuffer(), {
-    httpMetadata: { contentType: file.type },
-  })
-
-  const isProduction = cf?.env?.R2_PUBLIC_URL
-  const url = isProduction
-    ? `${cf.env.R2_PUBLIC_URL.replace(/\/+$/, '')}/${key}`
-    : `http://localhost:3000/api/file/${key}` // 本地走 server route
+  // Local dev fallback — save to public/_uploads/
+  const { writeFile, mkdir } = await import('node:fs/promises')
+  const { join } = await import('node:path')
+  const uploadDir = join(process.cwd(), 'public', '_uploads')
+  await mkdir(uploadDir, { recursive: true })
+  const localPath = join(uploadDir, key.replace(/[^a-zA-Z0-9/._-]/g, ''))
+  await mkdir(join(localPath, '..'), { recursive: true })
+  await writeFile(localPath, Buffer.from(await file.arrayBuffer()))
+  const url = `/_uploads/${key}`
 
   return { url }
 })
