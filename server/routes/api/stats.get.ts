@@ -3,8 +3,8 @@ import { getEnv } from '~/server/utils/env'
 export default defineEventHandler(async (event) => {
   const env = getEnv(event)
 
-  const cached = await env.CACHE.get('stats', 'json')
-  if (cached) {
+  const cached: any = await env.CACHE.get('stats', 'json')
+  if (cached && cached.contributors > 0) {
     return cached
   }
 
