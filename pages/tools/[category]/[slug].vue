@@ -21,6 +21,11 @@
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Main content -->
         <div class="flex-1 min-w-0">
+          <!-- Cover: Screenshots gallery as hero -->
+          <div v-if="toolScreenshots.length" class="mb-6">
+            <ScreenshotGallery :urls="toolScreenshots" :alt="tool.name" />
+          </div>
+
           <div class="flex items-start gap-4 mb-6">
             <div class="tool-detail-logo shrink-0 flex items-center justify-center"
               :style="{ background: 'var(--color-bg-elevated)' }">
@@ -41,12 +46,6 @@
                 <ToolTag :type="tool.pricing">{{ pricingLabel(tool.pricing) }}</ToolTag>
               </div>
             </div>
-          </div>
-
-          <!-- Screenshots gallery -->
-          <div v-if="toolScreenshots.length" class="mb-6">
-            <h2 class="font-sans font-semibold text-[15px] mb-3" style="color: var(--color-text-primary); letter-spacing: -0.3px">Screenshots</h2>
-            <ScreenshotGallery :urls="toolScreenshots" :alt="tool.name" />
           </div>
 
           <!-- Media: Videos -->
