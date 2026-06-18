@@ -26,11 +26,15 @@ export default defineEventHandler(async (event) => {
 
   // Try getEnv — same pattern as admin/upload-from-url.post.ts
   let bucket: any
-  let r2PublicUrl: string | undefined
+  let isProduction = false
+  let r2PublicUrl = ''
   try {
     const env = getEnv(event)
     bucket = env.CDN
-    r2PublicUrl = env.R2_PUBLIC_URL
+    r2PublicUrl = env.R2_PUBLIC_URL || ''
+    // event.context.cloudflare.env = 真实 Worker 环境 → CDN URL
+    // event.req.runtime.cloudflare.env  = 本地 mock → localhost
+    isProduction = !!(event.context as any).cloudflare?.env?.R2_PUBLIC_URL
   } catch {
     // No CF bindings — falls through to local filesystem fallback
   }
@@ -40,7 +44,7 @@ export default defineEventHandler(async (event) => {
     await bucket.put(key, await file.arrayBuffer(), {
       httpMetadata: { contentType: file.type },
     })
-    const url = r2PublicUrl
+    const url = isProduction
       ? `${r2PublicUrl.replace(/\/+$/, '')}/${key}`
       : `http://localhost:3000/api/file/${key}`
     return { url }

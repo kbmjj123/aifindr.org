@@ -26,7 +26,9 @@ export default defineEventHandler(async (event) => {
 
   const env = getEnv(event)
   const bucket = env.CDN
-  const isProduction = !!env.R2_PUBLIC_URL
+  // event.context.cloudflare.env = 真实 Worker → signed URL
+  // event.req.runtime.cloudflare.env  = 本地 mock → proxy upload
+  const isProduction = !!(event.context as any).cloudflare?.env?.R2_PUBLIC_URL
 
   if (!isProduction) {
     // Local dev — client falls back to FormData proxy upload
