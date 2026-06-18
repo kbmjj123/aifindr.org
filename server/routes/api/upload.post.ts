@@ -27,18 +27,18 @@ export default defineEventHandler(async (event) => {
   const bucket = cf?.env?.CDN
 
   if (bucket) {
-    // Production — R2
+    // Has R2 (production via Workers, or local via cloudflare_module mock)
     await bucket.put(key, await file.arrayBuffer(), {
       httpMetadata: { contentType: file.type },
     })
     const isProduction = cf?.env?.R2_PUBLIC_URL
-    if (isProduction) {
-      const url = `${cf.env.R2_PUBLIC_URL.replace(/\/+$/, '')}/${key}`
-      return { url }
-    }
+    const url = isProduction
+      ? `${cf.env.R2_PUBLIC_URL.replace(/\/+$/, '')}/${key}`
+      : `http://localhost:3000/api/file/${key}`
+    return { url }
   }
 
-  // Local dev fallback — save to public/_uploads/
+  // No R2 at all — fallback to local filesystem
   const { writeFile, mkdir } = await import('node:fs/promises')
   const { join } = await import('node:path')
   const uploadDir = join(process.cwd(), 'public', '_uploads')

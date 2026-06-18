@@ -70,7 +70,8 @@
       "Bash(git rebase *)",
       "Bash(rtk wc *)",
       "Bash(rm -rf /private/tmp/claude-501/-Users-kbmjj123-Desktop-fullstack-aifindr-org/e8c825be-e1c8-4d34-a282-8b53626f4440)",
-      "Bash(rtk df *)"
+      "Bash(rtk df *)",
+      "Bash(wrangler --version)"
     ]
   },
   "enableAllProjectMcpServers": true,
