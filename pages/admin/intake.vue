@@ -128,6 +128,26 @@
           </div>
         </div>
 
+        <!-- submitter 信息 -->
+        <div class="pt-4 border-t space-y-3"
+          :style="{ borderColor: 'var(--color-border)' }">
+          <p class="font-body text-[12px] font-medium" style="color: var(--color-text-primary)">
+            Submitter Info <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional, for contributor page)</span>
+          </p>
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <label class="font-body text-[11px] block mb-1" style="color: var(--color-text-muted)">GitHub Username</label>
+              <input v-model="submitterGithub" placeholder="e.g. username"
+                class="input !h-[34px] !text-[12px]" />
+            </div>
+            <div class="flex-1">
+              <label class="font-body text-[11px] block mb-1" style="color: var(--color-text-muted)">Website URL</label>
+              <input v-model="submitterSite" placeholder="https://your-site.com"
+                class="input !h-[34px] !text-[12px]" />
+            </div>
+          </div>
+        </div>
+
         <!-- 标签预览 -->
         <div class="pt-4 border-t" :style="{ borderColor: 'var(--color-border)' }">
           <p class="font-body text-[13px] font-medium mb-2" style="color: var(--color-text-primary)">
@@ -238,6 +258,8 @@ const uploadedScreenshots = reactive<{ url: string; alt: string }[]>([
   { url: '', alt: '' },
   { url: '', alt: '' },
 ])
+const submitterGithub = ref('')
+const submitterSite   = ref('')
 
 const submitting      = ref(false)
 const submitError     = ref('')
@@ -367,6 +389,8 @@ async function publish() {
       ...parsed.value,
       logo:       uploadedLogoUrl.value || undefined,
       screenshots: allScreenshots.length > 0 ? allScreenshots : undefined,
+      submitter_github: submitterGithub.value || parsed.value.submitter_github || undefined,
+      submitter_site:   submitterSite.value   || parsed.value.submitter_site   || undefined,
     }
     delete payload.screenshots_url
 
