@@ -1,4 +1,7 @@
 // server/routes/files/[...key].get.ts
+import { createError, getRouterParam } from 'h3'
+import { getEnv } from '~/server/utils/env'
+
 export default defineEventHandler(async (event) => {
   const key = getRouterParam(event, 'key')
 
@@ -6,8 +9,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Missing file key' })
   }
 
-  const cf = (event.context as any).cloudflare
-  const bucket = cf?.env?.CDN
+  // Try getEnv — same pattern as upload.post.ts
+  let bucket: any
+  try {
+    const env = getEnv(event)
+    bucket = env.CDN
+  } catch {
+    // No CF bindings — falls through to local filesystem fallback
+  }
 
   if (bucket) {
     const object = await bucket.get(key)

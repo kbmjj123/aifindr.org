@@ -1,5 +1,6 @@
 // server/api/upload.post.ts
 import { createError, readFormData } from 'h3'
+import { getEnv } from '~/server/utils/env'
 
 const MAX_SIZE = 5 * 1024 * 1024
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/vnd.microsoft.icon', 'image/avif']
@@ -23,17 +24,24 @@ export default defineEventHandler(async (event) => {
   const ext = EXT_MAP[mimeType] || mimeType
   const key = `tools/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`
 
-  const cf = (event.context as any).cloudflare
-  const bucket = cf?.env?.CDN
+  // Try getEnv — same pattern as admin/upload-from-url.post.ts
+  let bucket: any
+  let r2PublicUrl: string | undefined
+  try {
+    const env = getEnv(event)
+    bucket = env.CDN
+    r2PublicUrl = env.R2_PUBLIC_URL
+  } catch {
+    // No CF bindings — falls through to local filesystem fallback
+  }
 
   if (bucket) {
     // Has R2 (production via Workers, or local via cloudflare_module mock)
     await bucket.put(key, await file.arrayBuffer(), {
       httpMetadata: { contentType: file.type },
     })
-    const isProduction = cf?.env?.R2_PUBLIC_URL
-    const url = isProduction
-      ? `${cf.env.R2_PUBLIC_URL.replace(/\/+$/, '')}/${key}`
+    const url = r2PublicUrl
+      ? `${r2PublicUrl.replace(/\/+$/, '')}/${key}`
       : `http://localhost:3000/api/file/${key}`
     return { url }
   }
