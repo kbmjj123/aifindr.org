@@ -80,17 +80,8 @@ export default defineNuxtConfig({
   },
 
   postcss: {
-    plugins: [
-      // postcss-import is built-in to Vite; we configure it here to
-      // skip resolving the bare 'tailwindcss' specifier so that
-      // @tailwindcss/postcss can handle it instead.
-      ['postcss-import', {
-        resolve(id: string) {
-          if (id === 'tailwindcss') return null
-          return undefined
-        },
-      }],
-      ['@tailwindcss/postcss', {}],
-    ],
+    plugins: {
+      '@tailwindcss/postcss': {},
+    },
   },
 })
