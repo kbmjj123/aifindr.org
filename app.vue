@@ -36,6 +36,7 @@ useHead({
     { name: 'theme-color', content: '#080808' },
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
     { name: 'apple-mobile-web-app-status-bar-style', content: 'black' },
+		{ name: 'google-adsense-account', content: 'ca-pub-2363518550463295' }
   ],
   script: [
     {
@@ -43,6 +44,10 @@ useHead({
       'data-website-id': '1aa17710-60e0-4de1-afc4-3c5624e53b1f',
       defer: true,
     },
+		{
+			src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2363518550463295',
+			crossorigin: 'anonymous'
+		},
     {
       // Capture OAuth token from URL BEFORE Nuxt hydration clears query params
       innerHTML: `(function(){var p=new URLSearchParams(window.location.search).get('token');if(p){localStorage.setItem('aifindr-token',p);sessionStorage.setItem('login-just-happened','1');var u=new URL(window.location);u.searchParams.delete('token');window.history.replaceState({},'',u.toString())}})()`,
