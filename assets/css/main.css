@@ -1,12 +1,11 @@
-@layer theme, base, components, utilities;
-
+@import 'tailwindcss';
 @import url('https://fonts.googleapis.com/css2?family=Hubot+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
 /* ═══════════════════════════════════════════════
    Tailwind v4 设计令牌（映射到 CSS 变量）
    使用方式：bg-accent、text-primary、border-base、font-sans、font-body 等
 ═══════════════════════════════════════════════ */
-@layer theme {
+@theme {
   --font-sans:  'Hubot Sans', -apple-system, sans-serif;
   --font-body:  'Hubot Sans', -apple-system, sans-serif;
   --font-mono:  'Hubot Sans', 'Fira Code', monospace;
