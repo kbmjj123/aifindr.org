@@ -30,4 +30,10 @@ export interface ExchangeLink {
  *   }
  */
 /** Add your exchange links here. Component hides when array is empty. */
-export const exchangeLinks: ExchangeLink[] = []
+export const exchangeLinks: ExchangeLink[] = [
+  {
+    name: 'ImagineClip',
+    url: 'https://imagineclip.com',
+    type: 'text',
+  },
+]
