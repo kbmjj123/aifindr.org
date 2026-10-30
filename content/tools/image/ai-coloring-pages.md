@@ -1,0 +1,1 @@
+- [AI Coloring Pages](https://springcoloringpages.site/?utm_source=aifindr.org&utm_medium=listing&utm_campaign=scp_outreach_w40) — Free AI generator that turns text descriptions into print-ready coloring pages for kids aged 3-10. (category: image)
