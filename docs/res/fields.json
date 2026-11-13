@@ -1,0 +1,211 @@
+{
+  "note": "字段字典：所有出现过的字段及覆盖率。spec.* 来自详情页规格表。",
+  "specKeys": [
+    "approval",
+    "backlinkRequired",
+    "category",
+    "dofollowLink",
+    "domainRating",
+    "format",
+    "lastUpdated",
+    "pricing",
+    "submitPage",
+    "submitPageUrl",
+    "tags",
+    "website"
+  ],
+  "fields": {
+    "slug": {
+      "count": 848,
+      "sample": "awesome-mcp-servers"
+    },
+    "name": {
+      "count": 848,
+      "sample": "awesome-mcp-servers"
+    },
+    "url": {
+      "count": 848,
+      "sample": "https://submitmap.com/platform/awesome-mcp-servers/"
+    },
+    "listDescription": {
+      "count": 848,
+      "sample": ""
+    },
+    "listDomainRating": {
+      "count": 848,
+      "sample": "97"
+    },
+    "listPricing": {
+      "count": 848,
+      "sample": "free"
+    },
+    "listApproval": {
+      "count": 848,
+      "sample": "object"
+    },
+    "cardTags": {
+      "count": 848,
+      "sample": "Array(0)"
+    },
+    "cardRaw": {
+      "count": 848,
+      "sample": "AM Awesome MCP Servers The 92,000-star curated list of MCP servers, submitted by pull request, with an explicit fast-tra"
+    },
+    "detail": {
+      "count": 848,
+      "sample": "object"
+    },
+    "scrapedAt": {
+      "count": 848,
+      "sample": "2026-11-13T04:12:53.004Z"
+    },
+    "pageTitle": {
+      "count": 848,
+      "sample": "How to submit to Awesome MCP Servers | SubmitMap"
+    },
+    "h1": {
+      "count": 848,
+      "sample": "Awesome MCP Servers: requirements, how to submit, and what you actually get"
+    },
+    "meta": {
+      "count": 848,
+      "sample": "object"
+    },
+    "breadcrumbs": {
+      "count": 848,
+      "sample": "Array(4)"
+    },
+    "categories": {
+      "count": 848,
+      "sample": "Array(0)"
+    },
+    "tags": {
+      "count": 848,
+      "sample": "Array(0)"
+    },
+    "classificationLinks": {
+      "count": 848,
+      "sample": "Array(0)"
+    },
+    "allClassifications": {
+      "count": 848,
+      "sample": "Array(4)"
+    },
+    "spec": {
+      "count": 848,
+      "sample": "object"
+    },
+    "specRaw": {
+      "count": 848,
+      "sample": "object"
+    },
+    "howToSubmit": {
+      "count": 848,
+      "sample": "Array(4)"
+    },
+    "requirements": {
+      "count": 848,
+      "sample": "Array(6)"
+    },
+    "whatYouGet": {
+      "count": 848,
+      "sample": ""
+    },
+    "gotchas": {
+      "count": 848,
+      "sample": "There are over three thousand pull requests open against this repository. Whatever the queue looks like when you open yo"
+    },
+    "agentInstructions": {
+      "count": 848,
+      "sample": "Connect SubmitMap to your AI over MCP and this page stops being something you read and copy. Your agent asks for the Awe"
+    },
+    "forPlatformOwners": {
+      "count": 848,
+      "sample": ""
+    },
+    "faq": {
+      "count": 848,
+      "sample": "Array(5)"
+    },
+    "specSectionText": {
+      "count": 848,
+      "sample": ""
+    },
+    "sections": {
+      "count": 848,
+      "sample": "Array(8)"
+    },
+    "sectionHeadings": {
+      "count": 848,
+      "sample": "Array(8)"
+    },
+    "links": {
+      "count": 848,
+      "sample": "Array(60)"
+    },
+    "images": {
+      "count": 848,
+      "sample": "Array(9)"
+    },
+    "badgeHtml": {
+      "count": 848,
+      "sample": "HTMLCopy<a href=\"https://submitmap.com/platform/awesome-mcp-servers/\">\n  <img src=\"https://submitmap.com/badge/listed-li"
+    },
+    "embedded": {
+      "count": 848,
+      "sample": "object"
+    },
+    "rawText": {
+      "count": 848,
+      "sample": "Skip to main content Platforms Docs Lists Route ⌘K Dashboard Platforms / Awesome MCP Servers AM ai · dev · open-source A"
+    },
+    "spec.domainRating": {
+      "count": 848,
+      "sample": "97"
+    },
+    "spec.pricing": {
+      "count": 848,
+      "sample": "free"
+    },
+    "spec.approval": {
+      "count": 848,
+      "sample": "Not stated"
+    },
+    "spec.submitPage": {
+      "count": 848,
+      "sample": "/punkpeye/awesome-mcp-servers"
+    },
+    "spec.dofollowLink": {
+      "count": 847,
+      "sample": "No"
+    },
+    "spec.backlinkRequired": {
+      "count": 847,
+      "sample": "No"
+    },
+    "spec.category": {
+      "count": 187,
+      "sample": "a closed list that adds a parent per pick"
+    },
+    "spec.submitPageUrl": {
+      "count": 166,
+      "sample": "https://github.com/punkpeye/awesome-mcp-servers"
+    },
+    "spec.website": {
+      "count": 121,
+      "sample": "URL One"
+    },
+    "spec.tags": {
+      "count": 48,
+      "sample": "up to 5, entered one at a time"
+    },
+    "spec.lastUpdated": {
+      "count": 3,
+      "sample": "weekly, and nothing confirms a"
+    },
+    "spec.format": {
+      "count": 1,
+      "sample": "An article, not a listing"
+    }
+  }
+}
