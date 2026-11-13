@@ -1,296 +1,234 @@
-# Rules: Deployment & Worker API
+# Rules: Deployment & Cloudflare Worker
 
-> 适用：部署 Worker、配置 Cloudflare 资源、本地 API 开发时读取本文件
+> 适用：部署站点、配置 Cloudflare 资源、本地调试 API 时读取本文件
+> 状态：已按当前架构校正。早期版本的「Pages + 独立 API Worker」方案已废弃。
 
 ---
 
 ## 一、架构总览
 
 ```
-Cloudflare
-├── Pages                     ← Nuxt SSG/ISR 静态站点 + Pages Functions
-│   └── aifindr.org           ← 域名
-│
-└── Workers                   ← API 后端（独立部署）
-    └── aifindr-api           ← workers/api.ts
-        ├── GET  /api/tools              工具列表
-        ├── GET  /api/tools/:cat/:slug   工具详情
-        ├── GET  /api/tools/search       搜索
-        ├── GET  /api/stats              统计
-        ├── POST /api/click/:id          记录点击
-        └── POST /api/submit             表单提交
+Cloudflare Worker: aifindr（单一部署单元）
+├── main   = .output/server/index.mjs   ← Nitro SSR + /api/* 全部端点
+├── assets = .output/public             ← 静态资源
+├── 自定义域：aifindr.org / www.aifindr.org
+└── 绑定
+    ├── D1  DB    → aifindr-db（工具、用户、文章、日志）
+    ├── KV  CACHE → 缓存命名空间
+    └── R2  CDN   → aifindr-cdn（公开地址 https://cdn.aifindr.org）
 ```
 
-**关键约定：**
-- 所有 `/api/*` 请求由独立 Worker 处理，Pages 不做 API 路由
-- Worker 通过 Cloudflare 路由规则接收 `aifindr.org/api/*` 请求
-- 页面通过 `useFetch('/api/...')` 调用 Worker（同域请求）
+**关键约定**
+
+- 页面渲染与 `/api/*` 由**同一个 Worker** 处理，不存在独立 API Worker，也不需要 Pages Functions 或路由回退规则
+- `nuxt.config.ts` 的 nitro preset 是 `cloudflare_module`（开 `nodeCompat`），`wrangler.toml` 用 `main` + `assets`，不是 Pages 部署
+- 前端统一通过 `composables/useApi.ts` 调用 API：SSR 走 `useRequestFetch()` 进程内直调，避免 Workers 自调用导致 522；CSR 走 `$fetch` + Bearer token
+- 只有 `/admin/**`、`/blog`、`/blog/*` 设了 `ssr: false`；其余页面在边缘 SSR，没有 SSG / ISR 配置
 
 ---
 
 ## 二、前置条件
 
-| 资源 | 说明 | 获取方式 |
+| 资源 | 说明 | 配置位置 |
 |------|------|---------|
-| Cloudflare 账号 | 需要已添加域名 | https://dash.cloudflare.com |
-| D1 数据库 | 存储工具元数据 | `wrangler d1 create aifindr-db` |
-| KV Namespace | 缓存高频查询 | `wrangler kv:namespace create CACHE` |
-| Turnstile 密钥 | 表单防垃圾 | Cloudflare Dashboard → Turnstile → 添加站点 |
+| Cloudflare 账号与域名 | `aifindr.org` 已托管 | `wrangler.toml` 的 `routes` 自定义域 |
+| D1 数据库 | `aifindr-db` | `[[d1_databases]] binding = "DB"` |
+| KV Namespace | 缓存 | `[[kv_namespaces]] binding = "CACHE"` |
+| R2 Bucket | `aifindr-cdn` | `[[r2_buckets]] binding = "CDN"` |
+| GitHub OAuth App | 登录与管理后台鉴权 | `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` |
+| Turnstile | 提交表单防垃圾 | `TURNSTILE_SECRET` |
+| Resend（可选但推荐） | 通知邮件 | `RESEND_API_KEY` |
+
+`wrangler.toml` 已填入真实的 D1 / KV ID 与自定义域配置，非敏感信息公开提交没有问题。
 
 ---
 
 ## 三、本地环境准备
 
-### 3.1 复制环境变量模板
+### 3.1 本地密钥
 
 ```bash
-cp .dev.vars .dev.vars.local
-# 编辑 .dev.vars.local，填入真实 Turnstile Secret Key
-# .dev.vars 文件已被 .gitignore 排除，不会误提交
+# .dev.vars / .dev.vars.local（均被 .gitignore 排除）
+TURNSTILE_SECRET=...
+GITHUB_CLIENT_SECRET=...
+JWT_SECRET=...
+RESEND_API_KEY=...
 ```
 
-### 3.2 创建 D1 表结构
+本地 Nitro 通过 Wrangler 模拟 `wrangler.toml` 中的 D1 / KV / R2 绑定，`getEnv(event)` 会依次尝试 `event.context.cloudflare.env` 与 `event.req.runtime.cloudflare.env`（见 `server/utils/env.ts`）。
 
-通过浏览器工具或 wrangler 执行 SQL：
+### 3.2 初始化 D1 表结构
 
 ```bash
-# 方式一：执行 SQL 文件
-wrangler d1 execute aifindr-db --file=./schema/init.sql
+# 本地
+wrangler d1 execute aifindr-db --local --file=./schema/init.sql
 
-# 方式二：交互式执行
-wrangler d1 execute aifindr-db --command="CREATE TABLE tools (← 粘贴完整建表语句)"
+# 生产
+wrangler d1 execute aifindr-db --remote --file=./schema/init.sql
 ```
 
-建表 SQL 参考 `@.claude/rules/product-scope.md` → 五、数据结构 → 5.2 D1 表结构。
+`schema/init.sql` 定义 9 张表，是表结构的唯一事实来源；`schema/reset.sql` 用于重置本地库。修改表结构时同步更新 `product-scope.md`。
 
-### 3.3 填充初始数据
+### 3.3 测试数据
 
-```bash
-# 本地开发时，可通过 POST /api/submit 插入测试数据
-# 或直接在 D1 中执行 INSERT 语句
-wrangler d1 execute aifindr-db --command="INSERT INTO tools ..."
-```
+通过 `POST /api/submit` 插入（进入 `pending`），再用管理端点 `POST /api/admin/review` 审核为 `active`；也可直接在 D1 里执行 INSERT。
 
 ---
 
 ## 四、本地开发
 
-### 4.1 启动 Worker
-
 ```bash
-# 启动本地 Worker（默认 http://localhost:8787）
-wrangler dev
-
-# 指定端口
-wrangler dev --port 8787
+pnpm dev        # Nuxt + Nitro，默认 http://localhost:3000
 ```
 
-### 4.2 启动 Nuxt 开发服务器
+不需要单独启动 `wrangler dev` 提供 API：API 就在同一个 Nitro 服务里。若确实需要用 Wrangler 运行构建产物做部署前验证，用 `wrangler dev` 指向 `.output`。
 
 ```bash
-# 新开终端
-pnpm dev
-```
-
-### 4.3 调用 API 测试
-
-```bash
-# 工具列表
-curl http://localhost:8787/api/tools
-
+# 工具列表（支持筛选）
+curl 'http://localhost:3000/api/tools?category=image&sort=trending'
 # 工具详情
-curl http://localhost:8787/api/tools/image/midjourney
-
+curl 'http://localhost:3000/api/tools/image/midjourney'
 # 搜索
-curl http://localhost:8787/api/tools/search?q=midjourney
-
+curl 'http://localhost:3000/api/tools/search?q=midjourney'
 # 统计
-curl http://localhost:8787/api/stats
-
-# 提交表单
-curl -X POST http://localhost:8787/api/submit \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Test Tool",
-    "website": "https://example.com",
-    "category": "image",
-    "pricing": "free",
-    "description": "A test tool.",
-    "turnstileToken": "1x00000000000000000000"   ← Turnstile 测试 token
-  }'
+curl 'http://localhost:3000/api/stats'
+# 提交（需要 Turnstile token）
+curl -X POST 'http://localhost:3000/api/submit' \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Test Tool","website":"https://example.com","category":"image","pricing":"free","description":"A test tool.","turnstileToken":"1x00000000000000000000"}'
 ```
 
-> Turnstile 测试 token `1x00000000000000000000` 始终通过验证，可在本地开发使用。
+> Turnstile 测试 token `1x00000000000000000000` 在本地始终通过验证。
+> `pnpm run sync-d1` 指向已删除的 `scripts/sync-to-d1.js`，**不要执行**。
 
 ---
 
 ## 五、生产部署
 
-### 5.1 设置生产密钥
+### 5.1 设置密钥
 
 ```bash
-# Turnstile Secret（只在 Cloudflare 服务端存储，不进代码）
 wrangler secret put TURNSTILE_SECRET
-# → 粘贴从 Cloudflare Dashboard 获取的 Secret Key
+wrangler secret put GITHUB_CLIENT_SECRET
+wrangler secret put JWT_SECRET
+wrangler secret put RESEND_API_KEY
+wrangler secret put GITHUB_WEBHOOK_SECRET
+wrangler secret put LEMONSQUEEZY_WEBHOOK_SECRET
+wrangler secret put SITE_URL            # 可选，缺省回退到 API_BASE / https://aifindr.org
 ```
 
-### 5.2 配置 D1 和 KV ID
+`wrangler.toml` 设置了 `keep_vars = true`，部署不会清掉已有变量。
 
-编辑 `wrangler.toml`，填入真实 ID：
-
-```toml
-# wrangler d1 create aifindr-db 后查看输出
-database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-
-# wrangler kv:namespace create CACHE 后查看输出
-id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-```
-
-> **注意：** 这两个 ID 是资源标识符而非密钥，可以提交到 git。
-> 如果不希望公开，可保留为空，部署时用环境变量或 CI 注入。
-
-### 5.3 部署 Worker
+### 5.2 构建并部署
 
 ```bash
-# 部署到 Cloudflare
+pnpm build
 wrangler deploy
 
-# 验证部署
+# 验证
 curl https://aifindr.org/api/stats
+curl -I https://aifindr.org/tools
 ```
 
-### 5.4 配置路由规则
+自定义域已在 `wrangler.toml` 的 `routes` 中声明（`aifindr.org` 与 `www.aifindr.org`），无需再为 `/api/*` 单独配置路由规则。
 
-确保 Worker 能接收到 `aifindr.org/api/*` 的请求：
+### 5.3 定时任务
 
-```toml
-# wrangler.toml
-routes = [
-  { pattern = "aifindr.org/api/*", zone_id = "你的zone_id" }
-]
-```
+`wrangler.toml [triggers] crons` 定义 4 条计划任务，`server/plugins/scheduled.ts` 监听 `cloudflare:scheduled` 并按 `controller.cron` 分发：
 
-`zone_id` 在 Cloudflare Dashboard → 域名概览页面右侧获取。
+| cron | 处理函数 |
+|------|---------|
+| `0 9 * * *` | `handleCronDailyOps` |
+| `0 3 * * *` | `handleCronLinkChecker` |
+| `0 8 1 * *` | `handleCronMonthlyReport` |
+| `0 14 * * 1` | `handleCronNewsletter` |
 
-### 5.5 Nuxt Pages 屏蔽 API 路由
-
-在 `nuxt.config.ts` 中确保 Pages 不尝试处理 `/api/*`：
-
-```ts
-routeRules: {
-  '/api/**': { cors: true },
-}
-```
-
-Cloudflare Pages 自动生成 `_routes.json`，不在 Pages 路由中的路径会回退到 Worker。
+新增 cron 时，`wrangler.toml`、`server/plugins/scheduled.ts`、`server/utils/cron.ts` 三处都要改。
 
 ---
 
 ## 六、API 路由参考
 
-| 方法 | 路径 | 参数 | 响应 | 说明 |
-|------|------|------|------|------|
-| `GET` | `/api/tools` | `?category=image` `?pricing=free,freemium` `?platform=web` `?tags=ai,chat` `?sort=latest\|trending\|featured` `?page=1` `?pageSize=24` | `{ tools, total, page, pageSize }` | 工具列表，支持多条件筛选和分页 |
-| `GET` | `/api/tools/:category/:slug` | — | `{ tool + tags + images + videos }` | 工具详情，联表查询完整数据 |
-| `GET` | `/api/tools/search` | `?q=keyword` `?page=1` `?pageSize=20` | `{ tools, query, total, page, pageSize }` | 全文搜索（name + description + tags） |
-| `GET` | `/api/stats` | — | `{ tools, categories, contributors }` | 站点统计，KV 缓存 1 小时 |
-| `POST` | `/api/click/:id` | — | `{ success: true }` | 递增工具点击量 |
-| `POST` | `/api/submit` | `{ name, website, category, pricing, description, turnstileToken, ... }` | `{ success, slug }` | 提交新工具（pending 状态） |
-| `GET` | `/api/auth/github` | — | 302 跳转 GitHub | GitHub OAuth 授权入口 |
-| `GET` | `/api/auth/callback` | `?code=...&state=...` | 302 跳转前端 `?token=jwt` | GitHub OAuth 回调，签发 JWT |
-| `GET` | `/api/auth/me` | — (Cookie `aifindr-token`) | `{ id, username, email, avatar_url }` | 获取当前登录用户信息 |
-| `GET` | `/api/auth/dev-login` | — | 302 跳转 `localhost:3000?token=jwt` | 本地开发 mock 登录 |
-| `GET` | `/api/admin/pending` | `?page=1&pageSize=20` | `{ tools, total, page, pageSize }` | 列出待审核工具（需管理员 JWT） |
-| `POST` | `/api/admin/review` | `{ tool_id, status, reject_reason?, reviewer_note? }` | `{ success, tool }` | 审核通过/拒绝工具（需管理员 JWT） |
+端点文件位于 `server/routes/api/`，约 45 个。核心接口：
 
-### 筛选参数详解
+| 方法 | 路径 | 参数 | 说明 |
+|------|------|------|------|
+| `GET` | `/api/tools` | `?category` `?sub_category` `?pricing=free,freemium` `?platform` `?tags` `?sort` `?page` `?pageSize` | 列表，强制 `status='active'`，返回 `{ tools, total, page, pageSize }` |
+| `GET` | `/api/tools/:category/:slug` | — | 详情（含标签、正文、FAQ） |
+| `GET` | `/api/tools/search` | `?q` | 搜索 |
+| `GET` | `/api/tools/check-name` | `?name` | 提交前查重 |
+| `GET` | `/api/stats` | — | 首页统计 |
+| `POST` | `/api/submit` | `{ name, website, category, pricing, description, turnstileToken, ... }` | 新工具进入 `pending`，slug 由工具名 + 品类词生成 |
+| `POST` | `/api/click/:id` · `/api/view/:id` | — | 点击/浏览计数 |
+| `GET` | `/api/auth/github` · `/api/auth/callback` · `/api/auth/me` · `/api/auth/dev-login` | — | GitHub OAuth / JWT，dev-login 仅本地 |
+| `POST` | `/api/admin/review` | `{ tool_id, status, reject_reason?, reviewer_note? }` | 审核（需管理员 JWT） |
+| `GET` | `/api/admin/pending` | `?page&pageSize` | 待审核列表 |
+| `POST` | `/api/upload` · `/api/upload/sign` | — | R2 图片上传 |
+| `POST` | `/api/cron/*` · `/api/webhooks/*` | — | 定时任务与 GitHub / Lemon Squeezy webhook |
 
-| 参数 | 示例 | 说明 |
-|------|------|------|
-| `category` | `image` | 单分类筛选 |
-| `pricing` | `free,freemium` | 多定价，逗号分隔 |
-| `platform` | `web` | 单平台筛选（LIKE %platform%） |
-| `tags` | `ai,chat` | 多标签，需联表 `tool_tags` 查询 |
-| `sort` | `trending` | `latest`(默认) / `trending`(按点击) / `featured`(精选优先) |
-| `page` | `1` | 页码，从 1 开始 |
-| `pageSize` | `24` | 每页条数，上限 100 |
+完整清单见 `server/routes/api/` 目录与 `api-spec.yaml`（后者部分描述仍基于旧架构）。
 
 ### 错误响应格式
 
 ```json
-{
-  "error": "描述信息",
-  "code": "ERROR_CODE"    // 可选，用于程序化处理
-}
+{ "error": "描述信息", "code": "ERROR_CODE" }
 ```
 
-常见错误码：`MISSING_FIELDS` `INVALID_PRICING` `INVALID_CATEGORY` `CAPTCHA_FAILED` `INVALID_NAME` `INVALID_TOOL_ID` `INVALID_STATUS` `ALREADY_REVIEWED` `MISSING_REJECT_REASON`
+常见错误码：`MISSING_FIELDS` `INVALID_PRICING` `INVALID_CATEGORY` `CAPTCHA_FAILED` `INVALID_NAME` `INVALID_TOOL_ID` `INVALID_STATUS` `ALREADY_REVIEWED` `MISSING_REJECT_REASON`。
 
 ---
 
 ## 七、常见问题
 
-### Q: `wrangler dev` 连接 D1 失败？
-确保已执行 `wrangler d1 create aifindr-db` 并在 `wrangler.toml` 中填入正确的 `database_id`。
+**Q: 报 `Cloudflare bindings not available`（500）？**
+说明 `getEnv(event)` 两种绑定来源都没取到。确认 `nitro.preset = 'cloudflare_module'`、Wrangler 已安装、`wrangler.toml` 中 D1/KV/R2 绑定齐全；用 Wrangler 运行构建产物时绑定才会完整注入。
 
-### Q: 本地开发时前端页面 404？
-`pnpm dev` 启动 Nuxt 开发服务器（默认 3000 端口），`wrangler dev` 启动 API Worker（默认 8787 端口）。
-前端页面中 `useFetch('/api/...')` 在开发环境下默认请求 Nuxt 开发服务器。需要配置代理：
+**Q: SSR 页面调用 `/api/...` 超时/522？**
+Worker 不能在请求中通过公网自调用自己。必须用 `useApi()`（SSR 分支使用 `useRequestFetch()` 进程内直调），不要写裸 `useFetch`。
 
-```ts
-// nuxt.config.ts
-nitro: {
-  devProxy: {
-    '/api': {
-      target: 'http://localhost:8787',
-      changeOrigin: true,
-    },
-  },
-},
-```
+**Q: 部署后 API 404？**
+确认部署的是 `pnpm build` 产出的 `.output`，且 `wrangler.toml` 的 `main`/`assets` 路径未被改动；本架构无需 `/api/*` 的独立路由规则。
 
-或者在 Vite 中配置：
+**Q: Turnstile 验证失败？**
+本地用测试 token；生产确认 `wrangler secret put TURNSTILE_SECRET` 已执行且站点密钥域名匹配。
 
-```ts
-vite: {
-  server: {
-    proxy: {
-      '/api': 'http://localhost:8787',
-    },
-  },
-},
-```
-
-### Q: 部署后 API 返回 404？
-检查 `wrangler.toml` 中的 `routes` 配置和 `zone_id` 是否正确。
-确认 Worker 已成功部署到正确的域名。
-
-### Q: Turnstile 验证失败？
-- 本地开发使用测试 token `1x00000000000000000000`
-- 生产环境确保 `wrangler secret put TURNSTILE_SECRET` 已执行
-- 确认 Turnstile 站点密钥与域名匹配
+**Q: 博客/后台页面行为异常？**
+`/admin/**`、`/blog*` 是 `ssr: false` 的客户端渲染页面，SEO 与 SSR 相关逻辑不适用于它们。
 
 ---
 
-## 八、Worker 环境变量清单
+## 八、环境变量清单
 
 | 变量 | 用途 | 存储方式 |
 |------|------|---------|
-| `TURNSTILE_SECRET` | Turnstile 验证密钥 | `wrangler secret put`（生产）/ `.dev.vars`（本地） |
-| `GITHUB_CLIENT_ID` | GitHub OAuth App Client ID | `wrangler.toml [vars]` |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth App Client Secret | `wrangler secret put`（生产）/ `.dev.vars`（本地） |
-| `JWT_SECRET` | JWT 签名密钥（32 字符+） | `wrangler secret put`（生产）/ `.dev.vars`（本地） |
-| `ADMIN_GITHUB_IDS` | 管理员 GitHub ID，逗号分隔 | `wrangler.toml [vars]` |
-| `RESEND_API_KEY` | Resend 邮件服务 API Key（v1.1） | `wrangler secret put` |
+| `DB` / `CACHE` / `CDN` | Cloudflare 绑定 | `wrangler.toml` |
+| `API_BASE` | 站点/API 基址 | `wrangler.toml [vars]` |
+| `R2_PUBLIC_URL` | CDN 公开地址 | `wrangler.toml [vars]` |
+| `GITHUB_CLIENT_ID` | OAuth Client ID | `wrangler.toml [vars]` |
+| `ADMIN_GITHUB_IDS` | 管理员 GitHub ID（逗号分隔） | `wrangler.toml [vars]` |
+| `SITE_URL` | 生成绝对链接用 | secret（可缺省） |
+| `TURNSTILE_SECRET` | 表单验证 | secret |
+| `GITHUB_CLIENT_SECRET` | OAuth Client Secret | secret |
+| `JWT_SECRET` | JWT 签名 | secret |
+| `RESEND_API_KEY` | 邮件服务 | secret |
+| `GITHUB_WEBHOOK_SECRET` | GitHub webhook 验签 | secret |
+| `LEMONSQUEEZY_WEBHOOK_SECRET` | 支付 webhook 验签 | secret |
+
+权威清单是 `server/utils/env.ts` 的 `CloudflareEnv` 接口；`.env.example` 只包含 R2 图片迁移脚本需要的变量。
+
+---
 
 ## 九、相关文件索引
 
 | 文件 | 作用 | 是否提交 |
 |------|------|---------|
-| `workers/api.ts` | Worker 源码，处理全部 `/api/*` 路由 | ✅ 提交 |
-| `wrangler.toml` | Worker 部署配置（D1/KV 绑定、路由、环境变量） | ✅ 提交 |
-| `.dev.vars` | 本地环境变量（密钥） | ❌ .gitignore 排除 |
-| `.github/workflows/sync-to-d1.yml` | CI：Markdown 变更自动同步 D1 | ✅ 提交 |
-| `schema/init.sql` | D1 建表 + 迁移语句 | ✅ 提交 |
-| `scripts/sync-to-d1.js` | Markdown → SQL 生成脚本 | ✅ 提交 |
-| `.wrangler/` | wrangler 缓存/认证信息 | ❌ .gitignore 排除 |
+| `wrangler.toml` | Worker 配置：入口、assets、自定义域、D1/KV/R2、vars、crons | 是 |
+| `nuxt.config.ts` | nitro preset、routeRules、SEO 模块配置 | 是 |
+| `server/routes/api/**` | 全部 API 端点 | 是 |
+| `server/utils/env.ts` | 绑定与环境变量类型、获取逻辑 | 是 |
+| `server/plugins/scheduled.ts` | cron 分发 | 是 |
+| `schema/init.sql` / `reset.sql` | D1 建表与重置 | 是 |
+| `composables/useApi.ts` | 前端请求封装（SSR/CSR 分流） | 是 |
+| `.dev.vars` / `.dev.vars.local` | 本地密钥 | 否（.gitignore） |
+| `wrangler.local.toml` | 本地部署覆盖配置 | 否（.gitignore） |
+| `.github/workflows/sync-to-d1.yml` | 早期 Markdown → D1 同步流程 | 是，但已失效（见 `CLAUDE.md` §9） |

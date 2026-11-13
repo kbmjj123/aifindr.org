@@ -1,9 +1,13 @@
 # aifindr.org 邮件通知系统 · 子产品说明书
 
+> ⚠️ **文档状态：设计说明书，写于早期架构阶段。**
+> 文中出现的 `workers/api.ts`、独立 API Worker、Pages 路由等路径与部署描述均已失效：API 现位于 `server/routes/api/`（Nitro 文件路由），邮件与定时任务分别在 `server/utils/email.ts`、`server/utils/cron.ts`、`server/plugins/scheduled.ts`，页面与 API 同属一个 Cloudflare Worker。
+> 场景与文案设计仍有参考价值，但具体渠道（如 Brevo 批量邮件）、路由数量、实现状态请以 `server/` 下源码和 `CLAUDE.md` 为准。
+
 > 版本：v1.1
 > 归属项目：aifindr.org
 > 文档类型：子产品说明书（Sub-Product Spec）
-> 最后更新：2026-05-14
+> 最后更新：2026-05-14（架构状态提示补充于 2026-11-13）
 
 ---
 

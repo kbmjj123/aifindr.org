@@ -2,8 +2,11 @@ openapi: "3.0.3"
 info:
   title: aifindr.org API
   description: |
-    AI 工具目录站后端 API。由 Cloudflare Workers 独立部署，处理全部 `/api/*` 路由。
-    Pages 前端通过 `useFetch('/api/...')` 同域调用。
+    AI 工具目录站 API。页面与 `/api/*` 端点由同一个 Cloudflare Worker 提供
+    （Nitro preset: cloudflare_module，server/routes/api/ 下的文件路由），
+    不存在独立部署的 API Worker 或 Cloudflare Pages Functions。
+    前端统一通过 composables/useApi.ts 调用：SSR 进程内直调，CSR 走 $fetch + Bearer token。
+    本文件是接口参考草稿，端点签名与响应形状以 server/routes/api/ 源码为准。
   version: "1.0.0"
   contact:
     name: aifindr.org
@@ -11,11 +14,9 @@ info:
 
 servers:
   - url: https://aifindr.org/api
-    description: 生产环境
-  - url: http://localhost:8787/api
-    description: 本地开发（wrangler dev）
+    description: 生产环境（单一 Worker）
   - url: http://localhost:3000/api
-    description: 本地开发（Nuxt 代理）
+    description: 本地开发（pnpm dev，Nuxt + Nitro 同进程）
 
 paths:
   # ──────────────────────────────────────────────

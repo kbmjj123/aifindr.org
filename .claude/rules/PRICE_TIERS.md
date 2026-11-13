@@ -1,6 +1,6 @@
 # price_tiers JSON 格式说明
 
-`price_tiers` 字段存储结构化价格方案，JSON 数组格式。支持 4 种定价类型。
+`price_tiers` 字段存储结构化价格方案，JSON 数组格式，存于 D1 `tools.price_tiers`。支持 5 种定价类型：`subscription` / `free` / `credits` / `usage` / `custom`。
 
 ## 类型
 

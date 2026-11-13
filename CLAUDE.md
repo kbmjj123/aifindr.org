@@ -1,145 +1,199 @@
-# aifindr.org — Claude Code Project Guide
+# aifindr.org — 项目指南
 
-## 项目概述
+> 本文件是项目事实性入口文档。`CODEBUDDY.md` 是指向本文件的软链接（`CODEBUDDY.md -> CLAUDE.md`），CodeBuddy 与 Claude Code 读取的是同一份内容。
+> **只修改 `CLAUDE.md`；不要覆盖或替换 `CODEBUDDY.md` 这个链接。**
+> 文档以当前代码为准；若代码与本文档冲突，先核对代码再更新本文档。
 
-aifindr.org 是一个**开源、社区驱动**的 AI 工具目录站，同时也是一个**内容反链自动化平台**。
+---
 
-- **域名**：aifindr.org
-- **定位**：开源 AI 工具目录 → 提交工具 → 自动获得多条 dofollow 外链
-- **技术栈**：Nuxt 4 + Tailwind CSS v4 + Cloudflare（Pages / D1 / Workers / R2 / Turnstile）
-- **部署**：SSG（核心页面）+ ISR（工具详情页）
+## 1. 项目定位
 
-## 当前阶段：MVP v1.0
+开源、社区驱动的 AI 工具目录站，同时是「提交工具 → 获得 dofollow 反链」的内容反链平台。
 
-优先实现以下页面，其余功能暂缓：
+- 域名：`aifindr.org`（含 `www` 自定义域）
+- 仓库：`github.com/kbmjj123/aifindr.org`，分支 `main`
+- 核心增长飞轮：提交工具审核通过后，提交者获得 3 条永久 dofollow 外链（详见 §8）
+- 当前阶段：目录站核心功能、管理后台、博客 CMS、邮件/cron/支付 webhook 均已落地，不再是早期「MVP 仅 5 页」状态
 
-1. 首页 `/`
-2. 工具列表页 `/tools`
-3. 工具详情页 `/tools/[category]/[slug]`
-4. 提交页 `/submit`
-5. 分类页 `/tools/[category]`
+## 2. 当前架构（以代码为准）
 
-## Rules 文件索引
+| 项 | 实际情况 |
+|---|---|
+| 框架 | Nuxt `^4` + Vue `^3.5` + TypeScript，ESM |
+| 样式 | Tailwind CSS v4，经 `@tailwindcss/postcss` 接入；**没有** `tailwind.config.ts`，主题变量在 `assets/css/main.css` |
+| 内容模块 | `@nuxt/content` 已安装，但工具数据**不**走 `queryCollection`；工具正文是 D1 `tools.body` 中的 Markdown 字符串 |
+| 渲染 | 单一 Cloudflare Worker 上的 Nitro SSR；`routeRules` 仅对 `/admin/**`、`/blog`、`/blog/*` 设 `ssr: false`；**没有** prerender / ISR / SWR 配置 |
+| 后端 | Nitro server routes：`server/routes/api/` 下 45 个端点，与页面同属一个 Worker，不存在独立 API Worker |
+| 数据 | Cloudflare D1 `DB`（`aifindr-db`）、KV `CACHE`、R2 `CDN`（公开域名 `https://cdn.aifindr.org`） |
+| 部署 | `wrangler.toml`：`main = .output/server/index.mjs` + `assets = .output/public`，nitro preset `cloudflare_module`（不是 Cloudflare Pages） |
+| 定时任务 | 4 条 cron，由 `server/plugins/scheduled.ts` 的 `cloudflare:scheduled` 钩子分发 |
+| 包管理 | pnpm 10（`packageManager: pnpm@10.0.0`） |
+| SEO | `@nuxtjs/seo`；OG 图**运行时渲染**（`ogImage.runtimeCacheStorage: false`），不是构建时生成 |
 
-详细规范拆分在以下文件中，**每次开始任务前必须读取相关 rules**：
-
-- @.claude/rules/tech-stack.md — 技术栈约定、目录结构、代码规范
-- @.claude/rules/design-system.md — 设计 Token、组件像素规范、暗色主题
-- @.claude/rules/product-scope.md — 功能模块、数据结构、API 接口、外链逻辑
-- @.claude/rules/seo.md — SEO 标题模板、OG 图片、字数控制规范
-- @.claude/rules/seo-keyword-strategy.md — SEO 关键词策略、文案规范、结构化数据清单
-- @.claude/rules/deployment.md — Worker API 部署、wrangler 配置、本地开发
-- @.claude/rules/PRD.md — 完整产品需求文档（功能模块、数据结构、外链生态）
-
-## 核心工作流程
-
-### 创建新组件时
-1. 读取 @.claude/rules/design-system.md
-2. 使用 CSS 变量（不得硬编码颜色）
-3. 必须支持暗色主题（变量系统自动处理）
-4. 必须响应式（Tailwind 断点）
-
-### 创建新页面时
-1. 读取 @.claude/rules/tech-stack.md（目录规范）
-2. 读取 @.claude/rules/product-scope.md（该页面功能需求）
-3. 读取 @.claude/rules/design-system.md（该页面布局规范）
-
-### 操作数据库时
-1. 读取 @.claude/rules/product-scope.md（D1 表结构）
-2. 所有查询通过 Cloudflare Worker（`workers/api.ts`）
-3. 高频查询先查 KV 缓存
-
-### 修改样式时
-1. 只修改 CSS 变量值或 Tailwind utility class
-2. 不得新增 inline style（除非动态值）
-3. 暗色模式通过 CSS 变量自动处理，无需 `dark:` 前缀
-
-## 关键约定
-
-### 文件命名
-- 页面：`pages/tools/[category]/[slug].vue`
-- 组件：`components/tool/ToolCard.vue`（PascalCase）
-- Composables：`composables/useTools.ts`（camelCase，use 前缀）
-- Worker：`workers/api.ts`（kebab-case）
-
-### 颜色使用规则
-- **禁止**硬编码颜色（`#4f46e5`、`rgba(...)`）
-- **必须**使用 CSS 变量（`var(--color-accent)`）
-- 唯一例外：徽章/标签的透明背景色（已在 design-system.md 中定义为具名变量）
-
-### TypeScript
-- 所有 `.ts` 文件必须有类型定义
-- 工具数据类型定义在 `types/tool.ts`
-- 禁止使用 `any`
-
-### Nuxt Content 查询
-- 使用 `queryCollection('tools')` 而非直接读文件
-- 必须带 `.where('status', '==', 'active')` 过滤
-
-## 项目目录结构（顶层）
+## 3. 目录结构（实际）
 
 ```
 aifindr.org/
-├── CLAUDE.md                 ← 本文件
+├── CLAUDE.md                    ← 本文件（事实性入口）
+├── CODEBUDDY.md                 ← 软链接，指向 CLAUDE.md
+├── README.md                    ← 对外项目说明
 ├── .claude/
-│   └── rules/
-│       ├── tech-stack.md
-│       ├── design-system.md
-│       ├── product-scope.md
-│       ├── seo.md
-│       ├── seo-keyword-strategy.md
-│       ├── deployment.md
-│       └── PRD.md
-├── .github/
-│   └── workflows/
-│       └── sync-to-d1.yml    ← CI：main 分支 Markdown 变更自动同步 D1
-├── pages/
-├── components/
-├── composables/
-├── content/tools/            ← 工具 Markdown 文件
-├── docs/                     ← 子产品说明书
-│   └── email-notification-system.md
-├── workers/
-│   ├── api.ts                ← 主 Worker（工具/认证/管理员 API）
-│   ├── generate.ts           ← AI 文章生成（v1.2+，占位）
-│   └── submit.ts             ← 已废弃（逻辑已合并到 api.ts）
+│   ├── rules/                   ← 9 份规则文档（见 §6）
+│   └── skills/                  ← debug-issue / explore-codebase / refactor-safely / review-changes
+├── .github/workflows/
+│   └── sync-to-d1.yml           ← 早期同步流程，当前已失效（见 §9）
+├── pages/                       ← 20 个页面：首页、tools 列表/分类/子分类/标签/详情、
+│                                  submit、contributors、blog、admin（index/intake/posts/tools/users）、
+│                                  settings、privacy、terms
+├── components/                  ← layout / tool / category / search / submit / ui / admin / og
+├── composables/                 ← useApi、useAuth、useTools、useSearch、usePageSeo、
+│                                  useToolForm、useImageUpload、useMarkdown、useWebp、
+│                                  useTheme、useToast、useKeyboardShortcuts
+├── layouts/admin.vue
+├── server/
+│   ├── routes/api/              ← 45 个 Nitro 端点（见 §5）
+│   ├── middleware/api-logger.ts
+│   ├── plugins/scheduled.ts     ← cron 分发
+│   └── utils/                   ← env / auth / jwt / email / cron / seo / logger
 ├── schema/
-│   ├── init.sql              ← D1 建表 + 迁移语句
-│   └── seed.sql              ← 本地开发种子数据
-├── scripts/
-│   └── sync-to-d1.js         ← Markdown → SQL 同步脚本
-├── assets/css/
-├── types/
+│   ├── init.sql                 ← D1 建表（9 张表）
+│   └── reset.sql
+├── types/tool.ts                ← 工具类型定义
+├── types/category.ts            ← 静态分类数据
+├── assets/css/                  ← main.css、markdown.css
+├── utils/linkReplacer.ts
+├── plugins/stats.server.ts
+├── data/                        ← exchange-links.ts、submit-template.md
+├── docs/                        ← email-notification-system.md、index.html、superpowers/
+├── public/                      ← favicon / manifest / ads.txt / 验证文件
+├── api-spec.yaml                ← OpenAPI 参考（部分描述过时，见 §9）
 ├── nuxt.config.ts
 ├── wrangler.toml
-└── api-spec.yaml             ← OpenAPI 3.0 接口文档
+├── package.json
+└── tsconfig.json
 ```
 
-## 外链激励体系（核心产品逻辑）
+**不存在的目录/文件**：`content/`、`content/tools/`、`workers/`、`scripts/`、`tailwind.config.ts`、`schema/seed.sql`。凡是引用这些路径的说明都是早期架构残留。
 
-提交工具后，提交者自动获得：
-1. **GitHub 外链**（DA 100）：`content/tools/[category]/[slug].md` 文件中的 `submitter_site` 字段
-2. **工具详情页外链**：详情页右侧 "Submitted by" 区域的 dofollow 链接
-3. **贡献者页外链**：`/contributors/[github-username]` 页面中的个人网站链接
+## 4. 数据层
 
-**这是产品的核心增长飞轮，任何相关功能开发都不得删除或改为 nofollow。**
+主数据在 **Cloudflare D1**，本地无 Markdown 工具库。`schema/init.sql` 定义 9 张表：
 
-## 环境说明
+`tools`、`tool_tags`、`users`、`email_logs`、`generated_articles`、`published_links`、`posts`、`post_translations`、`custom_fields`。
 
-本地 Node.js / pnpm 环境已预先配置好，**禁止**运行 node、nvm、pnpm 版本检查、Node 版本切换等环境检测操作。直接使用 `pnpm dev`、`pnpm build` 等命令即可。
+`tools` 关键字段：`slug`、`name`、`category`、`sub_category`、`website`、`pricing`、`price_tiers`（JSON，格式见 `PRICE_TIERS.md`）、`platforms`、`status`（`active` / `beta` / `discontinued` / `pending` / `rejected` / `needs_info`）、`short_description`、`meta_description`、`faq`（JSON）、`logo`、`screenshots`（JSON）、`body`（Markdown 正文）、`submitter_site`、`submitter_github`、`submitter_id`、`content_path`、`data_source`、`featured` / `verified` / `editor_pick`、`click_count` / `view_count`、审核字段 `reject_reason` / `reviewer_note` / `reviewed_at`。
 
-## 常用命令
+- 所有 SQL 都必须写在 `server/routes/api/` 的 Nitro handler 内，通过 `getEnv(event).DB` 取绑定
+- 图片走 R2 `CDN`，公开 URL 由 `R2_PUBLIC_URL` 提供
+- `schema/init.sql` 是表结构唯一事实来源；修改表结构时同步更新它和 `product-scope.md`
+
+## 5. API 端点
+
+全部位于 `server/routes/api/`，同域 `/api/...`，由同一个 Worker 处理：
+
+| 分组 | 内容 |
+|---|---|
+| 工具 | `tools.get`、`tools/[category]/[slug].get`、`tools/search.get`、`tools/check-name.get`、`tools/links.get` |
+| 提交与上传 | `submit.post`、`upload.post`、`upload/sign.post`、`admin/upload-from-url.post`、`file/[...key].get` |
+| 统计 | `stats.get`、`click/[id].post`、`view/[id].post` |
+| 认证 | `auth/github.get`、`auth/callback.get`、`auth/me.get`、`auth/dev-login.get` |
+| 管理后台 | `admin/pending.get`、`admin/review.post`、`admin/tools/*`、`admin/posts/*`、`admin/users.get`、`admin/log.get`、`admin/feature.post`、`admin/broadcast.post` |
+| 内容 | `blog/*`、`contributors*`、`__sitemap__/urls.get`、`generate.post` |
+| 用户邮件 | `user/email.post`、`user/email/verify/[token].get` |
+| 定时任务 | `cron/daily-ops`、`cron/link-checker`、`cron/monthly-report`、`cron/newsletter` |
+| Webhook | `webhooks/github.post`、`webhooks/lemonsqueezy.post` |
+
+前端统一通过 `composables/useApi.ts` 调用：SSR 用 `useRequestFetch()` 进程内直调（避免 Workers 自调用 522），CSR 用 `$fetch` 并附 `localStorage['aifindr-token']` 的 Bearer 头。不要绕过它直接裸写 `useFetch('/api/...')`。
+
+## 6. Rules 文件索引
+
+详细规范在 `.claude/rules/`，**开始任务前必须读取相关文件**：
+
+| 文件 | 内容 | 状态 |
+|---|---|---|
+| `tech-stack.md` | 技术栈、目录结构、代码规范、请求与绑定约定 | 现行 |
+| `design-system.md` | 设计 Token、组件像素规范、暗色主题 | 现行 |
+| `product-scope.md` | 分类体系、D1 表结构、API、外链逻辑 | 现行 |
+| `seo.md` | SEO 标题模板、`usePageSeo`、OG 图片 | 现行 |
+| `seo-keyword-strategy.md` | 关键词策略、文案与结构化数据清单 | 现行 |
+| `deployment.md` | Wrangler 配置、绑定、环境变量、本地与生产部署 | 现行 |
+| `PRICE_TIERS.md` | `price_tiers` JSON 五种定价类型 | 现行 |
+| `PRD.md` | v1.2 完整产品需求与外链生态设想 | **历史设想**，架构描述已过时，仅作产品背景 |
+| `nuxt-cms-prd.md` | 早期博客 CMS 设想，标注「待开发」 | **历史设想**，博客 CMS 已落地，实现与设想不同 |
+
+`PRD.md` / `nuxt-cms-prd.md` 中的 Nuxt 3、Pages、Markdown 工具库、SSG+ISR、账号密码登录等描述均不代表现状，**不得据此写代码**。
+
+## 7. 工作流程与关键约定
+
+### 创建组件 / 页面
+1. 组件先读 `design-system.md`；页面先读 `tech-stack.md` + `product-scope.md` + `design-system.md`，SEO 相关再读 `seo.md`
+2. 颜色只用 CSS 变量（`var(--color-...)`），禁止硬编码 `#...` / `rgba(...)`；暗色主题由变量系统自动处理
+3. 必须响应式；样式只改 CSS 变量或 Tailwind utility，不新增 inline style（动态值除外）
+4. 每个页面调用 `usePageSeo()`；需要自定义 OG 图时在其后调 `defineOgImage`
+
+### 命名
+- 页面：`pages/tools/[category]/[slug].vue`
+- 组件：`components/tool/ToolCard.vue`（PascalCase，`pathPrefix: false`）
+- Composables：`composables/useTools.ts`（`use` 前缀）
+- 服务端：`server/routes/api/<name>.<method>.ts`（Nitro 文件路由）
+
+### TypeScript
+- 工具类型定义在 `types/tool.ts`；新增代码禁止 `any`（历史文件中仍有少量残留，遇到时顺手收敛）
+- `defineProps` / `defineEmits` 必须带类型，使用 `<script setup>` + Composition API
+
+### 数据库
+1. 先读 `product-scope.md` 与 `schema/init.sql`
+2. 查询只出现在 Nitro handler 内，用 `getEnv(event)` 取 D1/KV/R2 绑定
+3. 列表查询必须过滤 `status = 'active'`
+
+### 认证
+GitHub OAuth + JWT；管理员由 `ADMIN_GITHUB_IDS`（逗号分隔的 GitHub ID）判定；`auth/dev-login` 仅供本地开发。
+
+## 8. 外链激励体系（产品核心，不得破坏）
+
+| 外链 | 位置 | 类型 |
+|---|---|---|
+| GitHub 主仓库 | 工具内容文件中的 `submitter_site` | dofollow |
+| 工具详情页 | 详情页 "Submitted by" 区域 | dofollow |
+| 贡献者页 | `/contributors/[username]` 的个人网站链接 | dofollow |
+
+**约定**：`submitter_site` 链接禁止加 `rel="nofollow"`，任何重构不得移除。
+**现状提醒**：第一条依赖的 `content/tools/[category]/[slug].md` 文件并不存在，相关代码仍按该路径生成链接（见 §9）。修复时须保证三条外链承诺不缩水。
+
+## 9. 已知技术债（文档已标注，代码待处理）
+
+- `package.json` 的 `sync-d1` 脚本指向不存在的 `scripts/sync-to-d1.js`，**不要执行**
+- `.github/workflows/sync-to-d1.yml` 监听 `content/tools/**` 且调用上述缺失脚本，等于空转
+- `pages/submit.vue` 的 PR 提交指引仍提示在 `content/tools/` 新建 `.md`
+- `server/routes/api/admin/review.post.ts`、`server/routes/api/webhooks/github.post.ts` 仍硬编码 GitHub `content/tools/*.md` 路径
+- `api-spec.yaml` 头部架构描述已校正，但正文端点清单仍可能滞后，以 `server/routes/api/` 源码为准
+- `docs/email-notification-system.md` 仍引用 `workers/api.ts` 等旧路径（已在文件头标注）；`docs/superpowers/` 为历史设计资料，同样不作为实现依据
+- `product-scope.md` / 早期规范中提到的 KV 高频查询缓存（TTL 1h）尚未在 `tools.get.ts` 落地
+- `@nuxt/content` 依赖仍在，但工具数据不走它；后续如无内容集合需求可评估移除
+
+## 10. 环境与命令
+
+本地 Node.js / pnpm 环境已预先配置好，**禁止**运行 node、nvm、pnpm 版本检查、Node 版本切换等环境检测操作。
 
 ```bash
-# 本地开发
-pnpm dev
-
-# 构建
-pnpm build
-
-# 同步 Markdown 到 D1
-pnpm run sync-d1
-
-# 类型检查
-pnpm typecheck
+pnpm dev          # 本地开发（Nuxt + Nitro，Cloudflare 绑定由 wrangler.toml 模拟）
+pnpm build        # 构建到 .output/
+pnpm generate     # 静态生成（当前 Workers SSR 架构下一般不用）
+pnpm preview      # 预览构建产物
+pnpm typecheck    # 类型检查
+wrangler deploy   # 部署单一 Worker
+wrangler d1 execute aifindr-db --remote --file=./schema/init.sql   # 初始化/迁移 D1
 ```
+
+环境变量分三类：
+
+- `wrangler.toml [vars]`（公开）：`API_BASE`、`R2_PUBLIC_URL`、`GITHUB_CLIENT_ID`、`ADMIN_GITHUB_IDS`
+- `wrangler secret put`（密钥）：`TURNSTILE_SECRET`、`GITHUB_CLIENT_SECRET`、`JWT_SECRET`、`RESEND_API_KEY`、`GITHUB_WEBHOOK_SECRET`、`LEMONSQUEEZY_WEBHOOK_SECRET`、`SITE_URL` 等，完整清单见 `server/utils/env.ts` 的 `CloudflareEnv`
+- 本地：`.dev.vars` / `.dev.vars.local` / `.env*.local`（均被 `.gitignore` 排除）；`.env.example` 只含 R2 图片迁移脚本所需变量
+
+## 11. 文档维护约定
+
+- 改架构、目录、数据结构或 API 时，同步更新本文件、对应 rule 与 `README.md`
+- `api-spec.yaml` 是接口参考草稿；端点签名以 `server/routes/api/` 源码为准
+- `docs/email-notification-system.md` 是早期邮件系统说明书（头部已标注过时路径），`docs/superpowers/` 为历史设计资料；两者均不作为实现依据
+- 修改本文件即等同于修改 `CODEBUDDY.md`；不要为 CodeBuddy 另建内容不同的指南，避免双份文档再次漂移

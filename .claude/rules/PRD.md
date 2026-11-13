@@ -1,10 +1,14 @@
 # aifindr.org 产品需求文档（PRD）
 
+> ⚠️ **文档状态：历史产品设想（v1.2），不是实现依据。**
+> 本文写于早期架构阶段，其中「Cloudflare Pages + 独立 Worker」「SSG + ISR」「`content/tools/*.md` + GitHub Action 同步 D1」「`tool_images` / `tool_videos` 表」等描述均已与代码不符。
+> 当前架构、表结构与端点请以 `CLAUDE.md`、`schema/init.sql`、`server/routes/api/` 和 `.claude/rules/tech-stack.md` 为准；本文仅用于了解产品目标与外链激励的来龙去脉。
+
 > 版本：v1.2
 > 域名：aifindr.org
 > 定位：开源、社区驱动的 AI 工具目录站 → 内容反链自动化平台
-> 技术栈：Nuxt 4 + Tailwind CSS + Cloudflare（Pages / D1 / Workers / R2 / Turnstile）
-> 部署方式：SSG（核心页面）+ ISR（工具详情页），免服务器
+> 技术栈（当时设想）：Nuxt 4 + Tailwind CSS + Cloudflare（Pages / D1 / Workers / R2 / Turnstile）
+> 部署方式（当时设想）：SSG（核心页面）+ ISR（工具详情页），免服务器
 
 ---
 

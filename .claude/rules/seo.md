@@ -8,11 +8,11 @@
 
 | 层级 | 技术 | 说明 |
 |------|------|------|
-| SEO 模块 | `@nuxtjs/seo` | 集成 7 个子模块（sitemap/robots/og-image/schema-org/link-checker/seo-utils/site-config） |
-| OG 渲染 | Satori | 构建时生成 PNG，无需运行时依赖 |
+| SEO 模块 | `@nuxtjs/seo` | sitemap / robots / og-image / schema-org 等子模块 |
+| OG 渲染 | Satori（wasm） | **运行时渲染**：Worker 边缘运行时不预生成 PNG，见下方 `runtimeCacheStorage` |
 | 自定义钩子 | `usePageSeo()` composable | 统一 title/description/og-image |
 
-## 二、nuxt.config.ts 配置
+## 二、nuxt.config.ts 配置（节选）
 
 ```typescript
 export default defineNuxtConfig({
@@ -24,18 +24,24 @@ export default defineNuxtConfig({
   },
 
   ogImage: {
-    zeroRuntime: true,          // 构建时生成，不运行时渲染
+    enabled: true,
+    runtimeCacheStorage: false,   // 边缘运行时用 wasm 在运行时渲染 OG 图
   },
 
   robots: {
     allow: ['/'],
+    disallow: ['/admin/', '/api/'],
   },
 
   sitemap: {
     sources: ['/api/__sitemap__/urls'],
+    exclude: ['/admin/**', '/api/**'],
+    autoLastmod: true,
   },
 })
 ```
+
+> 早期文档中的 `zeroRuntime: true`（构建时生成）与当前配置不符。OG 组件位于 `components/og/AppOgImage.vue`，另有 `components/OgImage/AppOgImage.satori.vue` 作为 satori 模板。
 
 ## 三、usePageSeo() — 标准 SEO composable
 

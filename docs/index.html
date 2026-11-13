@@ -275,7 +275,7 @@
     <h1>Build &amp; Contribute to<br/><em>aifindr.org</em></h1>
     <p class="hero-sub">
       Open-source AI tools directory. Self-host it, fork it, or contribute tools and code.
-      Built with Nuxt 3 and deployed on Cloudflare Pages.
+      Built with Nuxt 4 and deployed as a single Cloudflare Worker.
     </p>
     <div class="hero-actions">
       <a href="https://github.com/kbmjj123/aifindr.org" class="btn btn-primary" target="_blank">
@@ -285,12 +285,12 @@
       <a href="https://aifindr.org/submit" class="btn btn-ghost">Submit a Tool</a>
     </div>
     <div class="stack-row">
-      <span class="tag hi">Nuxt 3</span>
-      <span class="tag hi">Cloudflare Pages</span>
+      <span class="tag hi">Nuxt 4</span>
+      <span class="tag hi">Cloudflare Workers</span>
+      <span class="tag">Tailwind CSS v4</span>
+      <span class="tag">Cloudflare D1 / R2</span>
       <span class="tag">TypeScript</span>
-      <span class="tag">Vue 3</span>
-      <span class="tag">MIT License</span>
-      <span class="tag">Open Source</span>
+      <span class="tag">pnpm</span>
     </div>
   </section>
 
@@ -315,9 +315,9 @@ cd aifindr.org
         <div class="step-n">2</div>
         <div>
           <div class="step-title">Install dependencies</div>
-          <p class="step-desc">Requires Node.js 18+. Uses npm as the package manager.</p>
+          <p class="step-desc">Requires a recent Node.js LTS with pnpm 10 enabled.</p>
           <div class="code">
-npm install
+pnpm install
           </div>
         </div>
       </div>
@@ -325,10 +325,10 @@ npm install
         <div class="step-n">3</div>
         <div>
           <div class="step-title">Configure environment</div>
-          <p class="step-desc">Copy the example env file and fill in your values. See the Environment Variables section below.</p>
+          <p class="step-desc">Public values live in wrangler.toml; put local secrets in .dev.vars (git-ignored). See the Environment Variables section below.</p>
           <div class="code">
 cp .env.example .env
-<span class="c"># Then edit .env with your config values</span>
+<span class="c"># .dev.vars holds local secrets; wrangler.toml supplies D1/KV/R2 bindings</span>
           </div>
         </div>
       </div>
@@ -336,9 +336,9 @@ cp .env.example .env
         <div class="step-n">4</div>
         <div>
           <div class="step-title">Start the dev server</div>
-          <p class="step-desc">The site runs at localhost:3000 by default.</p>
+          <p class="step-desc">Nuxt + Nitro run together; the /api/* endpoints are served by the same process at localhost:3000.</p>
           <div class="code">
-npm run dev
+pnpm dev
 <span class="c"># → http://localhost:3000</span>
           </div>
         </div>
@@ -346,11 +346,11 @@ npm run dev
       <div class="step">
         <div class="step-n">5</div>
         <div>
-          <div class="step-title">Deploy to Cloudflare Pages</div>
-          <p class="step-desc">The project is pre-configured for Cloudflare Pages via wrangler.toml.</p>
+          <div class="step-title">Deploy to Cloudflare Workers</div>
+          <p class="step-desc">A single Worker serves both pages and APIs (main + assets declared in wrangler.toml).</p>
           <div class="code">
-npm run build
-npx wrangler pages deploy .output/public
+pnpm build
+wrangler deploy
           </div>
         </div>
       </div>
@@ -364,20 +364,19 @@ npx wrangler pages deploy .output/public
     <p class="section-desc">Key directories and what they contain.</p>
     <div class="tree">
       <div><span class="dir">aifindr.org/</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">pages/</span> &nbsp;<span class="note">── Nuxt route pages (tools, blog, admin, submit...)</span></div>
       <div>&nbsp;&nbsp;<span class="dir">components/</span> &nbsp;<span class="note">── Vue UI components</span></div>
-      <div>&nbsp;&nbsp;<span class="dir">composables/</span> &nbsp;<span class="note">── shared logic hooks</span></div>
-      <div>&nbsp;&nbsp;<span class="dir hl">content/tools/</span> &nbsp;<span class="note">── tool Markdown files (one per tool)</span></div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">image/</span> &nbsp;<span class="note">── Image & Design tools</span></div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">writing/</span> &nbsp;<span class="note">── Writing & Content tools</span></div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">video/</span> &nbsp;<span class="note">── Video & Animation tools</span></div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">── ... 12 categories total</span></div>
-      <div>&nbsp;&nbsp;<span class="dir">docs/</span> &nbsp;<span class="note">── this GitHub Pages site</span></div>
-      <div>&nbsp;&nbsp;<span class="dir">pages/</span> &nbsp;<span class="note">── Nuxt route pages</span></div>
-      <div>&nbsp;&nbsp;<span class="dir">server/</span> &nbsp;<span class="note">── API routes</span></div>
-      <div>&nbsp;&nbsp;<span class="dir">schema/</span> &nbsp;<span class="note">── tool data schema / validation</span></div>
-      <div>&nbsp;&nbsp;<span class="file hl">nuxt.config.ts</span> &nbsp;<span class="note">── Nuxt configuration</span></div>
-      <div>&nbsp;&nbsp;<span class="file hl">wrangler.toml</span> &nbsp;<span class="note">── Cloudflare Pages config</span></div>
-      <div>&nbsp;&nbsp;<span class="file">.env.example</span> &nbsp;<span class="note">── environment variable template</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">composables/</span> &nbsp;<span class="note">── shared logic (useApi, useAuth, usePageSeo...)</span></div>
+      <div>&nbsp;&nbsp;<span class="dir hl">server/routes/api/</span> &nbsp;<span class="note">── ~45 Nitro API endpoints</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">server/utils/</span> &nbsp;<span class="note">── env, auth, jwt, email, cron helpers</span></div>
+      <div>&nbsp;&nbsp;<span class="dir hl">schema/</span> &nbsp;<span class="note">── D1 SQL (init.sql, reset.sql) — 9 tables</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">types/</span> &nbsp;<span class="note">── tool / category type definitions</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">assets/css/</span> &nbsp;<span class="note">── CSS variables + Tailwind v4 theme</span></div>
+      <div>&nbsp;&nbsp;<span class="dir">docs/</span> &nbsp;<span class="note">── this GitHub Pages site + design notes</span></div>
+      <div>&nbsp;&nbsp;<span class="file hl">nuxt.config.ts</span> &nbsp;<span class="note">── Nuxt / Nitro / SEO configuration</span></div>
+      <div>&nbsp;&nbsp;<span class="file hl">wrangler.toml</span> &nbsp;<span class="note">── Worker entry, assets, D1/KV/R2 bindings, crons</span></div>
+      <div>&nbsp;&nbsp;<span class="file">CLAUDE.md</span> &nbsp;<span class="note">── project guide (CODEBUDDY.md is a symlink)</span></div>
+      <div>&nbsp;&nbsp;<span class="file">.env.example</span> &nbsp;<span class="note">── R2 variables for the image migration script</span></div>
     </div>
   </section>
 
@@ -385,36 +384,46 @@ npx wrangler pages deploy .output/public
   <section class="section" id="env">
     <div class="section-label">Configuration</div>
     <h2>Environment Variables</h2>
-    <p class="section-desc">Copy <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent)">.env.example</code> to <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent)">.env</code> and fill in these values.</p>
+    <p class="section-desc">Public values live in <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent)">wrangler.toml</code> under <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent)">[vars]</code>; secrets are set with <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent)">wrangler secret put</code> (locally in <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent)">.dev.vars</code>). See <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent)">CloudflareEnv</code> in <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent)">server/utils/env.ts</code>.</p>
     <div class="env-wrap">
       <table class="env-table">
         <thead>
           <tr>
             <th>Variable</th>
             <th>Description</th>
-            <th>Required</th>
+            <th>Where</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="key">NUXT_PUBLIC_SITE_URL</td>
-            <td style="color:var(--muted)">Your deployed site URL</td>
-            <td><span class="req">Required</span></td>
+            <td class="key">API_BASE / R2_PUBLIC_URL</td>
+            <td style="color:var(--muted)">Public site URL and CDN base</td>
+            <td><span class="req">[vars]</span></td>
           </tr>
           <tr>
-            <td class="key">GITHUB_TOKEN</td>
-            <td style="color:var(--muted)">GitHub token for PR automation</td>
-            <td><span class="req">Required</span></td>
+            <td class="key">GITHUB_CLIENT_ID</td>
+            <td style="color:var(--muted)">GitHub OAuth app client ID</td>
+            <td><span class="req">[vars]</span></td>
           </tr>
           <tr>
-            <td class="key">GITHUB_REPO</td>
-            <td style="color:var(--muted)">Target repo for tool submissions (owner/repo)</td>
-            <td><span class="req">Required</span></td>
+            <td class="key">ADMIN_GITHUB_IDS</td>
+            <td style="color:var(--muted)">Comma-separated admin GitHub IDs</td>
+            <td><span class="req">[vars]</span></td>
           </tr>
           <tr>
-            <td class="key">NUXT_PUBLIC_GA_ID</td>
-            <td style="color:var(--muted)">Google Analytics measurement ID</td>
-            <td><span class="opt">Optional</span></td>
+            <td class="key">JWT_SECRET / TURNSTILE_SECRET</td>
+            <td style="color:var(--muted)">JWT signing and form anti-spam</td>
+            <td><span class="req">Secret</span></td>
+          </tr>
+          <tr>
+            <td class="key">RESEND_API_KEY</td>
+            <td style="color:var(--muted)">Transactional email delivery</td>
+            <td><span class="opt">Secret</span></td>
+          </tr>
+          <tr>
+            <td class="key">DB / CACHE / CDN</td>
+            <td style="color:var(--muted)">D1 database, KV cache, R2 bucket bindings</td>
+            <td><span class="opt">Binding</span></td>
           </tr>
         </tbody>
       </table>
@@ -430,9 +439,8 @@ npx wrangler pages deploy .output/public
       <div class="contrib-card">
         <div class="contrib-card-title">🛠 Submit a Tool</div>
         <p class="contrib-card-desc">
-          Add a Markdown file to <code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">content/tools/[category]/</code>,
-          fill in the frontmatter, and open a Pull Request.
-          Approved tools get 3 free dofollow backlinks.
+          Submit via the online form. The tool enters a review queue in the admin dashboard and, once approved, earns 3 free dofollow backlinks.
+          Tool data lives in Cloudflare D1, not in Markdown files.
         </p>
         <a href="https://aifindr.org/submit" class="btn btn-ghost" style="margin-top:16px;font-size:12px;">
           Submission Guide →
@@ -475,7 +483,7 @@ npx wrangler pages deploy .output/public
   <div class="footer-inner">
     <div class="footer-brand">
       <a href="https://aifindr.org" target="_blank">aifindr.org</a> ·
-      Open source under MIT License ·
+      Open source under MIT + Commons Clause ·
       <a href="https://github.com/kbmjj123/aifindr.org" target="_blank">GitHub</a>
     </div>
     <div class="footer-links">

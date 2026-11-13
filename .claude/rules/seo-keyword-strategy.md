@@ -1,8 +1,8 @@
 # aifindr.org SEO 关键词策略
 
-> 版本：v1.0
-> 基于：composables/usePageSeo.ts 当前实现
-> 最后更新：2026-05-14
+> 版本：v1.1
+> 基于：composables/usePageSeo.ts 与当前页面实现
+> 最后更新：2026-11-13（按代码现状校正实现状态清单）
 
 ---
 
@@ -82,11 +82,11 @@ Browse the best AI image generator tools. Find free AI art tools, text-to-image 
 
 - 正文 H2/H3 中包含 "Pricing"、"Alternatives to [工具名]"、"Key Features" 等标题
 - `meta_description` 包含工具名 + 核心功能 + 定价类型
-- Markdown frontmatter 的 `meta_description` 字段质量直接影响 SEO
+- `meta_description` 现在是 D1 `tools.meta_description` 字段（由提交表单写入），不是 Markdown frontmatter，字段质量直接影响 SEO
 
-### SoftwareApplication Schema（缺失，需实现）
+### SoftwareApplication Schema（已实现）
 
-详情页需添加 JSON-LD 结构化数据：
+`pages/tools/[category]/[slug].vue` 已通过 `@nuxtjs/seo` 输出 JSON-LD，目标结构示例：
 
 ```json
 {
@@ -140,7 +140,7 @@ Slug 中应同时包含工具名和品类词，例如：
 
 ### 当前实现
 
-Worker `handleSubmit` 中 `slugify(name)` 仅取工具名。要实现带品类词的 slug，需在生成逻辑中加入 category 后缀，或在前端提交时提供 slug 建议。
+`server/routes/api/submit.post.ts` 已用 `CAT_SUFFIX` 给 slug 追加品类关键词（如 `image` → `ai-image-generator`），并做重名检查；无需前端另提 slug 建议。历史文档里「仅取工具名」的说法已过时。
 
 ---
 
@@ -170,25 +170,25 @@ Worker `handleSubmit` 中 `slugify(name)` 仅取工具名。要实现带品类�
 
 ---
 
-## 八、MVP SEO 最低配置清单
+## 八、SEO 配置清单（按当前代码）
 
 | # | 项目 | 状态 | 文件 |
 |---|------|------|------|
-| 1 | `robots.txt` 允许爬虫，排除 `/api/*` | ⚠️ 未排除 /api | `nuxt.config.ts` |
-| 2 | `sitemap.xml` 覆盖所有页面 | ✅ 已有 | `nuxt.config.ts` |
+| 1 | `robots.txt` 允许爬虫，排除 `/admin/` 与 `/api/` | ✅ 已排除 | `nuxt.config.ts` |
+| 2 | `sitemap.xml` 覆盖所有页面 | ✅ 已有（数据源 `/api/__sitemap__/urls`） | `nuxt.config.ts` |
 | 3 | 每页 `<title>` 唯一 ≤ 60 字符 | ✅ 已有 | 各页面 `usePageSeo` |
-| 4 | 每页 `<meta description>` 唯一 130-155 字符 | ⚠️ 详情页依赖内容 | 各页面 `usePageSeo` |
-| 5 | `og:title` / `og:description` / `og:image` | ✅ 已有 | `usePageSeo` + `defineOgImage` |
-| 6 | 工具详情页 `SoftwareApplication` Schema | ❌ 缺失 | `pages/tools/[category]/[slug].vue` |
-| 7 | Canonical URL | ❌ 缺失 | 分页/筛选页 |
-| 8 | Google Search Console 验证 + 提交 sitemap | 待上线 | 运营操作 |
+| 4 | 每页 `<meta description>` 唯一 130-155 字符 | ⚠️ 详情页依赖 D1 内容 | 各页面 `usePageSeo` |
+| 5 | `og:title` / `og:description` / `og:image` | ✅ 已有（OG 图运行时渲染） | `usePageSeo` + `defineOgImage` |
+| 6 | 工具详情页 `SoftwareApplication` Schema | ✅ 已实现 | `pages/tools/[category]/[slug].vue` |
+| 7 | Canonical URL（分页/筛选页） | ❌ 待处理 | 分页/筛选页 |
+| 8 | Google Search Console 验证 + 提交 sitemap | 运营操作 | — |
 
 ---
 
 ## 九、优先实施建议
 
-**上线前必须：** 首页 description 优化、提交页 title 强化、详情页 Schema、robots.txt 排除 API
+**待办：** 首页 description 优化、提交页 title 强化、分页 canonical、筛选参数索引策略、GSC 提交
 
-**上线后第二周：** 分页 canonical、筛选参数索引策略、GSC 提交
+**已完成：** 详情页 Schema、robots 排除 `/api/` 与 `/admin/`、slug 含品类词
 
-**长期运营：** 工具 slug 含品类词、图片 alt 规范、详情页内容长尾词覆盖
+**长期运营：** 图片 alt 规范、详情页内容长尾词覆盖、分类页 description 模板化

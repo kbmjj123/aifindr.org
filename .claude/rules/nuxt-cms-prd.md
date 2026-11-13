@@ -1,9 +1,14 @@
 # 产品需求文档 · Nuxt CMS 模块
 
-**项目名称**：基于 Nuxt SSR + Cloudflare 全栈的博客 CMS 系统
+> ⚠️ **文档状态：历史产品设想，不是实现依据。**
+> 本文标注的「待开发」已过期：博客 CMS 已落地（`posts` / `post_translations` / `custom_fields` 三表、`/api/blog/*`、`/api/admin/posts/*`、`pages/blog/*`、`pages/admin/posts/*`）。
+> 实现与本文设想有差异：站点是 Nuxt 4 单一 Cloudflare Worker，`/blog*` 为 `ssr: false`；登录用 GitHub OAuth + `ADMIN_GITHUB_IDS` 而非账号密码 + KV Session；编辑器用 vue-quill / tinymce 而非 Tiptap；读取走 D1 而非 KV 缓存。
+> 具体实现见 `CLAUDE.md`、`schema/init.sql` 与 `server/routes/api/`。
+
+**项目名称**：基于 Nuxt SSR + Cloudflare 全栈的博客 CMS 系统（历史设想）
 **文档版本**：v1.0
 **创建日期**：2025-06-11
-**状态**：待开发
+**状态**：历史文档（设想中的功能已以不同方式落地）
 
 ---
 
