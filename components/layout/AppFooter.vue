@@ -7,6 +7,9 @@
         <NuxtLink to="/privacy" class="font-body text-[11px]" style="color: var(--color-text-muted);">Privacy</NuxtLink>
         <NuxtLink to="/terms" class="font-body text-[11px]" style="color: var(--color-text-muted);">Terms</NuxtLink>
         <NuxtLink to="/submit" class="font-body text-[11px]" style="color: var(--color-text-muted);">Submit</NuxtLink>
+        <NuxtLink to="/backlink-sites" class="font-body text-[11px]" style="color: var(--color-text-muted);">Submission Sites</NuxtLink>
+        <NuxtLink to="/submission-lists" class="font-body text-[11px]" style="color: var(--color-text-muted);">Lists</NuxtLink>
+        <NuxtLink to="/backlink-sites/data" class="font-body text-[11px]" style="color: var(--color-text-muted);">Open Data</NuxtLink>
         <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
           class="font-body text-[11px]" style="color: var(--color-text-muted);">GitHub</a>
       </div>

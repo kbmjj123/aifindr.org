@@ -2,6 +2,15 @@
 -- 用法：npx wrangler d1 execute aifindr-db --remote --file=./schema/reset.sql
 -- 警告：会删除所有数据，仅调试阶段使用
 
+-- 外链提交平台目录（先删子表，再删主表）
+DROP TABLE IF EXISTS submission_list_changelog;
+DROP TABLE IF EXISTS submission_list_items;
+DROP TABLE IF EXISTS site_relations;
+DROP TABLE IF EXISTS site_categories;
+DROP TABLE IF EXISTS submission_site_reports;
+DROP TABLE IF EXISTS submission_lists;
+DROP TABLE IF EXISTS submission_sites;
+
 DROP TABLE IF EXISTS published_links;
 DROP TABLE IF EXISTS generated_articles;
 DROP TABLE IF EXISTS email_logs;

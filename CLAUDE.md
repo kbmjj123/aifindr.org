@@ -23,7 +23,7 @@
 | 样式 | Tailwind CSS v4，经 `@tailwindcss/postcss` 接入；**没有** `tailwind.config.ts`，主题变量在 `assets/css/main.css` |
 | 内容模块 | `@nuxt/content` 已安装，但工具数据**不**走 `queryCollection`；工具正文是 D1 `tools.body` 中的 Markdown 字符串 |
 | 渲染 | 单一 Cloudflare Worker 上的 Nitro SSR；`routeRules` 仅对 `/admin/**`、`/blog`、`/blog/*` 设 `ssr: false`；**没有** prerender / ISR / SWR 配置 |
-| 后端 | Nitro server routes：`server/routes/api/` 下 45 个端点，与页面同属一个 Worker，不存在独立 API Worker |
+| 后端 | Nitro server routes：`server/routes/api/` 下约 62 个端点，与页面同属一个 Worker，不存在独立 API Worker |
 | 数据 | Cloudflare D1 `DB`（`aifindr-db`）、KV `CACHE`、R2 `CDN`（公开域名 `https://cdn.aifindr.org`） |
 | 部署 | `wrangler.toml`：`main = .output/server/index.mjs` + `assets = .output/public`，nitro preset `cloudflare_module`（不是 Cloudflare Pages） |
 | 定时任务 | 4 条 cron，由 `server/plugins/scheduled.ts` 的 `cloudflare:scheduled` 钩子分发 |
@@ -42,30 +42,36 @@ aifindr.org/
 │   └── skills/                  ← debug-issue / explore-codebase / refactor-safely / review-changes
 ├── .github/workflows/
 │   └── sync-to-d1.yml           ← 早期同步流程，当前已失效（见 §9）
-├── pages/                       ← 20 个页面：首页、tools 列表/分类/子分类/标签/详情、
-│                                  submit、contributors、blog、admin（index/intake/posts/tools/users）、
-│                                  settings、privacy、terms
-├── components/                  ← layout / tool / category / search / submit / ui / admin / og
+├── pages/                       ← 26 个页面：首页、tools 列表/分类/子分类/标签/详情、
+│                                  submit、contributors、blog、admin（index/intake/posts/tools/users/submission-lists）、
+│                                  settings、privacy、terms、
+│                                  backlink-sites（目录/详情/开放数据）、submission-lists（索引/详情）
+├── components/                  ← layout / tool / category / search / submit / ui / admin / og / submission
 ├── composables/                 ← useApi、useAuth、useTools、useSearch、usePageSeo、
 │                                  useToolForm、useImageUpload、useMarkdown、useWebp、
 │                                  useTheme、useToast、useKeyboardShortcuts
 ├── layouts/admin.vue
 ├── server/
-│   ├── routes/api/              ← 45 个 Nitro 端点（见 §5）
+│   ├── routes/api/              ← 约 62 个 Nitro 端点（见 §5）
 │   ├── middleware/api-logger.ts
 │   ├── plugins/scheduled.ts     ← cron 分发
-│   └── utils/                   ← env / auth / jwt / email / cron / seo / logger
+│   └── utils/                   ← env / auth / jwt / email / cron / seo / logger /
+│                                  submissionFilters / submissionLists
 ├── schema/
-│   ├── init.sql                 ← D1 建表（9 张表）
-│   └── reset.sql
+│   ├── init.sql                 ← D1 建表（16 张表）
+│   ├── reset.sql
+│   └── seed-submission-sites.sql ← 848 条外链提交平台快照（由 ETL 脚本生成）
 ├── types/tool.ts                ← 工具类型定义
 ├── types/category.ts            ← 静态分类数据
+├── types/submissionSite.ts      ← 外链提交平台 / 榜单类型与常量
+├── scripts/                     ← 本地 ETL / 审计脚本，不参与 Worker 打包
 ├── assets/css/                  ← main.css、markdown.css
 ├── utils/linkReplacer.ts
 ├── plugins/stats.server.ts
 ├── data/                        ← exchange-links.ts、submit-template.md
-├── docs/                        ← email-notification-system.md、index.html、superpowers/
-├── public/                      ← favicon / manifest / ads.txt / 验证文件
+├── docs/                        ← email-notification-system.md、index.html、superpowers/、res/
+├── public/                      ← favicon / manifest / ads.txt / 验证文件 /
+│                                  data/submission-sites.json（开放数据集）
 ├── api-spec.yaml                ← OpenAPI 参考（部分描述过时，见 §9）
 ├── nuxt.config.ts
 ├── wrangler.toml
@@ -73,13 +79,28 @@ aifindr.org/
 └── tsconfig.json
 ```
 
-**不存在的目录/文件**：`content/`、`content/tools/`、`workers/`、`scripts/`、`tailwind.config.ts`、`schema/seed.sql`。凡是引用这些路径的说明都是早期架构残留。
+**不存在的目录/文件**：`content/`、`content/tools/`、`workers/`、`tailwind.config.ts`、`scripts/sync-to-d1.js`（`package.json` 的 `sync-d1` 仍指向它，见 §9）。`scripts/` 目录现已存在，存放本地 ETL / 审计脚本，不参与 Worker 打包；快照导入文件是 `schema/seed-submission-sites.sql`，不是 `schema/seed.sql`。
 
 ## 4. 数据层
 
-主数据在 **Cloudflare D1**，本地无 Markdown 工具库。`schema/init.sql` 定义 9 张表：
+主数据在 **Cloudflare D1**，本地无 Markdown 工具库。`schema/init.sql` 定义 16 张表：
 
-`tools`、`tool_tags`、`users`、`email_logs`、`generated_articles`、`published_links`、`posts`、`post_translations`、`custom_fields`。
+`tools`、`tool_tags`、`users`、`email_logs`、`generated_articles`、`published_links`、`posts`、`post_translations`、`custom_fields`，以及公共外链提交平台目录的 `submission_sites`、`site_categories`、`submission_lists`、`submission_list_items`、`site_relations`、`submission_list_changelog`、`submission_site_reports`。
+
+### 公共外链提交平台目录（与 `tools` 是两类实体）
+
+- 数据管道：`scripts/build-submission-sites.mjs` 读 `docs/res/01-list.json`（列表视图：全集、顺序、前 25 条精选、免费提交口径）+ `02-details.jsonl`（详情视图：事实字段、官网、提交入口、相关平台边），按 `slug` 左连接后输出 `schema/seed-submission-sites.sql`、`public/data/submission-sites.json` 与 `reports/submission-sites-cleaning.json`。`docs/res/platforms.json` / `platforms.csv` 是有损导出，**不作数据源**。输入文件是被 `.gitignore` 排除的本地抓取物（约 55MB）；已提交的 `schema/seed-submission-sites.sql` 与 `public/data/submission-sites.json` 保证站点无需输入文件即可运行。seed 可重复导入且**不覆盖后台人工数据**：站点用 `ON CONFLICT DO UPDATE ... WHERE data_source='snapshot'`（后台编辑后变 `admin` 即受保护），只清 `source='rule'` 的分类与 `confirmed=0` 的关系，榜单定义只更新快照版本与成员数；重跑后需刷新一次榜单以恢复 pinned 顺序。
+- 提交入口来自详情 `links` 的第 2 条非源站/非 ahrefs 外链（801 条），**不要**用 `spec.submitPageUrl`（错误拼接）或 `spec.submitPage`（47 条页脚污染）。
+- `pricing`（平台整体定价）与 `has_free_submission`（是否有免费提交通道）是两套口径，列表文件与详情文件的 15 条差异源于此，不是脏数据。
+- 说明文案（`summary` / `fact_points` / `editorial` / 榜单 `intro` / `methodology` / `faq`）全部由本站原创生成；来源页面的编辑表达、FAQ、徽章与品牌字样不入库。每条带 `attribution` 与 `source_snapshot`。
+- 榜单用受限 JSON DSL 定义（`server/utils/submissionFilters.ts` 编译成参数化 SQL），成员由 `server/utils/submissionLists.ts` 物化到 `submission_list_items` 并按 `snapshot_id` 版本化；`pinned_order` 在刷新时保留。
+- 第三方出站链接统一 `rel="nofollow noopener noreferrer"`。
+- **数据新鲜度**：
+  - 存活巡检：`submission_sites.availability` + `last_checked_at` 由 `handleCronSubmissionSitesCheck`（cron `30 3 * * *`，复用 `handleCronLinkChecker` 的 HEAD 巡检模式）每天滚动检查 60 条 active 站点（约 14 天轮完），详情页事实表展示最近巡检时间与可达性。
+  - Page Rank 自动刷新：`page_rank`（Open PageRank 的 0–10 指标，区别于 Ahrefs `domain_rating` 的 0–100）由 `handleCronDomainRating`（cron `0 4 * * *`）每日批量刷新 50 条（约 17 天轮完），依赖 secret `OPENPAGERANK_API_KEY`；未配置 key 时静默跳过。
+  - **`domain_rating` 保持 2026-11-13 快照值，不自动刷新**——Ahrefs 无公开免费 API（其免费工具是前端表单、带 Cloudflare 反爬，无法批量取数，且绕过违反其 ToS）。详情页明确把 DR 标注为「Ahrefs snapshot」、Page Rank 标注为「Open PageRank」并附刷新时间，两者量纲不同、分别呈现，不混为一谈。
+- **alternatives 榜**：`site_relations` 落库 4911 条 `similar` 候选（权重 = 共同标签数，`confirmed=0`）；详情页 "Similar platforms" 直接消费该关系（`weight>=3`，top 6）。另用该关系为 5 个基准（product-hunt / betalist / startup-stash / fazier / toolify）自动生成 `*-alternatives` 策展榜（各 6 成员，排除自身），维度归 `alternatives`，管理员可在后台继续调 `include_slugs`。
+- **增量维护闭环**：`/admin/submission-lists` 支持单条新增、JSON 批量导入（≤200 条）、站点检索与逐条编辑补齐、隐藏/恢复、新建榜单、策展（pinned / include / exclude / 导语 / 阈值 / 筛选规则 / 排序 / FAQ / SEO）、报告审核与变更记录。三条写入路径共用 `server/utils/submissionSiteWrite.ts` 的字段门禁与原创文案；保存后自动重算 `rule`/`hybrid` 榜单，所以补齐或新增站点会立即累加进榜，策展榜的 `pinned_order` 不会被快照刷新冲掉。新建/编辑榜单的 filters/sort 经 `validateFilterExpression` / `validateSortRules` 白名单校验。分类标签由后台覆盖写入 `site_categories`，公开 facet 动态聚合，后台新增的分类会自动出现在 `/backlink-sites` 筛选器里；`takedown` 报告审核通过会真正隐藏站点并重算榜单。
 
 `tools` 关键字段：`slug`、`name`、`category`、`sub_category`、`website`、`pricing`、`price_tiers`（JSON，格式见 `PRICE_TIERS.md`）、`platforms`、`status`（`active` / `beta` / `discontinued` / `pending` / `rejected` / `needs_info`）、`short_description`、`meta_description`、`faq`（JSON）、`logo`、`screenshots`（JSON）、`body`（Markdown 正文）、`submitter_site`、`submitter_github`、`submitter_id`、`content_path`、`data_source`、`featured` / `verified` / `editor_pick`、`click_count` / `view_count`、审核字段 `reject_reason` / `reviewer_note` / `reviewed_at`。
 
@@ -99,6 +120,8 @@ aifindr.org/
 | 认证 | `auth/github.get`、`auth/callback.get`、`auth/me.get`、`auth/dev-login.get` |
 | 管理后台 | `admin/pending.get`、`admin/review.post`、`admin/tools/*`、`admin/posts/*`、`admin/users.get`、`admin/log.get`、`admin/feature.post`、`admin/broadcast.post` |
 | 内容 | `blog/*`、`contributors*`、`__sitemap__/urls.get`、`generate.post` |
+| 外链提交平台（公开） | `submission-sites/index.get`、`submission-sites/[slug].get`、`submission-sites/export.get`、`submission-sites/suggest.post`、`submission-lists/index.get`、`submission-lists/[slug].get`、`submission-lists/[slug]/export.get` |
+| 外链提交平台（后台） | `admin/submission-lists.get` / `.post`（新建）/ `refresh.post` / `[slug].post`（策展）、`admin/submission-sites.get` / `.post`（新增）/ `import.post`（批量）/ `[slug].get` / `[slug].post`（编辑补齐）、`admin/submission-reports/review.post` |
 | 用户邮件 | `user/email.post`、`user/email/verify/[token].get` |
 | 定时任务 | `cron/daily-ops`、`cron/link-checker`、`cron/monthly-report`、`cron/newsletter` |
 | Webhook | `webhooks/github.post`、`webhooks/lemonsqueezy.post` |
@@ -160,6 +183,8 @@ GitHub OAuth + JWT；管理员由 `ADMIN_GITHUB_IDS`（逗号分隔的 GitHub ID
 **约定**：`submitter_site` 链接禁止加 `rel="nofollow"`，任何重构不得移除。
 **现状提醒**：第一条依赖的 `content/tools/[category]/[slug].md` 文件并不存在，相关代码仍按该路径生成链接（见 §9）。修复时须保证三条外链承诺不缩水。
 
+**边界**：`/backlink-sites` 与 `/submission-lists` 记录的是**站外第三方提交平台**，其出站链接统一 `nofollow`；它们不是站内提交者激励的一部分，不得用上面的 dofollow 约定去改这批链接，也不得影响上述三条承诺。
+
 ## 9. 已知技术债（文档已标注，代码待处理）
 
 - `package.json` 的 `sync-d1` 脚本指向不存在的 `scripts/sync-to-d1.js`，**不要执行**
@@ -183,6 +208,8 @@ pnpm preview      # 预览构建产物
 pnpm typecheck    # 类型检查
 wrangler deploy   # 部署单一 Worker
 wrangler d1 execute aifindr-db --remote --file=./schema/init.sql   # 初始化/迁移 D1
+node scripts/build-submission-sites.mjs                            # 重建外链提交平台快照产物
+wrangler d1 execute aifindr-db --remote --file=./schema/seed-submission-sites.sql  # 导入快照（可重复执行）
 ```
 
 环境变量分三类：

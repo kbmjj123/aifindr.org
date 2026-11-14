@@ -53,6 +53,7 @@ TURNSTILE_SECRET=...
 GITHUB_CLIENT_SECRET=...
 JWT_SECRET=...
 RESEND_API_KEY=...
+OPENPAGERANK_API_KEY=...   # 可选，配置后每日自动刷新 page_rank
 ```
 
 本地 Nitro 通过 Wrangler 模拟 `wrangler.toml` 中的 D1 / KV / R2 绑定，`getEnv(event)` 会依次尝试 `event.context.cloudflare.env` 与 `event.req.runtime.cloudflare.env`（见 `server/utils/env.ts`）。
@@ -65,9 +66,15 @@ wrangler d1 execute aifindr-db --local --file=./schema/init.sql
 
 # 生产
 wrangler d1 execute aifindr-db --remote --file=./schema/init.sql
+
+# 可选：导入公共外链提交平台快照（先跑 node scripts/build-submission-sites.mjs 生成）
+wrangler d1 execute aifindr-db --local  --file=./schema/seed-submission-sites.sql
+wrangler d1 execute aifindr-db --remote --file=./schema/seed-submission-sites.sql
 ```
 
-`schema/init.sql` 定义 9 张表，是表结构的唯一事实来源；`schema/reset.sql` 用于重置本地库。修改表结构时同步更新 `product-scope.md`。
+`schema/init.sql` 定义 16 张表，是表结构的唯一事实来源；`schema/reset.sql` 用于重置本地库。修改表结构时同步更新 `product-scope.md` 与 `CLAUDE.md`。
+
+`seed-submission-sites.sql` 可重复导入：快照行用 UPSERT 更新，但后台编辑过的行（`data_source='admin'`）、管理员新增的站点、`source='manual'` 的分类标签、`confirmed=1` 的关系、以及榜单的策展字段（`status` / `kind` / `filters` / `sort` / `pinned_order` / `include` / `exclude` / 文案 / FAQ / SEO）都会被保留。**重跑后请在 `/admin/submission-lists` 点一次「Refresh all lists」**，以恢复 pinned 成员的排序位置。
 
 ### 3.3 测试数据
 
@@ -115,11 +122,23 @@ wrangler secret put RESEND_API_KEY
 wrangler secret put GITHUB_WEBHOOK_SECRET
 wrangler secret put LEMONSQUEEZY_WEBHOOK_SECRET
 wrangler secret put SITE_URL            # 可选，缺省回退到 API_BASE / https://aifindr.org
+wrangler secret put OPENPAGERANK_API_KEY   # 可选，配置后每日自动刷新 page_rank（不配置则跳过）
 ```
 
 `wrangler.toml` 设置了 `keep_vars = true`，部署不会清掉已有变量。
 
-### 5.2 构建并部署
+### 5.2 数据库迁移（按需）
+
+`schema/init.sql` 用 `CREATE TABLE IF NOT EXISTS`，对**已存在**的库不会补列。若某次改动新增了列（例如 `page_rank` / `page_rank_checked_at`），在部署新代码前需对已有库手动执行一次性迁移：
+
+```bash
+wrangler d1 execute aifindr-db --remote --file=./schema/migrate-page-rank.sql
+wrangler d1 execute aifindr-db --local  --file=./schema/migrate-page-rank.sql   # 本地库同理
+```
+
+> 新库从 `init.sql` 建表已自带这些列，无需迁移；但若之后重跑 ETL 且新 seed 已含新列 INSERT，则导入前必须先完成迁移，否则导入会因「表缺少该列」报错。
+
+### 5.3 构建并部署
 
 ```bash
 pnpm build
@@ -132,18 +151,20 @@ curl -I https://aifindr.org/tools
 
 自定义域已在 `wrangler.toml` 的 `routes` 中声明（`aifindr.org` 与 `www.aifindr.org`），无需再为 `/api/*` 单独配置路由规则。
 
-### 5.3 定时任务
+### 5.4 定时任务
 
-`wrangler.toml [triggers] crons` 定义 4 条计划任务，`server/plugins/scheduled.ts` 监听 `cloudflare:scheduled` 并按 `controller.cron` 分发：
+`wrangler.toml [triggers] crons` 定义 5 条计划任务，`server/plugins/scheduled.ts` 监听 `cloudflare:scheduled` 并按 `controller.cron` 分发：
 
 | cron | 处理函数 |
 |------|---------|
 | `0 9 * * *` | `handleCronDailyOps` |
 | `0 3 * * *` | `handleCronLinkChecker` |
+| `30 3 * * *` | `handleCronSubmissionSitesCheck` |
+| `0 4 * * *` | `handleCronDomainRating` |
 | `0 8 1 * *` | `handleCronMonthlyReport` |
 | `0 14 * * 1` | `handleCronNewsletter` |
 
-新增 cron 时，`wrangler.toml`、`server/plugins/scheduled.ts`、`server/utils/cron.ts` 三处都要改。
+新增 cron 时，`wrangler.toml`、`server/plugins/scheduled.ts`、`server/utils/cron.ts` 三处都要改。`handleCronSubmissionSitesCheck` 每天滚动 HEAD 检查 60 条 `submission_sites`（约 14 天轮完），更新 `last_checked_at` 与 `availability`；`handleCronDomainRating` 每日批量刷新 `page_rank`（Open PageRank 免费 API，依赖 secret `OPENPAGERANK_API_KEY`，未配置则跳过）。两者都**不刷新 Ahrefs `domain_rating`**（无公开免费 API，绕过违反其 ToS），DR 保持快照并在详情页标注口径。
 
 ---
 
@@ -207,6 +228,7 @@ Worker 不能在请求中通过公网自调用自己。必须用 `useApi()`（SS
 | `GITHUB_CLIENT_ID` | OAuth Client ID | `wrangler.toml [vars]` |
 | `ADMIN_GITHUB_IDS` | 管理员 GitHub ID（逗号分隔） | `wrangler.toml [vars]` |
 | `SITE_URL` | 生成绝对链接用 | secret（可缺省） |
+| `OPENPAGERANK_API_KEY` | Open PageRank API key，每日自动刷新 `page_rank` | secret（可缺省） |
 | `TURNSTILE_SECRET` | 表单验证 | secret |
 | `GITHUB_CLIENT_SECRET` | OAuth Client Secret | secret |
 | `JWT_SECRET` | JWT 签名 | secret |

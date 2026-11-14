@@ -176,3 +176,151 @@ CREATE TABLE IF NOT EXISTS custom_fields (
 );
 
 CREATE INDEX IF NOT EXISTS idx_cf_post ON custom_fields(post_id);
+
+-- ─── 公共外链提交平台目录（开放数据） ────────────────────────────
+-- 与 tools 是两类实体：这里记录「可以提交外链的第三方平台」，不是站内收录的 AI 工具。
+-- 数据由 scripts/build-submission-sites.mjs 从 docs/res/01-list.json + 02-details.jsonl
+-- 双源 join 生成，导入文件为 schema/seed-submission-sites.sql。
+-- 说明文案（summary/fact_points/editorial/intro/methodology/faq）均为本站原创，
+-- 不复制来源页面的表达；事实字段保留来源署名与快照日期。
+
+CREATE TABLE IF NOT EXISTS submission_sites (
+  id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug                TEXT NOT NULL UNIQUE,
+  name                TEXT NOT NULL,
+  site_url            TEXT,
+  submit_url          TEXT,
+  submit_method       TEXT DEFAULT 'unknown'
+                      CHECK(submit_method IN ('form','github_pr','awesome_list','sign_in','community_post','external','unknown')),
+  domain_rating       INTEGER,
+  pricing             TEXT DEFAULT 'unknown'
+                      CHECK(pricing IN ('free','freemium','paid','optional','unknown')),
+  has_free_submission INTEGER,          -- 1 有免费提交通道 / 0 无 / NULL 未核实；与 pricing 是两套口径
+  approval            TEXT DEFAULT 'Not stated',
+  approval_bucket     TEXT DEFAULT 'unknown'
+                      CHECK(approval_bucket IN ('fast','week','month','slow','unknown')),
+  dofollow_link       INTEGER,          -- 1 / 0 / NULL
+  backlink_required   INTEGER,          -- 1 / 0 / NULL；1 对应「需要放对方徽章/回链」
+  list_order          INTEGER DEFAULT 0,
+  is_featured         INTEGER DEFAULT 0,
+  summary             TEXT,             -- 本站原创事实摘要
+  fact_points         TEXT,             -- JSON 数组，结构化事实要点
+  editorial           TEXT,             -- 人工补充的原创说明；有值时优先于 summary
+  attribution         TEXT,             -- 来源署名 + 快照口径
+  source_url          TEXT,
+  source_snapshot     TEXT,             -- YYYY-MM-DD
+  data_source         TEXT DEFAULT 'snapshot'
+                      CHECK(data_source IN ('snapshot','user','admin')),
+  verification_status TEXT DEFAULT 'snapshot'
+                      CHECK(verification_status IN ('snapshot','self_reported','verified')),
+  last_checked_at     TEXT,              -- 最近一次存活巡检时间（cron 自动更新）
+  availability        TEXT DEFAULT 'unknown'
+                      CHECK(availability IN ('unknown','reachable','unreachable')),
+  page_rank           REAL,              -- Open PageRank（0–10），由 cron 自动刷新，与 Ahrefs DR 量纲不同
+  page_rank_checked_at TEXT,             -- 最近一次 Open PageRank 刷新时间
+  status              TEXT DEFAULT 'active'
+                      CHECK(status IN ('active','needs_info','hidden')),
+  indexed             INTEGER DEFAULT 1,
+  click_count         INTEGER DEFAULT 0,
+  created_at          TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at          TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_ss_status        ON submission_sites(status);
+CREATE INDEX IF NOT EXISTS idx_ss_pricing       ON submission_sites(pricing);
+CREATE INDEX IF NOT EXISTS idx_ss_dr            ON submission_sites(domain_rating DESC);
+CREATE INDEX IF NOT EXISTS idx_ss_dofollow      ON submission_sites(dofollow_link);
+CREATE INDEX IF NOT EXISTS idx_ss_free          ON submission_sites(has_free_submission);
+CREATE INDEX IF NOT EXISTS idx_ss_method        ON submission_sites(submit_method);
+CREATE INDEX IF NOT EXISTS idx_ss_approval      ON submission_sites(approval_bucket);
+CREATE INDEX IF NOT EXISTS idx_ss_order         ON submission_sites(list_order);
+CREATE INDEX IF NOT EXISTS idx_ss_indexed       ON submission_sites(indexed, status);
+
+-- 多标签主题分类（基础快照无分类字段，由规则初判 + 人工复核补充）
+CREATE TABLE IF NOT EXISTS site_categories (
+  site_slug     TEXT NOT NULL REFERENCES submission_sites(slug) ON DELETE CASCADE,
+  category_slug TEXT NOT NULL,
+  parent_slug   TEXT,
+  confidence    REAL DEFAULT 1,
+  source        TEXT DEFAULT 'rule' CHECK(source IN ('rule','manual','user')),
+  PRIMARY KEY (site_slug, category_slug)
+);
+CREATE INDEX IF NOT EXISTS idx_sc_category ON site_categories(category_slug);
+CREATE INDEX IF NOT EXISTS idx_sc_site     ON site_categories(site_slug);
+
+-- 榜单定义：规则型 / 策展型 / 混合型共用一套结构
+CREATE TABLE IF NOT EXISTS submission_lists (
+  slug             TEXT PRIMARY KEY,
+  title            TEXT NOT NULL,
+  description      TEXT,
+  dimension        TEXT NOT NULL,
+  kind             TEXT NOT NULL CHECK(kind IN ('rule','curated','hybrid')),
+  filters          TEXT,               -- JSON，受限 DSL
+  sort             TEXT,               -- JSON 数组
+  limit_mode       TEXT DEFAULT 'all' CHECK(limit_mode IN ('all','topN')),
+  limit_count      INTEGER DEFAULT 0,
+  min_items        INTEGER DEFAULT 10,
+  include_slugs    TEXT,               -- JSON 数组
+  exclude_slugs    TEXT,               -- JSON 数组
+  pinned_order     TEXT,               -- JSON 数组
+  intro            TEXT,               -- 原创导语
+  methodology      TEXT,               -- 原创筛选口径说明
+  faq              TEXT,               -- JSON 数组 [{question, answer}]
+  seo_title        TEXT,
+  seo_description  TEXT,
+  canonical_policy TEXT DEFAULT 'self',
+  status           TEXT DEFAULT 'published' CHECK(status IN ('draft','published','archived')),
+  snapshot_id      TEXT,
+  item_count       INTEGER DEFAULT 0,
+  created_at       TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at       TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_sl_dimension ON submission_lists(dimension, status);
+
+-- 物化成员：规则型由刷新任务重算，策展型 pinned 行锁定不被覆盖
+CREATE TABLE IF NOT EXISTS submission_list_items (
+  snapshot_id TEXT NOT NULL,
+  list_slug   TEXT NOT NULL REFERENCES submission_lists(slug) ON DELETE CASCADE,
+  site_slug   TEXT NOT NULL REFERENCES submission_sites(slug) ON DELETE CASCADE,
+  position    INTEGER NOT NULL,
+  pinned      INTEGER DEFAULT 0,
+  note        TEXT,
+  PRIMARY KEY (snapshot_id, list_slug, site_slug)
+);
+CREATE INDEX IF NOT EXISTS idx_sli_list ON submission_list_items(snapshot_id, list_slug, position);
+CREATE INDEX IF NOT EXISTS idx_sli_site ON submission_list_items(site_slug);
+
+-- 相似/替代关系：快照里 5955 条相关平台边导入作候选，confirmed=0 待人工确认
+CREATE TABLE IF NOT EXISTS site_relations (
+  site_slug     TEXT NOT NULL REFERENCES submission_sites(slug) ON DELETE CASCADE,
+  related_slug  TEXT NOT NULL REFERENCES submission_sites(slug) ON DELETE CASCADE,
+  relation_type TEXT DEFAULT 'similar' CHECK(relation_type IN ('similar','alternative')),
+  weight        INTEGER DEFAULT 0,
+  confirmed     INTEGER DEFAULT 0,
+  PRIMARY KEY (site_slug, related_slug, relation_type)
+);
+CREATE INDEX IF NOT EXISTS idx_sr_site   ON site_relations(site_slug, weight DESC);
+CREATE INDEX IF NOT EXISTS idx_sr_type   ON site_relations(relation_type);
+
+-- 成员变更审计：joined / left / pinned
+CREATE TABLE IF NOT EXISTS submission_list_changelog (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  snapshot_id TEXT NOT NULL,
+  list_slug   TEXT NOT NULL,
+  site_slug   TEXT NOT NULL,
+  change_type TEXT NOT NULL CHECK(change_type IN ('joined','left','pinned')),
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_slc_snapshot ON submission_list_changelog(snapshot_id, list_slug);
+
+-- 用户提交新站点 / 勘误 / 下架申请，审核通过后才写入 submission_sites
+CREATE TABLE IF NOT EXISTS submission_site_reports (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  site_slug   TEXT,
+  kind        TEXT NOT NULL CHECK(kind IN ('correction','new_site','takedown')),
+  payload     TEXT,
+  contact     TEXT,
+  status      TEXT DEFAULT 'pending' CHECK(status IN ('pending','accepted','rejected')),
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_ssr_status ON submission_site_reports(status, created_at DESC);

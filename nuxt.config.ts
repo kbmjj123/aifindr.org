@@ -70,6 +70,9 @@ export default defineNuxtConfig({
       { loc: '/tools/business/',     changefreq: 'weekly', priority: 0.6 },
       { loc: '/tools/research/',     changefreq: 'weekly', priority: 0.6 },
       { loc: '/tools/other/',        changefreq: 'weekly', priority: 0.6 },
+      { loc: '/backlink-sites',      changefreq: 'daily',  priority: 0.7 },
+      { loc: '/backlink-sites/data', changefreq: 'monthly', priority: 0.5 },
+      { loc: '/submission-lists',    changefreq: 'weekly', priority: 0.7 },
     ],
   },
 

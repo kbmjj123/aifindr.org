@@ -12,10 +12,10 @@
 | 样式 | Tailwind CSS v4 + `@tailwindcss/postcss` | 无 `tailwind.config.ts`；主题变量写在 `assets/css/main.css` |
 | 内容 | `@nuxt/content` v3 | 已安装，但**工具数据不走它**；工具正文是 D1 `tools.body` 中的 Markdown 字符串 |
 | SEO | `@nuxtjs/seo` | sitemap / robots / 运行时 OG 图 / schema-org |
-| 数据库 | Cloudflare D1 `DB` | `schema/init.sql`，9 张表 |
+| 数据库 | Cloudflare D1 `DB` | `schema/init.sql`，16 张表（含外链提交平台目录 7 张） |
 | 缓存 | Cloudflare KV `CACHE` | 已绑定；工具列表接口当前**未**接入缓存 |
 | 对象存储 | Cloudflare R2 `CDN` | 公开地址 `https://cdn.aifindr.org` |
-| 后端 | Nitro server routes | `server/routes/api/` 约 45 个端点，与页面同一 Worker |
+| 后端 | Nitro server routes | `server/routes/api/` 约 62 个端点，与页面同一 Worker |
 | 认证 | GitHub OAuth + JWT | 管理员由 `ADMIN_GITHUB_IDS` 判定 |
 | 防垃圾 / 邮件 | Turnstile / Resend | 见 `server/utils/env.ts` |
 | 部署 | 单一 Cloudflare Worker | `wrangler.toml`：`main = .output/server/index.mjs` + `assets = .output/public`，**不是 Pages** |
@@ -50,7 +50,7 @@ aifindr.org/
 └── package.json
 ```
 
-**不存在的路径**：`content/`、`content/tools/`、`workers/`、`scripts/`、`tailwind.config.ts`、`schema/seed.sql`。历史文档中出现的这些路径均已失效。
+**不存在的路径**：`content/`、`content/tools/`、`workers/`、`tailwind.config.ts`、`scripts/sync-to-d1.js`、`schema/seed.sql`。`scripts/` 目录现已存在（`build-submission-sites.mjs` 等本地 ETL / 审计脚本，不参与 Worker 打包），快照导入文件为 `schema/seed-submission-sites.sql`。
 
 ## 3. `nuxt.config.ts` 关键配置（节选）
 
@@ -146,6 +146,8 @@ const { tools, total } = await get<ToolListResponse>('/api/tools', { query: { ca
 | 认证 | `auth/github.get`、`auth/callback.get`、`auth/me.get`、`auth/dev-login.get` |
 | 后台 | `admin/pending.get`、`admin/review.post`、`admin/tools/*`、`admin/posts/*`、`admin/users.get`、`admin/log.get`、`admin/feature.post`、`admin/broadcast.post` |
 | 内容 | `blog/*`、`contributors*`、`__sitemap__/urls.get`、`generate.post` |
+| 外链提交平台（公开） | `submission-sites/*`（index / `[slug]` / export / suggest）、`submission-lists/*`（index / `[slug]` / export） |
+| 外链提交平台（后台） | `admin/submission-lists.get` / `.post` / `refresh.post` / `[slug].post`；`admin/submission-sites.get` / `.post` / `import.post` / `[slug].get` / `[slug].post`；`admin/submission-reports/review.post` |
 | 用户邮件 | `user/email.post`、`user/email/verify/[token].get` |
 | 定时任务 | `cron/daily-ops`、`cron/link-checker`、`cron/monthly-report`、`cron/newsletter` |
 | Webhook | `webhooks/github.post`、`webhooks/lemonsqueezy.post` |

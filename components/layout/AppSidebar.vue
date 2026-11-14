@@ -40,6 +40,8 @@
     <!-- Bottom links -->
     <div class="mt-6 pt-4" :style="{ borderTop: '1px solid var(--color-border)' }">
       <NavItem to="/submit" label="Submit a Tool" />
+      <NavItem to="/backlink-sites" label="Submission Sites" />
+      <NavItem to="/submission-lists" label="Submission Lists" />
       <NavItem to="https://github.com/kbmjj123/aifindr.org" label="Open Source on GitHub" />
       <NavItem to="/blog" label="Blog" />
     </div>
@@ -90,6 +92,8 @@
 
           <div class="mt-6 pt-4" :style="{ borderTop: '1px solid var(--color-border)' }">
             <NavItem to="/submit" label="Submit a Tool" @click="isMobileMenuOpen = false" />
+            <NavItem to="/backlink-sites" label="Submission Sites" @click="isMobileMenuOpen = false" />
+            <NavItem to="/submission-lists" label="Submission Lists" @click="isMobileMenuOpen = false" />
             <template v-if="auth?.isLoggedIn.value && auth?.user.value">
               <NavItem to="/settings" label="Settings" @click="isMobileMenuOpen = false" />
               <button class="nav-item w-full" @click="auth.logout(); isMobileMenuOpen = false">Sign Out</button>

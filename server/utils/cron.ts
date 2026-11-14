@@ -191,3 +191,114 @@ export async function handleCronNewsletter(env: CloudflareEnv, subject?: string,
   logger.info('cron', `Cron 4: Sent newsletter to ${recipients} recipients`)
   return { recipients }
 }
+
+/**
+ * Cron 5: Submission-site availability check — keep `last_checked_at` and `availability` fresh.
+ * Note: this cannot refresh domain_rating. Ahrefs has no free public API; its free tools are
+ * front-end forms behind Cloudflare and cannot be queried in bulk. DR stays a 2026-11-13 snapshot.
+ */
+export async function handleCronSubmissionSitesCheck(env: CloudflareEnv): Promise<{ checked: number; unreachable: number }> {
+  const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
+  const { results: sites } = await env.DB.prepare(`
+    SELECT slug, site_url, submit_url
+    FROM submission_sites
+    WHERE status = 'active'
+      AND (last_checked_at IS NULL OR last_checked_at < datetime('now', '-30 days'))
+    ORDER BY last_checked_at ASC LIMIT 60
+  `).all<{ slug: string; site_url: string | null; submit_url: string | null }>()
+
+  let unreachable = 0
+  for (const site of sites || []) {
+    const urls = [site.site_url, site.submit_url].filter(Boolean) as string[]
+    let reachable = false
+    for (const url of urls) {
+      try {
+        const res = await fetch(url, {
+          method: 'HEAD',
+          headers: { 'User-Agent': 'aifindr-site-checker/1.0' },
+        })
+        if (res.ok || res.status === 403 || res.status === 401) { reachable = true; break }
+      } catch { /* try the next URL */ }
+    }
+    if (!reachable) unreachable++
+    await env.DB.prepare(
+      'UPDATE submission_sites SET last_checked_at = ?, availability = ? WHERE slug = ?'
+    ).bind(now, reachable ? 'reachable' : 'unreachable', site.slug).run()
+  }
+
+  logger.info('cron', `Cron 5: checked ${(sites || []).length} submission sites, ${unreachable} unreachable`)
+  await env.CACHE.delete('submission-sites-facets').catch(() => {})
+  return { checked: (sites || []).length, unreachable }
+}
+
+/**
+ * Cron 6: Refresh `page_rank` from Open PageRank's free API (legitimate, key-based, rate-limited).
+ * Returns a 0–10 PageRank estimate — a different scale from Ahrefs `domain_rating` (0–100), so the
+ * two are stored separately and labelled by source. No key configured → skip gracefully.
+ * Free tier is ~100 requests/month; batching 50 hosts/request keeps us well under that.
+ */
+export async function handleCronDomainRating(env: CloudflareEnv): Promise<{ checked: number; updated: number; skipped: boolean }> {
+  const apiKey = env.OPENPAGERANK_API_KEY
+  if (!apiKey) {
+    logger.warn('cron', 'Cron 6: OPENPAGERANK_API_KEY not set, skipping domain rating refresh')
+    return { checked: 0, updated: 0, skipped: true }
+  }
+
+  const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
+  const { results: sites } = await env.DB.prepare(`
+    SELECT slug, site_url, submit_url
+    FROM submission_sites
+    WHERE status = 'active'
+      AND (page_rank_checked_at IS NULL OR page_rank_checked_at < datetime('now', '-30 days'))
+    ORDER BY page_rank_checked_at ASC LIMIT 50
+  `).all<{ slug: string; site_url: string | null; submit_url: string | null }>()
+
+  const targets = (sites || [])
+    .map((s) => {
+      const url = s.site_url || s.submit_url
+      if (!url) return null
+      try {
+        return { slug: s.slug, host: new URL(url).host.replace(/^www\./, '') }
+      } catch {
+        return null
+      }
+    })
+    .filter((t): t is { slug: string; host: string } => t !== null)
+
+  if (!targets.length) return { checked: 0, updated: 0, skipped: false }
+
+  const hosts = [...new Set(targets.map((t) => t.host))]
+  const url = `https://openpagerank.com/api/v1.0/getPageRank?${hosts.map((h) => `domains[]=${encodeURIComponent(h)}`).join('&')}`
+
+  let data: { response?: Array<{ domain?: string; page_rank_decimal?: string }> }
+  try {
+    const res = await fetch(url, { headers: { 'API-OPR': apiKey } })
+    if (!res.ok) {
+      logger.error('cron', `Cron 6: Open PageRank returned HTTP ${res.status}`)
+      return { checked: 0, updated: 0, skipped: false }
+    }
+    data = await res.json() as typeof data
+  } catch (e) {
+    logger.error('cron', `Cron 6: Open PageRank fetch failed: ${String(e)}`)
+    return { checked: 0, updated: 0, skipped: false }
+  }
+
+  const rankByHost = new Map<string, number | null>()
+  for (const item of data?.response || []) {
+    const raw = Number(item?.page_rank_decimal)
+    rankByHost.set(String(item?.domain), Number.isFinite(raw) && raw > 0 ? raw : null)
+  }
+
+  let updated = 0
+  for (const t of targets) {
+    const value = rankByHost.has(t.host) ? (rankByHost.get(t.host) ?? null) : null
+    await env.DB.prepare(
+      'UPDATE submission_sites SET page_rank = ?, page_rank_checked_at = ? WHERE slug = ?'
+    ).bind(value, now, t.slug).run()
+    if (value !== null) updated++
+  }
+
+  logger.info('cron', `Cron 6: refreshed page_rank for ${targets.length} sites, ${updated} ranked`)
+  await env.CACHE.delete('submission-sites-facets').catch(() => {})
+  return { checked: targets.length, updated, skipped: false }
+}

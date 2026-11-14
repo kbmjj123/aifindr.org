@@ -16,6 +16,7 @@ export interface CloudflareEnv {
   LEMONSQUEEZY_WEBHOOK_SECRET: string
   SITE_URL: string
   API_BASE: string
+  OPENPAGERANK_API_KEY?: string
 }
 
 export function getEnv(event: H3Event): CloudflareEnv {

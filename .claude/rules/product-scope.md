@@ -26,7 +26,7 @@
 
 ---
 
-## 二、D1 数据库（`schema/init.sql`，9 张表）
+## 二、D1 数据库（`schema/init.sql`，16 张表）
 
 | 表 | 用途 |
 |---|---|
@@ -39,6 +39,26 @@
 | `posts` | 博客 CMS 文章 |
 | `post_translations` | 文章多语种译文 |
 | `custom_fields` | 自定义字段 |
+| `submission_sites` | **公共外链提交平台**（848 条快照 + 用户增量），与 `tools` 是两类实体；含 `domain_rating`（Ahrefs 快照，0–100）与 `page_rank`（Open PageRank 自动刷新，0–10，量纲不同） |
+| `site_categories` | 平台多标签主题分类（规则初判 + 人工复核） |
+| `submission_lists` | 榜单定义：规则型 / 策展型 / 混合型，含受限筛选 DSL 与原创导语；维度含 `pricing`/`link`/`authority`/`speed`/`topic`/`alternatives` |
+| `submission_list_items` | 榜单物化成员（按 `snapshot_id` 版本化） |
+| `site_relations` | 相似 / 替代平台关系候选（快照 4911 条边） |
+| `submission_list_changelog` | 成员 diff 审计（joined / left / pinned） |
+| `submission_site_reports` | 用户补充、勘误与下架申请，待 admin 审核 |
+
+**外链提交平台目录要点**（详见 `CLAUDE.md` §4）：数据由 `scripts/build-submission-sites.mjs`
+从 `docs/res/01-list.json` + `02-details.jsonl` 双源 join 生成；`pricing`（平台整体定价）与
+`has_free_submission`（是否有免费提交通道）是两套口径，不可混用；所有说明文案由本站原创，
+第三方出站链接统一 `rel="nofollow noopener noreferrer"`。新增站点字段不全时落为 `needs_info`，
+不参与任何榜单。
+
+**增量维护**：新增 / 编辑 / 批量导入共用 `server/utils/submissionSiteWrite.ts` 的字段门禁、
+原创文案与自动重算逻辑，入口在 `/admin/submission-lists`。保存任何站点后会自动重算
+`kind IN ('rule','hybrid')` 的榜单，因此补齐字段或新增站点会立即累加进榜；策展榜的
+`pinned_order` 在刷新时保留，纯策展榜（无 filters）只取 `include_slugs`。新建榜单通过
+`validateFilterExpression` / `validateSortRules` 白名单校验。分类标签由后台覆盖式写入
+`site_categories`，公开 facet 动态聚合并自动出现在目录页筛选器里。
 
 **`tools` 关键字段**
 
