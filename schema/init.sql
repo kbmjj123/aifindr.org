@@ -197,11 +197,16 @@ CREATE TABLE IF NOT EXISTS submission_sites (
                       CHECK(pricing IN ('free','freemium','paid','optional','unknown')),
   has_free_submission INTEGER,          -- 1 有免费提交通道 / 0 无 / NULL 未核实；与 pricing 是两套口径
   approval            TEXT DEFAULT 'Not stated',
+  approval_time       TEXT,             -- 快照 FAQ 提炼的典型审批时长（如 "1-2 days"）
   approval_bucket     TEXT DEFAULT 'unknown'
                       CHECK(approval_bucket IN ('fast','week','month','slow','unknown')),
   dofollow_link       INTEGER,          -- 1 / 0 / NULL
   backlink_required   INTEGER,          -- 1 / 0 / NULL；1 对应「需要放对方徽章/回链」
   accepts_product_types TEXT DEFAULT '[]', -- JSON 数组；快照记录的产品类型事实，独立于 site_categories 主题标签
+  submit_steps        TEXT DEFAULT '[]', -- JSON 数组；来源页的提交步骤（带 SubmitMap 署名引用）
+  submit_requirements TEXT DEFAULT '[]', -- JSON 数组；表单要求清单（同上）
+  gotchas             TEXT DEFAULT '[]', -- JSON 数组；提交注意事项（同上）
+  rejection_reasons   TEXT DEFAULT '[]', -- JSON 数组；被拒原因（同上）
   list_order          INTEGER DEFAULT 0,
   is_featured         INTEGER DEFAULT 0,
   summary             TEXT,             -- 本站原创事实摘要
@@ -210,6 +215,8 @@ CREATE TABLE IF NOT EXISTS submission_sites (
   attribution         TEXT,             -- 来源署名 + 快照口径
   source_url          TEXT,
   source_snapshot     TEXT,             -- YYYY-MM-DD
+  icon_url            TEXT,             -- 平台图标（来源快照 CDN）
+  screenshot_url      TEXT,             -- 平台首页截图（来源快照 CDN）
   data_source         TEXT DEFAULT 'snapshot'
                       CHECK(data_source IN ('snapshot','user','admin')),
   verification_status TEXT DEFAULT 'snapshot'

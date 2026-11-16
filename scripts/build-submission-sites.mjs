@@ -11,10 +11,11 @@
  *   public/data/submission-sites.json      开放下载（事实字段 + 本站原创摘要）
  *   reports/submission-sites-cleaning.json 清洗统计与脏值清单
  *
- * 合规口径：只使用事实信息。来源页面的编辑文案、FAQ、徽章、品牌字样一律不复制；
- * summary / fact_points / intro / methodology / faq 全部由本脚本按本站模板原创生成。
- * v2 新增的 howToSubmit / requirements / eligibility / gotchas / rejectionReasons / faq
- * 是来源站的原创编辑表达，仅作审计参考，不入库、不输出到任何站点字段。
+ * 合规口径：结构化事实直接使用；summary / fact_points / intro / methodology / faq
+ * 由本脚本按本站模板原创生成。来源页面仍不复制：FAQ、lead、徽章 HTML、agent 推广段。
+ * v2 内容板块（howToSubmit / requirements / gotchas / rejectionReasons，2026-11-16 批次
+ * 经确认入库）逐条净化限长后入库与导出，页面与开放数据集均带 SubmitMap 署名；
+ * platformWebsite / submitPageUrl 仍只进审计报告，不入库。
  *
  * 用法：
  *   node scripts/build-submission-sites.mjs                  # 优先 docs/res-v2
@@ -46,7 +47,8 @@ const SOURCE_URL_BASE = 'https://submitmap.com/platform/'
 const ATTRIBUTION =
   `Facts sourced from a public directory snapshot (${SNAPSHOT}). `
   + 'Domain rating is a third-party metric, not independently verified by aifindr.org. '
-  + 'All editorial text on this page is written by aifindr.org.'
+  + 'All editorial text on this page is written by aifindr.org. '
+  + 'Submission steps, requirements, gotchas and rejection reasons are quoted from SubmitMap\'s platform page.'
 
 const VALID_PRICING = new Set(['free', 'freemium', 'paid', 'optional'])
 const APPROVAL_BUCKET = {
@@ -116,6 +118,33 @@ function upsertListStatement(columns, row) {
   return `INSERT INTO submission_lists (${columns.join(', ')}) VALUES (${values}) `
     + `ON CONFLICT(slug) DO UPDATE SET snapshot_id = excluded.snapshot_id, `
     + `item_count = excluded.item_count, updated_at = excluded.updated_at;`
+}
+
+/** 内容板块逐条净化：压平控制字符、限长限条，作为带署名的引用内容入库 */
+function textListOf(value, { maxItems = 8, maxLen = 600 } = {}) {
+  if (!Array.isArray(value)) return []
+  const out = []
+  for (const item of value) {
+    const text = String(item ?? '').replace(/[\u0000-\u001f]+/g, ' ').replace(/\s+/g, ' ').trim()
+    if (!text) continue
+    out.push(text.length > maxLen ? `${text.slice(0, maxLen - 1)}…` : text)
+    if (out.length >= maxItems) break
+  }
+  return out
+}
+
+/** 图标 / 截图只取与本平台 slug 匹配的图片，避免混入相似平台卡片的图 */
+function platformImageUrl(detail, file) {
+  const hit = (Array.isArray(detail.images) ? detail.images : [])
+    .find(img => String(img?.src || '').includes(`/platforms/${detail.slug}/${file}`))
+  const src = String(hit?.src || '')
+  return /^https:\/\//.test(src) ? src : ''
+}
+
+/** 审批时长来自快照 FAQ 的提炼值（如 "1-2 days"），仅保留干净的短文本 */
+function approvalTimeOf(detail) {
+  const value = String(detail.approvalTimeFromFaq ?? '').trim()
+  return value && value.length <= 60 ? value : ''
 }
 
 function hostnameOf(url) {
@@ -268,6 +297,7 @@ function factPointsOf(site) {
     points.push(site.backlink_required ? 'A backlink or badge is required' : 'No backlink or badge required')
   }
   points.push(`Submission channel: ${site.submit_method}`)
+  if (site.approval_time) points.push(`Typical approval time: ${site.approval_time}`)
   const types = productTypeList(site)
   if (types.length) points.push(`Product types listed: ${types.join(', ')}`)
   return points
@@ -277,6 +307,7 @@ function summaryOf(site) {
   const parts = [`${site.name} is a platform where you can submit a product or website for a listing.`]
   if (site.domain_rating !== null) parts.push(`Its domain rating is ${site.domain_rating}.`)
   parts.push(`${PRICING_PHRASE[site.pricing]}.`)
+  if (site.approval_time) parts.push(`The typical review time is recorded as ${site.approval_time}.`)
   const types = productTypeList(site)
   if (types.length) {
     const shown = types.slice(0, 3)
@@ -631,6 +662,13 @@ for (let index = 0; index < listItems.length; index++) {
     dofollow_link: cleanBoolean(spec.dofollowLink, norm.dofollowLinkBool),
     backlink_required: cleanBoolean(spec.backlinkRequired, norm.backlinkRequiredBool),
     accepts_product_types: JSON.stringify(productTypes),
+    approval_time: approvalTimeOf(detail),
+    submit_steps: JSON.stringify(textListOf(detail.howToSubmit)),
+    submit_requirements: JSON.stringify(textListOf(detail.requirements, { maxItems: 12, maxLen: 200 })),
+    gotchas: JSON.stringify(textListOf(detail.gotchasList, { maxItems: 6 })),
+    rejection_reasons: JSON.stringify(textListOf(detail.rejectionReasons, { maxItems: 6, maxLen: 400 })),
+    icon_url: platformImageUrl(detail, 'icon.png'),
+    screenshot_url: platformImageUrl(detail, 'shot.webp'),
     list_order: index,
     is_featured: index < 25 ? 1 : 0,
     summary: '',
@@ -771,10 +809,12 @@ for (const def of LIST_DEFS) {
 
 const SITE_COLUMNS = [
   'slug', 'name', 'site_url', 'submit_url', 'submit_method', 'domain_rating', 'pricing',
-  'has_free_submission', 'approval', 'approval_bucket', 'dofollow_link', 'backlink_required',
-  'accepts_product_types',
+  'has_free_submission', 'approval', 'approval_time', 'approval_bucket', 'dofollow_link',
+  'backlink_required',
+  'accepts_product_types', 'submit_steps', 'submit_requirements', 'gotchas', 'rejection_reasons',
   'list_order', 'is_featured', 'summary', 'fact_points', 'editorial', 'attribution',
-  'source_url', 'source_snapshot', 'data_source', 'verification_status', 'last_checked_at',
+  'source_url', 'source_snapshot', 'icon_url', 'screenshot_url',
+  'data_source', 'verification_status', 'last_checked_at',
   'page_rank', 'page_rank_checked_at',
   'status', 'indexed', 'click_count', 'created_at', 'updated_at',
 ]
@@ -821,11 +861,16 @@ writeFileSync(resolve(ROOT, 'schema/seed-submission-sites.sql'), sql.join('\n'),
 
 const publicFields = [
   'slug', 'name', 'site_url', 'submit_url', 'submit_method', 'domain_rating', 'pricing',
-  'has_free_submission', 'approval', 'approval_bucket', 'dofollow_link', 'backlink_required',
-  'accepts_product_types', 'summary', 'source_url', 'source_snapshot', 'verification_status',
+  'has_free_submission', 'approval', 'approval_time', 'approval_bucket', 'dofollow_link',
+  'backlink_required',
+  'accepts_product_types', 'submit_steps', 'submit_requirements', 'gotchas', 'rejection_reasons',
+  'icon_url', 'screenshot_url',
+  'summary', 'source_url', 'source_snapshot', 'verification_status',
 ]
 const openData = {
-  license: 'CC0-1.0 applies to aifindr.org\'s compilation and editorial text only; source facts are public information.',
+  license: 'CC0-1.0 applies to aifindr.org\'s compilation and generated summaries. Submission steps, '
+    + 'requirements, gotchas and rejection reasons are quoted from SubmitMap\'s platform pages — '
+    + 'keep their attribution when redistributing.',
   attribution: ATTRIBUTION,
   snapshot: SNAPSHOT,
   snapshotId: SNAPSHOT_ID,
@@ -871,6 +916,15 @@ const report = {
   productTypes: Object.fromEntries(
     Object.entries(stats.productTypeCounts).sort((a, b) => b[1] - a[1]),
   ),
+  contentCoverage: {
+    submitSteps: sites.filter(s => s.submit_steps !== '[]').length,
+    submitRequirements: sites.filter(s => s.submit_requirements !== '[]').length,
+    gotchas: sites.filter(s => s.gotchas !== '[]').length,
+    rejectionReasons: sites.filter(s => s.rejection_reasons !== '[]').length,
+    approvalTime: sites.filter(s => s.approval_time).length,
+    icons: sites.filter(s => s.icon_url).length,
+    screenshots: sites.filter(s => s.screenshot_url).length,
+  },
   submitPageResolution: stats.submitPageResolution,
   issues: {
     ...issues,
@@ -878,8 +932,9 @@ const report = {
   },
   listSizes: Object.fromEntries(lists.map(list => [list.slug, list.item_count])),
   note: 'platforms.json / platforms.csv are lossy exports and are intentionally not used as inputs. '
-    + 'v2 editorial fields (howToSubmit / requirements / eligibility / gotchas / rejectionReasons / faq) '
-    + 'and inferred submitPageUrl / platformWebsite are audited but never imported.',
+    + 'Quoted content (howToSubmit / requirements / gotchas / rejectionReasons) is sanitized and imported '
+    + 'with SubmitMap attribution; FAQ / lead / badge HTML / agent pitch are never imported; '
+    + 'inferred submitPageUrl / platformWebsite stay audit-only.',
 }
 mkdirSync(resolve(ROOT, 'reports'), { recursive: true })
 writeFileSync(

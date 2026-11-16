@@ -19,6 +19,8 @@ interface PageSeoOptions {
   title?: string
   /** 页面描述，默认使用站点描述 */
   description?: string
+  /** 覆盖 OG 卡片标题（长 SEO title 不适合社交卡片时使用） */
+  ogTitle?: string
   /** 描述字数上限 */
   descMax?: number
   /** SEO title 格式模板 */
@@ -76,7 +78,7 @@ export function usePageSeo(opts: MaybeRefOrGetter<PageSeoOptions>) {
     return {
       title: buildTitle(o),
       description: buildDescription(o),
-      ogTitle: o.title || TAGLINE,
+      ogTitle: o.ogTitle || o.title || TAGLINE,
       ogDescription: o.description || TAGLINE,
       ogType: OG_TYPE_LABEL[o.template || 'default'] || 'Page',
     }

@@ -30,6 +30,20 @@ export interface SubmissionSite {
   backlink_required: number | null
   /** JSON 数组字符串；快照记录的产品类型事实，如 ["AI tools","SaaS products"] */
   accepts_product_types: string
+  /** 快照 FAQ 提炼的典型审批时长，如 "1-2 days"；未记录为 null */
+  approval_time: string | null
+  /** JSON 数组字符串；来源页提交步骤（带 SubmitMap 署名引用） */
+  submit_steps: string
+  /** JSON 数组字符串；表单要求清单（同上） */
+  submit_requirements: string
+  /** JSON 数组字符串；提交注意事项（同上） */
+  gotchas: string
+  /** JSON 数组字符串；被拒原因（同上） */
+  rejection_reasons: string
+  /** 平台图标（来源快照 CDN） */
+  icon_url: string | null
+  /** 平台首页截图（来源快照 CDN） */
+  screenshot_url: string | null
   list_order: number
   is_featured: number
   /** 本站原创事实摘要，不复制来源页面文案 */
@@ -174,7 +188,8 @@ export interface SubmissionSiteReport {
 export const SUBMISSION_ATTRIBUTION =
   'Facts sourced from a public directory snapshot (2026-11-16). '
   + 'Domain rating is a third-party metric, not independently verified by aifindr.org. '
-  + 'All editorial text on this page is written by aifindr.org.'
+  + 'All editorial text on this page is written by aifindr.org. '
+  + 'Submission steps, requirements, gotchas and rejection reasons are quoted from SubmitMap\'s platform page.'
 
 export const SUBMISSION_CATEGORIES: { slug: string; name: string; dimension: ListDimension }[] = [
   { slug: 'ai-tool-directories', name: 'AI Tool Directories', dimension: 'topic' },

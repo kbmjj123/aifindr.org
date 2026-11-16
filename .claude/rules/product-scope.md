@@ -52,7 +52,8 @@
 也可 `--res=docs/res` 切换），快照日期从列表文件的 `scrapedAt` 推导；`pricing`（平台整体定价）与
 `has_free_submission`（是否有免费提交通道）是两套口径，不可混用；`accepts_product_types` 是 v2 新增的
 产品类型事实（JSON 数组，独立于主题分类），v2 的来源站编辑文案与推断 URL 只进清洗报告、不入库；
-所有说明文案由本站原创，第三方出站链接统一 `rel="nofollow noopener noreferrer"`。新增站点字段不全时落为 `needs_info`，
+说明文案由本站原创；提交步骤 / 要求 / 注意事项 / 被拒原因四个板块按站长决策带 SubmitMap 署名引用，
+第三方出站链接统一 `rel="nofollow noopener noreferrer"`。新增站点字段不全时落为 `needs_info`，
 不参与任何榜单。
 
 **增量维护**：新增 / 编辑 / 批量导入共用 `server/utils/submissionSiteWrite.ts` 的字段门禁、

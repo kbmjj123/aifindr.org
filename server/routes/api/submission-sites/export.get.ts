@@ -7,8 +7,10 @@ import { SUBMISSION_ATTRIBUTION } from '~/types/submissionSite'
 
 const EXPORT_FIELDS = [
   'slug', 'name', 'site_url', 'submit_url', 'submit_method', 'domain_rating',
-  'pricing', 'has_free_submission', 'approval', 'approval_bucket',
-  'dofollow_link', 'backlink_required', 'accepts_product_types', 'categories', 'page_rank',
+  'pricing', 'has_free_submission', 'approval', 'approval_time', 'approval_bucket',
+  'dofollow_link', 'backlink_required', 'accepts_product_types',
+  'submit_steps', 'submit_requirements', 'gotchas', 'rejection_reasons',
+  'icon_url', 'screenshot_url', 'categories', 'page_rank',
   'source_snapshot', 'verification_status', 'summary',
 ] as const
 
@@ -58,7 +60,9 @@ export default defineEventHandler(async (event) => {
   setResponseHeader(event, 'content-disposition', `attachment; filename="${filename}"`)
   setResponseHeader(event, 'cache-control', 'public, max-age=3600')
   return {
-    license: 'CC0-1.0 applies to aifindr.org\'s compilation and editorial text only.',
+    license: 'CC0-1.0 applies to aifindr.org\'s compilation and generated summaries. Submission steps, '
+      + 'requirements, gotchas and rejection reasons are quoted from SubmitMap\'s platform pages — '
+      + 'keep their attribution when redistributing.',
     attribution: SUBMISSION_ATTRIBUTION,
     total: rows.length,
     fields: EXPORT_FIELDS,

@@ -30,6 +30,8 @@ export interface SiteWriteInput {
   approval_bucket: ApprovalBucket
   dofollow_link: number | null
   backlink_required: number | null
+  /** 仅用于摘要/事实要点再生成；该列由快照拥有，写入层不落库 */
+  approval_time: string | null
   accepts_product_types: string[]
   categories: string[]
   editorial: string | null
@@ -132,6 +134,9 @@ export function normalizeSiteInput(
     accepts_product_types: has(body, 'accepts_product_types')
       ? parseProductTypes(body.accepts_product_types)
       : (base?.accepts_product_types ?? []),
+    approval_time: has(body, 'approval_time')
+      ? String(body.approval_time ?? '').trim().slice(0, 60) || null
+      : (base?.approval_time ?? null),
     categories,
     editorial: asNullableString(body, 'editorial', base?.editorial ?? null, 4000),
     status: asEnum<SiteStatus>(body, 'status', [...STATUSES], base?.status ?? 'needs_info'),
@@ -168,6 +173,7 @@ export function buildSummary(row: SiteWriteInput): string {
     unknown: 'Pricing was not stated in the snapshot',
   }
   parts.push(`${phrase[row.pricing]}.`)
+  if (row.approval_time) parts.push(`The typical review time is recorded as ${row.approval_time}.`)
   if (row.accepts_product_types.length) {
     const shown = row.accepts_product_types.slice(0, 3)
     const label = shown.length > 1
@@ -199,6 +205,7 @@ export function buildFactPoints(row: SiteWriteInput): string[] {
     points.push(row.backlink_required ? 'A backlink or badge is required' : 'No backlink or badge required')
   }
   points.push(`Submission channel: ${row.submit_method}`)
+  if (row.approval_time) points.push(`Typical approval time: ${row.approval_time}`)
   if (row.accepts_product_types.length) {
     points.push(`Product types listed: ${row.accepts_product_types.join(', ')}`)
   }
@@ -238,6 +245,7 @@ export function siteRowToInput(row: SubmissionSite, categories: string[]): SiteW
     dofollow_link: row.dofollow_link,
     backlink_required: row.backlink_required,
     accepts_product_types: parseProductTypes(row.accepts_product_types),
+    approval_time: row.approval_time ?? null,
     categories,
     editorial: row.editorial,
     status: row.status,

@@ -79,6 +79,7 @@ const rows = computed(() => {
     { label: 'Platform pricing', value: PRICING_LABELS[s.pricing as SubmissionPricing] ?? 'Unknown' },
     { label: 'Free submission', value: s.has_free_submission === 1 ? 'Yes' : s.has_free_submission === 0 ? 'No' : 'Unconfirmed' },
     { label: 'Approval', value: s.approval },
+    { label: 'Approval time', value: s.approval_time || 'Not stated' },
     { label: 'Link type', value: s.dofollow_link === 1 ? 'Dofollow' : s.dofollow_link === 0 ? 'Nofollow' : 'Not stated' },
     { label: 'Backlink / badge', value: s.backlink_required === 1 ? 'Required' : s.backlink_required === 0 ? 'Not required' : 'Not stated' },
     { label: 'Submission channel', value: METHOD_LABELS[s.submit_method as SubmissionMethod] ?? 'Not stated' },
