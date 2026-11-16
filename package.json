@@ -11,9 +11,9 @@
     "typecheck": "nuxi typecheck",
     "sync-d1": "node scripts/sync-to-d1.js",
     "audit": "node scripts/audit-submissions.mjs",
-  "probe": "node scripts/probe-evidence.mjs",
-  "try": "node scripts/try-tool.mjs",
-  "identity": "node scripts/lib/identity.mjs"
+    "probe": "node scripts/probe-evidence.mjs",
+    "try": "node scripts/try-tool.mjs",
+    "identity": "node scripts/lib/identity.mjs"
   },
   "dependencies": {
     "@nuxt/content": "^3.0.0",

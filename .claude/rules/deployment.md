@@ -127,16 +127,27 @@ wrangler secret put OPENPAGERANK_API_KEY   # 可选，配置后每日自动刷�
 
 `wrangler.toml` 设置了 `keep_vars = true`，部署不会清掉已有变量。
 
-### 5.2 数据库迁移（按需）
+### 5.2 数据库迁移（仅旧库需要，先检查再决定）
 
-`schema/init.sql` 用 `CREATE TABLE IF NOT EXISTS`，对**已存在**的库不会补列。若某次改动新增了列（例如 `page_rank` / `page_rank_checked_at`），在部署新代码前需对已有库手动执行一次性迁移：
+`schema/init.sql` 用 `CREATE TABLE IF NOT EXISTS`，对**已存在**的库不会补列。因此迁移脚本只对「建表时还没有 `page_rank` / `page_rank_checked_at` 的旧库」执行一次；**用当前 `init.sql` 新建的库（本地库通常就是这种）已自带这两列，不要执行迁移**。
+
+先检查目标库是否缺列：
 
 ```bash
-wrangler d1 execute aifindr-db --remote --file=./schema/migrate-page-rank.sql
-wrangler d1 execute aifindr-db --local  --file=./schema/migrate-page-rank.sql   # 本地库同理
+wrangler d1 execute aifindr-db --remote --command "SELECT name FROM pragma_table_info('submission_sites') WHERE name LIKE 'page_rank%';"
+wrangler d1 execute aifindr-db --local  --command "SELECT name FROM pragma_table_info('submission_sites') WHERE name LIKE 'page_rank%';"
 ```
 
-> 新库从 `init.sql` 建表已自带这些列，无需迁移；但若之后重跑 ETL 且新 seed 已含新列 INSERT，则导入前必须先完成迁移，否则导入会因「表缺少该列」报错。
+- 返回 `page_rank`、`page_rank_checked_at` 两行 → 已是新结构，**跳过迁移**
+- 返回空结果（表已存在但缺列）→ 才对该环境执行一次迁移：
+
+```bash
+wrangler d1 execute aifindr-db --remote --file=./schema/migrate-page-rank.sql   # 仅当 remote 库缺列
+wrangler d1 execute aifindr-db --local  --file=./schema/migrate-page-rank.sql    # 仅当 local 库缺列
+```
+
+> SQLite 的 `ADD COLUMN` 不支持 `IF NOT EXISTS`，脚本**不幂等**：对已含列的库执行必然报 `SQLITE_ERROR: duplicate column name: page_rank`。看到这个错误说明列已存在、库是完整的，直接跳过即可，无需回滚；不要把它放进常规初始化/部署流程。
+> 若之后重跑 ETL 且新 seed 含新列 INSERT，导入前同样先用上面的检查命令确认列已存在。
 
 ### 5.3 构建并部署
 
