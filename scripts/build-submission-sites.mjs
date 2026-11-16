@@ -13,8 +13,10 @@
  *
  * 合规口径：结构化事实直接使用；summary / fact_points / intro / methodology / faq
  * 由本脚本按本站模板原创生成。来源页面仍不复制：FAQ、lead、徽章 HTML、agent 推广段。
- * v2 内容板块（howToSubmit / requirements / gotchas / rejectionReasons，2026-11-16 批次
- * 经确认入库）逐条净化限长后入库与导出，页面与开放数据集均带 SubmitMap 署名；
+ * v2 引用内容（howToSubmit / requirements / gotchas / rejectionReasons / youNeed /
+ * eligibility / whatYouGet / FAQ / meta.description，2026-11-16 批次经确认入库）逐条净化
+ * 限长后入库与导出，页面与开放数据集均带 SubmitMap 署名；whatYouGet 因源字段为空，
+ * 改从 rawText 的 "What you actually get" 段落提取。徽章 HTML / agent 推广段与
  * platformWebsite / submitPageUrl 仍只进审计报告，不入库。
  *
  * 用法：
@@ -48,7 +50,8 @@ const ATTRIBUTION =
   `Facts sourced from a public directory snapshot (${SNAPSHOT}). `
   + 'Domain rating is a third-party metric, not independently verified by aifindr.org. '
   + 'All editorial text on this page is written by aifindr.org. '
-  + 'Submission steps, requirements, gotchas and rejection reasons are quoted from SubmitMap\'s platform page.'
+  + 'Submission steps, requirements, gotchas, rejection reasons, FAQ and the source lead are '
+  + 'quoted from SubmitMap\'s platform page.'
 
 const VALID_PRICING = new Set(['free', 'freemium', 'paid', 'optional'])
 const APPROVAL_BUCKET = {
@@ -145,6 +148,44 @@ function platformImageUrl(detail, file) {
 function approvalTimeOf(detail) {
   const value = String(detail.approvalTimeFromFaq ?? '').trim()
   return value && value.length <= 60 ? value : ''
+}
+
+/** 来源页 meta 描述：一句话简介，847+ 条覆盖，比模板 summary 更贴近平台实际 */
+function sourceLeadOf(detail) {
+  const value = String(detail?.meta?.description ?? '').replace(/\s+/g, ' ').trim()
+  return value.slice(0, 400)
+}
+
+/** 来源页 OG 图（1200x630），入库供数据导出与后续改写参考，不直接展示 */
+function ogImageOf(detail) {
+  const og = detail?.meta?.openGraph || {}
+  const src = String(og['og:image'] || '')
+  return /^https:\/\//.test(src) ? src : ''
+}
+
+/** rawText 里的 "What you actually get" 段落：跳过 H1 中的同名词，截到下一个标题 */
+function whatYouGetOf(detail) {
+  const text = String(detail?.rawText || '')
+  const re = /what you actually get\s+/gi
+  const end = /\s(?:how to submit|eligibility|gotchas|requirements|faq|spec|similar platforms|let your agent)(?:\s|$)/i
+  let match
+  while ((match = re.exec(text))) {
+    const rest = text.slice(match.index + match[0].length)
+    if (/^visit\s/i.test(rest)) continue
+    const stop = end.exec(rest)
+    return (stop ? rest.slice(0, stop.index) : rest.slice(0, 600))
+      .replace(/\s+/g, ' ').trim().slice(0, 1000)
+  }
+  return ''
+}
+
+/** FAQ 原文问答，只保留 question / answer 两个展示字段 */
+function faqOf(detail) {
+  if (!Array.isArray(detail?.faq)) return []
+  return detail.faq.slice(0, 10).map(item => ({
+    question: String(item?.question ?? '').replace(/\s+/g, ' ').trim().slice(0, 200),
+    answer: String(item?.answer ?? '').replace(/\s+/g, ' ').trim().slice(0, 1200),
+  })).filter(item => item.question && item.answer)
 }
 
 function hostnameOf(url) {
@@ -669,6 +710,12 @@ for (let index = 0; index < listItems.length; index++) {
     rejection_reasons: JSON.stringify(textListOf(detail.rejectionReasons, { maxItems: 6, maxLen: 400 })),
     icon_url: platformImageUrl(detail, 'icon.png'),
     screenshot_url: platformImageUrl(detail, 'shot.webp'),
+    og_image_url: ogImageOf(detail),
+    source_lead: sourceLeadOf(detail),
+    what_you_get: whatYouGetOf(detail),
+    you_need: JSON.stringify(textListOf(detail.youNeed, { maxItems: 8, maxLen: 400 })),
+    eligibility: String(detail.eligibility ?? '').replace(/\s+/g, ' ').trim().slice(0, 1600),
+    faq: JSON.stringify(faqOf(detail)),
     list_order: index,
     is_featured: index < 25 ? 1 : 0,
     summary: '',
@@ -812,8 +859,9 @@ const SITE_COLUMNS = [
   'has_free_submission', 'approval', 'approval_time', 'approval_bucket', 'dofollow_link',
   'backlink_required',
   'accepts_product_types', 'submit_steps', 'submit_requirements', 'gotchas', 'rejection_reasons',
-  'list_order', 'is_featured', 'summary', 'fact_points', 'editorial', 'attribution',
-  'source_url', 'source_snapshot', 'icon_url', 'screenshot_url',
+  'you_need', 'what_you_get', 'eligibility', 'faq',
+  'list_order', 'is_featured', 'summary', 'source_lead', 'fact_points', 'editorial', 'attribution',
+  'source_url', 'source_snapshot', 'icon_url', 'screenshot_url', 'og_image_url',
   'data_source', 'verification_status', 'last_checked_at',
   'page_rank', 'page_rank_checked_at',
   'status', 'indexed', 'click_count', 'created_at', 'updated_at',
@@ -864,8 +912,9 @@ const publicFields = [
   'has_free_submission', 'approval', 'approval_time', 'approval_bucket', 'dofollow_link',
   'backlink_required',
   'accepts_product_types', 'submit_steps', 'submit_requirements', 'gotchas', 'rejection_reasons',
-  'icon_url', 'screenshot_url',
-  'summary', 'source_url', 'source_snapshot', 'verification_status',
+  'you_need', 'what_you_get', 'eligibility', 'faq',
+  'icon_url', 'screenshot_url', 'og_image_url',
+  'summary', 'source_lead', 'source_url', 'source_snapshot', 'verification_status',
 ]
 const openData = {
   license: 'CC0-1.0 applies to aifindr.org\'s compilation and generated summaries. Submission steps, '
@@ -924,6 +973,12 @@ const report = {
     approvalTime: sites.filter(s => s.approval_time).length,
     icons: sites.filter(s => s.icon_url).length,
     screenshots: sites.filter(s => s.screenshot_url).length,
+    ogImages: sites.filter(s => s.og_image_url).length,
+    sourceLeads: sites.filter(s => s.source_lead).length,
+    whatYouGet: sites.filter(s => s.what_you_get).length,
+    youNeed: sites.filter(s => s.you_need !== '[]').length,
+    eligibility: sites.filter(s => s.eligibility).length,
+    faq: sites.filter(s => s.faq !== '[]').length,
   },
   submitPageResolution: stats.submitPageResolution,
   issues: {
@@ -933,7 +988,8 @@ const report = {
   listSizes: Object.fromEntries(lists.map(list => [list.slug, list.item_count])),
   note: 'platforms.json / platforms.csv are lossy exports and are intentionally not used as inputs. '
     + 'Quoted content (howToSubmit / requirements / gotchas / rejectionReasons) is sanitized and imported '
-    + 'with SubmitMap attribution; FAQ / lead / badge HTML / agent pitch are never imported; '
+    + 'with SubmitMap attribution; source meta lead, youNeed, eligibility, rawText-derived '
+    + 'whatYouGet and FAQ are imported the same way; badge HTML / agent pitch are never imported; '
     + 'inferred submitPageUrl / platformWebsite stay audit-only.',
 }
 mkdirSync(resolve(ROOT, 'reports'), { recursive: true })

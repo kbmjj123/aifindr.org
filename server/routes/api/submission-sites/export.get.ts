@@ -10,8 +10,9 @@ const EXPORT_FIELDS = [
   'pricing', 'has_free_submission', 'approval', 'approval_time', 'approval_bucket',
   'dofollow_link', 'backlink_required', 'accepts_product_types',
   'submit_steps', 'submit_requirements', 'gotchas', 'rejection_reasons',
-  'icon_url', 'screenshot_url', 'categories', 'page_rank',
-  'source_snapshot', 'verification_status', 'summary',
+  'you_need', 'what_you_get', 'eligibility', 'faq',
+  'icon_url', 'screenshot_url', 'og_image_url', 'categories', 'page_rank',
+  'source_snapshot', 'verification_status', 'summary', 'source_lead',
 ] as const
 
 export default defineEventHandler(async (event) => {
@@ -61,8 +62,8 @@ export default defineEventHandler(async (event) => {
   setResponseHeader(event, 'cache-control', 'public, max-age=3600')
   return {
     license: 'CC0-1.0 applies to aifindr.org\'s compilation and generated summaries. Submission steps, '
-      + 'requirements, gotchas and rejection reasons are quoted from SubmitMap\'s platform pages — '
-      + 'keep their attribution when redistributing.',
+      + 'requirements, gotchas, rejection reasons, FAQ and the source lead are quoted from '
+      + 'SubmitMap\'s platform pages — keep their attribution when redistributing.',
     attribution: SUBMISSION_ATTRIBUTION,
     total: rows.length,
     fields: EXPORT_FIELDS,

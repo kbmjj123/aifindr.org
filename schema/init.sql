@@ -207,9 +207,14 @@ CREATE TABLE IF NOT EXISTS submission_sites (
   submit_requirements TEXT DEFAULT '[]', -- JSON 数组；表单要求清单（同上）
   gotchas             TEXT DEFAULT '[]', -- JSON 数组；提交注意事项（同上）
   rejection_reasons   TEXT DEFAULT '[]', -- JSON 数组；被拒原因（同上）
+  you_need            TEXT DEFAULT '[]', -- JSON 数组；详细准入条件（同上）
+  what_you_get        TEXT,              -- 从 rawText 提取的 "What you actually get" 段落
+  eligibility         TEXT,              -- 准入说明原文（含产品类型）
+  faq                 TEXT DEFAULT '[]', -- JSON 数组；来源 FAQ 问答（同上）
   list_order          INTEGER DEFAULT 0,
   is_featured         INTEGER DEFAULT 0,
   summary             TEXT,             -- 本站原创事实摘要
+  source_lead         TEXT,             -- 来源页 meta 描述（一句话简介，带署名引用）
   fact_points         TEXT,             -- JSON 数组，结构化事实要点
   editorial           TEXT,             -- 人工补充的原创说明；有值时优先于 summary
   attribution         TEXT,             -- 来源署名 + 快照口径
@@ -217,6 +222,7 @@ CREATE TABLE IF NOT EXISTS submission_sites (
   source_snapshot     TEXT,             -- YYYY-MM-DD
   icon_url            TEXT,             -- 平台图标（来源快照 CDN）
   screenshot_url      TEXT,             -- 平台首页截图（来源快照 CDN）
+  og_image_url        TEXT,             -- 来源页 OG 图（1200x630，仅供导出与改写参考）
   data_source         TEXT DEFAULT 'snapshot'
                       CHECK(data_source IN ('snapshot','user','admin')),
   verification_status TEXT DEFAULT 'snapshot'

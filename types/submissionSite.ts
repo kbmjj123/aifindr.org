@@ -44,6 +44,18 @@ export interface SubmissionSite {
   icon_url: string | null
   /** 平台首页截图（来源快照 CDN） */
   screenshot_url: string | null
+  /** 来源页 OG 图（1200x630，仅供导出与改写参考） */
+  og_image_url: string | null
+  /** 来源页 meta 描述（一句话简介，带署名引用） */
+  source_lead: string | null
+  /** 从 rawText 提取的 "What you actually get" 段落 */
+  what_you_get: string | null
+  /** JSON 数组字符串；详细准入条件（带 SubmitMap 署名引用） */
+  you_need: string
+  /** 准入说明原文（含产品类型） */
+  eligibility: string | null
+  /** JSON 数组字符串；来源 FAQ 问答 [{ question, answer }]（带 SubmitMap 署名引用） */
+  faq: string
   list_order: number
   is_featured: number
   /** 本站原创事实摘要，不复制来源页面文案 */
@@ -189,7 +201,8 @@ export const SUBMISSION_ATTRIBUTION =
   'Facts sourced from a public directory snapshot (2026-11-16). '
   + 'Domain rating is a third-party metric, not independently verified by aifindr.org. '
   + 'All editorial text on this page is written by aifindr.org. '
-  + 'Submission steps, requirements, gotchas and rejection reasons are quoted from SubmitMap\'s platform page.'
+  + 'Submission steps, requirements, gotchas, rejection reasons, FAQ and the source lead '
+  + 'are quoted from SubmitMap\'s platform page.'
 
 export const SUBMISSION_CATEGORIES: { slug: string; name: string; dimension: ListDimension }[] = [
   { slug: 'ai-tool-directories', name: 'AI Tool Directories', dimension: 'topic' },

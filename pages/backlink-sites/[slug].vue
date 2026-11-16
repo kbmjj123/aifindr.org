@@ -19,7 +19,7 @@
                 {{ site.name }}
               </h1>
               <p class="font-body text-[13px] leading-relaxed mt-1" style="color: var(--color-text-secondary)">
-                {{ site.editorial || site.summary }}
+                {{ site.editorial || site.source_lead || site.summary }}
               </p>
             </div>
           </div>
@@ -47,6 +47,29 @@
         </header>
 
         <!-- 全部抓取内容按原样填入，不做折叠或删减 -->
+        <section v-if="site.what_you_get" aria-labelledby="what-you-get" class="mb-8">
+          <h2 id="what-you-get" class="font-sans font-bold text-[16px] mb-3" style="color: var(--color-text-primary)">
+            What you actually get
+          </h2>
+          <p class="font-body text-[12px] leading-relaxed" style="color: var(--color-text-secondary)">
+            {{ site.what_you_get }}
+          </p>
+        </section>
+
+        <section v-if="youNeed.length || site.eligibility" aria-labelledby="who-it-accepts" class="mb-8">
+          <h2 id="who-it-accepts" class="font-sans font-bold text-[16px] mb-3" style="color: var(--color-text-primary)">
+            Who it accepts
+          </h2>
+          <ul v-if="youNeed.length" class="font-body text-[12px] leading-relaxed space-y-1.5 mb-3"
+            style="color: var(--color-text-secondary)">
+            <li v-for="item in youNeed" :key="item">· {{ item }}</li>
+          </ul>
+          <p v-if="site.eligibility" class="font-body text-[12px] leading-relaxed"
+            style="color: var(--color-text-secondary)">
+            {{ site.eligibility }}
+          </p>
+        </section>
+
         <section v-if="hasQuotedContent" aria-labelledby="how-to-submit" class="mb-8">
           <h2 id="how-to-submit" class="font-sans font-bold text-[16px] mb-3" style="color: var(--color-text-primary)">
             How to submit
@@ -83,8 +106,9 @@
             </div>
           </div>
           <p class="font-body text-[11px] mt-4" style="color: var(--color-text-muted)">
-            Steps, requirements, gotchas and rejection reasons are quoted from this platform's
-            {{ site.source_snapshot }} SubmitMap page. Details can change without notice — verify on the live site.
+            The overview, eligibility, steps, requirements, gotchas, rejection reasons and FAQ below are quoted from
+            this platform's {{ site.source_snapshot }} SubmitMap page. Details can change without notice — verify on
+            the live site.
           </p>
         </section>
 
@@ -275,13 +299,24 @@ const submitSteps = computed(() => jsonList(site.value?.submit_steps))
 const requirements = computed(() => jsonList(site.value?.submit_requirements))
 const gotchas = computed(() => jsonList(site.value?.gotchas))
 const rejectionReasons = computed(() => jsonList(site.value?.rejection_reasons))
+const youNeed = computed(() => jsonList(site.value?.you_need))
 const hasQuotedContent = computed(() =>
   submitSteps.value.length > 0 || requirements.value.length > 0
   || gotchas.value.length > 0 || rejectionReasons.value.length > 0,
 )
 
-/** 改写阶段填入；FAQ 区块与 FAQPage schema 在填入后自动启用 */
-const faqItems = ref<FaqItem[]>([])
+/** FAQ 原文来自快照，区块与 FAQPage schema 同步启用；后续改写只需替换数据 */
+const faqItems = computed<FaqItem[]>(() => {
+  try {
+    const parsed = JSON.parse(String(site.value?.faq || '[]')) as unknown
+    if (!Array.isArray(parsed)) return []
+    return parsed
+      .filter((v): v is FaqItem => typeof v === 'object' && v !== null
+        && typeof (v as FaqItem).question === 'string'
+        && typeof (v as FaqItem).answer === 'string')
+      .map(v => ({ question: v.question, answer: v.answer }))
+  } catch { return [] }
+})
 const openFaq = ref<number | null>(null)
 function toggleFaq(i: number) { openFaq.value = openFaq.value === i ? null : i }
 
