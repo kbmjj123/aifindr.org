@@ -211,6 +211,25 @@ CREATE TABLE IF NOT EXISTS submission_sites (
   what_you_get        TEXT,              -- 从 rawText 提取的 "What you actually get" 段落
   eligibility         TEXT,              -- 准入说明原文（含产品类型）
   faq                 TEXT DEFAULT '[]', -- JSON 数组；来源 FAQ 问答（同上）
+  -- 以下 14 列为改写稿镜像：有值时页面优先展示，缺失回退上面的原始字段
+  rw_source_lead      TEXT,             -- 改写后的一句话简介
+  rw_what_you_get     TEXT,             -- 改写后的 What you actually get
+  rw_you_need         TEXT DEFAULT '[]', -- JSON 数组；改写后的准入条件
+  rw_eligibility      TEXT,             -- 改写后的准入说明
+  rw_submit_steps     TEXT DEFAULT '[]', -- JSON 数组；改写后的提交步骤
+  rw_submit_requirements TEXT DEFAULT '[]', -- JSON 数组；改写后的表单要求
+  rw_rejection_reasons TEXT DEFAULT '[]', -- JSON 数组；改写后的被拒原因
+  rw_gotchas          TEXT DEFAULT '[]', -- JSON 数组；改写后的注意事项
+  rw_faq              TEXT DEFAULT '[]', -- JSON 数组；改写后的问答
+  rw_summary          TEXT,             -- 本站摘要的逐站精修
+  rw_fact_points      TEXT DEFAULT '[]', -- JSON 数组；事实要点的逐站精修
+  rw_submission_checks TEXT DEFAULT '[]', -- JSON 数组；提交建议的逐站精修
+  rw_seo_title        TEXT,             -- 逐站定制的 SEO 标题
+  rw_seo_description  TEXT,             -- 逐站定制的 SEO 描述
+  -- 以下 3 列为图片本地化后的 R2 地址，缺失回退原始 CDN 地址
+  r2_icon_url         TEXT,             -- 图标的 R2 地址
+  r2_screenshot_url   TEXT,             -- 首页截图的 R2 地址
+  r2_og_image_url     TEXT,             -- OG 图的 R2 地址
   list_order          INTEGER DEFAULT 0,
   is_featured         INTEGER DEFAULT 0,
   summary             TEXT,             -- 本站原创事实摘要

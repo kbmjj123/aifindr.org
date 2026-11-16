@@ -56,6 +56,24 @@ export interface SubmissionSite {
   eligibility: string | null
   /** JSON 数组字符串；来源 FAQ 问答 [{ question, answer }]（带 SubmitMap 署名引用） */
   faq: string
+  /** 改写稿镜像列；有值时页面优先展示，缺失回退原始字段 */
+  rw_source_lead: string | null
+  rw_what_you_get: string | null
+  rw_you_need: string
+  rw_eligibility: string | null
+  rw_submit_steps: string
+  rw_submit_requirements: string
+  rw_rejection_reasons: string
+  rw_gotchas: string
+  rw_faq: string
+  rw_summary: string | null
+  rw_fact_points: string
+  rw_submission_checks: string
+  rw_seo_title: string | null
+  rw_seo_description: string | null
+  r2_icon_url: string | null
+  r2_screenshot_url: string | null
+  r2_og_image_url: string | null
   list_order: number
   is_featured: number
   /** 本站原创事实摘要，不复制来源页面文案 */
