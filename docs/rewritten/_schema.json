@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "arrayLimits": {
+    "rw_you_need": 8, "rw_submit_steps": 8, "rw_submit_requirements": 12,
+    "rw_rejection_reasons": 6, "rw_gotchas": 6, "rw_faq": 10,
+    "rw_fact_points": 8, "rw_submission_checks": 8
+  },
+  "textLimits": {
+    "rw_source_lead": 158, "rw_what_you_get": 800, "rw_eligibility": 800,
+    "rw_seo_title": 60, "rw_seo_description": 158, "rw_summary": 600
+  },
+  "arrayItemLimits": {
+    "rw_you_need": 400, "rw_submit_steps": 600, "rw_submit_requirements": 200,
+    "rw_rejection_reasons": 400, "rw_gotchas": 600, "rw_faq": 1200,
+    "rw_fact_points": 200, "rw_submission_checks": 300
+  },
+  "factBlacklist": [
+    "domain_rating", "page_rank", "pricing", "has_free_submission", "approval",
+    "approval_time", "dofollow_link", "backlink_required", "submit_method",
+    "accepts_product_types", "source_snapshot"
+  ],
+  "forbiddenPhrases": ["SubmitMap", "submitmap.com", "badge/listed-light.svg"],
+  "fields": [
+    "rw_source_lead", "rw_what_you_get", "rw_you_need", "rw_eligibility",
+    "rw_submit_steps", "rw_submit_requirements", "rw_rejection_reasons", "rw_gotchas",
+    "rw_faq", "rw_summary", "rw_fact_points", "rw_submission_checks",
+    "rw_seo_title", "rw_seo_description"
+  ]
+}
