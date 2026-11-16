@@ -3,8 +3,13 @@ export function useApi() {
 
   function getBase() {
     if (!import.meta.server) return ''
-    if (config.apiBase) return config.apiBase
     const { origin } = useRequestURL()
+    // SSR 用 useRequestFetch() 进程内调用，必须走同源。
+    // 本地 .env 里的 8787 是历史遗留（wrangler dev 端口），本地并无该服务，
+    // 直接用会 fetch failed 导致页面落空态；生产环境的 https apiBase 保留原行为。
+    if (config.apiBase && !/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(config.apiBase)) {
+      return config.apiBase
+    }
     return origin
   }
 

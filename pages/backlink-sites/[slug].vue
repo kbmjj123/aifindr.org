@@ -46,6 +46,18 @@
           </p>
         </header>
 
+        <div v-if="site.screenshot_url" class="mb-8 rounded-lg overflow-hidden"
+          :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-surface)' }">
+          <div class="w-full overflow-hidden" style="aspect-ratio: 16 / 9; background: var(--color-bg-elevated)">
+            <img :src="site.screenshot_url"
+              :alt="`${site.name} homepage as captured in the ${site.source_snapshot} snapshot`"
+              class="w-full h-full object-cover object-top block" loading="lazy" decoding="async" />
+          </div>
+          <p class="font-body text-[11px] p-2" style="color: var(--color-text-secondary)">
+            Homepage screenshot from the {{ site.source_snapshot }} snapshot (via SubmitMap).
+          </p>
+        </div>
+
         <!-- 全部抓取内容按原样填入，不做折叠或删减 -->
         <section v-if="site.what_you_get" aria-labelledby="what-you-get" class="mb-8">
           <h2 id="what-you-get" class="font-sans font-bold text-[16px] mb-3" style="color: var(--color-text-primary)">
@@ -76,11 +88,11 @@
           </h2>
           <ol v-if="submitSteps.length" class="list-none pl-0 font-body text-[12px] leading-relaxed space-y-2"
             style="color: var(--color-text-secondary)">
-            <li v-for="(step, i) in submitSteps" :key="i" class="flex gap-3">
-              <span class="shrink-0 font-sans font-bold" style="color: var(--color-accent)">
-                {{ String(i + 1).padStart(2, '0') }}
+            <li v-for="(step, i) in formattedSteps" :key="i" class="flex gap-3">
+              <span v-if="step.num" class="shrink-0 font-sans font-bold" style="color: var(--color-accent)">
+                {{ step.num }}
               </span>
-              <span>{{ step }}</span>
+              <span>{{ step.text }}</span>
             </li>
           </ol>
           <div class="mt-5 space-y-5">
@@ -192,10 +204,19 @@
             style="color: var(--color-text-primary)">Similar platforms</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <NuxtLink v-for="item in related" :key="item.slug" :to="`/backlink-sites/${item.slug}`"
-              class="rounded-lg p-3 no-underline font-body text-[12px]"
+              class="flex items-center gap-3 rounded-lg p-3 no-underline font-body text-[12px]"
               :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
-              {{ item.name }}
-              <span v-if="item.domain_rating !== null" class="ml-2" style="color: var(--color-text-muted)">
+              <img v-if="item.icon_url" :src="item.icon_url" :alt="`${item.name} logo`" width="28" height="28"
+                class="w-7 h-7 rounded-md shrink-0 object-contain"
+                style="border: 1px solid var(--color-border); background: var(--color-bg-elevated)" loading="lazy" />
+              <span v-else class="w-7 h-7 rounded-md shrink-0 flex items-center justify-center font-sans font-bold text-[13px]"
+                style="border: 1px solid var(--color-border); background: var(--color-bg-elevated); color: var(--color-text-muted)">
+                {{ (item.name || '?')[0] }}
+              </span>
+              <h3 class="min-w-0 flex-1 font-sans font-bold text-[13px] m-0" style="color: var(--color-text-primary)">
+                {{ item.name }}
+              </h3>
+              <span v-if="item.domain_rating !== null" class="shrink-0" style="color: var(--color-text-muted)">
                 DR {{ item.domain_rating }}
               </span>
             </NuxtLink>
@@ -210,17 +231,6 @@
       <aside class="w-full lg:w-[290px] shrink-0">
         <div class="lg:sticky lg:top-[72px]">
           <SubmissionFacts :site="site" />
-          <div v-if="site.screenshot_url" class="mt-4 rounded-lg overflow-hidden"
-            :style="{ border: '1px solid var(--color-border)' }">
-            <div class="w-full overflow-hidden" style="aspect-ratio: 16 / 10; background: var(--color-bg-elevated)">
-              <img :src="site.screenshot_url"
-                :alt="`${site.name} homepage as captured in the ${site.source_snapshot} snapshot`"
-                class="w-full h-full object-cover object-top block" loading="lazy" decoding="async" />
-            </div>
-            <p class="font-body text-[11px] p-2" style="color: var(--color-text-secondary)">
-              Homepage screenshot from the {{ site.source_snapshot }} snapshot (via SubmitMap).
-            </p>
-          </div>
           <div class="mt-4 rounded-lg p-4"
             :style="{ border: '1px solid var(--color-accent-border)', background: 'var(--color-bg-surface)' }">
             <h3 class="font-sans font-bold text-[13px] mb-2" style="color: var(--color-text-primary)">
@@ -251,7 +261,7 @@ interface DetailResponse {
   site: SubmissionSite | null
   categories: string[]
   lists: { slug: string; title: string; dimension: string }[]
-  related: { slug: string; name: string; domain_rating: number | null }[]
+  related: { slug: string; name: string; domain_rating: number | null; icon_url: string | null }[]
 }
 
 const route = useRoute()
@@ -296,6 +306,13 @@ function jsonList(value: unknown): string[] {
   } catch { return [] }
 }
 const submitSteps = computed(() => jsonList(site.value?.submit_steps))
+// 步骤文本自身已带序号（"1 ..."），拆出来做高亮，避免与列表序号重复显示
+const formattedSteps = computed(() => submitSteps.value.map(step => {
+  const match = /^(\d+)\s+(.*)$/.exec(step)
+  return match
+    ? { num: match[1]!.padStart(2, '0'), text: match[2]! }
+    : { num: '', text: step }
+}))
 const requirements = computed(() => jsonList(site.value?.submit_requirements))
 const gotchas = computed(() => jsonList(site.value?.gotchas))
 const rejectionReasons = computed(() => jsonList(site.value?.rejection_reasons))

@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
   `).bind(slug).all<{ slug: string; title: string; dimension: string }>()
 
   const { results: relatedRows } = await env.DB.prepare(`
-    SELECT s.slug, s.name, s.domain_rating, s.pricing, r.weight
+    SELECT s.slug, s.name, s.domain_rating, s.pricing, s.icon_url, r.weight
     FROM site_relations r
     JOIN submission_sites s ON s.slug = r.related_slug AND s.status = 'active'
     WHERE r.site_slug = ? AND r.relation_type = 'similar' AND r.weight >= 3
