@@ -1,34 +1,34 @@
 <template>
   <div class="rounded-lg p-4" :style="{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }">
-    <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+    <div class="flex flex-row items-center gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-x-visible">
       <input
-        class="input sm:min-w-[220px] sm:flex-1"
+        class="input min-w-[220px] flex-1"
         :value="model.q"
         type="search"
         placeholder="Search a platform or domain..."
         aria-label="Search submission platforms"
         @input="set('q', ($event.target as HTMLInputElement).value)"
       />
-      <select class="select sm:w-auto sm:min-w-[130px]" :value="model.pricing" aria-label="Pricing"
+      <select class="select select-inline min-w-[130px]" :value="model.pricing" aria-label="Pricing"
         @change="set('pricing', ($event.target as HTMLSelectElement).value)">
         <option value="">All pricing</option>
         <option value="free">Free ({{ facets.pricing.free ?? 0 }})</option>
         <option value="freemium">Freemium ({{ facets.pricing.freemium ?? 0 }})</option>
         <option value="paid">Paid ({{ facets.pricing.paid ?? 0 }})</option>
       </select>
-      <select class="select sm:w-auto sm:min-w-[130px]" :value="model.dofollow" aria-label="Link type"
+      <select class="select select-inline min-w-[130px]" :value="model.dofollow" aria-label="Link type"
         @change="set('dofollow', ($event.target as HTMLSelectElement).value)">
         <option value="">Any link type</option>
         <option value="yes">Dofollow ({{ facets.dofollow.yes ?? 0 }})</option>
         <option value="no">Nofollow ({{ facets.dofollow.no ?? 0 }})</option>
       </select>
-      <select class="select sm:w-auto sm:min-w-[145px]" :value="model.backlink" aria-label="Backlink requirement"
+      <select class="select select-inline min-w-[145px]" :value="model.backlink" aria-label="Backlink requirement"
         @change="set('backlink', ($event.target as HTMLSelectElement).value)">
         <option value="">Any requirement</option>
         <option value="no">No backlink ({{ facets.backlinkRequired.no ?? 0 }})</option>
         <option value="yes">Backlink required ({{ facets.backlinkRequired.yes ?? 0 }})</option>
       </select>
-      <select class="select sm:w-auto sm:min-w-[140px]" :value="model.approval" aria-label="Approval speed"
+      <select class="select select-inline min-w-[140px]" :value="model.approval" aria-label="Approval speed"
         @change="set('approval', ($event.target as HTMLSelectElement).value)">
         <option value="">Any approval time</option>
         <option value="fast">Within 2 days ({{ facets.approvalBucket.fast ?? 0 }})</option>
@@ -36,7 +36,7 @@
         <option value="month">Within a month ({{ facets.approvalBucket.month ?? 0 }})</option>
         <option value="slow">Longer ({{ facets.approvalBucket.slow ?? 0 }})</option>
       </select>
-      <select class="select sm:w-auto sm:min-w-[140px]" :value="model.method" aria-label="Submission channel"
+      <select class="select select-inline min-w-[140px]" :value="model.method" aria-label="Submission channel"
         @change="set('method', ($event.target as HTMLSelectElement).value)">
         <option value="">Any channel</option>
         <option value="form">Online form</option>
@@ -46,14 +46,14 @@
         <option value="community_post">Community post</option>
         <option value="external">External page</option>
       </select>
-      <select class="select sm:w-auto sm:min-w-[170px]" :value="model.category" aria-label="Topic"
+      <select class="select select-inline min-w-[170px]" :value="model.category" aria-label="Topic"
         @change="set('category', ($event.target as HTMLSelectElement).value)">
         <option value="">All topics</option>
         <option v-for="option in categoryOptions" :key="option.slug" :value="option.slug">
           {{ option.name }} ({{ option.count }})
         </option>
       </select>
-      <select class="select sm:w-auto sm:min-w-[150px]" :value="model.sort" aria-label="Sort order"
+      <select class="select select-inline min-w-[150px]" :value="model.sort" aria-label="Sort order"
         @change="set('sort', ($event.target as HTMLSelectElement).value)">
         <option value="dr">Highest DR first</option>
         <option value="fast">Fastest approval</option>

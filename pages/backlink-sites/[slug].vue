@@ -16,10 +16,8 @@
         </p>
 
         <div class="flex flex-wrap gap-2 mb-8">
-          <a v-if="site.submit_url" :href="site.submit_url" target="_blank" rel="nofollow noopener noreferrer"
-            class="btn-primary no-underline">Go to submission page ↗</a>
           <a v-if="site.site_url" :href="site.site_url" target="_blank" rel="nofollow noopener noreferrer"
-            class="btn-secondary no-underline">Visit website ↗</a>
+            class="btn-primary no-underline">Visit website ↗</a>
         </div>
         <p v-if="!site.submit_url" class="font-body text-[11px] mb-8" style="color: var(--color-warning)">
           A direct submission URL was not recorded in this snapshot. Visit the platform site to find the current form.

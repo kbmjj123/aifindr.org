@@ -427,7 +427,7 @@ body::before {
 ═══════════════════════════════════════════════ */
 .btn-primary {
   background: var(--color-accent);
-  color: #000;
+  color: #fff;
   height: 38px;
   padding: 0 18px;
   border-radius: var(--radius-md);
@@ -531,7 +531,11 @@ body::before {
 
 .select {
   height: 40px;
-  background: var(--color-bg-input);
+  background-color: var(--color-bg-input);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 0 12px;
@@ -548,6 +552,11 @@ body::before {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px var(--color-accent-glow);
   outline: none;
+}
+/* 横向筛选栏中的下拉：按内容宽度并排，不撑满整行 */
+.select.select-inline {
+  width: auto;
+  flex: 0 0 auto;
 }
 
 /* ═══════════════════════════════════════════════
