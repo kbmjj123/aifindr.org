@@ -1,0 +1,6790 @@
+{
+  "generatedAt": "2026-11-16T09:16:35.450Z",
+  "total": 848,
+  "sites": [
+    {
+      "slug": "smithery",
+      "name": "Smithery",
+      "score": 33.9,
+      "dr": 77,
+      "featured": false,
+      "lists": 10
+    },
+    {
+      "slug": "lobehub-mcp",
+      "name": "LobeHub MCP Marketplace",
+      "score": 33.7,
+      "dr": 74,
+      "featured": false,
+      "lists": 10
+    },
+    {
+      "slug": "dev-community",
+      "name": "DEV Community",
+      "score": 33.6,
+      "dr": 91,
+      "featured": true,
+      "lists": 8
+    },
+    {
+      "slug": "docker-mcp-catalog",
+      "name": "Docker MCP Catalog",
+      "score": 33.6,
+      "dr": 92,
+      "featured": true,
+      "lists": 8
+    },
+    {
+      "slug": "product-hunt",
+      "name": "Product Hunt",
+      "score": 33.6,
+      "dr": 91,
+      "featured": true,
+      "lists": 8
+    },
+    {
+      "slug": "awesome-mcp-servers",
+      "name": "Awesome MCP Servers",
+      "score": 30.9,
+      "dr": 97,
+      "featured": true,
+      "lists": 7
+    },
+    {
+      "slug": "peerpush",
+      "name": "PeerPush",
+      "score": 30.7,
+      "dr": 74,
+      "featured": false,
+      "lists": 9
+    },
+    {
+      "slug": "libhunt",
+      "name": "LibHunt",
+      "score": 30.3,
+      "dr": 66,
+      "featured": false,
+      "lists": 9
+    },
+    {
+      "slug": "glama",
+      "name": "Glama MCP Registry",
+      "score": 27.7,
+      "dr": 73,
+      "featured": false,
+      "lists": 8
+    },
+    {
+      "slug": "cursor-directory",
+      "name": "Cursor Directory",
+      "score": 27.6,
+      "dr": 71,
+      "featured": false,
+      "lists": 8
+    },
+    {
+      "slug": "mcp-registry",
+      "name": "MCP Registry",
+      "score": 27.6,
+      "dr": 91,
+      "featured": true,
+      "lists": 6
+    },
+    {
+      "slug": "pulsemcp",
+      "name": "PulseMCP",
+      "score": 27.5,
+      "dr": 70,
+      "featured": false,
+      "lists": 8
+    },
+    {
+      "slug": "indie-hackers",
+      "name": "Indie Hackers",
+      "score": 27.1,
+      "dr": 81,
+      "featured": true,
+      "lists": 6
+    },
+    {
+      "slug": "mcp-directory",
+      "name": "MCP.Directory",
+      "score": 25.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 8
+    },
+    {
+      "slug": "tulimoa",
+      "name": "Tulimoa",
+      "score": 25.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 8
+    },
+    {
+      "slug": "orynth",
+      "name": "Orynth",
+      "score": 24.7,
+      "dr": 74,
+      "featured": false,
+      "lists": 7
+    },
+    {
+      "slug": "toolify",
+      "name": "Toolify",
+      "score": 24.7,
+      "dr": 73,
+      "featured": false,
+      "lists": 7
+    },
+    {
+      "slug": "show-hn",
+      "name": "Show HN",
+      "score": 24.6,
+      "dr": 91,
+      "featured": true,
+      "lists": 5
+    },
+    {
+      "slug": "topai-tools",
+      "name": "TopAI.tools",
+      "score": 24.3,
+      "dr": 65,
+      "featured": false,
+      "lists": 7
+    },
+    {
+      "slug": "hashnode",
+      "name": "Hashnode",
+      "score": 24.2,
+      "dr": 83,
+      "featured": true,
+      "lists": 5
+    },
+    {
+      "slug": "startup-fame",
+      "name": "Startup Fame",
+      "score": 24.2,
+      "dr": 83,
+      "featured": true,
+      "lists": 5
+    },
+    {
+      "slug": "startuphub-ai",
+      "name": "StartupHub.ai",
+      "score": 24.2,
+      "dr": 63,
+      "featured": false,
+      "lists": 7
+    },
+    {
+      "slug": "microlaunch",
+      "name": "MicroLaunch",
+      "score": 24.1,
+      "dr": 62,
+      "featured": false,
+      "lists": 7
+    },
+    {
+      "slug": "stackshare",
+      "name": "StackShare",
+      "score": 24,
+      "dr": 79,
+      "featured": true,
+      "lists": 5
+    },
+    {
+      "slug": "saasgrave-launches",
+      "name": "Saasgrave Launches",
+      "score": 23.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 7
+    },
+    {
+      "slug": "peerlist",
+      "name": "Peerlist",
+      "score": 21.9,
+      "dr": 77,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "good-ai-tools",
+      "name": "Good AI Tools",
+      "score": 21.7,
+      "dr": 74,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "land-book",
+      "name": "Landbook",
+      "score": 21.7,
+      "dr": 73,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "launchigniter",
+      "name": "LaunchIgniter",
+      "score": 21.7,
+      "dr": 74,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "mcp-server-finder",
+      "name": "MCP Server Finder",
+      "score": 21.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 7
+    },
+    {
+      "slug": "freebie-supply",
+      "name": "Freebie Supply",
+      "score": 21.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "nick-launches",
+      "name": "Nick Launches",
+      "score": 21.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "sourceforge",
+      "name": "SourceForge",
+      "score": 21.6,
+      "dr": 92,
+      "featured": true,
+      "lists": 4
+    },
+    {
+      "slug": "deeplaunch",
+      "name": "DeepLaunch.io",
+      "score": 21.5,
+      "dr": 70,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "opentools",
+      "name": "OpenTools",
+      "score": 21.5,
+      "dr": 69,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "sidebar-io",
+      "name": "Sidebar",
+      "score": 21.5,
+      "dr": 70,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "devpost",
+      "name": "Devpost",
+      "score": 21.4,
+      "dr": 88,
+      "featured": true,
+      "lists": 4
+    },
+    {
+      "slug": "indie-page",
+      "name": "Indie Page",
+      "score": 21.4,
+      "dr": 67,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "acid-tools",
+      "name": "Acid Tools",
+      "score": 21.3,
+      "dr": 66,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "spotsaas",
+      "name": "SpotSaaS",
+      "score": 21.3,
+      "dr": 66,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "f6s",
+      "name": "F6S",
+      "score": 21.2,
+      "dr": 83,
+      "featured": true,
+      "lists": 4
+    },
+    {
+      "slug": "dang-ai",
+      "name": "Dang.ai",
+      "score": 21.1,
+      "dr": 82,
+      "featured": true,
+      "lists": 4
+    },
+    {
+      "slug": "tap4-ai",
+      "name": "Tap4 AI",
+      "score": 21.1,
+      "dr": 61,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "twelve-tools",
+      "name": "Twelve Tools",
+      "score": 21.1,
+      "dr": 81,
+      "featured": true,
+      "lists": 4
+    },
+    {
+      "slug": "findly-tools",
+      "name": "Findly.tools",
+      "score": 21,
+      "dr": 80,
+      "featured": true,
+      "lists": 4
+    },
+    {
+      "slug": "one-page-love",
+      "name": "One Page Love",
+      "score": 21,
+      "dr": 79,
+      "featured": true,
+      "lists": 4
+    },
+    {
+      "slug": "toolpilot",
+      "name": "ToolPilot",
+      "score": 20.9,
+      "dr": 78,
+      "featured": true,
+      "lists": 4
+    },
+    {
+      "slug": "mcpmarket",
+      "name": "MCP Market",
+      "score": 20.8,
+      "dr": 56,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "launch-streak",
+      "name": "Launch Streak",
+      "score": 20.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "opensourcealternative",
+      "name": "OpenSourceAlternative.to",
+      "score": 20.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "best-saas-boilerplates",
+      "name": "Best SaaS Boilerplates",
+      "score": 19.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "the-hack-stack",
+      "name": "The Hack Stack",
+      "score": 19.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "theres-an-ai-for-that",
+      "name": "There's An AI For That",
+      "score": 18.9,
+      "dr": 77,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "wired-business",
+      "name": "Wired Business",
+      "score": 18.9,
+      "dr": 77,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "betalist",
+      "name": "BetaList",
+      "score": 18.8,
+      "dr": 76,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "mossai",
+      "name": "MossAI",
+      "score": 18.8,
+      "dr": 76,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "uneed",
+      "name": "Uneed",
+      "score": 18.8,
+      "dr": 75,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "a-z-business-finder",
+      "name": "A-Z Business Finder",
+      "score": 18.7,
+      "dr": 73,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "saasbrowser",
+      "name": "SaaS Browser",
+      "score": 18.7,
+      "dr": 74,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "trustpilot",
+      "name": "Trustpilot",
+      "score": 18.7,
+      "dr": 94,
+      "featured": true,
+      "lists": 3
+    },
+    {
+      "slug": "productwatch",
+      "name": "Product Watch",
+      "score": 18.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "bunity",
+      "name": "Bunity",
+      "score": 18.5,
+      "dr": 70,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "magicbox-tools",
+      "name": "MagicBox.tools",
+      "score": 18.5,
+      "dr": 69,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "mcpservers-org",
+      "name": "MCP Servers",
+      "score": 18.5,
+      "dr": 69,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "showmysites",
+      "name": "ShowMySites",
+      "score": 18.5,
+      "dr": 70,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "supertools",
+      "name": "Supertools",
+      "score": 18.5,
+      "dr": 70,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "ai-saas-org",
+      "name": "AI SaaS",
+      "score": 18.4,
+      "dr": 7,
+      "featured": false,
+      "lists": 6
+    },
+    {
+      "slug": "ai-toolz-dir",
+      "name": "AI Toolz Dir",
+      "score": 18.4,
+      "dr": 68,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "startup-stash",
+      "name": "Startup Stash",
+      "score": 18.3,
+      "dr": 65,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "aiforeveryone",
+      "name": "AiForEveryone",
+      "score": 18.1,
+      "dr": 61,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "directory-world",
+      "name": "Directory World",
+      "score": 18.1,
+      "dr": 61,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "fazier",
+      "name": "Fazier",
+      "score": 18.1,
+      "dr": 82,
+      "featured": true,
+      "lists": 3
+    },
+    {
+      "slug": "startupranking",
+      "name": "Startup Ranking",
+      "score": 18.1,
+      "dr": 61,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "toolfio",
+      "name": "Toolfio",
+      "score": 18.1,
+      "dr": 61,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "aiwith-me",
+      "name": "AI With Me",
+      "score": 18,
+      "dr": 59,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "turbo0",
+      "name": "Turbo0",
+      "score": 18,
+      "dr": 80,
+      "featured": true,
+      "lists": 3
+    },
+    {
+      "slug": "aipure",
+      "name": "AIPURE",
+      "score": 17.9,
+      "dr": 57,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "trylaunch",
+      "name": "Launch (trylaunch.ai)",
+      "score": 17.8,
+      "dr": 56,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "websitevice",
+      "name": "Websitevice",
+      "score": 17.8,
+      "dr": 55,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "businesshunt",
+      "name": "BusinessHunt",
+      "score": 17.6,
+      "dr": 52,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "creati-ai",
+      "name": "Creati.ai",
+      "score": 17.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "daniellaunches",
+      "name": "DanielLaunches",
+      "score": 17.6,
+      "dr": 52,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "easylaunch",
+      "name": "EasyLaunch",
+      "score": 17.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "launch-list",
+      "name": "Launch List",
+      "score": 17.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "footer-design",
+      "name": "Footer",
+      "score": 17.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "scriptbyai",
+      "name": "ScriptByAI",
+      "score": 17.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "awesome-tools",
+      "name": "Awesome Tools",
+      "score": 17.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "freestuffdev",
+      "name": "Free Stuff for Developer",
+      "score": 17.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "steemhunt",
+      "name": "Steemhunt",
+      "score": 16.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "awwwards",
+      "name": "Awwwards",
+      "score": 16.5,
+      "dr": 89,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "leanvibe",
+      "name": "LeanVibe",
+      "score": 16.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "saas-branch",
+      "name": "SaaS Branch",
+      "score": 16.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "saas-crawler",
+      "name": "SaaS Crawler",
+      "score": 16.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "saas-state",
+      "name": "SaaS State",
+      "score": 16.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "aimcp",
+      "name": "MCP Hub",
+      "score": 16.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "aitoolex",
+      "name": "AIToolex",
+      "score": 16.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "saas-networker",
+      "name": "SaaS Networker",
+      "score": 16.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "saas-territory",
+      "name": "SaaS Territory",
+      "score": 16.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "appsumo",
+      "name": "AppSumo",
+      "score": 16.2,
+      "dr": 83,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "saas-scanner",
+      "name": "SaaS Scanner",
+      "score": 16.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "coolpot",
+      "name": "CoolPot",
+      "score": 16.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "devpages",
+      "name": "DevPages",
+      "score": 16.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "indie-directory",
+      "name": "Indie Directory",
+      "score": 16.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "dessign",
+      "name": "Dessign",
+      "score": 16,
+      "dr": 79,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "promptzone",
+      "name": "PromptZone",
+      "score": 16,
+      "dr": 20,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "tap4ai",
+      "name": "Tap4 AI Directory",
+      "score": 16,
+      "dr": 20,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "desifounder-spotlight",
+      "name": "DesiFounder Spotlight",
+      "score": 15.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "indie-launchers",
+      "name": "Indie Launchers",
+      "score": 15.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "notion-integrations",
+      "name": "Notion Integrations",
+      "score": 15.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "endors",
+      "name": "Endors",
+      "score": 15.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "mcpservers-com",
+      "name": "MCPServers.com",
+      "score": 15.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "apps-and-websites",
+      "name": "Apps and Websites",
+      "score": 15.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "sellwithboost",
+      "name": "Sell With boost",
+      "score": 15.7,
+      "dr": 73,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "softwareworld",
+      "name": "SoftwareWorld",
+      "score": 15.7,
+      "dr": 73,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "viesearch",
+      "name": "Viesearch",
+      "score": 15.7,
+      "dr": 73,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "viral-bucket",
+      "name": "Viral Bucket",
+      "score": 15.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "aistage",
+      "name": "AIStage",
+      "score": 15.6,
+      "dr": 71,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "crunchbase",
+      "name": "Crunchbase",
+      "score": 15.6,
+      "dr": 91,
+      "featured": true,
+      "lists": 2
+    },
+    {
+      "slug": "g2",
+      "name": "G2",
+      "score": 15.6,
+      "dr": 91,
+      "featured": true,
+      "lists": 2
+    },
+    {
+      "slug": "human-or-not",
+      "name": "Human or Not",
+      "score": 15.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "mcp-so",
+      "name": "MCP.so",
+      "score": 15.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "neeed-directory",
+      "name": "Neeed Directory",
+      "score": 15.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "nosignups",
+      "name": "NoSignups",
+      "score": 15.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "postyourstartup",
+      "name": "Post Your Startup",
+      "score": 15.6,
+      "dr": 71,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "zumvu",
+      "name": "Zumvu Directory",
+      "score": 15.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "agentskills-agnxi",
+      "name": "agentskills",
+      "score": 15.5,
+      "dr": 10,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "future-tools",
+      "name": "Future Tools",
+      "score": 15.5,
+      "dr": 69,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "saasfame",
+      "name": "SaaSFame",
+      "score": 15.5,
+      "dr": 69,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "sideprojectors",
+      "name": "SideProjectors",
+      "score": 15.5,
+      "dr": 70,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "launch-llama",
+      "name": "Launch Llama",
+      "score": 15.4,
+      "dr": 67,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "launchpadly",
+      "name": "Launchpadly",
+      "score": 15.4,
+      "dr": 67,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "similarlabs",
+      "name": "SimilarLabs",
+      "score": 15.4,
+      "dr": 68,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "smol-launch",
+      "name": "Smol Launch",
+      "score": 15.4,
+      "dr": 68,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "aitoolly",
+      "name": "AIToolly",
+      "score": 15.3,
+      "dr": 66,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "aitrendytools",
+      "name": "AITrendyTools",
+      "score": 15.3,
+      "dr": 65,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "futurestack",
+      "name": "FutureStack",
+      "score": 15.3,
+      "dr": 5,
+      "featured": false,
+      "lists": 5
+    },
+    {
+      "slug": "sitelike",
+      "name": "Sitelike",
+      "score": 15.3,
+      "dr": 66,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "tooldirs",
+      "name": "ToolDirs",
+      "score": 15.3,
+      "dr": 66,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "aidirs",
+      "name": "AIDirs",
+      "score": 15.2,
+      "dr": 64,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "toolsfine",
+      "name": "Toolsfine",
+      "score": 15.2,
+      "dr": 64,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "uno-directory",
+      "name": "Uno Directory",
+      "score": 15.2,
+      "dr": 64,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "dayslaunch",
+      "name": "Days Launch",
+      "score": 15.1,
+      "dr": 62,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "aitooltrek",
+      "name": "AI Tool Trek",
+      "score": 15,
+      "dr": 60,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "alltopstartups",
+      "name": "AllTopStartups",
+      "score": 15,
+      "dr": 59,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "alternativeto",
+      "name": "AlternativeTo",
+      "score": 15,
+      "dr": 79,
+      "featured": true,
+      "lists": 2
+    },
+    {
+      "slug": "saashub",
+      "name": "SaaSHub",
+      "score": 15,
+      "dr": 79,
+      "featured": true,
+      "lists": 2
+    },
+    {
+      "slug": "aitoolcenter",
+      "name": "AI Tool Center",
+      "score": 14.9,
+      "dr": 58,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "devhunt",
+      "name": "DevHunt",
+      "score": 14.9,
+      "dr": 57,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "right-ai",
+      "name": "RightAI",
+      "score": 14.9,
+      "dr": 57,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "woy-ai",
+      "name": "Woy AI",
+      "score": 14.9,
+      "dr": 58,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "launchpanda",
+      "name": "LaunchPanda",
+      "score": 14.8,
+      "dr": 55,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "whatisaitools",
+      "name": "What Is Ai Tools",
+      "score": 14.8,
+      "dr": 55,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "aiheron",
+      "name": "AiHeron",
+      "score": 14.7,
+      "dr": 54,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "hot100-ai",
+      "name": "Hot100.ai",
+      "score": 14.7,
+      "dr": 53,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "seektool",
+      "name": "SeekTool.ai",
+      "score": 14.7,
+      "dr": 53,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "aitoolstime",
+      "name": "AI Tools Time",
+      "score": 14.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "appa-list",
+      "name": "Appa List",
+      "score": 14.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "bestskytools",
+      "name": "BestskyTools",
+      "score": 14.6,
+      "dr": 52,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "easydofollow",
+      "name": "EasyDoFollow",
+      "score": 14.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "mylaunchstash",
+      "name": "My Launch Stash",
+      "score": 14.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "openalternative",
+      "name": "OpenAlternative",
+      "score": 14.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ctrlalt",
+      "name": "CtrlAlt",
+      "score": 14.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "faith-tools",
+      "name": "faith.tools",
+      "score": 14.5,
+      "dr": 49,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "promote-project",
+      "name": "Promote Project",
+      "score": 14.5,
+      "dr": 49,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "relevantsaas",
+      "name": "RelevantSaaS",
+      "score": 14.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "saasbison",
+      "name": "SaaSBison",
+      "score": 14.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "toools-design",
+      "name": "TOOOLS.design",
+      "score": 14.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "best-ai-org",
+      "name": "Best-AI.org",
+      "score": 14.3,
+      "dr": 45,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "buildhop",
+      "name": "BuildHop",
+      "score": 14.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "basedtools",
+      "name": "BasedTools",
+      "score": 14.1,
+      "dr": 42,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "buildvoyage",
+      "name": "BuildVoyage",
+      "score": 14.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "xinquji",
+      "name": "Xinquji",
+      "score": 14.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "eliteaitools",
+      "name": "EliteAI.tools",
+      "score": 14,
+      "dr": 40,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "nocodelist",
+      "name": "NoCodeList",
+      "score": 13.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ogimage-gallery",
+      "name": "OGimage.gallery",
+      "score": 13.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "fivetaco",
+      "name": "FiveTaco",
+      "score": 13.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "product-tower",
+      "name": "Product-Tower",
+      "score": 13.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "puthusu",
+      "name": "Puthusu",
+      "score": 13.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "dynamite-ai",
+      "name": "Dynamite AI",
+      "score": 13.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "fountn",
+      "name": "Fountn",
+      "score": 13.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ainavbar",
+      "name": "AI Navbar",
+      "score": 13.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "go-publicly",
+      "name": "Go Publicly",
+      "score": 13.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ai-for-businesses",
+      "name": "AI for Businesses",
+      "score": 13.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "aibloggenerators",
+      "name": "AI Blog Generators",
+      "score": 13.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ainewtool",
+      "name": "AINewTool",
+      "score": 13.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "kick-product",
+      "name": "Kick Product",
+      "score": 13.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "llmmodels",
+      "name": "LLM Models Directory",
+      "score": 13.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "robin-good-t5",
+      "name": "T5 by Robin Good",
+      "score": 13.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "tool-dynamo",
+      "name": "Tool Dynamo",
+      "score": 13.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ainavtool",
+      "name": "AINavTool",
+      "score": 13.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "euroalternative",
+      "name": "EuroAlternative",
+      "score": 13.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "everfeatured",
+      "name": "EverFeatured",
+      "score": 13.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ki-suche",
+      "name": "ki-suche.io",
+      "score": 13.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "mcp-store",
+      "name": "MCP Store",
+      "score": 13.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "shipitsoon",
+      "name": "Shipitsoon",
+      "score": 13.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "spacerrapps",
+      "name": "SpacerrApps",
+      "score": 13.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "findmyaitool",
+      "name": "FindMyAITool.io",
+      "score": 13.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "storefront-design",
+      "name": "Storefront.Design",
+      "score": 13.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "tool-ignite",
+      "name": "Tool Ignite",
+      "score": 13.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "tool-parade",
+      "name": "Tool Parade",
+      "score": 13.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "toolkit-index",
+      "name": "Toolkit Index",
+      "score": 13.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "top-ai-tools-net",
+      "name": "Top AI Tools",
+      "score": 13.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "appydev",
+      "name": "Appydev",
+      "score": 13.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "earlylaunch",
+      "name": "Earlylaunch",
+      "score": 13.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "findasaas",
+      "name": "findasaas",
+      "score": 13.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "instantlaun-ch",
+      "name": "InstantLaun.ch",
+      "score": 13.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "whatareyoubuilding",
+      "name": "WhatAreYouBuilding.AI",
+      "score": 13.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "maomu",
+      "name": "Maomu",
+      "score": 13,
+      "dr": 20,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ai-pulse",
+      "name": "AI Pulse",
+      "score": 12.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "best-web-design-tools",
+      "name": "BestWebDesignTools",
+      "score": 12.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "directories-so",
+      "name": "Directories",
+      "score": 12.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "findstack",
+      "name": "Findstack",
+      "score": 12.9,
+      "dr": 77,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "gptacademy",
+      "name": "GPTAcademy",
+      "score": 12.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "infrabase",
+      "name": "Infrabase.ai",
+      "score": 12.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "inspoweb",
+      "name": "InspoWeb",
+      "score": 12.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "mcp-server-hub",
+      "name": "MCP Server Hub",
+      "score": 12.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "startup-collections",
+      "name": "Startup Collections",
+      "score": 12.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ai-warehub",
+      "name": "AI WareHub",
+      "score": 12.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "alternative-me",
+      "name": "Alternative.me",
+      "score": 12.8,
+      "dr": 75,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "digital-agency-network",
+      "name": "Digital Agency Network",
+      "score": 12.8,
+      "dr": 76,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "featured-gpts",
+      "name": "Featured GPTs",
+      "score": 12.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "iforai",
+      "name": "iForAI",
+      "score": 12.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "toolfame",
+      "name": "ToolFame",
+      "score": 12.8,
+      "dr": 75,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "1payment-tools",
+      "name": "1payment.tools",
+      "score": 12.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ai-agents-directory",
+      "name": "AI Agents Directory",
+      "score": 12.7,
+      "dr": 74,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "ai-directory-org",
+      "name": "AI Directory",
+      "score": 12.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "aicxstack",
+      "name": "AI Products for CX",
+      "score": 12.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "aitogrow",
+      "name": "AItoGrow",
+      "score": 12.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "dofollow-tools",
+      "name": "Dofollow.Tools",
+      "score": 12.7,
+      "dr": 73,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "listedai",
+      "name": "ListedAI",
+      "score": 12.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "made-with-bolt",
+      "name": "Made with Bolt",
+      "score": 12.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "opengpt",
+      "name": "OpenGPT",
+      "score": 12.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "sideprojects-net",
+      "name": "SideProjects.net",
+      "score": 12.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "thesaasdirectory",
+      "name": "TheSaaSDirectory",
+      "score": 12.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ai-bot-cn",
+      "name": "AI-bot.cn",
+      "score": 12.6,
+      "dr": 71,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aura-plus-plus",
+      "name": "Aura++",
+      "score": 12.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "foundershub",
+      "name": "FoundersHub",
+      "score": 12.6,
+      "dr": 11,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "foundrlist",
+      "name": "FoundrList",
+      "score": 12.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "futurepedia",
+      "name": "Futurepedia",
+      "score": 12.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "tiny-startups",
+      "name": "Tiny Startups",
+      "score": 12.6,
+      "dr": 71,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "vibe-coding-gallery",
+      "name": "Vibe Coding Gallery",
+      "score": 12.6,
+      "dr": 11,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "aitoolslist",
+      "name": "AI Tools List",
+      "score": 12.5,
+      "dr": 9,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "chataiapps",
+      "name": "chatai[apps]",
+      "score": 12.5,
+      "dr": 9,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "designer-news",
+      "name": "Designer News",
+      "score": 12.5,
+      "dr": 69,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "nxgn-tools",
+      "name": "NxGn Tools",
+      "score": 12.5,
+      "dr": 69,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "trueen",
+      "name": "Trueen",
+      "score": 12.5,
+      "dr": 69,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "trustmrr",
+      "name": "TrustMRR",
+      "score": 12.5,
+      "dr": 70,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "versily",
+      "name": "Versily",
+      "score": 12.5,
+      "dr": 70,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aitools-inc",
+      "name": "AI Tools",
+      "score": 12.4,
+      "dr": 67,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "codetrendy",
+      "name": "CodeTrendy",
+      "score": 12.4,
+      "dr": 67,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "indieproducts",
+      "name": "IndieProducts",
+      "score": 12.4,
+      "dr": 8,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "navs-site",
+      "name": "Navs Site",
+      "score": 12.4,
+      "dr": 67,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "newtool",
+      "name": "NewTool",
+      "score": 12.4,
+      "dr": 68,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "next-week-ai",
+      "name": "Next Week AI",
+      "score": 12.4,
+      "dr": 7,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "postioo",
+      "name": "Postioo",
+      "score": 12.4,
+      "dr": 8,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "techdirectory",
+      "name": "TechDirectory",
+      "score": 12.4,
+      "dr": 67,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "business-tool-vault",
+      "name": "Business Tool Vault",
+      "score": 12.3,
+      "dr": 6,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "etooly",
+      "name": "etooly.eu",
+      "score": 12.3,
+      "dr": 5,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "verifieddr",
+      "name": "VerifiedDR",
+      "score": 12.3,
+      "dr": 66,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "ai-tool-list",
+      "name": "AI Tool List",
+      "score": 12.2,
+      "dr": 4,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ai138",
+      "name": "AI138",
+      "score": 12.2,
+      "dr": 64,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "firstlook-tools",
+      "name": "First Look",
+      "score": 12.2,
+      "dr": 64,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "indiehacker-tools",
+      "name": "IndieHacker Tools",
+      "score": 12.2,
+      "dr": 4,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "platforms-directory",
+      "name": "Platforms Directory",
+      "score": 12.2,
+      "dr": 3,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "scrolllaunch",
+      "name": "ScrollLaunch",
+      "score": 12.2,
+      "dr": 64,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "super-ai-tools",
+      "name": "Super AI Tools",
+      "score": 12.2,
+      "dr": 4,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "agenthunter",
+      "name": "AgentHunter",
+      "score": 12.1,
+      "dr": 62,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "ai-agents-gathering",
+      "name": "AI Agents Gathering",
+      "score": 12.1,
+      "dr": 2,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "ai-stack",
+      "name": "AI Stack",
+      "score": 12.1,
+      "dr": 1,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "alternativeai-tools",
+      "name": "alternativeai.tools",
+      "score": 12.1,
+      "dr": 2,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "indie-deals",
+      "name": "Indie.Deals",
+      "score": 12.1,
+      "dr": 61,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "indihunt",
+      "name": "IndiHunt",
+      "score": 12.1,
+      "dr": 1,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "navfolders",
+      "name": "NavFolders",
+      "score": 12.1,
+      "dr": 61,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "seewhatnewai",
+      "name": "SeeWhatNewAI",
+      "score": 12.1,
+      "dr": 61,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "starterbest",
+      "name": "Starter Best",
+      "score": 12.1,
+      "dr": 61,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "superlaunch",
+      "name": "Super Launch",
+      "score": 12.1,
+      "dr": 62,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "youmightnotneed",
+      "name": "YouMightNotNeed",
+      "score": 12.1,
+      "dr": 2,
+      "featured": false,
+      "lists": 4
+    },
+    {
+      "slug": "earlyhunt",
+      "name": "EarlyHunt",
+      "score": 12,
+      "dr": 60,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "easywithai",
+      "name": "Easy With AI",
+      "score": 12,
+      "dr": 59,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "huzzler",
+      "name": "Huzzler",
+      "score": 12,
+      "dr": 60,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "marketingdb",
+      "name": "MarketingDB",
+      "score": 12,
+      "dr": 60,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "nextbigwhat",
+      "name": "NextBigWhat",
+      "score": 12,
+      "dr": 60,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "toolfinder",
+      "name": "Tool Finder",
+      "score": 12,
+      "dr": 59,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "webcatalog",
+      "name": "WebCatalog",
+      "score": 12,
+      "dr": 59,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "betterlaunch",
+      "name": "BetterLaunch",
+      "score": 11.9,
+      "dr": 57,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "dokeyai",
+      "name": "DokeyAI",
+      "score": 11.9,
+      "dr": 57,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "unitelist",
+      "name": "Unite List",
+      "score": 11.9,
+      "dr": 57,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "kittylaunch",
+      "name": "KittyLaunch",
+      "score": 11.8,
+      "dr": 56,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "listbulb",
+      "name": "List Bulb",
+      "score": 11.8,
+      "dr": 56,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "theonestartup",
+      "name": "The One Startup",
+      "score": 11.8,
+      "dr": 55,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "toolrain",
+      "name": "ToolRain",
+      "score": 11.8,
+      "dr": 56,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aitoptools",
+      "name": "AITopTools",
+      "score": 11.7,
+      "dr": 54,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "dailypings",
+      "name": "DailyPings",
+      "score": 11.7,
+      "dr": 53,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "launching-next",
+      "name": "Launching Next",
+      "score": 11.7,
+      "dr": 53,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "lovableapp",
+      "name": "Lovable App",
+      "score": 11.7,
+      "dr": 53,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saas-ai-tools",
+      "name": "SaaS AI Tools",
+      "score": 11.7,
+      "dr": 53,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saascity",
+      "name": "SaaSCity",
+      "score": 11.7,
+      "dr": 54,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "shinylaunch",
+      "name": "ShinyLaunch",
+      "score": 11.7,
+      "dr": 53,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "startups-lab",
+      "name": "Startups Lab",
+      "score": 11.7,
+      "dr": 54,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "ai-tech-viral",
+      "name": "AI Tech Viral",
+      "score": 11.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "ai-tools-directory",
+      "name": "AI Tools Directory",
+      "score": 11.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "nocodefounders",
+      "name": "No Code Founders",
+      "score": 11.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "rankinpublic",
+      "name": "RankInPublic",
+      "score": 11.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "shipybara",
+      "name": "Shipybara",
+      "score": 11.6,
+      "dr": 52,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "startuptrusted",
+      "name": "StartupTrusted",
+      "score": 11.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "verified-tools",
+      "name": "Verified Tools",
+      "score": 11.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "wayfindio",
+      "name": "Wayfindio",
+      "score": 11.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "bidrise",
+      "name": "Bidrise.live",
+      "score": 11.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "divvlaunches",
+      "name": "DivvLaunches",
+      "score": 11.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "milliondothomepage",
+      "name": "Million Dot Homepage",
+      "score": 11.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "startups-fm",
+      "name": "Startups.fm",
+      "score": 11.5,
+      "dr": 49,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "submitforbacklinks",
+      "name": "SubmitForBacklinks",
+      "score": 11.5,
+      "dr": 49,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "taprefer",
+      "name": "TapRefer",
+      "score": 11.5,
+      "dr": 49,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "techbasedirectory",
+      "name": "Tech Base Directory",
+      "score": 11.5,
+      "dr": 49,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "top-click",
+      "name": "Top Click",
+      "score": 11.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "tyy-ai",
+      "name": "tyy.ai",
+      "score": 11.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "we-like-tools",
+      "name": "We Like Tools",
+      "score": 11.5,
+      "dr": 50,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aitechsuite",
+      "name": "AI Tech Suite",
+      "score": 11.4,
+      "dr": 48,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "shipboost",
+      "name": "ShipBoost",
+      "score": 11.4,
+      "dr": 48,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "shipgrowth",
+      "name": "ShipGrowth",
+      "score": 11.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "viberank",
+      "name": "Viberank",
+      "score": 11.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "lemonlaunch",
+      "name": "LemonLaunch",
+      "score": 11.3,
+      "dr": 46,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saaswheel",
+      "name": "SaaS Wheel",
+      "score": 11.3,
+      "dr": 46,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saasfield",
+      "name": "SaaS Field",
+      "score": 11.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aihubs",
+      "name": "AiHubs",
+      "score": 11.1,
+      "dr": 42,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "altern",
+      "name": "Altern",
+      "score": 11.1,
+      "dr": 42,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "appscribed",
+      "name": "Appscribed",
+      "score": 11.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saaspage",
+      "name": "Saaspa.ge",
+      "score": 11.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saasroots",
+      "name": "SaaS Roots",
+      "score": 11.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saastoolsdir",
+      "name": "SaaS Tools Dir",
+      "score": 11.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "chrome-web-store",
+      "name": "Chrome Web Store",
+      "score": 11,
+      "dr": 99,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "crowdstax",
+      "name": "Crowdstax",
+      "score": 11,
+      "dr": 39,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "fastlaunch",
+      "name": "FastLaunch",
+      "score": 11,
+      "dr": 39,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "indiehub",
+      "name": "IndieHub",
+      "score": 11,
+      "dr": 39,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "makers",
+      "name": "Make.rs",
+      "score": 11,
+      "dr": 39,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "toolhunter",
+      "name": "Toolhunter",
+      "score": 11,
+      "dr": 40,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aigo-tools",
+      "name": "AIGO.tools",
+      "score": 10.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "apphublist",
+      "name": "App Hub List",
+      "score": 10.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "justlaunched",
+      "name": "JustLaunched",
+      "score": 10.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "smartkithub",
+      "name": "Smart Kit Hub",
+      "score": 10.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "ai-search",
+      "name": "AI Search",
+      "score": 10.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aibest-tools",
+      "name": "AIBest.Tools",
+      "score": 10.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aitoolsexplorer",
+      "name": "AI Tools Explorer",
+      "score": 10.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "artiverse",
+      "name": "Artiverse AI",
+      "score": 10.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "mridul-tech-ai",
+      "name": "Mridul.Tech AI Directory",
+      "score": 10.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "poweredbyai",
+      "name": "PoweredbyAI",
+      "score": 10.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "rankyourai",
+      "name": "RankYourAI",
+      "score": 10.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "askaiforit",
+      "name": "Ask AI For It",
+      "score": 10.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "genify",
+      "name": "Genify",
+      "score": 10.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "powerusers-ai",
+      "name": "Powerusers AI",
+      "score": 10.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "dealmyapp",
+      "name": "DealMyApp",
+      "score": 10.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "indie-dev-tools",
+      "name": "Indie Dev Tools",
+      "score": 10.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "makerlist",
+      "name": "Makerlist.io",
+      "score": 10.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "resource-fyi",
+      "name": "Resource.fyi",
+      "score": 10.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saasbadge",
+      "name": "SaaS Badge",
+      "score": 10.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "ai-accounting-apps",
+      "name": "AI Accounting Apps",
+      "score": 10.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aiwget",
+      "name": "AIWget",
+      "score": 10.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "awesome-ai-tools",
+      "name": "Awesome AI Tools",
+      "score": 10.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saas-avenue",
+      "name": "SaaS Avenue",
+      "score": 10.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "startap",
+      "name": "StarTap",
+      "score": 10.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aieasy",
+      "name": "AIEasy.life",
+      "score": 10.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "financesonline",
+      "name": "FinancesOnline",
+      "score": 10.4,
+      "dr": 87,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "gptdemo",
+      "name": "GptDemo",
+      "score": 10.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "listyouridea",
+      "name": "ListYourIdea",
+      "score": 10.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "dev-tools-dir",
+      "name": "Dev Tools Dir",
+      "score": 10.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "toollist-ai",
+      "name": "toollist.ai",
+      "score": 10.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "vibe-apps",
+      "name": "Vibe Apps",
+      "score": 10.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "boilerplatehunt",
+      "name": "BoilerplateHunt",
+      "score": 10.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "favors-dev",
+      "name": "Favors.dev",
+      "score": 10.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "indielogs",
+      "name": "IndieLogs",
+      "score": 10.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "liiinks",
+      "name": "Liiinks",
+      "score": 10.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "solo-launches",
+      "name": "Solo Launches",
+      "score": 10.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "startupranked",
+      "name": "StartupRanked",
+      "score": 10.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "templatefame",
+      "name": "TemplateFame",
+      "score": 10.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "toptool",
+      "name": "TopTool",
+      "score": 10.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "directree",
+      "name": "directree",
+      "score": 10.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aitoolhub",
+      "name": "AIToolHub",
+      "score": 10,
+      "dr": 20,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "altimateguide",
+      "name": "Altimateguide",
+      "score": 10,
+      "dr": 19,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "bestaito",
+      "name": "BestAITo",
+      "score": 10,
+      "dr": 19,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "opensource-boilerplates",
+      "name": "Open Source Boilerplates",
+      "score": 9.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "pluginmarketplace-ai",
+      "name": "PluginMarketplace.ai",
+      "score": 9.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "startup-ai-tools",
+      "name": "Startup AI Tools",
+      "score": 9.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "top10-now",
+      "name": "top10.now",
+      "score": 9.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "trustviews",
+      "name": "TrustViews",
+      "score": 9.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "delv",
+      "name": "Delv",
+      "score": 9.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "easy-save-ai",
+      "name": "Easy Save AI",
+      "score": 9.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "fastpedia",
+      "name": "FastPedia",
+      "score": 9.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "mad-genius",
+      "name": "Mad Genius",
+      "score": 9.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saashunt",
+      "name": "SaaSHunt",
+      "score": 9.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saassy-board",
+      "name": "Saassy Board",
+      "score": 9.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "showmebest-ai",
+      "name": "ShowMeBest.AI",
+      "score": 9.8,
+      "dr": 76,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "submit-ai-tools",
+      "name": "Submit AI Tools",
+      "score": 9.8,
+      "dr": 75,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "superlaunch-io",
+      "name": "SuperLaunch",
+      "score": 9.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "zearches",
+      "name": "Zearches",
+      "score": 9.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aier",
+      "name": "aier.im",
+      "score": 9.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "aifeed-dev",
+      "name": "aifeed.dev",
+      "score": 9.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "crozdesk",
+      "name": "Crozdesk",
+      "score": 9.7,
+      "dr": 74,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchvibe",
+      "name": "LaunchVibe",
+      "score": 9.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "owler",
+      "name": "Owler",
+      "score": 9.7,
+      "dr": 73,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "submit-ai-agent",
+      "name": "Submit AI Agent",
+      "score": 9.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "althunt",
+      "name": "Alt Hunt",
+      "score": 9.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "brouseai",
+      "name": "BroUseAI",
+      "score": 9.6,
+      "dr": 11,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "dir-cx",
+      "name": "dir.cx",
+      "score": 9.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "groupify-ai",
+      "name": "Groupify AI",
+      "score": 9.6,
+      "dr": 11,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "open-launch",
+      "name": "Open-Launch",
+      "score": 9.6,
+      "dr": 71,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "saascurate",
+      "name": "SaaSCurate",
+      "score": 9.6,
+      "dr": 11,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "startup-fast",
+      "name": "Startup Fast",
+      "score": 9.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startupbase",
+      "name": "StartupBase",
+      "score": 9.6,
+      "dr": 71,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "tekpon",
+      "name": "Tekpon",
+      "score": 9.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "tinylaunch",
+      "name": "TinyLaunch",
+      "score": 9.6,
+      "dr": 72,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "besttools-pro",
+      "name": "BestTools",
+      "score": 9.5,
+      "dr": 9,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "exactseek",
+      "name": "ExactSeek",
+      "score": 9.5,
+      "dr": 70,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "indiefame",
+      "name": "IndieFame",
+      "score": 9.5,
+      "dr": 9,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "junkstartups",
+      "name": "JunkStartups",
+      "score": 9.5,
+      "dr": 10,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "openhunts",
+      "name": "OpenHunts",
+      "score": 9.5,
+      "dr": 69,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "pitchwall",
+      "name": "PitchWall",
+      "score": 9.5,
+      "dr": 69,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "allinai-tools",
+      "name": "All in AI Tools",
+      "score": 9.4,
+      "dr": 67,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolsnocode",
+      "name": "ToolsNoCode",
+      "score": 9.4,
+      "dr": 7,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "wizdir",
+      "name": "WizDir",
+      "score": 9.4,
+      "dr": 8,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "openupvote",
+      "name": "OpenUpvote",
+      "score": 9.3,
+      "dr": 5,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "saaswall",
+      "name": "SaaS Wall",
+      "score": 9.3,
+      "dr": 5,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "yo-directory",
+      "name": "Yo.directory",
+      "score": 9.3,
+      "dr": 65,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ai-finder-guru",
+      "name": "AI Finder Guru",
+      "score": 9.2,
+      "dr": 3,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "find-saas-tools",
+      "name": "Find SaaS Tools",
+      "score": 9.2,
+      "dr": 3,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "landingfolio",
+      "name": "Landingfolio",
+      "score": 9.2,
+      "dr": 64,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "shipboard",
+      "name": "Shipboard",
+      "score": 9.2,
+      "dr": 4,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "hotvsnot",
+      "name": "HotVsNot",
+      "score": 9.1,
+      "dr": 62,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "listmaro",
+      "name": "List Maro",
+      "score": 9.1,
+      "dr": 1,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "toolbloom",
+      "name": "ToolBloom",
+      "score": 9.1,
+      "dr": 1,
+      "featured": false,
+      "lists": 3
+    },
+    {
+      "slug": "zplatform",
+      "name": "zPlatform.ai",
+      "score": 9.1,
+      "dr": 61,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "softwaresuggest",
+      "name": "Every platform worthsubmitting to",
+      "score": 9,
+      "dr": 60,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startupinspire",
+      "name": "StartupInspire",
+      "score": 9,
+      "dr": 59,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "fridayhunt",
+      "name": "FridayHunt",
+      "score": 8.9,
+      "dr": 58,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "saasgenius",
+      "name": "SaaSGenius",
+      "score": 8.9,
+      "dr": 58,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aixploria",
+      "name": "AIxploria",
+      "score": 8.8,
+      "dr": 56,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "wip",
+      "name": "WIP",
+      "score": 8.8,
+      "dr": 56,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aihuntlist",
+      "name": "AIHuntList",
+      "score": 8.7,
+      "dr": 54,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aijustbetter",
+      "name": "AI Just Better",
+      "score": 8.7,
+      "dr": 54,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aitoolfame",
+      "name": "AIToolFame",
+      "score": 8.7,
+      "dr": 54,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "saasgrow",
+      "name": "SaaSGrow",
+      "score": 8.7,
+      "dr": 53,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "submitmysaas",
+      "name": "SubmitMySaas",
+      "score": 8.7,
+      "dr": 54,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aifinderplus",
+      "name": "AI Finder Plus",
+      "score": 8.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ebool",
+      "name": "eBool",
+      "score": 8.6,
+      "dr": 51,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "maxibestof",
+      "name": "MaxiBestOf",
+      "score": 8.6,
+      "dr": 52,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchclash",
+      "name": "LaunchClash",
+      "score": 8.5,
+      "dr": 49,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "thatappshow",
+      "name": "That App Show",
+      "score": 8.5,
+      "dr": 49,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aat-ee",
+      "name": "aat.ee",
+      "score": 8.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "agentwork-tools",
+      "name": "AgentWork.Tools",
+      "score": 8.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aitoolzs",
+      "name": "AI Toolz",
+      "score": 8.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "alterbase",
+      "name": "AlterBase",
+      "score": 8.4,
+      "dr": 48,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "bai-tools",
+      "name": "BAI.tools",
+      "score": 8.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "besttoolvault",
+      "name": "Best Tool Vault",
+      "score": 8.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "poweruptools",
+      "name": "Power Up Tools",
+      "score": 8.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "solvertools",
+      "name": "Solver Tools",
+      "score": 8.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "tooldirectory-ai",
+      "name": "ToolDirectory.AI",
+      "score": 8.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "trustiner",
+      "name": "Trustiner",
+      "score": 8.4,
+      "dr": 48,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aigc160",
+      "name": "AIGC 160",
+      "score": 8.3,
+      "dr": 46,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aimojo",
+      "name": "AI Mojo",
+      "score": 8.3,
+      "dr": 45,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "huntfortools",
+      "name": "Hunt for Tools",
+      "score": 8.3,
+      "dr": 45,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launch-vault",
+      "name": "Launch Vault",
+      "score": 8.3,
+      "dr": 46,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startupdirectory",
+      "name": "StartupDirectory",
+      "score": 8.3,
+      "dr": 45,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startupvessel",
+      "name": "Startup Vessel",
+      "score": 8.3,
+      "dr": 46,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "tooldisk",
+      "name": "ToolDisk",
+      "score": 8.3,
+      "dr": 46,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aitools-fyi",
+      "name": "AI Tools FYI",
+      "score": 8.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "appsytools",
+      "name": "Appsy Tools",
+      "score": 8.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "beamtools",
+      "name": "Beam Tools",
+      "score": 8.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "boostdomainrating",
+      "name": "Boost Domain Rating",
+      "score": 8.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "getstools",
+      "name": "Gets.Tools",
+      "score": 8.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchboosts",
+      "name": "LaunchBoosts",
+      "score": 8.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchscroll",
+      "name": "Launch Scroll",
+      "score": 8.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "mystarttools",
+      "name": "My Start Tools",
+      "score": 8.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "popularaitools",
+      "name": "PopularAiTools.ai",
+      "score": 8.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "productlistdir",
+      "name": "Product List Dir",
+      "score": 8.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "public-prompts",
+      "name": "Public Prompts",
+      "score": 8.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "softwarebolt",
+      "name": "Software Bolt",
+      "score": 8.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "stackdirectory",
+      "name": "Stack Directory",
+      "score": 8.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolfinddir",
+      "name": "Tool Find Dir",
+      "score": 8.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toshilist",
+      "name": "Toshi List",
+      "score": 8.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aitrovex",
+      "name": "AITroveX",
+      "score": 8.1,
+      "dr": 42,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ashlist",
+      "name": "Ash List",
+      "score": 8.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "bestofai",
+      "name": "BestofAI",
+      "score": 8.1,
+      "dr": 42,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "curateclick",
+      "name": "CurateClick",
+      "score": 8.1,
+      "dr": 42,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "dir2ai",
+      "name": "Dir2AI",
+      "score": 8.1,
+      "dr": 42,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "listmysaas",
+      "name": "ListMySaaS",
+      "score": 8.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startup-buffer",
+      "name": "Startup Buffer",
+      "score": 8.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolchase",
+      "name": "ToolChase",
+      "score": 8.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toptrendtools",
+      "name": "Top Trend Tools",
+      "score": 8.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ai-agents-list",
+      "name": "AI Agents List",
+      "score": 8,
+      "dr": 39,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ai-tools-marketer",
+      "name": "AI Tools Marketer",
+      "score": 8,
+      "dr": 39,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "nextbigproduct",
+      "name": "NextBigProduct",
+      "score": 8,
+      "dr": 39,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "productivity-directory",
+      "name": "Productivity Directory",
+      "score": 8,
+      "dr": 40,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "sourcedir",
+      "name": "Source Dir",
+      "score": 8,
+      "dr": 40,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startuplisting",
+      "name": "Startup Listing",
+      "score": 8,
+      "dr": 40,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolcosmos",
+      "name": "Tool Cosmos",
+      "score": 8,
+      "dr": 40,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolsforhumans",
+      "name": "ToolsForHumans",
+      "score": 8,
+      "dr": 40,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolsignal",
+      "name": "Tool Signal",
+      "score": 8,
+      "dr": 40,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolslisthq",
+      "name": "Tools List HQ",
+      "score": 8,
+      "dr": 39,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "1000-tools",
+      "name": "1000.tools",
+      "score": 7.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aicenter",
+      "name": "AI Center",
+      "score": 7.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "featuredtool",
+      "name": "FeaturedTool",
+      "score": 7.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "findmyaitool-com",
+      "name": "FindMyAITool.com",
+      "score": 7.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "latestaiupdates",
+      "name": "Latest AI Updates",
+      "score": 7.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startupaideas",
+      "name": "Startup AIdeas",
+      "score": 7.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "superaiboom",
+      "name": "Super AI Boom",
+      "score": 7.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "thekeytools",
+      "name": "The Key Tools",
+      "score": 7.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "themegatools",
+      "name": "The Mega Tools",
+      "score": 7.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "tinytoolhub",
+      "name": "Tiny Tool Hub",
+      "score": 7.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "tooljourney",
+      "name": "Tool Journey",
+      "score": 7.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolprism",
+      "name": "Tool Prism",
+      "score": 7.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "utilportal",
+      "name": "UtilPortal",
+      "score": 7.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "600-tools",
+      "name": "600.tools",
+      "score": 7.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "9sites",
+      "name": "9Sites.net",
+      "score": 7.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "agentlocker",
+      "name": "AgentLocker",
+      "score": 7.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "agentwise",
+      "name": "AgentWise",
+      "score": 7.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aitoolsone",
+      "name": "AI Tools One",
+      "score": 7.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "devhub",
+      "name": "DevHub",
+      "score": 7.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "indietool",
+      "name": "IndieTool",
+      "score": 7.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "justhunt",
+      "name": "Just Hunt",
+      "score": 7.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchleague",
+      "name": "LaunchLeague",
+      "score": 7.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "noonlaunch",
+      "name": "NoonLaunch",
+      "score": 7.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "rankmyai",
+      "name": "RankmyAI",
+      "score": 7.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "smolsaas",
+      "name": "Smol Saas",
+      "score": 7.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "theaisurf",
+      "name": "The AI Surf",
+      "score": 7.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "theapptools",
+      "name": "The App Tools",
+      "score": 7.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "thecoretools",
+      "name": "The Core Tools",
+      "score": 7.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "tinyhunt",
+      "name": "TinyHunt",
+      "score": 7.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolio",
+      "name": "Toolio",
+      "score": 7.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "whattheai",
+      "name": "WhatTheAI",
+      "score": 7.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "a1-gallery",
+      "name": "A1 Gallery",
+      "score": 7.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aisuperhub",
+      "name": "AISuperHub",
+      "score": 7.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aitoolmate",
+      "name": "AiToolMate",
+      "score": 7.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "allaiwebsite",
+      "name": "AllAIWebsite",
+      "score": 7.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "inuidea-hunt",
+      "name": "Inuidea Hunt",
+      "score": 7.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchpact",
+      "name": "LaunchPact",
+      "score": 7.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "onemillionscreenshots",
+      "name": "OneMillionScreenshots",
+      "score": 7.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "openlaunch-ai",
+      "name": "Open Launch",
+      "score": 7.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "prolinkdirectory",
+      "name": "ProLinkDirectory",
+      "score": 7.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "saascubes",
+      "name": "SaaS Cubes",
+      "score": 7.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "shipyard-hq",
+      "name": "Shipyard HQ",
+      "score": 7.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "stratup-ai",
+      "name": "Stratup.ai",
+      "score": 7.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "vibecodinglist",
+      "name": "VibeCodingList",
+      "score": 7.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "webapprater",
+      "name": "WebAppRater",
+      "score": 7.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "websurl",
+      "name": "WebsURL",
+      "score": 7.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "yourfirstapp",
+      "name": "YourFirstApp",
+      "score": 7.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "01webdirectory",
+      "name": "01Webdirectory",
+      "score": 7.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aiindex-tools",
+      "name": "AiIndex.tools",
+      "score": 7.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "appnetworker",
+      "name": "App Networker",
+      "score": 7.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "builtbyindies",
+      "name": "BuiltByIndies",
+      "score": 7.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "listmyai",
+      "name": "Listmyai",
+      "score": 7.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "microsaas-directory",
+      "name": "MicroSaaS Directory",
+      "score": 7.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "productdirs",
+      "name": "productdirs",
+      "score": 7.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "roozna",
+      "name": "Roozna",
+      "score": 7.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "top-services-directory",
+      "name": "Top Services Directory",
+      "score": 7.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "webcurate",
+      "name": "WebCurate",
+      "score": 7.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ai-findr",
+      "name": "AI Findr",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aitoolfinder",
+      "name": "Ai Tool Finder",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "directory-top",
+      "name": "Directory.Top",
+      "score": 7.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "hunt0",
+      "name": "HUNT0",
+      "score": 7.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "indiehackerstacks",
+      "name": "IndieHackerStacks",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "job-board-fast",
+      "name": "Job Board Fast",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchit",
+      "name": "LaunchIt",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "maidensail",
+      "name": "MaidenSail",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "publish-your-saas",
+      "name": "PublishYourSaaS",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "share-fast",
+      "name": "Share Fast",
+      "score": 7.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "showmeyour-site",
+      "name": "ShowMeYourSite",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "smol-startup",
+      "name": "Smol Startup",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "spotstartups",
+      "name": "Spot Startups",
+      "score": 7.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startuplibrary",
+      "name": "StartupLibrary",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startups-fyi",
+      "name": "Startups.fyi",
+      "score": 7.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "submitmatic",
+      "name": "SubmitMatic",
+      "score": 7.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "awesome-indie",
+      "name": "Awesome Indie",
+      "score": 7.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "devsuite",
+      "name": "DevSuite",
+      "score": 7.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "directoryfame",
+      "name": "DirectoryFame",
+      "score": 7.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "discover-new-tools",
+      "name": "Discover New Tools",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "find-tool-for",
+      "name": "Find Tool For",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "indexof-ai",
+      "name": "IndexOf.AI",
+      "score": 7.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "inlinkswetrust",
+      "name": "In Links We Trust",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launch01",
+      "name": "Launch01",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchbuck",
+      "name": "LaunchBuck",
+      "score": 7.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchpad-ms",
+      "name": "Launchpad",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "linksalad",
+      "name": "LinkSalad",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "okay-directory",
+      "name": "Okay.Directory",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "onemilliondirectory",
+      "name": "OneMillionDirectory",
+      "score": 7.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "productarena",
+      "name": "ProductArena",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "saas-software",
+      "name": "All SaaS Software",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "simple-lister",
+      "name": "Simple Lister",
+      "score": 7.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "smol-spot",
+      "name": "Smol Spot",
+      "score": 7.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startups-gallery",
+      "name": "startups.gallery",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "the-ai-library",
+      "name": "The AI Library",
+      "score": 7.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "theres-a-tool-for",
+      "name": "There's A Tool For",
+      "score": 7.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "top-social-tools",
+      "name": "Top Social Tools",
+      "score": 7.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aihunt",
+      "name": "AIHunt",
+      "score": 7.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ailib-ru",
+      "name": "Ailib",
+      "score": 7.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ainave",
+      "name": "AINave",
+      "score": 7.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "allmcps",
+      "name": "AllMCPs",
+      "score": 7.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aoyii",
+      "name": "AI奥义",
+      "score": 7.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "bufferapps",
+      "name": "BufferApps",
+      "score": 7.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "curlship",
+      "name": "CurlShip",
+      "score": 7.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "find-top-tools",
+      "name": "Find Top Tools",
+      "score": 7.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "gooddesign-tools",
+      "name": "Good Design Tools",
+      "score": 7.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "indie-launch",
+      "name": "Indie Launch",
+      "score": 7.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "producthubx",
+      "name": "ProductHubX",
+      "score": 7.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "smol-show",
+      "name": "Smol Show",
+      "score": 7.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "submityourstartup",
+      "name": "Submit Your Startup",
+      "score": 7.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "text-link-directory",
+      "name": "Text Link Directory",
+      "score": 7.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolnest",
+      "name": "Toolnest",
+      "score": 7.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "websitehunt",
+      "name": "Website Hunt",
+      "score": 7.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "1000-tools-best",
+      "name": "1000 Tools",
+      "score": 7.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ai-launch",
+      "name": "AI Launch",
+      "score": 7.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aiagentslive",
+      "name": "AI Agents Live",
+      "score": 7.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aisupersmart",
+      "name": "AiSuperSmart",
+      "score": 7.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "another-directory",
+      "name": "Another Directory",
+      "score": 7.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "first100users",
+      "name": "First 100 Users",
+      "score": 7.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "micro-hunts",
+      "name": "Micro Hunts",
+      "score": 7.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "nextool",
+      "name": "Nextool.ai",
+      "score": 7.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "perfectstack",
+      "name": "PerfectStack.ai",
+      "score": 7.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "smol-rank",
+      "name": "Smol Rank",
+      "score": 7.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "thatsmyai",
+      "name": "ThatsMyAI",
+      "score": 7.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "1000-ai",
+      "name": "1000 AI",
+      "score": 7.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ai-launch-space",
+      "name": "AI Launch Space",
+      "score": 7.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aibucket",
+      "name": "AI Bucket",
+      "score": 7.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "bro-directory",
+      "name": "BRO Directory",
+      "score": 7.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "hyperframer",
+      "name": "HyperFramer",
+      "score": 7.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "internet-is-beautiful",
+      "name": "Internet Is Beautiful",
+      "score": 7.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "inventlist",
+      "name": "InventList",
+      "score": 7.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "owwly",
+      "name": "Owwly",
+      "score": 7.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "productlaunchpad",
+      "name": "ProductLaunchpad",
+      "score": 7.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "smol-best",
+      "name": "Smol Best",
+      "score": 7.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "tools-ai-online",
+      "name": "Tools AI Online",
+      "score": 7.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolsify",
+      "name": "Toolsify AI",
+      "score": 7.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "trust-traffic",
+      "name": "Trust Traffic",
+      "score": 7.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "youtools-ai",
+      "name": "YouTools.ai",
+      "score": 7.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aiart-tools",
+      "name": "AIArt.Tools",
+      "score": 7,
+      "dr": 20,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aitoolboard",
+      "name": "AIToolboard",
+      "score": 7,
+      "dr": 19,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aiwizard",
+      "name": "aiwizard",
+      "score": 7,
+      "dr": 20,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "hiproducty",
+      "name": "HiProducty",
+      "score": 7,
+      "dr": 20,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "lachief",
+      "name": "Lachief.io",
+      "score": 7,
+      "dr": 19,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launch-begin",
+      "name": "Launch begin",
+      "score": 7,
+      "dr": 19,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "pavelaunch",
+      "name": "PaveLaunch",
+      "score": 7,
+      "dr": 19,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "payonceapps",
+      "name": "PayOnceApps",
+      "score": 7,
+      "dr": 19,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "saassurf",
+      "name": "SaaS Surf",
+      "score": 7,
+      "dr": 19,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "seofai",
+      "name": "SEOFAI",
+      "score": 7,
+      "dr": 19,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "shipycorn",
+      "name": "Shipycorn",
+      "score": 7,
+      "dr": 20,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "sites-plus",
+      "name": "Sites Plus",
+      "score": 7,
+      "dr": 19,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "smol-find",
+      "name": "Smol Find",
+      "score": 7,
+      "dr": 19,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "tool-networker",
+      "name": "Tool Networker",
+      "score": 7,
+      "dr": 20,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "totool",
+      "name": "Totool",
+      "score": 7,
+      "dr": 19,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ai-zones",
+      "name": "AI Zones",
+      "score": 6.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "apprater",
+      "name": "AppRater",
+      "score": 6.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "conversion-gems",
+      "name": "Conversion Gems",
+      "score": 6.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "hd-robots",
+      "name": "HD Robots",
+      "score": 6.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "language-tools-directory",
+      "name": "Language Tools Directory",
+      "score": 6.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchlog",
+      "name": "LaunchLog",
+      "score": 6.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "monkey-ai-tools",
+      "name": "Monkey AI Tools",
+      "score": 6.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "toolspedia",
+      "name": "ToolsPedia",
+      "score": 6.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "vkmo-ai",
+      "name": "VKMO AI",
+      "score": 6.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ai-toolhouse",
+      "name": "AI Toolhouse",
+      "score": 6.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "appsmirror",
+      "name": "AppsMirror",
+      "score": 6.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "best-ai-agents",
+      "name": "Best AI Agents",
+      "score": 6.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "cloudfindr",
+      "name": "Cloudfindr",
+      "score": 6.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "dev-lanz",
+      "name": "Dev Lanz",
+      "score": 6.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "indie-app-circle",
+      "name": "Indie App Circle",
+      "score": 6.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launchvoid",
+      "name": "LaunchVoid",
+      "score": 6.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "listyourtool",
+      "name": "ListYourTool",
+      "score": 6.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "productcool",
+      "name": "ProductCool",
+      "score": 6.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "proofswap",
+      "name": "ProofSwap",
+      "score": 6.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "seailife",
+      "name": "Seailife",
+      "score": 6.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "startuptile",
+      "name": "StartupTile",
+      "score": 6.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aimatch-pro",
+      "name": "AiMatch",
+      "score": 6.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "amazing-newsletters",
+      "name": "Amazing Newsletters",
+      "score": 6.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "anyfp",
+      "name": "AnyFP",
+      "score": 6.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "arcapush",
+      "name": "Arcapush",
+      "score": 6.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "indiemap",
+      "name": "IndieMap",
+      "score": 6.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "madewithstack",
+      "name": "MadeWithStack",
+      "score": 6.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "mavtools",
+      "name": "MavTools",
+      "score": 6.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "newaiforyou",
+      "name": "NewAIForYou",
+      "score": 6.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "prodpapa",
+      "name": "Prodpapa",
+      "score": 6.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "sevenseek",
+      "name": "SevenSeek",
+      "score": 6.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "shadcn-templates",
+      "name": "Shadcn Templates",
+      "score": 6.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "thistools",
+      "name": "thistools",
+      "score": 6.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "uneed-directories",
+      "name": "Uneed Directories",
+      "score": 6.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ai-tools-up",
+      "name": "AI Tools Up",
+      "score": 6.6,
+      "dr": 11,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "boilerplatelist",
+      "name": "BoilerplateList",
+      "score": 6.6,
+      "dr": 11,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "free-ai-tools-directory",
+      "name": "Free AI Tools Directory",
+      "score": 6.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "landin-tools",
+      "name": "Landin Tools",
+      "score": 6.6,
+      "dr": 11,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "nextpedia",
+      "name": "NextPedia",
+      "score": 6.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "theaihunter",
+      "name": "Theaihunter",
+      "score": 6.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aicoming",
+      "name": "AiComing",
+      "score": 6.5,
+      "dr": 9,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aioftheday",
+      "name": "AI of the Day",
+      "score": 6.5,
+      "dr": 10,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "codehype",
+      "name": "CodeHype",
+      "score": 6.5,
+      "dr": 9,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "indiehustles",
+      "name": "IndieHustles",
+      "score": 6.5,
+      "dr": 9,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "launch-and-loop",
+      "name": "Launch & Loop",
+      "score": 6.5,
+      "dr": 10,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "debutpin",
+      "name": "DebutPin",
+      "score": 6.4,
+      "dr": 8,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "directoryhunt",
+      "name": "DirectoryHunt",
+      "score": 6.4,
+      "dr": 7,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "indie-affiliate",
+      "name": "Indie Affiliate",
+      "score": 6.4,
+      "dr": 8,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "merit-directory",
+      "name": "Merit Directory",
+      "score": 6.4,
+      "dr": 8,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ai-could-do-that",
+      "name": "AI Could Do That",
+      "score": 6.3,
+      "dr": 6,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aifind-ru",
+      "name": "aiFind",
+      "score": 6.3,
+      "dr": 5,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "get-magic-tools",
+      "name": "Get Magic Tools",
+      "score": 6.3,
+      "dr": 6,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "ufind",
+      "name": "ufind.best",
+      "score": 6.3,
+      "dr": 65,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "aitop10",
+      "name": "AITOP10",
+      "score": 6.2,
+      "dr": 64,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "built-vibing",
+      "name": "Built Vibing",
+      "score": 6.2,
+      "dr": 4,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "hatchr",
+      "name": "Hatchr",
+      "score": 6.2,
+      "dr": 3,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "product-launch",
+      "name": "Product Launch",
+      "score": 6.2,
+      "dr": 4,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "top-saas-directories",
+      "name": "Top SaaS Directories",
+      "score": 6.2,
+      "dr": 3,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "aiaxio",
+      "name": "AIAXIO",
+      "score": 6.1,
+      "dr": 2,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "instantlaunch",
+      "name": "InstantLaunch",
+      "score": 6.1,
+      "dr": 1,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "robodebut",
+      "name": "RoboDebut",
+      "score": 6.1,
+      "dr": 2,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "saasuji",
+      "name": "saasuji",
+      "score": 6.1,
+      "dr": 2,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "indiehunt",
+      "name": "IndieHunt",
+      "score": 6,
+      "dr": 59,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "mygemai",
+      "name": "MyGemAi",
+      "score": 6,
+      "dr": 0,
+      "featured": false,
+      "lists": 2
+    },
+    {
+      "slug": "firsto",
+      "name": "Firsto",
+      "score": 5.8,
+      "dr": 55,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "aiboom-tools",
+      "name": "AIBoom.Tools",
+      "score": 5.4,
+      "dr": 48,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "bowora",
+      "name": "Bowora",
+      "score": 5.4,
+      "dr": 48,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "indieai",
+      "name": "IndieAI",
+      "score": 5.4,
+      "dr": 48,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "launchboard",
+      "name": "LaunchBoard",
+      "score": 5.4,
+      "dr": 48,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "shipstry",
+      "name": "Shipstry",
+      "score": 5.4,
+      "dr": 47,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "submito",
+      "name": "Submito",
+      "score": 5.4,
+      "dr": 48,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "aitooldiscovery",
+      "name": "AI Tool Discovery",
+      "score": 5.3,
+      "dr": 45,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "dododirectory",
+      "name": "DodoDirectory",
+      "score": 5.3,
+      "dr": 45,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "stork-ai",
+      "name": "Stork.AI",
+      "score": 5.3,
+      "dr": 45,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "sumodir",
+      "name": "SumoDir",
+      "score": 5.3,
+      "dr": 45,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "aifinder",
+      "name": "AIFinder.site",
+      "score": 5.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "launchit-site",
+      "name": "Launchit",
+      "score": 5.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "launchkiwi",
+      "name": "LaunchKiwi",
+      "score": 5.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "liftoff-sh",
+      "name": "LiftOff",
+      "score": 5.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "proofstories",
+      "name": "ProofStories",
+      "score": 5.2,
+      "dr": 43,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "tinylaunchpad",
+      "name": "TinyLaunchpad",
+      "score": 5.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "tipseason",
+      "name": "TipSeason",
+      "score": 5.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "toolsaiapp",
+      "name": "ToolsAIApp",
+      "score": 5.2,
+      "dr": 44,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "bigkr",
+      "name": "BigKr",
+      "score": 5.1,
+      "dr": 42,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "devtool-io",
+      "name": "DevTool.io",
+      "score": 5.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "dirscc",
+      "name": "Dirs.cc",
+      "score": 5.1,
+      "dr": 42,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "prolaunch",
+      "name": "Pro Launch",
+      "score": 5.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "submithunt",
+      "name": "SubmitHunt",
+      "score": 5.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "tailkits",
+      "name": "Tailkits",
+      "score": 5.1,
+      "dr": 42,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "toollisted",
+      "name": "ToolListed",
+      "score": 5.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "web-review",
+      "name": "Web Review",
+      "score": 5.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "abacklaunch",
+      "name": "Aback Launch",
+      "score": 5,
+      "dr": 40,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "direct2app",
+      "name": "Direct2App",
+      "score": 5,
+      "dr": 40,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "findyoursaas",
+      "name": "FindYourSaaS",
+      "score": 5,
+      "dr": 40,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "launchsoar",
+      "name": "Launch",
+      "score": 5,
+      "dr": 39,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "mediapronet",
+      "name": "MEDIAPRONET",
+      "score": 5,
+      "dr": 40,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "novatools",
+      "name": "NovaTools",
+      "score": 5,
+      "dr": 40,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "smolhunt",
+      "name": "Smol Hunt",
+      "score": 5,
+      "dr": 40,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "cloutstack",
+      "name": "CloutStack",
+      "score": 4.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "confettisaas",
+      "name": "ConfettiSaaS",
+      "score": 4.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "founder-best",
+      "name": "Founder.best",
+      "score": 4.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "foundr-ai",
+      "name": "Foundr",
+      "score": 4.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "geoly",
+      "name": "GEOly.net",
+      "score": 4.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "llm-relevance",
+      "name": "LLM Relevance",
+      "score": 4.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "okeiai",
+      "name": "OkeiAI",
+      "score": 4.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "productfame",
+      "name": "ProductFame",
+      "score": 4.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "soproduct",
+      "name": "So Product",
+      "score": 4.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "techtrendin",
+      "name": "TechTrendin",
+      "score": 4.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "toolnav",
+      "name": "toolnav",
+      "score": 4.9,
+      "dr": 37,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "wtai-navigation",
+      "name": "WTAI Navigation",
+      "score": 4.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "flaex",
+      "name": "Flaex",
+      "score": 4.8,
+      "dr": 36,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "nextlaunch",
+      "name": "Next Launch",
+      "score": 4.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "smollaunchpad",
+      "name": "Smol LaunchPad",
+      "score": 4.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "t0ai",
+      "name": "T0AI",
+      "score": 4.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "toolsunderradar",
+      "name": "Tools Under Radar",
+      "score": 4.8,
+      "dr": 35,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "aigclist",
+      "name": "AIGCLIST",
+      "score": 4.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "antdirectory",
+      "name": "Ant Directory",
+      "score": 4.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "buildrship",
+      "name": "Buildrship",
+      "score": 4.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "directory-for-ai",
+      "name": "Directory for AI",
+      "score": 4.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "huntscreens",
+      "name": "HuntScreens",
+      "score": 4.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "lacreme-ai",
+      "name": "Lacreme.ai",
+      "score": 4.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "low-code-platforms",
+      "name": "Low Code Platforms",
+      "score": 4.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "pro-business-directory",
+      "name": "Pro Business Directory",
+      "score": 4.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "smollist",
+      "name": "Smol List",
+      "score": 4.7,
+      "dr": 34,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "startuptostartup",
+      "name": "Startup To Startup",
+      "score": 4.7,
+      "dr": 33,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "aitrendz",
+      "name": "AI Trendz",
+      "score": 4.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "enests",
+      "name": "Enests",
+      "score": 4.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "findyouragent",
+      "name": "FindYourAgent",
+      "score": 4.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "hotools",
+      "name": "HoTools",
+      "score": 4.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "lookingfortools",
+      "name": "Looking For Tools",
+      "score": 4.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "mydentify",
+      "name": "Mydentify",
+      "score": 4.6,
+      "dr": 31,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "navtools",
+      "name": "NavTools.ai",
+      "score": 4.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "shipthing",
+      "name": "ShipThing",
+      "score": 4.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "supa-launch",
+      "name": "Supa Launch",
+      "score": 4.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "thestartupinc",
+      "name": "The Startup INC",
+      "score": 4.6,
+      "dr": 32,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "collectai",
+      "name": "CollectAI",
+      "score": 4.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "launchonit",
+      "name": "LaunchOn.it",
+      "score": 4.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "producthot",
+      "name": "Product Hot",
+      "score": 4.5,
+      "dr": 29,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "productlaunchify",
+      "name": "Product Launchify",
+      "score": 4.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "stellar-launch",
+      "name": "Stellar Launch",
+      "score": 4.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "youraihunt",
+      "name": "Your AI Hunt",
+      "score": 4.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "247webdirectory",
+      "name": "247WebDirectory",
+      "score": 4.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "aitoolslist-tools",
+      "name": "AiToolsList.Tools",
+      "score": 4.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "bizindexer",
+      "name": "BizIndexer",
+      "score": 4.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "buildlist",
+      "name": "Buildlist",
+      "score": 4.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "domore-ai",
+      "name": "domore.ai",
+      "score": 4.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "starthub-zip",
+      "name": "starthub.zip",
+      "score": 4.4,
+      "dr": 28,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "startuups",
+      "name": "startuups.com",
+      "score": 4.4,
+      "dr": 27,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "apps4review",
+      "name": "Apps4Review",
+      "score": 4.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "toolfolio",
+      "name": "Toolfolio",
+      "score": 4.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "toolhub",
+      "name": "ToolHub",
+      "score": 4.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "toolscout",
+      "name": "ToolScout",
+      "score": 4.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "toolsroller",
+      "name": "Tools Roller",
+      "score": 4.3,
+      "dr": 26,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "top-website-builders",
+      "name": "Top Website Builders",
+      "score": 4.3,
+      "dr": 25,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "chatableapps",
+      "name": "ChatableApps",
+      "score": 4.2,
+      "dr": 23,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "listpitch",
+      "name": "ListPitch",
+      "score": 4.2,
+      "dr": 24,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "ai-marketing-directory",
+      "name": "AI Marketing Directory",
+      "score": 4.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "ai-tools-lister",
+      "name": "AI Tools Lister",
+      "score": 4.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "digitool",
+      "name": "Digitool",
+      "score": 4.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "startup88",
+      "name": "Startup88",
+      "score": 4.1,
+      "dr": 22,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "dropyourai",
+      "name": "DropYourAI",
+      "score": 4,
+      "dr": 19,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "flowtools",
+      "name": "flowtools",
+      "score": 4,
+      "dr": 20,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "ai-compare-ninja",
+      "name": "AI Compare Ninja",
+      "score": 3.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "indieshowcase",
+      "name": "IndieShowcase",
+      "score": 3.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "saasrove",
+      "name": "SaaSRove",
+      "score": 3.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "same-product",
+      "name": "Same Product",
+      "score": 3.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "simplify-ai-tools",
+      "name": "Simplify AI Tools",
+      "score": 3.9,
+      "dr": 18,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "spiff-store",
+      "name": "Spiff.store",
+      "score": 3.9,
+      "dr": 17,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "aitoolfor",
+      "name": "AIToolFor",
+      "score": 3.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "finetools",
+      "name": "Finetools",
+      "score": 3.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "hunt-startup",
+      "name": "Hunt Startup",
+      "score": 3.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "indie-tools-work",
+      "name": "Indie Tools",
+      "score": 3.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "ship-launch",
+      "name": "Ship Launch",
+      "score": 3.8,
+      "dr": 16,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "smol-maker",
+      "name": "Smol Maker",
+      "score": 3.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "smol-top",
+      "name": "Smol Top",
+      "score": 3.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "thetoolbus",
+      "name": "TheToolBus",
+      "score": 3.8,
+      "dr": 15,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "alternative-tools",
+      "name": "Alternative.tools",
+      "score": 3.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "golanz",
+      "name": "Go Lanz",
+      "score": 3.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "goodtool-online",
+      "name": "GoodTool Online",
+      "score": 3.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "software-on-the-web",
+      "name": "Software on the Web",
+      "score": 3.7,
+      "dr": 13,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "trusted-launches",
+      "name": "Trusted Launches",
+      "score": 3.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "verified-launches",
+      "name": "Verified Launches",
+      "score": 3.7,
+      "dr": 14,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "agentlaunch",
+      "name": "AgentLaunch",
+      "score": 3.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "best-ai-brands",
+      "name": "Best AI Brands",
+      "score": 3.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "launch-ranking",
+      "name": "Launch Ranking",
+      "score": 3.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "nextgentools",
+      "name": "NextGenTools",
+      "score": 3.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "rank-anything",
+      "name": "Rank Anything",
+      "score": 3.6,
+      "dr": 12,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "makermove",
+      "name": "MakerMove",
+      "score": 3.5,
+      "dr": 10,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "yaatd",
+      "name": "YAATD",
+      "score": 3.5,
+      "dr": 9,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "full-stack-ai",
+      "name": "Full Stack AI",
+      "score": 3.4,
+      "dr": 8,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "trend-ai-tools",
+      "name": "Trend AI Tools",
+      "score": 3.4,
+      "dr": 7,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "freemium-ai",
+      "name": "Freemium AI",
+      "score": 3.1,
+      "dr": 2,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "ainavitool",
+      "name": "AiNaviTool",
+      "score": 3,
+      "dr": 0,
+      "featured": false,
+      "lists": 1
+    },
+    {
+      "slug": "makerhunt",
+      "name": "MakerHunt",
+      "score": 2.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 0
+    },
+    {
+      "slug": "sidehunt",
+      "name": "Sidehunt",
+      "score": 2.1,
+      "dr": 41,
+      "featured": false,
+      "lists": 0
+    },
+    {
+      "slug": "topaitools",
+      "name": "TopAITools",
+      "score": 2,
+      "dr": 39,
+      "featured": false,
+      "lists": 0
+    },
+    {
+      "slug": "directoryhunt-org",
+      "name": "Directory Hunt",
+      "score": 1.9,
+      "dr": 38,
+      "featured": false,
+      "lists": 0
+    },
+    {
+      "slug": "aitrustlist",
+      "name": "AITrustList",
+      "score": 1.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 0
+    },
+    {
+      "slug": "popwebtools",
+      "name": "PopWebTools",
+      "score": 1.5,
+      "dr": 30,
+      "featured": false,
+      "lists": 0
+    },
+    {
+      "slug": "ainovatools",
+      "name": "AINovaTools",
+      "score": 1.1,
+      "dr": 21,
+      "featured": false,
+      "lists": 0
+    },
+    {
+      "slug": "line-of-sites",
+      "name": "Line of Sites",
+      "score": 0.4,
+      "dr": 7,
+      "featured": false,
+      "lists": 0
+    }
+  ]
+}
