@@ -44,9 +44,10 @@ for (const row of rows) {
     const v = row[c] ?? (schema.arrayLimits[c] ? '[]' : null)
     return sqlVal(v)
   })
-  const updates = schema.fields.map(f => `${f} = excluded.${f}`).join(', ')
-  lines.push(`INSERT INTO submission_sites (${cols.join(', ')}) VALUES (${values.join(', ')}) `
-    + `ON CONFLICT(slug) DO UPDATE SET ${updates};`)
+  // 改写稿只更新已存在的站点，不能 INSERT（name 等列为 NOT NULL）。
+  // 只写 rw_* 列，不触碰原始字段与其他列。
+  const rwValues = schema.fields.map((f, i) => `${f}=${values[i + 1]}`).join(', ')
+  lines.push(`UPDATE submission_sites SET ${rwValues} WHERE slug=${values[0]};`)
 }
 writeFileSync(resolve(ROOT, 'schema/seed-rewrites.sql'), lines.join('\n') + '\n', 'utf8')
 console.log(`[ok] ${rows.length} rewrite rows across ${files.length} batches → seed-rewrites.sql`)
