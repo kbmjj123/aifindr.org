@@ -10,8 +10,8 @@
       <main class="flex-1 min-w-0">
         <header class="mb-8">
           <div class="flex items-start gap-4 mb-3">
-            <img v-if="site.icon_url" :src="site.icon_url" :alt="`${site.name} logo`"
-              width="36" height="36" class="w-9 h-9 rounded-md shrink-0 object-contain"
+            <img v-if="pick(site.r2_icon_url, site.icon_url)" :src="pick(site.r2_icon_url, site.icon_url)!"
+              :alt="`${site.name} logo`" width="36" height="36" class="w-9 h-9 rounded-md shrink-0 object-contain"
               style="border: 1px solid var(--color-border)" />
             <div class="min-w-0">
               <h1 class="font-sans font-extrabold text-[26px] tracking-tight leading-tight"
@@ -19,7 +19,7 @@
                 {{ site.name }}
               </h1>
               <p class="font-body text-[13px] leading-relaxed mt-1" style="color: var(--color-text-secondary)">
-                {{ site.editorial || site.source_lead || site.summary }}
+                {{ site.editorial || sourceLead || rewrittenSummary || site.summary }}
               </p>
             </div>
           </div>
@@ -46,10 +46,10 @@
           </p>
         </header>
 
-        <div v-if="site.screenshot_url" class="mb-8 rounded-lg overflow-hidden"
+        <div v-if="pick(site.r2_screenshot_url, site.screenshot_url)" class="mb-8 rounded-lg overflow-hidden"
           :style="{ border: '1px solid var(--color-border)', background: 'var(--color-bg-surface)' }">
           <div class="w-full overflow-hidden" style="aspect-ratio: 16 / 9; background: var(--color-bg-elevated)">
-            <img :src="site.screenshot_url"
+            <img :src="pick(site.r2_screenshot_url, site.screenshot_url)!"
               :alt="`${site.name} homepage as captured in the ${site.source_snapshot} snapshot`"
               class="w-full h-full object-cover object-top block" loading="lazy" decoding="async" />
           </div>
@@ -59,16 +59,16 @@
         </div>
 
         <!-- 全部抓取内容按原样填入，不做折叠或删减 -->
-        <section v-if="site.what_you_get" aria-labelledby="what-you-get" class="mb-8">
+        <section v-if="whatYouGet" aria-labelledby="what-you-get" class="mb-8">
           <h2 id="what-you-get" class="font-sans font-bold text-[16px] mb-3" style="color: var(--color-text-primary)">
             What you actually get
           </h2>
           <p class="font-body text-[12px] leading-relaxed" style="color: var(--color-text-secondary)">
-            {{ site.what_you_get }}
+            {{ whatYouGet }}
           </p>
         </section>
 
-        <section v-if="youNeed.length || site.eligibility" aria-labelledby="who-it-accepts" class="mb-8">
+        <section v-if="youNeed.length || eligibility" aria-labelledby="who-it-accepts" class="mb-8">
           <h2 id="who-it-accepts" class="font-sans font-bold text-[16px] mb-3" style="color: var(--color-text-primary)">
             Who it accepts
           </h2>
@@ -76,9 +76,9 @@
             style="color: var(--color-text-secondary)">
             <li v-for="item in youNeed" :key="item">· {{ item }}</li>
           </ul>
-          <p v-if="site.eligibility" class="font-body text-[12px] leading-relaxed"
+          <p v-if="eligibility" class="font-body text-[12px] leading-relaxed"
             style="color: var(--color-text-secondary)">
-            {{ site.eligibility }}
+            {{ eligibility }}
           </p>
         </section>
 
@@ -117,10 +117,9 @@
               </ul>
             </div>
           </div>
-          <p class="font-body text-[11px] mt-4" style="color: var(--color-text-muted)">
-            The overview, eligibility, steps, requirements, gotchas, rejection reasons and FAQ below are quoted from
-            this platform's {{ site.source_snapshot }} SubmitMap page. Details can change without notice — verify on
-            the live site.
+          <p v-if="hasQuotedOnPage" class="font-body text-[11px] mt-4" style="color: var(--color-text-muted)">
+            Some details below are quoted from this platform's {{ site.source_snapshot }} SubmitMap page.
+            Details can change without notice — verify on the live site.
           </p>
         </section>
 
@@ -288,8 +287,24 @@ const site = computed(() => data.value?.site ?? null)
 const categories = computed(() => data.value?.categories ?? [])
 const lists = computed(() => data.value?.lists ?? [])
 const related = computed(() => data.value?.related ?? [])
+
+/** 改写优先：返回第一个非空值，用于 rw_* 字段回退到原始字段 */
+function pick<T>(...values: (T | null | undefined)[]): T | null {
+  for (const value of values) {
+    if (value !== null && value !== undefined && value !== '') return value
+  }
+  return null
+}
+
+/** 数组字段改写优先：'[]' 视为无改写，回退原始字段（迁移默认会写入 '[]'） */
+function pickList(rewritten: unknown, original: unknown): string {
+  const rw = Array.isArray(rewritten) ? rewritten : (() => { try { return JSON.parse(String(rewritten || '[]')) } catch { return [] } })()
+  if (Array.isArray(rw) && rw.length > 0) return JSON.stringify(rw)
+  return String(original || '[]')
+}
+
 const factPoints = computed<string[]>(() => {
-  try { return JSON.parse(site.value?.fact_points || '[]') as string[] } catch { return [] }
+  try { return JSON.parse(pickList(site.value?.rw_fact_points, site.value?.fact_points)) as string[] } catch { return [] }
 })
 const productTypes = computed<string[]>(() => {
   try {
@@ -305,7 +320,7 @@ function jsonList(value: unknown): string[] {
     return Array.isArray(parsed) ? parsed.filter((v): v is string => typeof v === 'string' && v !== '') : []
   } catch { return [] }
 }
-const submitSteps = computed(() => jsonList(site.value?.submit_steps))
+const submitSteps = computed(() => jsonList(pickList(site.value?.rw_submit_steps, site.value?.submit_steps)))
 // 步骤文本自身已带序号（"1 ..."），拆出来做高亮，避免与列表序号重复显示
 const formattedSteps = computed(() => submitSteps.value.map(step => {
   const match = /^(\d+)\s+(.*)$/.exec(step)
@@ -313,19 +328,37 @@ const formattedSteps = computed(() => submitSteps.value.map(step => {
     ? { num: match[1]!.padStart(2, '0'), text: match[2]! }
     : { num: '', text: step }
 }))
-const requirements = computed(() => jsonList(site.value?.submit_requirements))
-const gotchas = computed(() => jsonList(site.value?.gotchas))
-const rejectionReasons = computed(() => jsonList(site.value?.rejection_reasons))
-const youNeed = computed(() => jsonList(site.value?.you_need))
+const requirements = computed(() => jsonList(pickList(site.value?.rw_submit_requirements, site.value?.submit_requirements)))
+const gotchas = computed(() => jsonList(pickList(site.value?.rw_gotchas, site.value?.gotchas)))
+const rejectionReasons = computed(() => jsonList(pickList(site.value?.rw_rejection_reasons, site.value?.rejection_reasons)))
+const youNeed = computed(() => jsonList(pickList(site.value?.rw_you_need, site.value?.you_need)))
+const sourceLead = computed(() => pick(site.value?.rw_source_lead, site.value?.source_lead))
+const whatYouGet = computed(() => pick(site.value?.rw_what_you_get, site.value?.what_you_get))
+const eligibility = computed(() => pick(site.value?.rw_eligibility, site.value?.eligibility))
+const rewrittenSummary = computed(() => site.value?.rw_summary || '')
 const hasQuotedContent = computed(() =>
   submitSteps.value.length > 0 || requirements.value.length > 0
   || gotchas.value.length > 0 || rejectionReasons.value.length > 0,
 )
 
-/** FAQ 原文来自快照，区块与 FAQPage schema 同步启用；后续改写只需替换数据 */
+/** 只要页面上还有任一 SubmitMap 引用原文字段，就显示署名说明。
+ *  数组字段的 rw_* 默认 '[]' 不算已改写。 */
+const hasQuotedOnPage = computed(() => {
+  const s = site.value
+  if (!s) return false
+  const hasText = (rw: string | null) => !!rw && rw.trim() !== ''
+  const hasList = (rw: string | null) => {
+    try { const a = JSON.parse(rw || '[]'); return Array.isArray(a) && a.length > 0 } catch { return false }
+  }
+  return !hasText(s.rw_source_lead) || !hasText(s.rw_what_you_get) || !hasText(s.rw_eligibility)
+    || !hasList(s.rw_you_need) || !hasList(s.rw_submit_steps) || !hasList(s.rw_submit_requirements)
+    || !hasList(s.rw_rejection_reasons) || !hasList(s.rw_gotchas) || !hasList(s.rw_faq)
+})
+
+/** FAQ 原文来自快照或改写稿，区块与 FAQPage schema 同步启用 */
 const faqItems = computed<FaqItem[]>(() => {
   try {
-    const parsed = JSON.parse(String(site.value?.faq || '[]')) as unknown
+    const parsed = JSON.parse(pickList(site.value?.rw_faq, site.value?.faq)) as unknown
     if (!Array.isArray(parsed)) return []
     return parsed
       .filter((v): v is FaqItem => typeof v === 'object' && v !== null
@@ -344,7 +377,7 @@ function joinPhrase(values: string[]): string {
 }
 
 // 以下提示全部由本站按结构化事实模板原创生成，不复用来源页面的编辑文案
-const submissionChecks = computed<string[]>(() => {
+const originalChecks = computed<string[]>(() => {
   const target = site.value
   if (!target) return []
   const checks: string[] = []
@@ -368,6 +401,11 @@ const submissionChecks = computed<string[]>(() => {
   }
   checks.push('Link attributes, pricing and review times can change without notice — verify on the live page.')
   return checks
+})
+// 改写稿存在时优先用改写后的提交建议，否则回退上面的模板
+const submissionChecks = computed<string[]>(() => {
+  const rewritten = jsonList(pickList(site.value?.rw_submission_checks, '[]'))
+  return rewritten.length ? rewritten : originalChecks.value
 })
 
 const priceChip = computed<{ label: string; tone: string } | null>(() => {
@@ -419,6 +457,8 @@ function clip(text: string, max: number): string {
 const seoTitleBase = computed(() => {
   const target = site.value
   if (!target) return 'Submission Site'
+  const custom = target.rw_seo_title?.trim()
+  if (custom) return clip(custom, 46)
   const bits: string[] = []
   if (target.domain_rating !== null) bits.push(`DR ${target.domain_rating}`)
   if (target.has_free_submission === 1) bits.push('Free lane')
@@ -430,6 +470,8 @@ const seoTitle = computed(() => `${seoTitleBase.value} | aifindr.org`)
 const seoDescription = computed(() => {
   const target = site.value
   if (!target) return 'Submission platform details.'
+  const custom = target.rw_seo_description?.trim()
+  if (custom) return clip(custom, 158)
   const bits: string[] = []
   if (target.domain_rating !== null) bits.push(`DR ${target.domain_rating}`)
   if (target.pricing === 'free') bits.push('free to submit')
