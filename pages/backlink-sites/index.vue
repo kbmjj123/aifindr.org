@@ -49,7 +49,7 @@
     <div class="mt-10 rounded-lg p-5" :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
       <h2 class="font-sans font-bold text-[15px] mb-2" style="color: var(--color-text-primary)">About this data</h2>
       <p class="font-body text-[11px] leading-relaxed" style="color: var(--color-text-secondary)">
-        {{ attribution }} Facts are a 2026-11-13 snapshot and are not independently verified; always check the live
+        {{ attribution }} Facts are a 2026-11-16 snapshot and are not independently verified; always check the live
         submission page before relying on pricing or link attributes. All explanatory text here is written by aifindr.org.
       </p>
       <div class="flex flex-wrap items-center gap-3 mt-3">

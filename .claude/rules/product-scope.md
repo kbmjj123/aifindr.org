@@ -39,7 +39,7 @@
 | `posts` | 博客 CMS 文章 |
 | `post_translations` | 文章多语种译文 |
 | `custom_fields` | 自定义字段 |
-| `submission_sites` | **公共外链提交平台**（848 条快照 + 用户增量），与 `tools` 是两类实体；含 `domain_rating`（Ahrefs 快照，0–100）与 `page_rank`（Open PageRank 自动刷新，0–10，量纲不同） |
+| `submission_sites` | **公共外链提交平台**（848 条快照 + 用户增量），与 `tools` 是两类实体；含 `domain_rating`（Ahrefs 快照，0–100）、`page_rank`（Open PageRank 自动刷新，0–10，量纲不同）与 `accepts_product_types`（JSON 数组，产品类型事实，独立于 `site_categories`） |
 | `site_categories` | 平台多标签主题分类（规则初判 + 人工复核） |
 | `submission_lists` | 榜单定义：规则型 / 策展型 / 混合型，含受限筛选 DSL 与原创导语；维度含 `pricing`/`link`/`authority`/`speed`/`topic`/`alternatives` |
 | `submission_list_items` | 榜单物化成员（按 `snapshot_id` 版本化） |
@@ -48,9 +48,11 @@
 | `submission_site_reports` | 用户补充、勘误与下架申请，待 admin 审核 |
 
 **外链提交平台目录要点**（详见 `CLAUDE.md` §4）：数据由 `scripts/build-submission-sites.mjs`
-从 `docs/res/01-list.json` + `02-details.jsonl` 双源 join 生成；`pricing`（平台整体定价）与
-`has_free_submission`（是否有免费提交通道）是两套口径，不可混用；所有说明文案由本站原创，
-第三方出站链接统一 `rel="nofollow noopener noreferrer"`。新增站点字段不全时落为 `needs_info`，
+默认从 `docs/res-v2/01-list.json` + `02-details.jsonl` 双源 join 生成（自动回退 `docs/res`，
+也可 `--res=docs/res` 切换），快照日期从列表文件的 `scrapedAt` 推导；`pricing`（平台整体定价）与
+`has_free_submission`（是否有免费提交通道）是两套口径，不可混用；`accepts_product_types` 是 v2 新增的
+产品类型事实（JSON 数组，独立于主题分类），v2 的来源站编辑文案与推断 URL 只进清洗报告、不入库；
+所有说明文案由本站原创，第三方出站链接统一 `rel="nofollow noopener noreferrer"`。新增站点字段不全时落为 `needs_info`，
 不参与任何榜单。
 
 **增量维护**：新增 / 编辑 / 批量导入共用 `server/utils/submissionSiteWrite.ts` 的字段门禁、

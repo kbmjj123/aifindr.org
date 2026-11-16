@@ -195,7 +195,7 @@ export async function handleCronNewsletter(env: CloudflareEnv, subject?: string,
 /**
  * Cron 5: Submission-site availability check — keep `last_checked_at` and `availability` fresh.
  * Note: this cannot refresh domain_rating. Ahrefs has no free public API; its free tools are
- * front-end forms behind Cloudflare and cannot be queried in bulk. DR stays a 2026-11-13 snapshot.
+ * front-end forms behind Cloudflare and cannot be queried in bulk. DR stays a 2026-11-16 snapshot.
  */
 export async function handleCronSubmissionSitesCheck(env: CloudflareEnv): Promise<{ checked: number; unreachable: number }> {
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')

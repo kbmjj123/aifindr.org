@@ -8,8 +8,8 @@ import { SUBMISSION_ATTRIBUTION } from '~/types/submissionSite'
 const EXPORT_FIELDS = [
   'slug', 'name', 'site_url', 'submit_url', 'submit_method', 'domain_rating',
   'pricing', 'has_free_submission', 'approval', 'approval_bucket',
-  'dofollow_link', 'backlink_required', 'categories', 'page_rank', 'source_snapshot',
-  'verification_status', 'summary',
+  'dofollow_link', 'backlink_required', 'accepts_product_types', 'categories', 'page_rank',
+  'source_snapshot', 'verification_status', 'summary',
 ] as const
 
 export default defineEventHandler(async (event) => {

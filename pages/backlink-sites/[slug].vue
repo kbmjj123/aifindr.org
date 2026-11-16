@@ -27,9 +27,18 @@
           <h2 class="font-sans font-bold text-[16px] mb-3" style="color: var(--color-text-primary)">What to check before submitting</h2>
           <ul class="font-body text-[12px] leading-relaxed space-y-1.5" style="color: var(--color-text-secondary)">
             <li v-for="point in factPoints" :key="point">· {{ point }}</li>
-            <li>· Link attributes, pricing and review times can change without notice — verify on the live page.</li>
-            <li>· Prepare a one-line description, a public URL and a logo before starting a submission run.</li>
+            <li v-for="check in submissionChecks" :key="check">· {{ check }}</li>
           </ul>
+        </section>
+
+        <section v-if="productTypes.length" class="mb-8">
+          <h2 class="font-sans font-bold text-[16px] mb-3" style="color: var(--color-text-primary)">What this platform accepts</h2>
+          <p class="font-body text-[12px] leading-relaxed mb-3" style="color: var(--color-text-secondary)">
+            Product types recorded in the {{ site?.source_snapshot || 'latest' }} snapshot. These are factual tags, not a guarantee that a given submission will be accepted.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span v-for="type in productTypes" :key="type" class="tag">{{ type }}</span>
+          </div>
         </section>
 
         <section v-if="categories.length" class="mb-8">
@@ -115,6 +124,45 @@ const lists = computed(() => data.value?.lists ?? [])
 const related = computed(() => data.value?.related ?? [])
 const factPoints = computed<string[]>(() => {
   try { return JSON.parse(site.value?.fact_points || '[]') as string[] } catch { return [] }
+})
+const productTypes = computed<string[]>(() => {
+  try {
+    const parsed = JSON.parse(site.value?.accepts_product_types || '[]') as unknown
+    return Array.isArray(parsed) ? parsed.filter((v): v is string => typeof v === 'string') : []
+  } catch { return [] }
+})
+
+function joinPhrase(values: string[]): string {
+  const shown = values.slice(0, 3)
+  if (shown.length <= 1) return shown[0] || ''
+  return `${shown.slice(0, -1).join(', ')} and ${shown[shown.length - 1]}`
+}
+
+// 以下提示全部由本站按结构化事实模板原创生成，不复用来源页面的编辑文案
+const submissionChecks = computed<string[]>(() => {
+  const target = site.value
+  if (!target) return []
+  const checks: string[] = []
+  if (productTypes.value.length) {
+    checks.push(`This platform is recorded as accepting ${joinPhrase(productTypes.value)}. Check that your product fits that scope before you start.`)
+  }
+  if (target.submit_method === 'github_pr' || target.submit_method === 'awesome_list') {
+    checks.push('A repository-based submission usually needs a public repo and a clear one-line description of what the project does.')
+  } else if (target.submit_method === 'sign_in') {
+    checks.push('The recorded channel requires signing in, so expect to create an account before the submission form is available.')
+  } else if (target.submit_method === 'community_post') {
+    checks.push('This is a community post rather than a directory form; follow the community rules on self-promotion.')
+  } else {
+    checks.push('Prepare a one-line description, a public URL and a logo before starting a submission run.')
+  }
+  if (target.backlink_required === 1) {
+    checks.push('A badge or return link is expected, so decide where it will go on your own site first.')
+  }
+  if (target.pricing === 'paid' || target.pricing === 'freemium') {
+    checks.push('Paid and freemium tiers change more often than link attributes; confirm the current price on the live page.')
+  }
+  checks.push('Link attributes, pricing and review times can change without notice — verify on the live page.')
+  return checks
 })
 
 usePageSeo(() => ({

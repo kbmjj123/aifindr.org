@@ -65,7 +65,7 @@
           in this dataset.
         </p>
         <p>
-          Snapshot date: <strong>2026-11-13</strong>. Domain rating is a third-party estimate and decays over time.
+          Snapshot date: <strong>2026-11-16</strong>. Domain rating is a third-party estimate and decays over time.
           Every entry records its verification status so user-submitted platforms can be told apart from snapshot rows.
         </p>
         <p>
@@ -90,7 +90,7 @@ const var_muted = 'var(--color-text-muted)'
 const var_secondary = 'var(--color-text-secondary)'
 
 const downloads = [
-  { href: '/data/submission-sites.json', title: 'Full dataset (JSON)', note: '848 sites + 12 list definitions', download: 'aifindr-submission-sites.json' },
+  { href: '/data/submission-sites.json', title: 'Full dataset (JSON)', note: '848 sites + 18 list definitions', download: 'aifindr-submission-sites.json' },
   { href: '/api/submission-sites/export?format=csv', title: 'Full dataset (CSV)', note: 'Filtered live export from D1', download: '' },
   { href: '/api/submission-sites/export?format=json', title: 'Live JSON export', note: 'Same filters as the directory', download: '' },
 ]
@@ -115,6 +115,7 @@ const fields: [string, string][] = [
   ['approval / approval_bucket', 'Recorded review time and its normalised bucket'],
   ['dofollow_link', 'Whether the listing link was recorded as dofollow'],
   ['backlink_required', 'Whether the platform asks for a badge or return link'],
+  ['accepts_product_types', 'JSON array of product types the platform accepts (2026-11-16 snapshot)'],
   ['categories', 'Topic tags (multi-label); maintained in the admin dashboard'],
   ['summary', 'Original factual summary written by aifindr.org'],
   ['source_snapshot / verification_status', 'Snapshot date and how the row was verified'],

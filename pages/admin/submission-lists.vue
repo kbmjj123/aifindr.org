@@ -219,6 +219,9 @@
       <label class="font-body text-[10px]">Category slugs (comma-separated)
         <input v-model="form.category" class="input mt-1" placeholder="ai-tool-directories, saas-directories" />
       </label>
+      <label class="font-body text-[10px]">Product types (comma-separated)
+        <input v-model="form.accepts_product_types" class="input mt-1" placeholder="AI tools, SaaS products" />
+      </label>
       <div class="sm:col-span-2 lg:col-span-3">
         <button class="btn-primary" type="submit" :disabled="saving">{{ saving ? 'Saving...' : 'Add platform' }}</button>
       </div>
@@ -327,6 +330,9 @@
         </label>
         <label class="font-body text-[10px]">Category slugs (comma-separated)
           <input v-model="editor.categories" class="input mt-1" />
+        </label>
+        <label class="font-body text-[10px]">Product types (comma-separated)
+          <input v-model="editor.accepts_product_types" class="input mt-1" placeholder="AI tools, SaaS products" />
         </label>
         <label class="font-body text-[10px]">Status
           <select v-model="editor.status" class="select mt-1">
@@ -456,7 +462,7 @@ const importMode = ref<'update' | 'skip'>('update')
 const blankForm = () => ({
   name: '', site_url: '', submit_url: '', slug: '', pricing: 'unknown',
   domain_rating: 0, approval_bucket: 'unknown', dofollow_link: null as number | null,
-  backlink_required: null as number | null, category: '',
+  backlink_required: null as number | null, category: '', accepts_product_types: '',
 })
 const form = ref(blankForm())
 
@@ -477,7 +483,7 @@ const editor = ref({
   pricing: 'unknown', has_free_submission: null as number | null,
   domain_rating: 0 as number | null, approval: '', approval_bucket: 'unknown',
   dofollow_link: null as number | null, backlink_required: null as number | null,
-  categories: '', status: 'active', indexed: 0, is_featured: 0, editorial: '',
+  categories: '', accepts_product_types: '', status: 'active', indexed: 0, is_featured: 0, editorial: '',
 })
 
 const stats = computed(() => [
@@ -685,6 +691,12 @@ async function openEditor(slug: string) {
       dofollow_link: (s.dofollow_link as number | null) ?? null,
       backlink_required: (s.backlink_required as number | null) ?? null,
       categories: data.categories.join(', '),
+      accepts_product_types: (() => {
+        try {
+          const parsed = JSON.parse(String(s.accepts_product_types || '[]')) as unknown
+          return Array.isArray(parsed) ? parsed.map(String).join(', ') : ''
+        } catch { return '' }
+      })(),
       status: String(s.status || 'needs_info'),
       indexed: Number(s.indexed || 0),
       is_featured: Number(s.is_featured || 0),

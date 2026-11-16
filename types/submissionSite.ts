@@ -28,6 +28,8 @@ export interface SubmissionSite {
   dofollow_link: number | null
   /** 1 / 0 / null；1 表示需要放对方徽章或回链 */
   backlink_required: number | null
+  /** JSON 数组字符串；快照记录的产品类型事实，如 ["AI tools","SaaS products"] */
+  accepts_product_types: string
   list_order: number
   is_featured: number
   /** 本站原创事实摘要，不复制来源页面文案 */
@@ -77,7 +79,7 @@ export interface SubmissionFacets {
 export type FilterField =
   | 'pricing' | 'has_free_submission' | 'dofollow_link' | 'backlink_required'
   | 'domain_rating' | 'approval_bucket' | 'submit_method' | 'categories'
-  | 'is_featured' | 'list_order'
+  | 'is_featured' | 'list_order' | 'accepts_product_types'
 
 export type FilterOp = 'eq' | 'in' | 'gte' | 'lte' | 'contains'
 
@@ -170,7 +172,7 @@ export interface SubmissionSiteReport {
 
 /** 快照署名：所有展示页与导出文件都必须带上 */
 export const SUBMISSION_ATTRIBUTION =
-  'Facts sourced from a public directory snapshot (2026-11-13). '
+  'Facts sourced from a public directory snapshot (2026-11-16). '
   + 'Domain rating is a third-party metric, not independently verified by aifindr.org. '
   + 'All editorial text on this page is written by aifindr.org.'
 

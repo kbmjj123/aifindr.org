@@ -30,6 +30,7 @@ export interface SiteWriteInput {
   approval_bucket: ApprovalBucket
   dofollow_link: number | null
   backlink_required: number | null
+  accepts_product_types: string[]
   categories: string[]
   editorial: string | null
   status: SiteStatus
@@ -70,6 +71,31 @@ function asEnum<T extends string>(body: Record<string, unknown>, key: string, al
   return allowed.includes(value) ? value : fallback
 }
 
+/** 产品类型只收结构化短标签：数组、JSON 数组字符串或逗号分隔字符串 */
+function parseProductTypes(value: unknown): string[] {
+  let raw: unknown[]
+  if (Array.isArray(value)) {
+    raw = value
+  } else {
+    const text = String(value ?? '').trim()
+    if (text.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(text) as unknown
+        raw = Array.isArray(parsed) ? parsed : []
+      } catch { raw = [] }
+    } else {
+      raw = text ? text.split(',') : []
+    }
+  }
+  const result = new Set<string>()
+  for (const item of raw) {
+    const label = String(item ?? '').trim()
+    if (label && label.length <= 40 && /^[A-Za-z0-9 .+/-]+$/.test(label)) result.add(label)
+    if (result.size >= 12) break
+  }
+  return [...result]
+}
+
 function asInt(body: Record<string, unknown>, key: string, fallback: number | null, min = 0, max = 1000000): number | null {
   if (!has(body, key)) return fallback
   const raw = body[key]
@@ -103,6 +129,9 @@ export function normalizeSiteInput(
     approval_bucket: asEnum<ApprovalBucket>(body, 'approval_bucket', BUCKETS, base?.approval_bucket ?? 'unknown'),
     dofollow_link: asTriBool(body, 'dofollow_link', base?.dofollow_link ?? null),
     backlink_required: asTriBool(body, 'backlink_required', base?.backlink_required ?? null),
+    accepts_product_types: has(body, 'accepts_product_types')
+      ? parseProductTypes(body.accepts_product_types)
+      : (base?.accepts_product_types ?? []),
     categories,
     editorial: asNullableString(body, 'editorial', base?.editorial ?? null, 4000),
     status: asEnum<SiteStatus>(body, 'status', [...STATUSES], base?.status ?? 'needs_info'),
@@ -139,6 +168,13 @@ export function buildSummary(row: SiteWriteInput): string {
     unknown: 'Pricing was not stated in the snapshot',
   }
   parts.push(`${phrase[row.pricing]}.`)
+  if (row.accepts_product_types.length) {
+    const shown = row.accepts_product_types.slice(0, 3)
+    const label = shown.length > 1
+      ? `${shown.slice(0, -1).join(', ')} and ${shown[shown.length - 1]}`
+      : shown[0]
+    parts.push(`It is recorded as accepting ${label}${shown.length < row.accepts_product_types.length ? ', among other categories' : ''}.`)
+  }
   if (row.dofollow_link !== null) {
     parts.push(`Listed links are ${row.dofollow_link ? 'dofollow' : 'nofollow'}.`)
   }
@@ -163,6 +199,9 @@ export function buildFactPoints(row: SiteWriteInput): string[] {
     points.push(row.backlink_required ? 'A backlink or badge is required' : 'No backlink or badge required')
   }
   points.push(`Submission channel: ${row.submit_method}`)
+  if (row.accepts_product_types.length) {
+    points.push(`Product types listed: ${row.accepts_product_types.join(', ')}`)
+  }
   return points
 }
 
@@ -198,6 +237,7 @@ export function siteRowToInput(row: SubmissionSite, categories: string[]): SiteW
     approval_bucket: row.approval_bucket,
     dofollow_link: row.dofollow_link,
     backlink_required: row.backlink_required,
+    accepts_product_types: parseProductTypes(row.accepts_product_types),
     categories,
     editorial: row.editorial,
     status: row.status,
@@ -225,14 +265,15 @@ export async function persistSite(env: CloudflareEnv, row: SiteWriteInput, isNew
       INSERT INTO submission_sites (
         slug, name, site_url, submit_url, submit_method, domain_rating, pricing,
         has_free_submission, approval, approval_bucket, dofollow_link, backlink_required,
-        list_order, is_featured, summary, fact_points, editorial, attribution,
+        accepts_product_types, list_order, is_featured, summary, fact_points, editorial, attribution,
         source_url, source_snapshot, data_source, verification_status, status,
         indexed, click_count, created_at, updated_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       row.slug, row.name, row.site_url, row.submit_url, row.submit_method, row.domain_rating, row.pricing,
       row.has_free_submission, row.approval, row.approval_bucket, row.dofollow_link, row.backlink_required,
-      row.list_order, row.is_featured, summary, factPoints, row.editorial, SUBMISSION_ATTRIBUTION,
+      JSON.stringify(row.accepts_product_types), row.list_order, row.is_featured, summary, factPoints,
+      row.editorial, SUBMISSION_ATTRIBUTION,
       row.source_url, row.source_snapshot || now.slice(0, 10), row.data_source, row.verification_status,
       status, indexed, 0, now, now,
     ).run()
@@ -241,15 +282,15 @@ export async function persistSite(env: CloudflareEnv, row: SiteWriteInput, isNew
       UPDATE submission_sites SET
         name = ?, site_url = ?, submit_url = ?, submit_method = ?, domain_rating = ?, pricing = ?,
         has_free_submission = ?, approval = ?, approval_bucket = ?, dofollow_link = ?, backlink_required = ?,
-        list_order = ?, is_featured = ?, summary = ?, fact_points = ?, editorial = ?,
+        accepts_product_types = ?, list_order = ?, is_featured = ?, summary = ?, fact_points = ?, editorial = ?,
         source_url = ?, source_snapshot = ?, data_source = 'admin', verification_status = 'verified',
         status = ?, indexed = ?, updated_at = ?
       WHERE slug = ?
     `).bind(
       row.name, row.site_url, row.submit_url, row.submit_method, row.domain_rating, row.pricing,
       row.has_free_submission, row.approval, row.approval_bucket, row.dofollow_link, row.backlink_required,
-      row.list_order, row.is_featured, summary, factPoints, row.editorial,
-      row.source_url, row.source_snapshot,
+      JSON.stringify(row.accepts_product_types), row.list_order, row.is_featured, summary, factPoints,
+      row.editorial, row.source_url, row.source_snapshot,
       status, indexed, now, row.slug,
     ).run()
   }

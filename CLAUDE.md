@@ -60,6 +60,8 @@ aifindr.org/
 ├── schema/
 │   ├── init.sql                 ← D1 建表（16 张表）
 │   ├── reset.sql
+│   ├── migrate-page-rank.sql
+│   ├── migrate-submission-sites-v2.sql
 │   └── seed-submission-sites.sql ← 848 条外链提交平台快照（由 ETL 脚本生成）
 ├── types/tool.ts                ← 工具类型定义
 ├── types/category.ts            ← 静态分类数据
@@ -69,7 +71,7 @@ aifindr.org/
 ├── utils/linkReplacer.ts
 ├── plugins/stats.server.ts
 ├── data/                        ← exchange-links.ts、submit-template.md
-├── docs/                        ← email-notification-system.md、index.html、superpowers/、res/
+├── docs/                        ← email-notification-system.md、index.html、superpowers/、res/、res-v2/
 ├── public/                      ← favicon / manifest / ads.txt / 验证文件 /
 │                                  data/submission-sites.json（开放数据集）
 ├── api-spec.yaml                ← OpenAPI 参考（部分描述过时，见 §9）
@@ -89,16 +91,18 @@ aifindr.org/
 
 ### 公共外链提交平台目录（与 `tools` 是两类实体）
 
-- 数据管道：`scripts/build-submission-sites.mjs` 读 `docs/res/01-list.json`（列表视图：全集、顺序、前 25 条精选、免费提交口径）+ `02-details.jsonl`（详情视图：事实字段、官网、提交入口、相关平台边），按 `slug` 左连接后输出 `schema/seed-submission-sites.sql`、`public/data/submission-sites.json` 与 `reports/submission-sites-cleaning.json`。`docs/res/platforms.json` / `platforms.csv` 是有损导出，**不作数据源**。输入文件是被 `.gitignore` 排除的本地抓取物（约 55MB）；已提交的 `schema/seed-submission-sites.sql` 与 `public/data/submission-sites.json` 保证站点无需输入文件即可运行。seed 可重复导入且**不覆盖后台人工数据**：站点用 `ON CONFLICT DO UPDATE ... WHERE data_source='snapshot'`（后台编辑后变 `admin` 即受保护），只清 `source='rule'` 的分类与 `confirmed=0` 的关系，榜单定义只更新快照版本与成员数；重跑后需刷新一次榜单以恢复 pinned 顺序。
-- 提交入口来自详情 `links` 的第 2 条非源站/非 ahrefs 外链（801 条），**不要**用 `spec.submitPageUrl`（错误拼接）或 `spec.submitPage`（47 条页脚污染）。
+- 数据管道：`scripts/build-submission-sites.mjs` 默认读 `docs/res-v2/01-list.json`（列表视图：全集、顺序、前 25 条精选、免费提交口径、抓取日期）+ `02-details.jsonl`（详情视图：事实字段、官网、提交入口、相关平台边、规范化字段、产品类型），按 `slug` 左连接后输出 `schema/seed-submission-sites.sql`、`public/data/submission-sites.json` 与 `reports/submission-sites-cleaning.json`。`platforms.json` / `platforms.csv` 是有损导出，**不作数据源**。输入目录按 `docs/res-v2` → `docs/res` 自动回退，也可用 `--res=docs/res` 显式切换；快照日期与 `snapshot_id` 从 `01-list.json` 的 `scrapedAt` 推导，当前为 **2026-11-16 / `20261116-1`**。输入文件被 `.gitignore` 排除；已提交的 seed 与开放数据保证站点无需输入文件即可运行。seed 可重复导入且**不覆盖后台人工数据**：站点用 `ON CONFLICT DO UPDATE ... WHERE data_source='snapshot'`（后台编辑后变 `admin` 即受保护），只清 `source='rule'` 的分类与 `confirmed=0` 的关系，榜单定义只更新快照版本与成员数；跨版本时清掉全部非 pinned 成员并迁移 pinned 行的 `snapshot_id`，重跑后需刷新一次榜单以恢复 pinned 顺序。
+- **v2 数据口径**：v1（`docs/res`）与 v2 是同一批 848 个平台、同一组 4911 条相似关系边，差异在解析能力。实际入库的新事实只有 `accepts_product_types`（JSON 数组，796 条覆盖、19 个规范化取值，独立于 `site_categories` 主题标签），并用 `specNormalized.*` 修复定价大小写、布尔脏值与 9 条 DR 缺失。v2 的 `howToSubmit` / `requirements` / `eligibility` / `gotchas` / `rejectionReasons` / `faq` 是来源站原创编辑表达，`platformWebsite` / `submitPageUrl` 是推断值，四者**只进清洗报告、不入库**；`submitPageResolution` 分布、19 条官网差异与 46 条不可用提交候选都记录在 `reports/submission-sites-cleaning.json` 供人工复核。
+- 提交入口来自详情 `links` 的第 2 条非源站/非 ahrefs 外链（801 条），**不要**用 `spec.submitPageUrl`（错误拼接）或 `spec.submitPage`（47 条页脚污染）；v2 的 `submitPageUrl` 虽覆盖 841/848，但 47 条旧口径缺失项对应的候选几乎都是 `/pack`、`/.`、`/is` 一类正文碎片，同样不可用。
 - `pricing`（平台整体定价）与 `has_free_submission`（是否有免费提交通道）是两套口径，列表文件与详情文件的 15 条差异源于此，不是脏数据。
-- 说明文案（`summary` / `fact_points` / `editorial` / 榜单 `intro` / `methodology` / `faq`）全部由本站原创生成；来源页面的编辑表达、FAQ、徽章与品牌字样不入库。每条带 `attribution` 与 `source_snapshot`。
+- 说明文案（`summary` / `fact_points` / `editorial` / 榜单 `intro` / `methodology` / `faq`）全部由本站原创生成；来源页面的编辑表达、FAQ、徽章与品牌字样不入库。详情页「What to check before submitting」清单由本站按结构化事实模板生成，同样不复制来源文案。每条带 `attribution` 与 `source_snapshot`。
+- `accepts_product_types` 已接入受限 DSL（`contains` 按 JSON 元素精确匹配，不允许 `gte`/`lte`，不参与排序），后台可编辑，并驱动 `mcp-server-submission-sites` 榜（28 个成员）；实时导出、开放数据集与 `/backlink-sites/data` 字段字典同步包含该列。新列通过 `schema/migrate-submission-sites-v2.sql` 迁移，**导入新 seed 前必须先跑迁移**。
 - 榜单用受限 JSON DSL 定义（`server/utils/submissionFilters.ts` 编译成参数化 SQL），成员由 `server/utils/submissionLists.ts` 物化到 `submission_list_items` 并按 `snapshot_id` 版本化；`pinned_order` 在刷新时保留。
 - 第三方出站链接统一 `rel="nofollow noopener noreferrer"`。
 - **数据新鲜度**：
   - 存活巡检：`submission_sites.availability` + `last_checked_at` 由 `handleCronSubmissionSitesCheck`（cron `30 3 * * *`，复用 `handleCronLinkChecker` 的 HEAD 巡检模式）每天滚动检查 60 条 active 站点（约 14 天轮完），详情页事实表展示最近巡检时间与可达性。
   - Page Rank 自动刷新：`page_rank`（Open PageRank 的 0–10 指标，区别于 Ahrefs `domain_rating` 的 0–100）由 `handleCronDomainRating`（cron `0 4 * * *`）每日批量刷新 50 条（约 17 天轮完），依赖 secret `OPENPAGERANK_API_KEY`；未配置 key 时静默跳过。
-  - **`domain_rating` 保持 2026-11-13 快照值，不自动刷新**——Ahrefs 无公开免费 API（其免费工具是前端表单、带 Cloudflare 反爬，无法批量取数，且绕过违反其 ToS）。详情页明确把 DR 标注为「Ahrefs snapshot」、Page Rank 标注为「Open PageRank」并附刷新时间，两者量纲不同、分别呈现，不混为一谈。
+  - **`domain_rating` 保持 2026-11-16 快照值，不自动刷新**——Ahrefs 无公开免费 API（其免费工具是前端表单、带 Cloudflare 反爬，无法批量取数，且绕过违反其 ToS）。详情页明确把 DR 标注为「Ahrefs snapshot」、Page Rank 标注为「Open PageRank」并附刷新时间，两者量纲不同、分别呈现，不混为一谈。
 - **alternatives 榜**：`site_relations` 落库 4911 条 `similar` 候选（权重 = 共同标签数，`confirmed=0`）；详情页 "Similar platforms" 直接消费该关系（`weight>=3`，top 6）。另用该关系为 5 个基准（product-hunt / betalist / startup-stash / fazier / toolify）自动生成 `*-alternatives` 策展榜（各 6 成员，排除自身），维度归 `alternatives`，管理员可在后台继续调 `include_slugs`。
 - **增量维护闭环**：`/admin/submission-lists` 支持单条新增、JSON 批量导入（≤200 条）、站点检索与逐条编辑补齐、隐藏/恢复、新建榜单、策展（pinned / include / exclude / 导语 / 阈值 / 筛选规则 / 排序 / FAQ / SEO）、报告审核与变更记录。三条写入路径共用 `server/utils/submissionSiteWrite.ts` 的字段门禁与原创文案；保存后自动重算 `rule`/`hybrid` 榜单，所以补齐或新增站点会立即累加进榜，策展榜的 `pinned_order` 不会被快照刷新冲掉。新建/编辑榜单的 filters/sort 经 `validateFilterExpression` / `validateSortRules` 白名单校验。分类标签由后台覆盖写入 `site_categories`，公开 facet 动态聚合，后台新增的分类会自动出现在 `/backlink-sites` 筛选器里；`takedown` 报告审核通过会真正隐藏站点并重算榜单。
 

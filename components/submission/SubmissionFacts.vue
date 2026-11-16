@@ -42,7 +42,7 @@ const checkedLabel = computed(() => {
   const raw = props.site.last_checked_at
   if (!raw) return ''
   // 形如 2026-11-20 03:30:00
-  const [date] = raw.split(' ')
+  const date = raw.split(' ')[0] || ''
   const parts = date.split('-')
   if (parts.length !== 3) return raw
   return `${parts[0]}-${parts[1]}-${parts[2]}`
@@ -50,10 +50,25 @@ const checkedLabel = computed(() => {
 const prLabel = computed(() => {
   const raw = props.site.page_rank_checked_at
   if (!raw) return ''
-  const [date] = raw.split(' ')
+  const date = raw.split(' ')[0] || ''
   const parts = date.split('-')
   if (parts.length !== 3) return raw
   return `${parts[0]}-${parts[1]}-${parts[2]}`
+})
+
+const productTypes = computed<string[]>(() => {
+  try {
+    const parsed = JSON.parse(props.site.accepts_product_types || '[]') as unknown
+    return Array.isArray(parsed) ? parsed.filter((v): v is string => typeof v === 'string') : []
+  } catch { return [] }
+})
+const productTypesLabel = computed(() => {
+  const shown = productTypes.value.slice(0, 3)
+  if (!shown.length) return 'Not stated'
+  const label = shown.length > 1
+    ? `${shown.slice(0, -1).join(', ')} and ${shown[shown.length - 1]}`
+    : shown[0]
+  return productTypes.value.length > 3 ? `${label} +${productTypes.value.length - 3}` : label
 })
 
 const rows = computed(() => {
@@ -67,6 +82,7 @@ const rows = computed(() => {
     { label: 'Link type', value: s.dofollow_link === 1 ? 'Dofollow' : s.dofollow_link === 0 ? 'Nofollow' : 'Not stated' },
     { label: 'Backlink / badge', value: s.backlink_required === 1 ? 'Required' : s.backlink_required === 0 ? 'Not required' : 'Not stated' },
     { label: 'Submission channel', value: METHOD_LABELS[s.submit_method as SubmissionMethod] ?? 'Not stated' },
+    { label: 'Accepts', value: productTypesLabel.value },
     { label: 'Snapshot', value: s.source_snapshot || 'Unknown' },
   ]
 })

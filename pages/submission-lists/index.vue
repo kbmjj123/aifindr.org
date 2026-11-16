@@ -28,7 +28,7 @@
 
     <div class="mt-8 rounded-lg p-4 font-body text-[11px] leading-relaxed"
       :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', color: var_secondary }">
-      Facts come from a 2026-11-13 public directory snapshot and are not independently verified by aifindr.org.
+      Facts come from a 2026-11-16 public directory snapshot and are not independently verified by aifindr.org.
       All list descriptions, inclusion rules and explanatory text are written by aifindr.org.
       <div class="mt-2">
         <NuxtLink to="/backlink-sites" style="color: var(--color-text-link)">Browse the full directory →</NuxtLink>

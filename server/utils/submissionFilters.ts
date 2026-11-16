@@ -17,13 +17,17 @@ const COLUMNS: Record<string, string> = {
   is_featured: 's.is_featured',
   list_order: 's.list_order',
   categories: 'categories',
+  accepts_product_types: 's.accepts_product_types',
   name: 's.name',
 }
 
 const VALID_OPS = new Set(['eq', 'in', 'gte', 'lte', 'contains'])
 const VALID_SORT_DIRS = new Set(['asc', 'desc'])
-// categories 是 EXISTS 子查询用的虚拟字段，不是真实列，不能进 ORDER BY
-const SORTABLE_FIELDS = new Set(Object.keys(COLUMNS).filter(key => key !== 'categories'))
+// categories 是 EXISTS 子查询用的虚拟字段；accepts_product_types 是 JSON 文本，
+// 排序没有业务含义。两者都不进 ORDER BY。
+const SORTABLE_FIELDS = new Set(
+  Object.keys(COLUMNS).filter(key => !['categories', 'accepts_product_types'].includes(key)),
+)
 
 export interface CompiledFilters {
   where: string
@@ -59,6 +63,16 @@ export function compileFilters(expression: FilterExpression | null): CompiledFil
       if (values.length === 0) continue
       parts.push(`EXISTS (SELECT 1 FROM site_categories sc WHERE sc.site_slug = s.slug AND sc.category_slug IN (${values.map(() => '?').join(',')}))`)
       params.push(...values)
+      continue
+    }
+
+    if (cond.field === 'accepts_product_types') {
+      // JSON 数组按「完整元素」精确匹配：值前后带双引号，避免 "Saa" 命中 "SaaS products"。
+      const values = (Array.isArray(cond.value) ? cond.value : [cond.value])
+        .map(String).filter(Boolean).slice(0, 20)
+      if (!values.length) continue
+      parts.push(`(${values.map(() => `${COLUMNS.accepts_product_types} LIKE ?`).join(' OR ')})`)
+      params.push(...values.map(value => `%"${value.replace(/"/g, '')}"%`))
       continue
     }
 
@@ -111,6 +125,9 @@ export function validateFilterExpression(value: unknown): { ok: boolean; reason?
     const cond = item as FilterCondition
     if (cond.field === 'categories' && !['eq', 'in', 'contains'].includes(cond.op)) {
       return { ok: false, reason: 'categories only supports eq / in / contains' }
+    }
+    if (cond.field === 'accepts_product_types' && ['gte', 'lte'].includes(cond.op)) {
+      return { ok: false, reason: 'accepts_product_types only supports eq / in / contains' }
     }
     if (Array.isArray(cond.value) && cond.value.length > 20) {
       return { ok: false, reason: 'too many values' }

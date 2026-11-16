@@ -179,7 +179,7 @@ CREATE INDEX IF NOT EXISTS idx_cf_post ON custom_fields(post_id);
 
 -- ─── 公共外链提交平台目录（开放数据） ────────────────────────────
 -- 与 tools 是两类实体：这里记录「可以提交外链的第三方平台」，不是站内收录的 AI 工具。
--- 数据由 scripts/build-submission-sites.mjs 从 docs/res/01-list.json + 02-details.jsonl
+-- 数据由 scripts/build-submission-sites.mjs 从 docs/res-v2/01-list.json + 02-details.jsonl
 -- 双源 join 生成，导入文件为 schema/seed-submission-sites.sql。
 -- 说明文案（summary/fact_points/editorial/intro/methodology/faq）均为本站原创，
 -- 不复制来源页面的表达；事实字段保留来源署名与快照日期。
@@ -201,6 +201,7 @@ CREATE TABLE IF NOT EXISTS submission_sites (
                       CHECK(approval_bucket IN ('fast','week','month','slow','unknown')),
   dofollow_link       INTEGER,          -- 1 / 0 / NULL
   backlink_required   INTEGER,          -- 1 / 0 / NULL；1 对应「需要放对方徽章/回链」
+  accepts_product_types TEXT DEFAULT '[]', -- JSON 数组；快照记录的产品类型事实，独立于 site_categories 主题标签
   list_order          INTEGER DEFAULT 0,
   is_featured         INTEGER DEFAULT 0,
   summary             TEXT,             -- 本站原创事实摘要

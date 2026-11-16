@@ -2,9 +2,9 @@
 /**
  * 公共外链提交平台目录 —— 数据构建脚本（本地运行，不参与 Worker 打包）
  *
- * 输入：
- *   docs/res/01-list.json       列表视图：全集、顺序、精选段、免费提交口径
- *   docs/res/02-details.jsonl   详情视图：事实字段、官网、提交入口、相关平台边
+ * 输入（默认优先升级版 docs/res-v2，可用 --res=docs/res 回退）：
+ *   01-list.json       列表视图：全集、顺序、精选段、免费提交口径、抓取日期
+ *   02-details.jsonl   详情视图：事实字段、官网、提交入口、相关平台边、规范化字段
  *
  * 输出：
  *   schema/seed-submission-sites.sql       D1 导入文件
@@ -13,21 +13,38 @@
  *
  * 合规口径：只使用事实信息。来源页面的编辑文案、FAQ、徽章、品牌字样一律不复制；
  * summary / fact_points / intro / methodology / faq 全部由本脚本按本站模板原创生成。
+ * v2 新增的 howToSubmit / requirements / eligibility / gotchas / rejectionReasons / faq
+ * 是来源站的原创编辑表达，仅作审计参考，不入库、不输出到任何站点字段。
  *
- * 用法：node scripts/build-submission-sites.mjs
+ * 用法：
+ *   node scripts/build-submission-sites.mjs                  # 优先 docs/res-v2
+ *   node scripts/build-submission-sites.mjs --res=docs/res   # 显式使用旧快照
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
-import { resolve, dirname } from 'node:path'
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
+import { resolve, dirname, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const RES = resolve(ROOT, 'docs/res')
-const SNAPSHOT = '2026-11-13'
-const SNAPSHOT_ID = '20261113-1'
+// 干净 clone 上没有 v2 抓取物时自动回退到 docs/res；已提交的产物仍可运行站点。
+const RES = (() => {
+  const arg = process.argv.find(a => a.startsWith('--res='))
+  if (arg) return resolve(ROOT, arg.slice('--res='.length))
+  const upgraded = resolve(ROOT, 'docs/res-v2')
+  return existsSync(resolve(upgraded, '02-details.jsonl')) ? upgraded : resolve(ROOT, 'docs/res')
+})()
+// 快照日期以输入文件自身为准，避免换了抓取批次还沿用旧的署名与 snapshot_id。
+const SNAPSHOT = (() => {
+  try {
+    const meta = JSON.parse(readFileSync(resolve(RES, '01-list.json'), 'utf8'))
+    const date = String(meta.scrapedAt || '').slice(0, 10)
+    return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : '2026-11-16'
+  } catch { return '2026-11-16' }
+})()
+const SNAPSHOT_ID = `${SNAPSHOT.replace(/-/g, '')}-1`
 const SOURCE_URL_BASE = 'https://submitmap.com/platform/'
 const ATTRIBUTION =
-  'Facts sourced from a public directory snapshot (2026-11-13). '
+  `Facts sourced from a public directory snapshot (${SNAPSHOT}). `
   + 'Domain rating is a third-party metric, not independently verified by aifindr.org. '
   + 'All editorial text on this page is written by aifindr.org.'
 
@@ -134,21 +151,53 @@ function displayName(detail, listItem) {
   return listItem.slug
 }
 
-function cleanDomainRating(raw) {
+/** v2 的 specNormalized.* 已把 Yes/No、大小写、数值解析好，优先用它消掉规格表脏值 */
+function cleanDomainRating(raw, normalized) {
   const value = String(raw ?? '').trim()
-  return /^\d{1,3}$/.test(value) && Number(value) <= 100 ? Number(value) : null
+  if (/^\d{1,3}$/.test(value) && Number(value) <= 100) return Number(value)
+  if (normalized === null || normalized === undefined || normalized === '') return null
+  const fallback = Number(normalized)
+  return Number.isFinite(fallback) && fallback >= 0 && fallback <= 100 ? Math.round(fallback) : null
 }
 
-function cleanBoolean(raw) {
+function cleanBoolean(raw, normalized) {
+  if (typeof normalized === 'boolean') return normalized ? 1 : 0
   const value = String(raw ?? '').trim().toLowerCase()
   if (value === 'yes') return 1
   if (value === 'no') return 0
   return null
 }
 
-function cleanPricing(raw) {
-  const value = String(raw ?? '').trim().toLowerCase()
+function cleanPricing(raw, normalized) {
+  const value = String(normalized ?? raw ?? '').trim().toLowerCase()
   return VALID_PRICING.has(value) ? value : 'unknown'
+}
+
+/** v2 新增的结构化事实：该平台接受什么类型的产品（非编辑文案，可直接入库） */
+const PRODUCT_TYPE_ALIASES = new Map([
+  ['saa', 'SaaS products'],          // 抓取截断
+  ['dev tools', 'Developer tools'],  // 同义缩写
+  ['open source', 'Open source projects'],
+])
+
+function productTypesOf(detail) {
+  const raw = Array.isArray(detail.acceptsProductTypes) ? detail.acceptsProductTypes : []
+  const result = []
+  for (const item of raw) {
+    const value = String(item ?? '').trim()
+    if (!value || value.length > 40) continue
+    const canonical = PRODUCT_TYPE_ALIASES.get(value.toLowerCase()) || value
+    if (!result.includes(canonical)) result.push(canonical)
+  }
+  return result
+}
+
+/** 只用于审计报告：v2 的 platformWebsite 是对象，含少量明显错链，不自动覆盖 site_url */
+function platformWebsiteUrl(detail) {
+  const value = detail.platformWebsite
+  if (!value || typeof value !== 'object') return null
+  const url = String(value.url ?? '').trim()
+  return /^https?:\/\//.test(url) ? url : null
 }
 
 function cleanApproval(raw) {
@@ -200,6 +249,14 @@ function categoriesOf(text, slug) {
 
 // ── 本站原创说明文案 ────────────────────────────────────────────────
 
+/** 本站原创文案里引用结构化事实用，不复制来源页面表达 */
+function productTypeList(site) {
+  try {
+    const parsed = JSON.parse(site.accepts_product_types || '[]')
+    return Array.isArray(parsed) ? parsed.filter(v => typeof v === 'string' && v) : []
+  } catch { return [] }
+}
+
 function factPointsOf(site) {
   const points = []
   if (site.domain_rating !== null) points.push(`Domain rating ${site.domain_rating}`)
@@ -211,6 +268,8 @@ function factPointsOf(site) {
     points.push(site.backlink_required ? 'A backlink or badge is required' : 'No backlink or badge required')
   }
   points.push(`Submission channel: ${site.submit_method}`)
+  const types = productTypeList(site)
+  if (types.length) points.push(`Product types listed: ${types.join(', ')}`)
   return points
 }
 
@@ -218,6 +277,14 @@ function summaryOf(site) {
   const parts = [`${site.name} is a platform where you can submit a product or website for a listing.`]
   if (site.domain_rating !== null) parts.push(`Its domain rating is ${site.domain_rating}.`)
   parts.push(`${PRICING_PHRASE[site.pricing]}.`)
+  const types = productTypeList(site)
+  if (types.length) {
+    const shown = types.slice(0, 3)
+    const phrase = shown.length > 1
+      ? `${shown.slice(0, -1).join(', ')} and ${shown[shown.length - 1]}`
+      : shown[0]
+    parts.push(`It is recorded as accepting ${phrase}${types.length > 3 ? ', among other categories' : ''}.`)
+  }
   if (site.dofollow_link !== null) {
     parts.push(`Listed links are ${site.dofollow_link ? 'dofollow' : 'nofollow'}.`)
   }
@@ -353,6 +420,15 @@ const LIST_DEFS = [
     ruleText: 'the platform is tagged as a developer tool directory',
     angle: 'Expect a public repository and a clear one-line description of what the tool does.',
   },
+  {
+    slug: 'mcp-server-submission-sites', title: 'Submission Sites That Accept MCP Servers',
+    dimension: 'topic', kind: 'rule',
+    description: 'Platforms recorded as accepting MCP servers and Model Context Protocol projects.',
+    filters: { and: [{ field: 'accepts_product_types', op: 'contains', value: 'MCP servers' }] },
+    sort: DESC_SORT, limit_mode: 'all', limit_count: 0,
+    ruleText: 'the platform is recorded as accepting MCP servers as a product type',
+    angle: 'Product types are factual tags from the snapshot; check the live submission page for the current scope.',
+  },
 ]
 
 function editorialOf(def) {
@@ -470,6 +546,13 @@ const allSlugs = new Set(listItems.map(item => item.slug))
 const issues = {
   missingDetail: [], badDomainRating: [], badPricing: [], badApproval: [],
   missingSiteUrl: [], missingSubmitUrl: [], dirtySpecSubmitPage: [],
+  // v2 审计项：官网候选不一致（不自动覆盖）、提交入口推断候选（不入库）
+  siteUrlMismatch: [], unusableSubmitCandidate: [],
+}
+const stats = {
+  productTypesCovered: 0,
+  productTypeCounts: {},
+  submitPageResolution: {},
 }
 
 const sites = []
@@ -487,11 +570,12 @@ for (let index = 0; index < listItems.length; index++) {
   }
 
   const spec = detail.spec || {}
+  const norm = detail.specNormalized || {}
   const drRaw = spec.domainRating
-  const dr = cleanDomainRating(drRaw)
+  const dr = cleanDomainRating(drRaw, norm.domainRatingNum)
   if (dr === null) issues.badDomainRating.push({ slug: item.slug, raw: String(drRaw ?? '') })
 
-  const pricing = cleanPricing(spec.pricing)
+  const pricing = cleanPricing(spec.pricing, norm.pricingTier)
   if (pricing === 'unknown') issues.badPricing.push({ slug: item.slug, raw: String(spec.pricing ?? '') })
 
   const approval = cleanApproval(spec.approval)
@@ -499,12 +583,31 @@ for (let index = 0; index < listItems.length; index++) {
     issues.badApproval.push({ slug: item.slug, raw: String(spec.approval ?? '') })
   }
 
+  // 官网与提交入口仍以详情 links 的前两条外链为准；v2 的 submitPageUrl 是
+  // 「相对路径 + 官网域名」的机械拼接，47 条缺失候选几乎全是 /pack、/.、/is
+  // 之类的正文碎片，不能作为提交入口。这里只记录差异供人工复核。
   const ext = externalLinks(detail)
   const siteUrl = ext[0] || null
   const submitUrl = ext[1] || null
   if (!siteUrl) issues.missingSiteUrl.push(item.slug)
   if (!submitUrl) issues.missingSubmitUrl.push(item.slug)
   if (/\s/.test(String(spec.submitPage ?? ''))) issues.dirtySpecSubmitPage.push(item.slug)
+
+  const v2SiteUrl = platformWebsiteUrl(detail)
+  if (v2SiteUrl && siteUrl && hostnameOf(v2SiteUrl) !== hostnameOf(siteUrl)) {
+    issues.siteUrlMismatch.push({ slug: item.slug, current: siteUrl, candidate: v2SiteUrl })
+  }
+  const resolution = String(detail.submitPageResolution || 'unresolved')
+  stats.submitPageResolution[resolution] = (stats.submitPageResolution[resolution] || 0) + 1
+  if (!submitUrl && detail.submitPageUrl) {
+    issues.unusableSubmitCandidate.push({ slug: item.slug, candidate: String(detail.submitPageUrl) })
+  }
+
+  const productTypes = productTypesOf(detail)
+  if (productTypes.length) stats.productTypesCovered++
+  for (const type of productTypes) {
+    stats.productTypeCounts[type] = (stats.productTypeCounts[type] || 0) + 1
+  }
 
   const text = [
     displayName(detail, item),
@@ -525,8 +628,9 @@ for (let index = 0; index < listItems.length; index++) {
     has_free_submission: freeSubmissionOf(item.listPricing, pricing),
     approval,
     approval_bucket: APPROVAL_BUCKET[approval],
-    dofollow_link: cleanBoolean(spec.dofollowLink),
-    backlink_required: cleanBoolean(spec.backlinkRequired),
+    dofollow_link: cleanBoolean(spec.dofollowLink, norm.dofollowLinkBool),
+    backlink_required: cleanBoolean(spec.backlinkRequired, norm.backlinkRequiredBool),
+    accepts_product_types: JSON.stringify(productTypes),
     list_order: index,
     is_featured: index < 25 ? 1 : 0,
     summary: '',
@@ -668,6 +772,7 @@ for (const def of LIST_DEFS) {
 const SITE_COLUMNS = [
   'slug', 'name', 'site_url', 'submit_url', 'submit_method', 'domain_rating', 'pricing',
   'has_free_submission', 'approval', 'approval_bucket', 'dofollow_link', 'backlink_required',
+  'accepts_product_types',
   'list_order', 'is_featured', 'summary', 'fact_points', 'editorial', 'attribution',
   'source_url', 'source_snapshot', 'data_source', 'verification_status', 'last_checked_at',
   'page_rank', 'page_rank_checked_at',
@@ -690,8 +795,10 @@ const sql = [
   '-- (status / kind / filters / sort / pinned_order / include / exclude / intro / FAQ / SEO) are preserved.',
   '-- After re-running, trigger "Refresh all lists" in /admin/submission-lists once to restore pinned positions.',
   '',
-  // 只重建非策展成员，pinned 行保留
-  `DELETE FROM submission_list_items WHERE snapshot_id = '${SNAPSHOT_ID}' AND pinned = 0;`,
+  // 快照版本会变：清掉所有非策展成员，避免旧 snapshot_id 的成员行残留；
+  // 再把人工 pinned 行迁到新版本，否则策展位会与榜单定义失联。
+  'DELETE FROM submission_list_items WHERE pinned = 0;',
+  `UPDATE OR IGNORE submission_list_items SET snapshot_id = '${SNAPSHOT_ID}' WHERE snapshot_id <> '${SNAPSHOT_ID}';`,
   '',
 ]
 for (const row of sites) sql.push(upsertSiteStatement(SITE_COLUMNS, row))
@@ -715,7 +822,7 @@ writeFileSync(resolve(ROOT, 'schema/seed-submission-sites.sql'), sql.join('\n'),
 const publicFields = [
   'slug', 'name', 'site_url', 'submit_url', 'submit_method', 'domain_rating', 'pricing',
   'has_free_submission', 'approval', 'approval_bucket', 'dofollow_link', 'backlink_required',
-  'summary', 'source_url', 'source_snapshot', 'verification_status',
+  'accepts_product_types', 'summary', 'source_url', 'source_snapshot', 'verification_status',
 ]
 const openData = {
   license: 'CC0-1.0 applies to aifindr.org\'s compilation and editorial text only; source facts are public information.',
@@ -747,6 +854,7 @@ writeFileSync(
 const report = {
   snapshot: SNAPSHOT,
   snapshotId: SNAPSHOT_ID,
+  sourceDir: relative(ROOT, RES),
   sourceFiles: ['01-list.json', '02-details.jsonl'],
   totals: {
     listItems: listItems.length,
@@ -758,13 +866,20 @@ const report = {
     listMemberships: listItemRows.length,
     indexed: sites.filter(s => s.indexed).length,
     featured: sites.filter(s => s.is_featured).length,
+    productTypesCovered: stats.productTypesCovered,
   },
+  productTypes: Object.fromEntries(
+    Object.entries(stats.productTypeCounts).sort((a, b) => b[1] - a[1]),
+  ),
+  submitPageResolution: stats.submitPageResolution,
   issues: {
     ...issues,
     counts: Object.fromEntries(Object.entries(issues).map(([k, v]) => [k, v.length])),
   },
   listSizes: Object.fromEntries(lists.map(list => [list.slug, list.item_count])),
-  note: 'platforms.json / platforms.csv are lossy exports and are intentionally not used as inputs.',
+  note: 'platforms.json / platforms.csv are lossy exports and are intentionally not used as inputs. '
+    + 'v2 editorial fields (howToSubmit / requirements / eligibility / gotchas / rejectionReasons / faq) '
+    + 'and inferred submitPageUrl / platformWebsite are audited but never imported.',
 }
 mkdirSync(resolve(ROOT, 'reports'), { recursive: true })
 writeFileSync(
@@ -773,6 +888,8 @@ writeFileSync(
   'utf8',
 )
 
+console.log(`[ok] source ${report.sourceDir}, snapshot ${SNAPSHOT} (${SNAPSHOT_ID})`)
 console.log(`[ok] ${sites.length} sites, ${categoryRows.length} categories, ${relationRows.length} relations`)
+console.log(`[ok] product types on ${stats.productTypesCovered}/${sites.length} sites (${Object.keys(stats.productTypeCounts).length} distinct)`)
 console.log(`[ok] ${lists.length} lists, ${listItemRows.length} memberships`)
 console.log('[ok] list sizes:', report.listSizes)
