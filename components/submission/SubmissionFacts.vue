@@ -59,7 +59,7 @@ const prLabel = computed(() => {
 const rows = computed(() => {
   const s = props.site
   return [
-    { label: 'Domain rating', value: s.domain_rating === null ? 'Not stated' : `${s.domain_rating} · Ahrefs snapshot` },
+    { label: 'Domain rating', value: s.domain_rating === null ? 'Not stated' : `${s.domain_rating}` },
     { label: 'Page rank', value: s.page_rank === null ? 'Not ranked' : String(s.page_rank) },
     { label: 'Platform pricing', value: PRICING_LABELS[s.pricing as SubmissionPricing] ?? 'Unknown' },
     { label: 'Free submission', value: s.has_free_submission === 1 ? 'Yes' : s.has_free_submission === 0 ? 'No' : 'Unconfirmed' },
