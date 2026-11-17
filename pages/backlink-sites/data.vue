@@ -129,6 +129,7 @@ const fields: [string, string][] = [
   ['you_need', 'JSON array of detailed eligibility points, quoted from SubmitMap with attribution'],
   ['eligibility', 'Source eligibility text including accepted product types'],
   ['faq', 'JSON array of source FAQ questions and answers, quoted with attribution'],
+  ['rw_* / r2_*', 'Internal rewrite and R2 image mirror columns; used by the site, not included in this download'],
   ['categories', 'Topic tags (multi-label); maintained in the admin dashboard'],
   ['summary', 'Original factual summary written by aifindr.org'],
   ['source_snapshot / verification_status', 'Snapshot date and how the row was verified'],
