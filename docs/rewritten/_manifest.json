@@ -7,7 +7,15 @@
       "sites": 25,
       "status": "shipped",
       "shippedAt": "2026-11-17",
-      "note": "Priority top 25; 14 rewrite fields per site; validated by build-rewrites.mjs"
+      "note": "Priority top 25; 14 rewrite fields per site"
+    },
+    {
+      "id": "batch-02",
+      "file": "batch-02.jsonl",
+      "sites": 25,
+      "status": "shipped",
+      "shippedAt": "2026-11-17",
+      "note": "Priority 26-50; 14 rewrite fields per site; validated at 50 total rows"
     }
   ]
 }
