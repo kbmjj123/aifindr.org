@@ -197,7 +197,7 @@ export function parseSiteQuery(query: Record<string, unknown>): ParsedSiteQuery 
   const pricing = text('pricing').split(',').filter(v => ['free', 'freemium', 'paid', 'optional'].includes(v))
   if (pricing.length) {
     conditions.push(pricing.length === 1
-      ? { field: 'pricing', op: 'eq', value: pricing[0] }
+      ? { field: 'pricing', op: 'eq', value: pricing[0]! }
       : { field: 'pricing', op: 'in', value: pricing })
   }
 
@@ -244,7 +244,7 @@ export function parseSiteQuery(query: Record<string, unknown>): ParsedSiteQuery 
   return {
     expression: { and: conditions },
     search: text('q').slice(0, 120),
-    sort: SORT_PRESETS[text('sort')] || SORT_PRESETS.default,
+    sort: SORT_PRESETS[text('sort')] ?? SORT_PRESETS.default ?? [],
     page,
     pageSize,
   }
