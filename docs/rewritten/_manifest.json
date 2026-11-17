@@ -1,4 +1,13 @@
 {
   "version": 1,
-  "batches": []
+  "batches": [
+    {
+      "id": "batch-01",
+      "file": "batch-01.jsonl",
+      "sites": 25,
+      "status": "shipped",
+      "shippedAt": "2026-11-17",
+      "note": "Priority top 25; 14 rewrite fields per site; validated by build-rewrites.mjs"
+    }
+  ]
 }
