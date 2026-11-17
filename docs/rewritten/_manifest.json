@@ -16,6 +16,14 @@
       "status": "shipped",
       "shippedAt": "2026-11-17",
       "note": "Priority 26-50; 14 rewrite fields per site; validated at 50 total rows"
+    },
+    {
+      "id": "batch-03",
+      "file": "batch-03.jsonl",
+      "sites": 25,
+      "status": "shipped",
+      "shippedAt": "2026-11-17",
+      "note": "Priority 51-75; 14 fields per site; validated at 75 total rows"
     }
   ]
 }
