@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
     WHERE id = ?
   `).bind(status, rejectReason || null, reviewerNote || null, now, now, toolId).run()
 
-  await env.CACHE.delete('stats')
+  await env.CACHE.delete('stats:v2')
   await env.CACHE.delete('sitemap-xml')
 
   const toolName = String(tool.name || '')

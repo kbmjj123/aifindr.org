@@ -1,8 +1,11 @@
-import { sendRedirect } from 'h3'
+import { createError, sendRedirect } from 'h3'
 import { getEnv } from '~/server/utils/env'
 import { signJWT } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
+  if (!import.meta.dev) {
+    throw createError({ statusCode: 404, statusMessage: 'Not Found' })
+  }
   const env = getEnv(event)
 
   const devUser = {

@@ -1,10 +1,12 @@
 import { logger } from '~/server/utils/logger'
 import { getEnv, siteUrl } from '~/server/utils/env'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
+import { assertCronSecret } from '~/server/utils/cronAuth'
 import type { UserRecord } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
   const env = getEnv(event)
+  assertCronSecret(event, env)
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
   const { results: links } = await env.DB.prepare(

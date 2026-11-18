@@ -126,7 +126,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // ── clear KV cache ────────────────────────────────────────
-  await env.CACHE.delete('stats').catch(() => {})
+  await env.CACHE.delete('stats:v2').catch(() => {})
   await env.CACHE.delete('sitemap-xml').catch(() => {})
 
   return { success: true, id }

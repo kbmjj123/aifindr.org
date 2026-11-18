@@ -435,10 +435,18 @@ const faqSchema = computed(() => {
 useSchemaOrg(faqSchema)
 
 // ── record view ──────────────────────────────────────────────
+const VIEW_THROTTLE_MS = 30 * 60 * 1000
 watchEffect(() => {
   const id = tool.value?.id
-  if (id && import.meta.client) {
-    post(`/api/view/${id}`, {}).catch(() => {}) // silent
+  if (!id || !import.meta.client) return
+  const key = `aifindr:view:${id}`
+  const now = Date.now()
+  try {
+    if (now - Number(localStorage.getItem(key) || 0) < VIEW_THROTTLE_MS) return
+    localStorage.setItem(key, String(now))
+  } catch {
+    // localStorage 不可用时退化为每次上报，不阻塞页面
   }
+  post(`/api/view/${id}`, {}).catch(() => {}) // silent
 })
 </script>

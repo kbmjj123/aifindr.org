@@ -1,10 +1,12 @@
 import { logger } from '~/server/utils/logger'
 import { getEnv, siteUrl } from '~/server/utils/env'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
+import { assertCronSecret } from '~/server/utils/cronAuth'
 import type { UserRecord } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
   const env = getEnv(event)
+  assertCronSecret(event, env)
 
   // Check for pending tools older than 7 days
   const { results: staleTools } = await env.DB.prepare(
@@ -44,7 +46,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Refresh KV stats cache
-  await env.CACHE.delete('stats')
+  await env.CACHE.delete('stats:v2')
   logger.info('cron', 'Cron 1: KV stats cache cleared')
 
   return { success: true, message: 'Daily ops completed' }

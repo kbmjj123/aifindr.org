@@ -2,10 +2,12 @@ import { readBody } from 'h3'
 import { logger } from '~/server/utils/logger'
 import { getEnv, siteUrl } from '~/server/utils/env'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
+import { assertCronSecret } from '~/server/utils/cronAuth'
 import type { UserRecord } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
   const env = getEnv(event)
+  assertCronSecret(event, env)
 
   const body = await readBody<Record<string, unknown>>(event).catch(() => ({}))
   const subject = String(body.subject || 'aifindr Newsletter — Latest AI Tools & Backlink Tips')

@@ -227,7 +227,7 @@ export async function handleCronSubmissionSitesCheck(env: CloudflareEnv): Promis
   }
 
   logger.info('cron', `Cron 5: checked ${(sites || []).length} submission sites, ${unreachable} unreachable`)
-  await env.CACHE.delete('submission-sites-facets').catch(() => {})
+  await env.CACHE.delete('submission-sites:facets').catch(() => {})
   return { checked: (sites || []).length, unreachable }
 }
 
@@ -299,6 +299,6 @@ export async function handleCronDomainRating(env: CloudflareEnv): Promise<{ chec
   }
 
   logger.info('cron', `Cron 6: refreshed page_rank for ${targets.length} sites, ${updated} ranked`)
-  await env.CACHE.delete('submission-sites-facets').catch(() => {})
+  await env.CACHE.delete('submission-sites:facets').catch(() => {})
   return { checked: targets.length, updated, skipped: false }
 }

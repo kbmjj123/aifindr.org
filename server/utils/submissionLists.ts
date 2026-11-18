@@ -114,7 +114,7 @@ export async function refreshList(
   return { slug: list.slug, before: beforeSet.size, after: slugs.length, joined: joined.length, left: left.length }
 }
 
-/** 失效榜单/目录相关 KV 缓存。KV list 是最终一致的，配合 1h TTL 足够 */
+/** 失效榜单/目录相关 KV 缓存。详情页已改为 D1 直读，不再产生 submission-site:* 键。 */
 export async function invalidateSubmissionCaches(env: CloudflareEnv, listSlug?: string) {
   await env.CACHE.delete('submission-lists:index')
   await env.CACHE.delete('submission-sites:facets')
@@ -122,7 +122,6 @@ export async function invalidateSubmissionCaches(env: CloudflareEnv, listSlug?: 
   const prefixes = [
     listSlug ? `submission-list:${listSlug}:` : 'submission-list:',
     'submission-sites:',
-    'submission-site:',
   ]
   for (const prefix of prefixes) {
     const listed = await env.CACHE.list({ prefix })

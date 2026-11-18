@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const cached = await env.CACHE.get(cacheKey, 'json') as {
     tools: number; categories: number; contributors: number; sites: number; lists: number
   } | null
-  if (cached && cached.contributors > 0) {
+  if (cached) {
     return cached
   }
 

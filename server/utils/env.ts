@@ -17,6 +17,7 @@ export interface CloudflareEnv {
   SITE_URL: string
   API_BASE: string
   OPENPAGERANK_API_KEY?: string
+  CRON_SECRET?: string
 }
 
 export function getEnv(event: H3Event): CloudflareEnv {

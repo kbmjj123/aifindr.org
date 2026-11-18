@@ -9,10 +9,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Invalid slug' })
   }
 
-  const cacheKey = `submission-site:${slug}`
-  const cached = await env.CACHE.get(cacheKey, 'json')
-  if (cached) return cached
-
   const site = await env.DB.prepare(
     "SELECT * FROM submission_sites WHERE slug = ? AND status = 'active'"
   ).bind(slug).first<SubmissionSite>()
@@ -40,13 +36,10 @@ export default defineEventHandler(async (event) => {
     LIMIT 6
   `).bind(slug).all()
 
-  const response = {
+  return {
     site,
     categories: (categoryRows || []).map(row => row.category_slug),
     lists: listRows || [],
     related: relatedRows || [],
   }
-
-  await env.CACHE.put(cacheKey, JSON.stringify(response), { expirationTtl: 3600 })
-  return response
 })

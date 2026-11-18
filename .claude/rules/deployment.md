@@ -37,6 +37,7 @@ Cloudflare Worker: aifindr（单一部署单元）
 | R2 Bucket | `aifindr-cdn` | `[[r2_buckets]] binding = "CDN"` |
 | GitHub OAuth App | 登录与管理后台鉴权 | `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` |
 | Turnstile | 提交表单防垃圾 | `TURNSTILE_SECRET` |
+| Cron HTTP 入口鉴权 | `/api/cron/*` 的 `x-cron-secret` 校验 | `CRON_SECRET` |
 | Resend（可选但推荐） | 通知邮件 | `RESEND_API_KEY` |
 
 `wrangler.toml` 已填入真实的 D1 / KV ID 与自定义域配置，非敏感信息公开提交没有问题。
@@ -50,6 +51,7 @@ Cloudflare Worker: aifindr（单一部署单元）
 ```bash
 # .dev.vars / .dev.vars.local（均被 .gitignore 排除）
 TURNSTILE_SECRET=...
+CRON_SECRET=...            # /api/cron/* HTTP 入口，scheduled 任务不需要
 GITHUB_CLIENT_SECRET=...
 JWT_SECRET=...
 RESEND_API_KEY=...
@@ -116,6 +118,7 @@ curl -X POST 'http://localhost:3000/api/submit' \
 
 ```bash
 wrangler secret put TURNSTILE_SECRET
+wrangler secret put CRON_SECRET            # /api/cron/* HTTP 入口鉴权；scheduled 任务不受影响
 wrangler secret put GITHUB_CLIENT_SECRET
 wrangler secret put JWT_SECRET
 wrangler secret put RESEND_API_KEY
@@ -174,6 +177,8 @@ curl -I https://aifindr.org/tools
 | `0 14 * * 1` | `handleCronNewsletter` |
 
 **Workers Free 账户上限 5 个 cron trigger**，因此三个每日批量巡检合并到同一个 `0 3 * * *`；新增定时任务时优先并入已有 trigger，否则部署会报 `code: 10072`（超过免费额度）。改动涉及 `wrangler.toml`、`server/plugins/scheduled.ts`、`server/utils/cron.ts` 三处。`handleCronSubmissionSitesCheck` 每天滚动 HEAD 检查 60 条 `submission_sites`（约 14 天轮完），更新 `last_checked_at` 与 `availability`；`handleCronDomainRating` 每日批量刷新 `page_rank`（Open PageRank 免费 API，依赖 secret `OPENPAGERANK_API_KEY`，未配置则跳过）。两者都**不刷新 Ahrefs `domain_rating`**（无公开免费 API，绕过违反其 ToS），DR 保持快照并在详情页标注口径。
+
+对应的 `/api/cron/*.post.ts` HTTP 入口统一由 `server/utils/cronAuth.ts` 校验 `x-cron-secret`（值为 `CRON_SECRET`），防止扫描器无限触发邮件与巡检写入；`cloudflare:scheduled` 直接调用 `server/utils/cron.ts`，不经过这些路由，不受影响。外部定时任务需带该请求头，未配置 secret 时端点返回 503。
 
 ---
 
@@ -239,6 +244,7 @@ Worker 不能在请求中通过公网自调用自己。必须用 `useApi()`（SS
 | `SITE_URL` | 生成绝对链接用 | secret（可缺省） |
 | `OPENPAGERANK_API_KEY` | Open PageRank API key，每日自动刷新 `page_rank` | secret（可缺省） |
 | `TURNSTILE_SECRET` | 表单验证 | secret |
+| `CRON_SECRET` | `/api/cron/*` HTTP 入口的 `x-cron-secret` 校验 | secret |
 | `GITHUB_CLIENT_SECRET` | OAuth Client Secret | secret |
 | `JWT_SECRET` | JWT 签名 | secret |
 | `RESEND_API_KEY` | 邮件服务 | secret |
