@@ -96,6 +96,14 @@
       "status": "shipped",
       "shippedAt": "2026-11-18",
       "note": "Priority 451-500; 50-site batch; validated at 500 total rows"
+    },
+    {
+      "id": "batch-13",
+      "file": "batch-13.jsonl",
+      "sites": 50,
+      "status": "shipped",
+      "shippedAt": "2026-11-18",
+      "note": "Priority 501-550; 50-site batch; validated at 550 total rows"
     }
   ]
 }
