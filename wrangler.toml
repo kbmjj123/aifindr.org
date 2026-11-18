@@ -32,11 +32,10 @@ GITHUB_CLIENT_ID   = "Ov23lioNhw0LD6MXeMFJ"
 ADMIN_GITHUB_IDS   = "1559584,284824170"
 
 [triggers]
+# Workers Free 账户上限 5 个 cron trigger；三个每日批量巡检合并到 03:00 顺序执行。
 crons = [
   "0 9 * * *",
   "0 3 * * *",
-  "30 3 * * *",
-  "0 4 * * *",
   "0 8 1 * *",
   "0 14 * * 1",
 ]

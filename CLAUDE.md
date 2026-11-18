@@ -26,7 +26,7 @@
 | 后端 | Nitro server routes：`server/routes/api/` 下约 62 个端点，与页面同属一个 Worker，不存在独立 API Worker |
 | 数据 | Cloudflare D1 `DB`（`aifindr-db`）、KV `CACHE`、R2 `CDN`（公开域名 `https://cdn.aifindr.org`） |
 | 部署 | `wrangler.toml`：`main = .output/server/index.mjs` + `assets = .output/public`，nitro preset `cloudflare_module`（不是 Cloudflare Pages） |
-| 定时任务 | 4 条 cron，由 `server/plugins/scheduled.ts` 的 `cloudflare:scheduled` 钩子分发 |
+| 定时任务 | 4 条 cron（Workers Free 上限 5），由 `server/plugins/scheduled.ts` 的 `cloudflare:scheduled` 钩子分发；三个每日批量巡检合并到 `0 3 * * *` 顺序执行并各自隔离错误 |
 | 包管理 | pnpm 10（`packageManager: pnpm@10.0.0`） |
 | SEO | `@nuxtjs/seo`；OG 图**运行时渲染**（`ogImage.runtimeCacheStorage: false`），不是构建时生成 |
 
@@ -101,8 +101,8 @@ aifindr.org/
 - 榜单用受限 JSON DSL 定义（`server/utils/submissionFilters.ts` 编译成参数化 SQL），成员由 `server/utils/submissionLists.ts` 物化到 `submission_list_items` 并按 `snapshot_id` 版本化；`pinned_order` 在刷新时保留。
 - 第三方出站链接统一 `rel="nofollow noopener noreferrer"`。
 - **数据新鲜度**：
-  - 存活巡检：`submission_sites.availability` + `last_checked_at` 由 `handleCronSubmissionSitesCheck`（cron `30 3 * * *`，复用 `handleCronLinkChecker` 的 HEAD 巡检模式）每天滚动检查 60 条 active 站点（约 14 天轮完），详情页事实表展示最近巡检时间与可达性。
-  - Page Rank 自动刷新：`page_rank`（Open PageRank 的 0–10 指标，区别于 Ahrefs `domain_rating` 的 0–100）由 `handleCronDomainRating`（cron `0 4 * * *`）每日批量刷新 50 条（约 17 天轮完），依赖 secret `OPENPAGERANK_API_KEY`；未配置 key 时静默跳过。
+  - 存活巡检：`submission_sites.availability` + `last_checked_at` 由 `handleCronSubmissionSitesCheck`（与 link-checker、domain-rating 同在 cron `0 3 * * *` 顺序执行，复用 `handleCronLinkChecker` 的 HEAD 巡检模式）每天滚动检查 60 条 active 站点（约 14 天轮完），详情页事实表展示最近巡检时间与可达性。
+  - Page Rank 自动刷新：`page_rank`（Open PageRank 的 0–10 指标，区别于 Ahrefs `domain_rating` 的 0–100）由 `handleCronDomainRating`（同在 cron `0 3 * * *`）每日批量刷新 50 条（约 17 天轮完），依赖 secret `OPENPAGERANK_API_KEY`；未配置 key 时静默跳过。
   - **`domain_rating` 保持 2026-11-16 快照值，不自动刷新**——Ahrefs 无公开免费 API（其免费工具是前端表单、带 Cloudflare 反爬，无法批量取数，且绕过违反其 ToS）。详情页明确把 DR 标注为「Ahrefs snapshot」、Page Rank 标注为「Open PageRank」并附刷新时间，两者量纲不同、分别呈现，不混为一谈。
 - **alternatives 榜**：`site_relations` 落库 4911 条 `similar` 候选（权重 = 共同标签数，`confirmed=0`）；详情页 "Similar platforms" 直接消费该关系（`weight>=3`，top 6）。另用该关系为 5 个基准（product-hunt / betalist / startup-stash / fazier / toolify）自动生成 `*-alternatives` 策展榜（各 6 成员，排除自身），维度归 `alternatives`，管理员可在后台继续调 `include_slugs`。
 - **增量维护闭环**：`/admin/submission-lists` 支持单条新增、JSON 批量导入（≤200 条）、站点检索与逐条编辑补齐、隐藏/恢复、新建榜单、策展（pinned / include / exclude / 导语 / 阈值 / 筛选规则 / 排序 / FAQ / SEO）、报告审核与变更记录。三条写入路径共用 `server/utils/submissionSiteWrite.ts` 的字段门禁与原创文案；保存后自动重算 `rule`/`hybrid` 榜单，所以补齐或新增站点会立即累加进榜，策展榜的 `pinned_order` 不会被快照刷新冲掉。新建/编辑榜单的 filters/sort 经 `validateFilterExpression` / `validateSortRules` 白名单校验。分类标签由后台覆盖写入 `site_categories`，公开 facet 动态聚合，后台新增的分类会自动出现在 `/backlink-sites` 筛选器里；`takedown` 报告审核通过会真正隐藏站点并重算榜单。

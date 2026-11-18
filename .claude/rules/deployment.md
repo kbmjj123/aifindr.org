@@ -164,18 +164,16 @@ curl -I https://aifindr.org/tools
 
 ### 5.4 定时任务
 
-`wrangler.toml [triggers] crons` 定义 5 条计划任务，`server/plugins/scheduled.ts` 监听 `cloudflare:scheduled` 并按 `controller.cron` 分发：
+`wrangler.toml [triggers] crons` 定义 **4 条** cron trigger，`server/plugins/scheduled.ts` 监听 `cloudflare:scheduled` 并按 `controller.cron` 分发：
 
 | cron | 处理函数 |
 |------|---------|
 | `0 9 * * *` | `handleCronDailyOps` |
-| `0 3 * * *` | `handleCronLinkChecker` |
-| `30 3 * * *` | `handleCronSubmissionSitesCheck` |
-| `0 4 * * *` | `handleCronDomainRating` |
+| `0 3 * * *` | `handleCronLinkChecker` → `handleCronSubmissionSitesCheck` → `handleCronDomainRating`（顺序执行，各自 try/catch 隔离） |
 | `0 8 1 * *` | `handleCronMonthlyReport` |
 | `0 14 * * 1` | `handleCronNewsletter` |
 
-新增 cron 时，`wrangler.toml`、`server/plugins/scheduled.ts`、`server/utils/cron.ts` 三处都要改。`handleCronSubmissionSitesCheck` 每天滚动 HEAD 检查 60 条 `submission_sites`（约 14 天轮完），更新 `last_checked_at` 与 `availability`；`handleCronDomainRating` 每日批量刷新 `page_rank`（Open PageRank 免费 API，依赖 secret `OPENPAGERANK_API_KEY`，未配置则跳过）。两者都**不刷新 Ahrefs `domain_rating`**（无公开免费 API，绕过违反其 ToS），DR 保持快照并在详情页标注口径。
+**Workers Free 账户上限 5 个 cron trigger**，因此三个每日批量巡检合并到同一个 `0 3 * * *`；新增定时任务时优先并入已有 trigger，否则部署会报 `code: 10072`（超过免费额度）。改动涉及 `wrangler.toml`、`server/plugins/scheduled.ts`、`server/utils/cron.ts` 三处。`handleCronSubmissionSitesCheck` 每天滚动 HEAD 检查 60 条 `submission_sites`（约 14 天轮完），更新 `last_checked_at` 与 `availability`；`handleCronDomainRating` 每日批量刷新 `page_rank`（Open PageRank 免费 API，依赖 secret `OPENPAGERANK_API_KEY`，未配置则跳过）。两者都**不刷新 Ahrefs `domain_rating`**（无公开免费 API，绕过违反其 ToS），DR 保持快照并在详情页标注口径。
 
 ---
 

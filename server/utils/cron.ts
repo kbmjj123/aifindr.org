@@ -42,7 +42,7 @@ export async function handleCronDailyOps(env: CloudflareEnv): Promise<void> {
     logger.info('cron', `Cron 1: Found ${staleTools.length} stale pending tools, sent B-07 reminders`)
   }
 
-  await env.CACHE.delete('stats')
+  await env.CACHE.delete('stats:v2')
   logger.info('cron', 'Cron 1: KV stats cache cleared')
 }
 
