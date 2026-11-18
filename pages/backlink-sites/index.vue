@@ -54,7 +54,7 @@
       </p>
       <div class="flex flex-wrap items-center gap-3 mt-3">
         <NuxtLink to="/backlink-sites/data" class="font-body text-[11px] no-underline" style="color: var(--color-text-link)">
-          Download the open dataset →
+          How this data is sourced →
         </NuxtLink>
         <NuxtLink to="/submit" class="font-body text-[11px] no-underline" style="color: var(--color-text-link)">
           Submit your tool to aifindr.org →

@@ -8,14 +8,14 @@
  *
  * 输出：
  *   schema/seed-submission-sites.sql       D1 导入文件
- *   public/data/submission-sites.json      开放下载（事实字段 + 本站原创摘要）
  *   reports/submission-sites-cleaning.json 清洗统计与脏值清单
+ *   reports/submission-sites-snapshot.json 本地中间快照（供 ETL 脚本读取，不对外发布）
  *
  * 合规口径：结构化事实直接使用；summary / fact_points / intro / methodology / faq
  * 由本脚本按本站模板原创生成。来源页面仍不复制：FAQ、lead、徽章 HTML、agent 推广段。
  * v2 引用内容（howToSubmit / requirements / gotchas / rejectionReasons / youNeed /
  * eligibility / whatYouGet / FAQ / meta.description，2026-11-16 批次经确认入库）逐条净化
- * 限长后入库与导出，页面与开放数据集均带 SubmitMap 署名；whatYouGet 因源字段为空，
+ * 限长后入库，页面均带 SubmitMap 署名；whatYouGet 因源字段为空，
  * 改从 rawText 的 "What you actually get" 段落提取。徽章 HTML / agent 推广段与
  * platformWebsite / submitPageUrl 仍只进审计报告，不入库。
  *
@@ -156,7 +156,7 @@ function sourceLeadOf(detail) {
   return value.slice(0, 400)
 }
 
-/** 来源页 OG 图（1200x630），入库供数据导出与后续改写参考，不直接展示 */
+/** 来源页 OG 图（1200x630），入库供后续改写参考，不直接展示 */
 function ogImageOf(detail) {
   const og = detail?.meta?.openGraph || {}
   const src = String(og['og:image'] || '')
@@ -832,7 +832,7 @@ for (const def of LIST_DEFS) {
     methodology: editorial.methodology,
     faq: JSON.stringify(editorial.faq),
     seo_title: `${def.title} (2026)`,
-    seo_description: `${def.description} ${members.length} platforms, ordered by the published criteria. Free, open data from aifindr.org.`,
+    seo_description: `${def.description} ${members.length} platforms, ordered by the published criteria. Free directory from aifindr.org.`,
     canonical_policy: 'self',
     status: 'published',
     snapshot_id: SNAPSHOT_ID,
@@ -905,41 +905,21 @@ sql.push('')
 mkdirSync(resolve(ROOT, 'schema'), { recursive: true })
 writeFileSync(resolve(ROOT, 'schema/seed-submission-sites.sql'), sql.join('\n'), 'utf8')
 
-// ── 输出 2：开放下载（只含事实字段与本站原创摘要） ─────────────────────
+// ── 输出 2：本地中间快照（供 scripts/migrate-images-to-r2.mjs 等内部 ETL 读取，不对外发布） ──
 
-const publicFields = [
-  'slug', 'name', 'site_url', 'submit_url', 'submit_method', 'domain_rating', 'pricing',
-  'has_free_submission', 'approval', 'approval_time', 'approval_bucket', 'dofollow_link',
-  'backlink_required',
-  'accepts_product_types', 'submit_steps', 'submit_requirements', 'gotchas', 'rejection_reasons',
-  'you_need', 'what_you_get', 'eligibility', 'faq',
-  'icon_url', 'screenshot_url', 'og_image_url',
-  'summary', 'source_lead', 'source_url', 'source_snapshot', 'verification_status',
+const snapshotFields = [
+  'slug', 'name', 'site_url', 'submit_url', 'icon_url', 'screenshot_url', 'og_image_url',
 ]
-const openData = {
-  license: 'CC0-1.0 applies to aifindr.org\'s compilation and generated summaries. Submission steps, '
-    + 'requirements, gotchas and rejection reasons are quoted from SubmitMap\'s platform pages — '
-    + 'keep their attribution when redistributing.',
-  attribution: ATTRIBUTION,
+const localSnapshot = {
   snapshot: SNAPSHOT,
   snapshotId: SNAPSHOT_ID,
   total: sites.length,
-  fields: publicFields,
-  sites: sites.map(site => {
-    const row = {}
-    for (const field of publicFields) row[field] = site[field]
-    row.categories = categoriesBySlug.get(site.slug) || []
-    return row
-  }),
-  lists: lists.map(list => ({
-    slug: list.slug, title: list.title, dimension: list.dimension,
-    itemCount: list.item_count, filters: JSON.parse(list.filters),
-  })),
+  sites: sites.map(site => Object.fromEntries(snapshotFields.map(field => [field, site[field]]))),
 }
-mkdirSync(resolve(ROOT, 'public/data'), { recursive: true })
+mkdirSync(resolve(ROOT, 'reports'), { recursive: true })
 writeFileSync(
-  resolve(ROOT, 'public/data/submission-sites.json'),
-  JSON.stringify(openData, null, 2),
+  resolve(ROOT, 'reports/submission-sites-snapshot.json'),
+  JSON.stringify(localSnapshot, null, 2),
   'utf8',
 )
 

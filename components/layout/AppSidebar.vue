@@ -3,16 +3,20 @@
   <aside class="hidden lg:block fixed left-0 top-[52px] bottom-0 w-[220px] overflow-y-auto px-3 py-5"
     :style="{ background: 'var(--color-bg-base)', borderRight: '1px solid var(--color-border)' }">
 
-    <!-- Stats -->
-    <div class="sidebar-stats">
+    <!-- Stats: one compact block, navigation stays the focus -->
+    <div class="sidebar-stats sidebar-stats-compact">
       <div class="stat-item">
         <div class="stat-num">{{ stats }}</div>
         <div class="stat-label">Tools</div>
       </div>
-      <div class="stat-item">
-        <div class="stat-num">{{ categoriesCount }}</div>
-        <div class="stat-label">Categories</div>
-      </div>
+      <NuxtLink to="/backlink-sites" class="stat-item block no-underline">
+        <div class="stat-num">{{ siteCount }}</div>
+        <div class="stat-label">Sites</div>
+      </NuxtLink>
+      <NuxtLink to="/submission-lists" class="stat-item block no-underline">
+        <div class="stat-num">{{ listCount }}</div>
+        <div class="stat-label">Lists</div>
+      </NuxtLink>
       <NuxtLink to="/contributors" class="stat-item block no-underline">
         <div class="stat-num">{{ contributors }}+</div>
         <div class="stat-label">Contributors</div>
@@ -23,6 +27,13 @@
     <div class="mb-1">
       <div class="nav-section-title">Browse</div>
       <NavItem v-for="item in mainNav" :key="item.label" :to="item.to" :icon="item.icon" :label="item.label" />
+    </div>
+
+    <!-- Backlink directory nav -->
+    <div class="mb-1">
+      <div class="nav-section-title">Backlink Directory</div>
+      <NavItem to="/backlink-sites" icon="🌐" label="All Sites" />
+      <NavItem to="/submission-lists" icon="🏆" label="Curated Lists" />
     </div>
 
     <!-- Categories -->
@@ -40,8 +51,6 @@
     <!-- Bottom links -->
     <div class="mt-6 pt-4" :style="{ borderTop: '1px solid var(--color-border)' }">
       <NavItem to="/submit" label="Submit a Tool" />
-      <NavItem to="/backlink-sites" label="Submission Sites" />
-      <NavItem to="/submission-lists" label="Submission Lists" />
       <NavItem to="https://github.com/kbmjj123/aifindr.org" label="Open Source on GitHub" />
       <NavItem to="/blog" label="Blog" />
     </div>
@@ -90,10 +99,12 @@
             @click="isMobileMenuOpen = false"
           />
 
+          <div class="nav-section-title">Backlink Directory</div>
+          <NavItem to="/backlink-sites" icon="🌐" label="All Sites" @click="isMobileMenuOpen = false" />
+          <NavItem to="/submission-lists" icon="🏆" label="Curated Lists" @click="isMobileMenuOpen = false" />
+
           <div class="mt-6 pt-4" :style="{ borderTop: '1px solid var(--color-border)' }">
             <NavItem to="/submit" label="Submit a Tool" @click="isMobileMenuOpen = false" />
-            <NavItem to="/backlink-sites" label="Submission Sites" @click="isMobileMenuOpen = false" />
-            <NavItem to="/submission-lists" label="Submission Lists" @click="isMobileMenuOpen = false" />
             <template v-if="auth?.isLoggedIn.value && auth?.user.value">
               <NavItem to="/settings" label="Settings" @click="isMobileMenuOpen = false" />
               <button class="nav-item w-full" @click="auth.logout(); isMobileMenuOpen = false">Sign Out</button>
@@ -117,7 +128,7 @@ const mainNav = [
   { label: 'Trending', to: '/#trending', icon: '🔥' },
   { label: 'Featured', to: '/#featured', icon: '⭐' },
   { label: 'New', to: '/#recent', icon: '🆕' },
-  { label: 'All Tools', to: '/tools', icon: '🔍' },
+  { label: 'All Tools', to: '/tools', icon: '🎯' },
 ]
 
 watch(isMobileMenuOpen, (open) => {
@@ -130,11 +141,15 @@ const statsData = useState('global-stats', () => ({
   tools: 0,
   categories: 0,
   contributors: 0,
+  sites: 0,
+  lists: 0,
 }))
 
 const stats = computed(() => statsData.value.tools)
 const categoriesCount = computed(() => statsData.value.categories)
 const contributors = computed(() => statsData.value.contributors)
+const siteCount = computed(() => statsData.value.sites)
+const listCount = computed(() => statsData.value.lists)
 
 // Client-side fetch: server plugin only runs during SSR, this ensures
 // stats refresh on client navigation when server value is stale.
@@ -142,12 +157,16 @@ async function fetchStats() {
   if (!import.meta.client) return
   if (stats.value > 0 && categoriesCount.value > 0 && contributors.value > 0) return
   try {
-    const res = await $fetch<{ tools: number; categories: number; contributors: number }>('/api/stats')
+    const res = await $fetch<{
+      tools: number; categories: number; contributors: number; sites: number; lists: number
+    }>('/api/stats')
     if (res) {
       statsData.value = {
         tools: res.tools || 0,
         categories: res.categories || 0,
         contributors: res.contributors || 0,
+        sites: res.sites || 0,
+        lists: res.lists || 0,
       }
     }
   } catch {

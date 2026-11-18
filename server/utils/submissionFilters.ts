@@ -1,7 +1,7 @@
 /**
  * 外链提交平台目录 —— 共用筛选引擎
  *
- * 目录页、导出端点、榜单刷新都通过这里把「受限 DSL」翻译成参数化 SQL，
+ * 目录页、榜单刷新都通过这里把「受限 DSL」翻译成参数化 SQL，
  * 保证同一维度在不同入口的结果一致。字段与操作全部白名单化，不接受任意 SQL。
  */
 import type { FilterCondition, FilterExpression, SortRule } from '~/types/submissionSite'

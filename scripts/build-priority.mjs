@@ -2,8 +2,8 @@
 /**
  * 生成改写优先级队列 docs/rewritten/_priority.json。
  *
- * 评分来源：本地 D1（submission_sites + submission_list_items），因为开放数据
- * public/data/submission-sites.json 不含 is_featured 与每站榜单归属。
+ * 评分来源：本地 D1（submission_sites + submission_list_items），因为构建脚本的
+ * 本地中间快照不含 is_featured 与每站榜单归属。
  * 评分：DR/20（上限 5）+ featured(5) + 榜单数×3，降序，同分按 slug 字母序。
  */
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs'

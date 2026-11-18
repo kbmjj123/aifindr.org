@@ -893,6 +893,12 @@ body::before {
   font-weight: 400;
 }
 
+/* Header 搜索条首页滚动淡入淡出 */
+.search-fade-enter-active,
+.search-fade-leave-active { transition: opacity 0.18s ease; }
+.search-fade-enter-from,
+.search-fade-leave-to { opacity: 0; }
+
 /* Header 搜索框 */
 .header-search {
   flex: 1;
@@ -1002,6 +1008,17 @@ body::before {
 }
 .stat-item:last-child {
   grid-column: 1 / -1;
+}
+/* 四格紧凑统计：末项不占满，数字弱化，导航才是主角 */
+.sidebar-stats-compact .stat-item:last-child {
+  grid-column: auto;
+}
+.sidebar-stats-compact .stat-item {
+  padding: 8px 10px 6px;
+}
+.sidebar-stats-compact .stat-num {
+  font-size: 16px;
+  color: var(--color-text-primary);
 }
 
 .stat-num {

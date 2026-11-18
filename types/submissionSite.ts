@@ -44,7 +44,7 @@ export interface SubmissionSite {
   icon_url: string | null
   /** 平台首页截图（来源快照 CDN） */
   screenshot_url: string | null
-  /** 来源页 OG 图（1200x630，仅供导出与改写参考） */
+  /** 来源页 OG 图（1200x630，仅供改写参考） */
   og_image_url: string | null
   /** 来源页 meta 描述（一句话简介，带署名引用） */
   source_lead: string | null
@@ -214,7 +214,7 @@ export interface SubmissionSiteReport {
   contact?: string
 }
 
-/** 快照署名：所有展示页与导出文件都必须带上 */
+/** 快照署名：所有展示页都必须带上 */
 export const SUBMISSION_ATTRIBUTION =
   'Facts sourced from a public directory snapshot (2026-11-16). '
   + 'Domain rating is a third-party metric, not independently verified by aifindr.org. '

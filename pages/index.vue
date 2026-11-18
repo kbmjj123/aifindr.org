@@ -75,6 +75,26 @@
     </ToolGrid>
   </section>
 
+  <!-- ═══ Submission Sites 入口 ═══ -->
+  <section class="mb-10 rounded-lg p-5"
+    :style="{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }">
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div class="min-w-0">
+        <h2 class="font-sans font-bold text-[16px] mb-1" style="color: var(--color-text-primary)">
+          Where to submit for a backlink
+        </h2>
+        <p class="font-body text-[12px] leading-relaxed max-w-160" style="color: var(--color-text-secondary)">
+          A free directory of 848 platforms that accept product submissions — filter by cost, dofollow links,
+          domain rating and approval speed. Curated lists group the best fits by goal.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-4 font-body text-[11px]">
+        <NuxtLink to="/backlink-sites" style="color: var(--color-accent)">Browse all sites &rarr;</NuxtLink>
+        <NuxtLink to="/submission-lists" style="color: var(--color-accent)">See curated lists &rarr;</NuxtLink>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══ Submit CTA 区 ═══ -->
   <section class="cta-section mb-10">
     <h2 class="font-sans font-extrabold text-[20px] tracking-tight mb-2"

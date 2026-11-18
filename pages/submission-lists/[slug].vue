@@ -2,7 +2,7 @@
   <div v-if="list">
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <NuxtLink to="/">Home</NuxtLink><span class="sep">/</span>
-      <NuxtLink to="/submission-lists">Submission lists</NuxtLink><span class="sep">/</span>
+      <NuxtLink to="/submission-lists">Submission Lists</NuxtLink><span class="sep">/</span>
       <span class="current">{{ list.title }}</span>
     </nav>
 
@@ -12,10 +12,6 @@
     <p class="font-body text-[13px] leading-relaxed mb-4" style="color: var(--color-text-secondary)">{{ list.intro }}</p>
     <div class="flex flex-wrap items-center gap-3 mb-8">
       <span class="badge badge-new">{{ total }} platforms</span>
-      <a :href="`/api/submission-lists/${slug}/export?format=csv`" class="font-body text-[11px] no-underline"
-        style="color: var(--color-text-link)">Download CSV ↗</a>
-      <a :href="`/api/submission-lists/${slug}/export?format=json`" class="font-body text-[11px] no-underline"
-        style="color: var(--color-text-link)">Download JSON ↗</a>
     </div>
 
     <div v-if="pending" class="text-center py-20 font-body text-[13px]" style="color: var(--color-text-muted)">Loading list...</div>

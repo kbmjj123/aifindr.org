@@ -2,7 +2,7 @@
   <div v-if="site">
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <NuxtLink to="/">Home</NuxtLink><span class="sep">/</span>
-      <NuxtLink to="/backlink-sites">Submission sites</NuxtLink><span class="sep">/</span>
+      <NuxtLink to="/backlink-sites">Submission Sites</NuxtLink><span class="sep">/</span>
       <span class="current">{{ site.name }}</span>
     </nav>
 
@@ -506,7 +506,7 @@ const jsonLdScripts = computed(() => {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://aifindr.org/' },
-      { '@type': 'ListItem', position: 2, name: 'Submission sites', item: 'https://aifindr.org/backlink-sites' },
+      { '@type': 'ListItem', position: 2, name: 'Submission Sites', item: 'https://aifindr.org/backlink-sites' },
       { '@type': 'ListItem', position: 3, name: target.name, item: canonicalUrl.value },
     ],
   }

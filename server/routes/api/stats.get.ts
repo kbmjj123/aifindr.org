@@ -2,8 +2,11 @@ import { getEnv } from '~/server/utils/env'
 
 export default defineEventHandler(async (event) => {
   const env = getEnv(event)
+  const cacheKey = 'stats:v2'
 
-  const cached: any = await env.CACHE.get('stats', 'json')
+  const cached = await env.CACHE.get(cacheKey, 'json') as {
+    tools: number; categories: number; contributors: number; sites: number; lists: number
+  } | null
   if (cached && cached.contributors > 0) {
     return cached
   }
@@ -20,13 +23,23 @@ export default defineEventHandler(async (event) => {
     "SELECT COUNT(DISTINCT submitter_github) as count FROM tools WHERE status = 'active' AND submitter_github IS NOT NULL AND submitter_github != ''"
   ).first<{ count: number }>()
 
+  const siteCount = await env.DB.prepare(
+    "SELECT COUNT(*) as count FROM submission_sites WHERE status = 'active'"
+  ).first<{ count: number }>()
+
+  const listCount = await env.DB.prepare(
+    "SELECT COUNT(*) as count FROM submission_lists WHERE status = 'published' AND item_count >= min_items"
+  ).first<{ count: number }>()
+
   const stats = {
     tools: toolCount?.count || 0,
     categories: categoryCount?.count || 0,
     contributors: contributorCount?.count || 0,
+    sites: siteCount?.count || 0,
+    lists: listCount?.count || 0,
   }
 
-  await env.CACHE.put('stats', JSON.stringify(stats), { expirationTtl: 3600 })
+  await env.CACHE.put(cacheKey, JSON.stringify(stats), { expirationTtl: 3600 })
 
   return stats
 })

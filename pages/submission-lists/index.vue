@@ -2,11 +2,11 @@
   <div>
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <NuxtLink to="/">Home</NuxtLink><span class="sep">/</span>
-      <span class="current">Submission lists</span>
+      <span class="current">Submission Lists</span>
     </nav>
 
     <h1 class="font-sans font-extrabold text-[24px] tracking-tight mb-2" style="color: var(--color-text-primary)">
-      Submission lists
+      Submission Lists
     </h1>
     <p class="font-body text-[13px] leading-relaxed mb-8 max-w-[700px]" style="color: var(--color-text-secondary)">
       {{ total }} focused slices of the directory. Each one is a filtered view with its own inclusion rule, sort order
@@ -33,7 +33,7 @@
       <div class="mt-2">
         <NuxtLink to="/backlink-sites" style="color: var(--color-text-link)">Browse the full directory →</NuxtLink>
         &nbsp;·&nbsp;
-        <NuxtLink to="/backlink-sites/data" style="color: var(--color-text-link)">Download the open data →</NuxtLink>
+        <NuxtLink to="/backlink-sites/data" style="color: var(--color-text-link)">How this data is sourced →</NuxtLink>
       </div>
     </div>
   </div>

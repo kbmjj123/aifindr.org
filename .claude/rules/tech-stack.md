@@ -146,7 +146,7 @@ const { tools, total } = await get<ToolListResponse>('/api/tools', { query: { ca
 | 认证 | `auth/github.get`、`auth/callback.get`、`auth/me.get`、`auth/dev-login.get` |
 | 后台 | `admin/pending.get`、`admin/review.post`、`admin/tools/*`、`admin/posts/*`、`admin/users.get`、`admin/log.get`、`admin/feature.post`、`admin/broadcast.post` |
 | 内容 | `blog/*`、`contributors*`、`__sitemap__/urls.get`、`generate.post` |
-| 外链提交平台（公开） | `submission-sites/*`（index / `[slug]` / export / suggest）、`submission-lists/*`（index / `[slug]` / export） |
+| 外链提交平台（公开） | `submission-sites/*`（index / `[slug]` / suggest）、`submission-lists/*`（index / `[slug]`）（不提供数据集导出端点） |
 | 外链提交平台（后台） | `admin/submission-lists.get` / `.post` / `refresh.post` / `[slug].post`；`admin/submission-sites.get` / `.post` / `import.post` / `[slug].get` / `[slug].post`；`admin/submission-reports/review.post` |
 | 用户邮件 | `user/email.post`、`user/email/verify/[token].get` |
 | 定时任务 | `cron/daily-ops`、`cron/link-checker`、`cron/monthly-report`、`cron/newsletter` |

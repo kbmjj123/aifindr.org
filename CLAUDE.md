@@ -45,7 +45,7 @@ aifindr.org/
 ├── pages/                       ← 26 个页面：首页、tools 列表/分类/子分类/标签/详情、
 │                                  submit、contributors、blog、admin（index/intake/posts/tools/users/submission-lists）、
 │                                  settings、privacy、terms、
-│                                  backlink-sites（目录/详情/开放数据）、submission-lists（索引/详情）
+│                                  backlink-sites（目录/详情/数据来源与纠错）、submission-lists（索引/详情）
 ├── components/                  ← layout / tool / category / search / submit / ui / admin / og / submission
 ├── composables/                 ← useApi、useAuth、useTools、useSearch、usePageSeo、
 │                                  useToolForm、useImageUpload、useMarkdown、useWebp、
@@ -72,8 +72,7 @@ aifindr.org/
 ├── plugins/stats.server.ts
 ├── data/                        ← exchange-links.ts、submit-template.md
 ├── docs/                        ← email-notification-system.md、index.html、superpowers/、res/、res-v2/
-├── public/                      ← favicon / manifest / ads.txt / 验证文件 /
-│                                  data/submission-sites.json（开放数据集）
+├── public/                      ← favicon / manifest / ads.txt / 验证文件（不提供数据集下载）
 ├── api-spec.yaml                ← OpenAPI 参考（部分描述过时，见 §9）
 ├── nuxt.config.ts
 ├── wrangler.toml
@@ -91,12 +90,13 @@ aifindr.org/
 
 ### 公共外链提交平台目录（与 `tools` 是两类实体）
 
-- 数据管道：`scripts/build-submission-sites.mjs` 默认读 `docs/res-v2/01-list.json`（列表视图：全集、顺序、前 25 条精选、免费提交口径、抓取日期）+ `02-details.jsonl`（详情视图：事实字段、官网、提交入口、相关平台边、规范化字段、产品类型），按 `slug` 左连接后输出 `schema/seed-submission-sites.sql`、`public/data/submission-sites.json` 与 `reports/submission-sites-cleaning.json`。`platforms.json` / `platforms.csv` 是有损导出，**不作数据源**。输入目录按 `docs/res-v2` → `docs/res` 自动回退，也可用 `--res=docs/res` 显式切换；快照日期与 `snapshot_id` 从 `01-list.json` 的 `scrapedAt` 推导，当前为 **2026-11-16 / `20261116-1`**。输入文件被 `.gitignore` 排除；已提交的 seed 与开放数据保证站点无需输入文件即可运行。seed 可重复导入且**不覆盖后台人工数据**：站点用 `ON CONFLICT DO UPDATE ... WHERE data_source='snapshot'`（后台编辑后变 `admin` 即受保护），只清 `source='rule'` 的分类与 `confirmed=0` 的关系，榜单定义只更新快照版本与成员数；跨版本时清掉全部非 pinned 成员并迁移 pinned 行的 `snapshot_id`，重跑后需刷新一次榜单以恢复 pinned 顺序。
-- **v2 数据口径**：v1（`docs/res`）与 v2 是同一批 848 个平台、同一组 4911 条相似关系边，差异在解析能力。实际入库的 v2 新字段：`accepts_product_types`（796 条）、`approval_time`（339 条，快照 FAQ 提炼）、引用内容 `submit_steps` / `submit_requirements` / `gotchas` / `rejection_reasons` / `you_need` / `eligibility` / `faq`（各 847 条）、`what_you_get`（847 条，源 `whatYouGet` 字段全空，改从 `rawText` 的 "What you actually get" 段提取）、`source_lead`（848 条，来源 `meta.description`）、`icon_url` / `screenshot_url` / `og_image_url`（各 847/848 条，来源快照 CDN）；所有引用内容逐条净化限长后入库，详情页与开放数据集均带 SubmitMap 署名。并用 `specNormalized.*` 修复定价大小写、布尔脏值与 9 条 DR 缺失。仍不入库：徽章 HTML、agent 推广段，以及 `platformWebsite` / `submitPageUrl` 推断值（19 条官网差异与 46 条不可用提交候选记录在 `reports/submission-sites-cleaning.json` 供人工复核）。
+- 数据管道：`scripts/build-submission-sites.mjs` 默认读 `docs/res-v2/01-list.json`（列表视图：全集、顺序、前 25 条精选、免费提交口径、抓取日期）+ `02-details.jsonl`（详情视图：事实字段、官网、提交入口、相关平台边、规范化字段、产品类型），按 `slug` 左连接后输出 `schema/seed-submission-sites.sql`、`reports/submission-sites-cleaning.json` 与 `reports/submission-sites-snapshot.json`（后者是供内部 ETL 读取的本地中间快照，不对外发布）。`platforms.json` / `platforms.csv` 是有损导出，**不作数据源**。输入目录按 `docs/res-v2` → `docs/res` 自动回退，也可用 `--res=docs/res` 显式切换；快照日期与 `snapshot_id` 从 `01-list.json` 的 `scrapedAt` 推导，当前为 **2026-11-16 / `20261116-1`**。输入文件被 `.gitignore` 排除；已提交的 seed 保证站点无需输入文件即可运行。seed 可重复导入且**不覆盖后台人工数据**：站点用 `ON CONFLICT DO UPDATE ... WHERE data_source='snapshot'`（后台编辑后变 `admin` 即受保护），只清 `source='rule'` 的分类与 `confirmed=0` 的关系，榜单定义只更新快照版本与成员数；跨版本时清掉全部非 pinned 成员并迁移 pinned 行的 `snapshot_id`，重跑后需刷新一次榜单以恢复 pinned 顺序。
+- **v2 数据口径**：v1（`docs/res`）与 v2 是同一批 848 个平台、同一组 4911 条相似关系边，差异在解析能力。实际入库的 v2 新字段：`accepts_product_types`（796 条）、`approval_time`（339 条，快照 FAQ 提炼）、引用内容 `submit_steps` / `submit_requirements` / `gotchas` / `rejection_reasons` / `you_need` / `eligibility` / `faq`（各 847 条）、`what_you_get`（847 条，源 `whatYouGet` 字段全空，改从 `rawText` 的 "What you actually get" 段提取）、`source_lead`（848 条，来源 `meta.description`）、`icon_url` / `screenshot_url` / `og_image_url`（各 847/848 条，来源快照 CDN）；所有引用内容逐条净化限长后入库，详情页均带 SubmitMap 署名。并用 `specNormalized.*` 修复定价大小写、布尔脏值与 9 条 DR 缺失。仍不入库：徽章 HTML、agent 推广段，以及 `platformWebsite` / `submitPageUrl` 推断值（19 条官网差异与 46 条不可用提交候选记录在 `reports/submission-sites-cleaning.json` 供人工复核）。
 - 提交入口来自详情 `links` 的第 2 条非源站/非 ahrefs 外链（801 条），**不要**用 `spec.submitPageUrl`（错误拼接）或 `spec.submitPage`（47 条页脚污染）；v2 的 `submitPageUrl` 虽覆盖 841/848，但 47 条旧口径缺失项对应的候选几乎都是 `/pack`、`/.`、`/is` 一类正文碎片，同样不可用。
 - `pricing`（平台整体定价）与 `has_free_submission`（是否有免费提交通道）是两套口径，列表文件与详情文件的 15 条差异源于此，不是脏数据。
-- 说明文案（`summary` / `fact_points` / `editorial` / 榜单 `intro` / `methodology` / `faq`）全部由本站原创生成；徽章 HTML 与品牌字样不入库。来源 meta 简介、准入说明、提交步骤 / 要求 / 注意事项 / 被拒原因 / FAQ 等引用内容按站长决策带 SubmitMap 署名引用展示，再分发时必须保留署名。详情页「Facts & verification」清单由本站按结构化事实模板生成。每条带 `attribution` 与 `source_snapshot`。
-- `accepts_product_types` 已接入受限 DSL（`contains` 按 JSON 元素精确匹配，不允许 `gte`/`lte`，不参与排序），后台可编辑，并驱动 `mcp-server-submission-sites` 榜（28 个成员）；实时导出、开放数据集与 `/backlink-sites/data` 字段字典同步包含该列。v2 的 14 个新列按三批迁移（旧库按序执行，新库从 `schema/init.sql` 建表已自带）：`schema/migrate-submission-sites-v2.sql`（`accepts_product_types` 等 8 列）→ `schema/migrate-submission-sites-v2-details.sql`（审批时长 / 步骤 / 要求 / 注意事项 / 被拒原因 / 图标 / 截图 7 列）→ `schema/migrate-submission-sites-v2-content.sql`（youNeed / whatYouGet / eligibility / FAQ / sourceLead / OG 图 6 列）。报 `duplicate column name` 说明该批已迁移过，跳过即可。**导入新 seed 前必须先完成迁移**。
+- 说明文案（`summary` / `fact_points` / `editorial` / 榜单 `intro` / `methodology` / `faq`）全部由本站原创生成；徽章 HTML 与品牌字样不入库。来源 meta 简介、准入说明、提交步骤 / 要求 / 注意事项 / 被拒原因 / FAQ 等引用内容按站长决策带 SubmitMap 署名引用展示，保留署名。详情页「Facts & verification」清单由本站按结构化事实模板生成。每条带 `attribution` 与 `source_snapshot`。
+- **本站不提供提交平台数据集的下载/导出**：没有公开 JSON/CSV 导出端点，`public/data/` 下不放可下载数据集；`/backlink-sites/data` 仅用于说明数据来源、字段含义与提交纠错。内部 ETL 需要的全量快照写到 `reports/submission-sites-snapshot.json`（`.gitignore` 排除），不对外发布。
+- `accepts_product_types` 已接入受限 DSL（`contains` 按 JSON 元素精确匹配，不允许 `gte`/`lte`，不参与排序），后台可编辑，并驱动 `mcp-server-submission-sites` 榜（28 个成员）；`/backlink-sites/data` 字段字典同步包含该列。v2 的 14 个新列按三批迁移（旧库按序执行，新库从 `schema/init.sql` 建表已自带）：`schema/migrate-submission-sites-v2.sql`（`accepts_product_types` 等 8 列）→ `schema/migrate-submission-sites-v2-details.sql`（审批时长 / 步骤 / 要求 / 注意事项 / 被拒原因 / 图标 / 截图 7 列）→ `schema/migrate-submission-sites-v2-content.sql`（youNeed / whatYouGet / eligibility / FAQ / sourceLead / OG 图 6 列）。报 `duplicate column name` 说明该批已迁移过，跳过即可。**导入新 seed 前必须先完成迁移**。
 - **文案改写与图片本地化**（设计见 `docs/superpowers/specs/2026-11-16-submission-sites-rewrite-design.md`，计划见 `docs/superpowers/plans/2026-11-16-submission-sites-rewrite.md`）：改写稿以 `docs/rewritten/*.jsonl` 为唯一事实源（`_schema.json` 定 14 字段上限、事实黑名单与禁用词；`_priority.json` 为 848 站优先级；`_manifest.json` 记批次状态），原始 SubmitMap 字段完整保留。第四批迁移 `schema/migrate-rewrites.sql` 加 14 个 `rw_*` 镜像列 + 3 个 `r2_*` 图片列。三套 seed 互不覆盖、顺序无关：`seed-submission-sites.sql`（原始）、`seed-rewrites.sql`（由 `scripts/build-rewrites.mjs` 从改写稿生成，**只 UPDATE 已存在行**、不 INSERT）、`seed-images.sql`（由 `scripts/migrate-images-to-r2.mjs` 生成，已上传 2542 张图到 `cdn.aifindr.org`，失败指数退避重试 5 次）。页面按「改写优先、回退原值」渲染（`pick` / `pickList`，空数组 `'[]'` 不算改写），署名行由 `hasQuotedOnPage` 动态显示。改写只动措辞：`domain_rating`/`pricing`/`approval`/`dofollow_link` 等事实字段永不改写，事实卡永远读原始列。上线顺序：迁移 → 导入三套 seed → 清 `submission-site:%` 的 KV 缓存 → 刷新榜单。首批 `batch-01` 已完成 25 站改写并 `shipped`，剩余 823 站按优先级每批 20-30 站推进。
 - 榜单用受限 JSON DSL 定义（`server/utils/submissionFilters.ts` 编译成参数化 SQL），成员由 `server/utils/submissionLists.ts` 物化到 `submission_list_items` 并按 `snapshot_id` 版本化；`pinned_order` 在刷新时保留。
 - 第三方出站链接统一 `rel="nofollow noopener noreferrer"`。
@@ -125,7 +125,7 @@ aifindr.org/
 | 认证 | `auth/github.get`、`auth/callback.get`、`auth/me.get`、`auth/dev-login.get` |
 | 管理后台 | `admin/pending.get`、`admin/review.post`、`admin/tools/*`、`admin/posts/*`、`admin/users.get`、`admin/log.get`、`admin/feature.post`、`admin/broadcast.post` |
 | 内容 | `blog/*`、`contributors*`、`__sitemap__/urls.get`、`generate.post` |
-| 外链提交平台（公开） | `submission-sites/index.get`、`submission-sites/[slug].get`、`submission-sites/export.get`、`submission-sites/suggest.post`、`submission-lists/index.get`、`submission-lists/[slug].get`、`submission-lists/[slug]/export.get` |
+| 外链提交平台（公开） | `submission-sites/index.get`、`submission-sites/[slug].get`、`submission-sites/suggest.post`、`submission-lists/index.get`、`submission-lists/[slug].get`（不提供数据集导出端点） |
 | 外链提交平台（后台） | `admin/submission-lists.get` / `.post`（新建）/ `refresh.post` / `[slug].post`（策展）、`admin/submission-sites.get` / `.post`（新增）/ `import.post`（批量）/ `[slug].get` / `[slug].post`（编辑补齐）、`admin/submission-reports/review.post` |
 | 用户邮件 | `user/email.post`、`user/email/verify/[token].get` |
 | 定时任务 | `cron/daily-ops`、`cron/link-checker`、`cron/monthly-report`、`cron/newsletter` |

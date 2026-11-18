@@ -401,6 +401,10 @@ body::before {
   padding: 10px 10px 8px;
 }
 .stat-item:last-child { grid-column: 1 / -1; }
+/* 四格紧凑统计：末项不占满，数字弱化 */
+.sidebar-stats-compact .stat-item:last-child { grid-column: auto; }
+.sidebar-stats-compact .stat-item { padding: 8px 10px 6px; }
+.sidebar-stats-compact .stat-num { font-size: 16px; color: var(--color-text-primary); }
 
 .stat-num {
   font-family: var(--font-sans);
@@ -449,7 +453,11 @@ body::before {
 }
 ```
 
-**主导航列表**：🏠 Home / 🔥 Trending / ⭐ Featured / 🆕 New / 🔍 All Tools
+**主导航列表**：🏠 Home / 🔥 Trending / ⭐ Featured / 🆕 New / 🎯 All Tools
+
+**统计区**：单个 `.sidebar-stats.sidebar-stats-compact` 四格（2×2）—— Tools / Sites / Lists / Contributors+，数字 16px `text-primary`（弱化，导航才是主角）。数据来源 `/api/stats`。
+
+**提交外链导航**（独立分区 `Backlink Directory`）：🌐 All Sites → `/backlink-sites` / 🏆 Curated Lists → `/submission-lists`。数量不重复展示在导航项上，只在顶部统计区出现。用户可见术语统一为 `Submission Sites` / `Submission Lists`（路由 `/backlink-sites` 为历史 SEO 资产，保留不改）。
 
 **分类导航**：🖼️ Image & Design / ✍️ Writing / 🎬 Video / 🎵 Audio / 💻 Code / ⚡ Productivity / 📈 Marketing / 📊 Data / 📚 Education / 💼 Business / 🔬 Research / ··· Other（各带数量徽章）
 
@@ -1102,7 +1110,7 @@ h1.hero-title em { font-style: normal; color: var(--color-accent); }
 .mobile-tab.active { color: var(--color-accent); }
 ```
 
-5个 Tab：Home / Browse / Trending / Submit / More
+4 个 Tab：Home / Browse / Sites / Submit。`Sites` 指向 `/backlink-sites`，在 `/backlink-sites/*` 与 `/submission-lists/*` 下均高亮；Settings / Profile 保留在汉堡抽屉中，不再占用底部 Tab。
 
 ### 移动端侧边栏（抽屉式）
 

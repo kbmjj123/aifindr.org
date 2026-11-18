@@ -35,7 +35,7 @@
       {{ submitting ? 'Sending...' : 'Send report' }}
     </button>
     <p class="font-body text-[10px]" style="color: var(--color-text-muted)">
-      Reports are reviewed before anything changes in the public dataset.
+      Reports are reviewed before anything changes in the public directory.
     </p>
   </form>
 </template>

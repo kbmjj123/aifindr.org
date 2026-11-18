@@ -57,17 +57,19 @@ function handleClick(e: MouseEvent) {
 
 const isActive = computed(() => {
   const { path: toPathRaw, hash: toHash, query } = parsed.value
-  const toPath = toPathRaw.endsWith('/') ? toPathRaw.slice(0, -1) : toPathRaw
-  const currentPath = route.path.endsWith('/') ? route.path.slice(0, -1) : route.path
+  // 去掉尾斜杠但保留根路径 "/"（否则 "/" 变 "" 会让 Home 落到通用路径匹配，无视 hash 恒亮）
+  const normalize = (p: string) => (p.length > 1 && p.endsWith('/') ? p.slice(0, -1) : p)
+  const toPath = normalize(toPathRaw)
+  const currentPath = normalize(route.path)
+
+  // Hash anchor link first (Home 与 /#trending 共用 path "/"，必须先按 hash 区分)
+  if (toHash) {
+    return currentPath === toPath && route.hash === `#${toHash}`
+  }
 
   // Home: active on '/' with no hash and no query
   if (toPath === '/') {
     return currentPath === '/' && !route.hash && !Object.keys(route.query).length
-  }
-
-  // Hash anchor link (e.g. #trending) — active when page matches + hash matches
-  if (toHash) {
-    return currentPath === toPath && route.hash === `#${toHash}`
   }
 
   // Query params — exact match required

@@ -109,7 +109,7 @@ async function uploadOne(site, kind, url, defaultExt, state) {
 const limitArg = process.argv.find(a => a.startsWith('--limit='))
 const LIMIT = limitArg ? parseInt(limitArg.slice('--limit='.length), 10) : Infinity
 
-const data = JSON.parse(readFileSync(resolve(ROOT, 'public/data/submission-sites.json'), 'utf8'))
+const data = JSON.parse(readFileSync(resolve(ROOT, 'reports/submission-sites-snapshot.json'), 'utf8'))
 const state = loadState()
 let processed = 0
 for (const site of data.sites) {
