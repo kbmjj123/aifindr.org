@@ -18,10 +18,7 @@
       <div v-if="prLabel" class="mt-1">
         Page rank updated {{ prLabel }} · Open PageRank
       </div>
-      <a v-if="site.source_url" :href="site.source_url" target="_blank" rel="nofollow noopener noreferrer"
-        class="block mt-2 no-underline" style="color: var(--color-text-link)">
-        Source record ↗
-      </a>
+
     </div>
   </div>
 </template>
