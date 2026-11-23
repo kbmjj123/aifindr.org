@@ -21,15 +21,15 @@ A community-driven, open-source directory of AI tools across 12 categories. Tool
 
 ## Free Backlinks for Contributors
 
-Approved submissions earn permanent **dofollow** backlinks:
+Approved submissions earn three permanent **dofollow** backlinks:
 
 | Source | URL | Notes |
 |--------|-----|-------|
-| GitHub repository | `github.com/kbmjj123/aifindr.org/...` | Tied to the tool content file in the repo |
+| GitHub Pages listing | `kbmjj123.github.io/aifindr.org/listings/[category]/[slug]` | Generated from a source file in this repo (`docs/listings/`); live via GitHub Pages |
 | Tool detail page | `aifindr.org/tools/[category]/[slug]` | "Submitted by" link (`submitter_site`) |
 | Contributor profile | `aifindr.org/contributors/[username]` | Personal website link |
 
-> The online form is the supported submission path. The legacy GitHub PR flow (and the repository-file backlink it produces) is being reworked — see [Known gaps](#known-gaps).
+> The online form is the supported submission path. On approval we generate the GitHub Pages listing automatically — see [Known gaps](#known-gaps).
 
 ## Tech Stack
 
@@ -73,7 +73,7 @@ Public values live in `wrangler.toml` under `[vars]`:
 | `GITHUB_CLIENT_ID` | GitHub OAuth app client ID |
 | `ADMIN_GITHUB_IDS` | Comma-separated GitHub IDs allowed into `/admin` |
 
-Secrets are set with `wrangler secret put <NAME>`: `TURNSTILE_SECRET`, `GITHUB_CLIENT_SECRET`, `JWT_SECRET`, `RESEND_API_KEY`, `GITHUB_WEBHOOK_SECRET`, `LEMONSQUEEZY_WEBHOOK_SECRET`, `SITE_URL`. The authoritative list is the `CloudflareEnv` interface in `server/utils/env.ts`.
+Secrets are set with `wrangler secret put <NAME>`: `TURNSTILE_SECRET`, `GITHUB_CLIENT_SECRET`, `JWT_SECRET`, `RESEND_API_KEY`, `GITHUB_BACKLINK_TOKEN`, `LEMONSQUEEZY_WEBHOOK_SECRET`, `SITE_URL`. The authoritative list is the `CloudflareEnv` interface in `server/utils/env.ts`.
 
 ### Database
 
@@ -115,7 +115,7 @@ aifindr.org/
 ├── types/                 # tool.ts, category.ts, submissionSite.ts
 ├── scripts/               # local ETL / audit scripts (not bundled into the Worker)
 ├── assets/css/            # main.css, markdown.css
-├── data/                  # exchange links, submit template
+├── data/                  # exchange links, tool-pages (locally-authored listing content)
 ├── docs/                  # email notification system + design notes (GitHub Pages)
 ├── public/                # favicon, manifest, ads.txt (no dataset downloads)
 ├── api-spec.yaml          # OpenAPI reference (endpoint list may lag behind code)
@@ -129,6 +129,8 @@ aifindr.org/
 Use the [online form](https://aifindr.org/submit). Provide the tool name, website, category, pricing, a short description and optional details; the submission enters `pending` status and is reviewed in `/admin` before publication.
 
 Guidelines: short, factual descriptions; no promotional superlatives; the tool must be publicly accessible and actively maintained; one tool per submission.
+
+Content for each listing is produced locally: the `aifindr-tool-intake` project skill (see `.claude/skills/`) runs a verification pipeline over the submitted domain — deterministic screening, zero-LLM evidence probing, and a real-browser hands-on run — then writes `data/tool-pages/<host>.md` from the observed evidence. Listings that cannot be verified are recorded as such and are never published as verified.
 
 > The older "create a Markdown file under `content/tools/` and open a PR" path is **not currently active** — that directory and its sync script no longer exist in this repo.
 
@@ -179,9 +181,7 @@ The generated `schema/seed-submission-sites.sql` is committed, so deploying does
 
 ## Known gaps
 
-- `pnpm run sync-d1` targets a script (`scripts/sync-to-d1.js`) that no longer exists; do not run it.
-- `.github/workflows/sync-to-d1.yml` watches `content/tools/**` and is currently a no-op.
-- The repository-file backlink and GitHub PR submission flow still reference `content/tools/*.md`; the tool detail page and contributor profile backlinks are unaffected.
+- The GitHub Pages listing is generated into `docs/listings/[category]/[slug].md` on approval; it requires the `GITHUB_BACKLINK_TOKEN` secret. Submissions go through the online form only.
 
 ## Contributing
 

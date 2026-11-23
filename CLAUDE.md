@@ -39,9 +39,9 @@ aifindr.org/
 ├── README.md                    ← 对外项目说明
 ├── .claude/
 │   ├── rules/                   ← 9 份规则文档（见 §6）
-│   └── skills/                  ← debug-issue / explore-codebase / refactor-safely / review-changes
-├── .github/workflows/
-│   └── sync-to-d1.yml           ← 早期同步流程，当前已失效（见 §9）
+│   └── skills/                  ← debug-issue / explore-codebase / refactor-safely / review-changes /
+│                                  aifindr-tool-intake（本地流水线写内容，.codebuddy/skills 软链指向此处）
+├── .github/workflows/            ← （空）早期 sync-to-d1 流程已移除
 ├── pages/                       ← 26 个页面：首页、tools 列表/分类/子分类/标签/详情、
 │                                  submit、contributors、blog、admin（index/intake/posts/tools/users/submission-lists）、
 │                                  settings、privacy、terms、
@@ -70,7 +70,7 @@ aifindr.org/
 ├── assets/css/                  ← main.css、markdown.css
 ├── utils/linkReplacer.ts
 ├── plugins/stats.server.ts
-├── data/                        ← exchange-links.ts、submit-template.md
+├── data/                        ← exchange-links.ts、tool-pages/（skill 产出的工具内容文档，供后台对照录入）
 ├── docs/                        ← email-notification-system.md、index.html、superpowers/、res/、res-v2/
 ├── public/                      ← favicon / manifest / ads.txt / 验证文件（不提供数据集下载）
 ├── api-spec.yaml                ← OpenAPI 参考（部分描述过时，见 §9）
@@ -80,7 +80,7 @@ aifindr.org/
 └── tsconfig.json
 ```
 
-**不存在的目录/文件**：`content/`、`content/tools/`、`workers/`、`tailwind.config.ts`、`scripts/sync-to-d1.js`（`package.json` 的 `sync-d1` 仍指向它，见 §9）。`scripts/` 目录现已存在，存放本地 ETL / 审计脚本，不参与 Worker 打包；快照导入文件是 `schema/seed-submission-sites.sql`，不是 `schema/seed.sql`。
+**不存在的目录/文件**：`content/`、`content/tools/`、`workers/`、`tailwind.config.ts`、`scripts/sync-to-d1.js`。`scripts/` 目录现已存在，存放本地 ETL / 审计脚本，不参与 Worker 打包；快照导入文件是 `schema/seed-submission-sites.sql`，不是 `schema/seed.sql`。
 
 ## 4. 数据层
 
@@ -129,7 +129,7 @@ aifindr.org/
 | 外链提交平台（后台） | `admin/submission-lists.get` / `.post`（新建）/ `refresh.post` / `[slug].post`（策展）、`admin/submission-sites.get` / `.post`（新增）/ `import.post`（批量）/ `[slug].get` / `[slug].post`（编辑补齐）、`admin/submission-reports/review.post` |
 | 用户邮件 | `user/email.post`、`user/email/verify/[token].get` |
 | 定时任务 | `cron/daily-ops`、`cron/link-checker`、`cron/monthly-report`、`cron/newsletter` |
-| Webhook | `webhooks/github.post`、`webhooks/lemonsqueezy.post` |
+| Webhook | `webhooks/lemonsqueezy.post` |
 
 前端统一通过 `composables/useApi.ts` 调用：SSR 用 `useRequestFetch()` 进程内直调（避免 Workers 自调用 522），CSR 用 `$fetch` 并附 `localStorage['aifindr-token']` 的 Bearer 头。不要绕过它直接裸写 `useFetch('/api/...')`。
 
@@ -152,6 +152,12 @@ aifindr.org/
 `PRD.md` / `nuxt-cms-prd.md` 中的 Nuxt 3、Pages、Markdown 工具库、SSG+ISR、账号密码登录等描述均不代表现状，**不得据此写代码**。
 
 ## 7. 工作流程与关键约定
+
+### 工具内容编写（本地流水线 skill）
+
+- 工具内容由 `.claude/skills/aifindr-tool-intake/SKILL.md`（`.codebuddy/skills` 软链指向这里）驱动，按 L1→L2→L3→L4 顺序串起本地脚本：`audit-submissions.mjs --domain`（筛查）→ `probe-evidence.mjs --host`（取证）→ `try-tool.mjs --only`（浏览器实操）→ 产出 `data/tool-pages/<host>.md`
+- 事实源是 `reports/evidence/`，联网只补定价/FAQ/alternatives；**UNVERIFIED 绝不能写成 VERIFIED**（设计见 `docs/verification-agent-plan.md`）
+- 在线表单提交（`data_source='user_submit'`）进 D1 后，由人工/agent 把域名交给该 skill 启动流水线；skill 只产出本地 MD，发布仍在后台完成
 
 ### 创建组件 / 页面
 1. 组件先读 `design-system.md`；页面先读 `tech-stack.md` + `product-scope.md` + `design-system.md`，SEO 相关再读 `seo.md`
@@ -181,21 +187,19 @@ GitHub OAuth + JWT；管理员由 `ADMIN_GITHUB_IDS`（逗号分隔的 GitHub ID
 
 | 外链 | 位置 | 类型 |
 |---|---|---|
-| GitHub 主仓库 | 工具内容文件中的 `submitter_site` | dofollow |
+| GitHub Pages 收录页 | `kbmjj123.github.io/aifindr.org/listings/[category]/[slug]` | dofollow（Pages 渲染的 `.md` 链接不带 nofollow） |
 | 工具详情页 | 详情页 "Submitted by" 区域 | dofollow |
 | 贡献者页 | `/contributors/[username]` 的个人网站链接 | dofollow |
 
 **约定**：`submitter_site` 链接禁止加 `rel="nofollow"`，任何重构不得移除。
-**现状提醒**：第一条依赖的 `content/tools/[category]/[slug].md` 文件并不存在，相关代码仍按该路径生成链接（见 §9）。修复时须保证三条外链承诺不缩水。
+
+**现状实现**：审核通过时由 `server/utils/githubBacklink.ts` 生成 `docs/listings/[category]/[slug].md` 写回本仓库（GitHub Contents API），GitHub Pages 从 `main/docs` 自动构建。注意 GitHub **blob** 页会给 `.md` 外链加 `nofollow`，所以对外承诺指向的是 **Pages URL** 而非 blob URL；同一文件在 blob 上只是源记录。写回依赖 secret `GITHUB_BACKLINK_TOKEN` 与公开变量 `GITHUB_PAGES_BASE`；token 未配置时静默跳过。工具路径记在 `tools.content_path`，后台编辑影响字段时按旧路径原地更新。
 
 **边界**：`/backlink-sites` 与 `/submission-lists` 记录的是**站外第三方提交平台**，其出站链接统一 `nofollow`；它们不是站内提交者激励的一部分，不得用上面的 dofollow 约定去改这批链接，也不得影响上述三条承诺。
 
 ## 9. 已知技术债（文档已标注，代码待处理）
 
-- `package.json` 的 `sync-d1` 脚本指向不存在的 `scripts/sync-to-d1.js`，**不要执行**
-- `.github/workflows/sync-to-d1.yml` 监听 `content/tools/**` 且调用上述缺失脚本，等于空转
-- `pages/submit.vue` 的 PR 提交指引仍提示在 `content/tools/` 新建 `.md`
-- `server/routes/api/admin/review.post.ts`、`server/routes/api/webhooks/github.post.ts` 仍硬编码 GitHub `content/tools/*.md` 路径
+- 已退役并清除：GitHub PR 提交 tab、`data/submit-template.md`、`webhooks/github.post.ts`、`GITHUB_WEBHOOK_SECRET`、`sync-d1` 脚本与空转 workflow。在线表单是唯一支持的提交路径。
 - `api-spec.yaml` 头部架构描述已校正，但正文端点清单仍可能滞后，以 `server/routes/api/` 源码为准
 - `docs/email-notification-system.md` 仍引用 `workers/api.ts` 等旧路径（已在文件头标注）；`docs/superpowers/` 为历史设计资料，同样不作为实现依据
 - `product-scope.md` / 早期规范中提到的 KV 高频查询缓存（TTL 1h）尚未在 `tools.get.ts` 落地
@@ -219,8 +223,8 @@ wrangler d1 execute aifindr-db --remote --file=./schema/seed-submission-sites.sq
 
 环境变量分三类：
 
-- `wrangler.toml [vars]`（公开）：`API_BASE`、`R2_PUBLIC_URL`、`GITHUB_CLIENT_ID`、`ADMIN_GITHUB_IDS`
-- `wrangler secret put`（密钥）：`TURNSTILE_SECRET`、`GITHUB_CLIENT_SECRET`、`JWT_SECRET`、`RESEND_API_KEY`、`GITHUB_WEBHOOK_SECRET`、`LEMONSQUEEZY_WEBHOOK_SECRET`、`SITE_URL` 等，完整清单见 `server/utils/env.ts` 的 `CloudflareEnv`
+- `wrangler.toml [vars]`（公开）：`API_BASE`、`R2_PUBLIC_URL`、`GITHUB_CLIENT_ID`、`ADMIN_GITHUB_IDS`、`GITHUB_PAGES_BASE`
+- `wrangler secret put`（密钥）：`TURNSTILE_SECRET`、`GITHUB_CLIENT_SECRET`、`JWT_SECRET`、`RESEND_API_KEY`、`GITHUB_BACKLINK_TOKEN`、`LEMONSQUEEZY_WEBHOOK_SECRET`、`SITE_URL` 等，完整清单见 `server/utils/env.ts` 的 `CloudflareEnv`
 - 本地：`.dev.vars` / `.dev.vars.local` / `.env*.local`（均被 `.gitignore` 排除）；`.env.example` 只含 R2 图片迁移脚本所需变量
 
 ## 11. 文档维护约定

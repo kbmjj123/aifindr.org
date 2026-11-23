@@ -1,7 +1,12 @@
 import { createError, getRouterParam, readBody } from 'h3'
 import { getEnv } from '~/server/utils/env'
 import { verifyAdmin } from '~/server/utils/auth'
+import { writeListingPage } from '~/server/utils/githubBacklink'
 import { CATEGORIES } from '~/types/category'
+
+const LISTING_FIELDS: (keyof UpdatePayload)[] = [
+  'name', 'short_description', 'category', 'website', 'pricing', 'submitter_site', 'submitter_github',
+]
 
 const VALID_TAG_TYPES = ['use_case', 'audience', 'feature'] as const
 
@@ -58,7 +63,7 @@ export default defineEventHandler(async (event) => {
   if (!id || isNaN(id)) throw createError({ statusCode: 400, statusMessage: 'Invalid tool ID' })
 
   // ── verify tool exists ─────────────────────────────────────
-  const existing = await env.DB.prepare('SELECT id, slug, category FROM tools WHERE id = ?').bind(id).first<{ id: number; slug: string; category: string }>()
+  const existing = await env.DB.prepare('SELECT * FROM tools WHERE id = ?').bind(id).first<Record<string, unknown>>()
   if (!existing) throw createError({ statusCode: 404, statusMessage: 'Tool not found' })
 
   const body = await readBody<UpdatePayload>(event)
@@ -121,6 +126,28 @@ export default defineEventHandler(async (event) => {
         await env.DB.prepare(
           'INSERT INTO tool_tags (tool_id, tag, type) VALUES (?, ?, ?)'
         ).bind(id, t.tag, t.type).run()
+      }
+    }
+  }
+
+  // ── sync GitHub Pages listing page ───────────────────────
+  // 只在该工具已上线、且改动了会影响收录页的字段时重写
+  if (LISTING_FIELDS.some(field => body[field] !== undefined)) {
+    const fresh = await env.DB.prepare('SELECT * FROM tools WHERE id = ?').bind(id).first<Record<string, unknown>>()
+    if (fresh?.status === 'active') {
+      const result = await writeListingPage(env, {
+        slug: fresh.slug as string,
+        category: fresh.category as string,
+        name: fresh.name as string,
+        website: fresh.website as string | null,
+        pricing: fresh.pricing as string | null,
+        shortDescription: fresh.short_description as string | null,
+        submitterGithub: fresh.submitter_github as string | null,
+        submitterSite: fresh.submitter_site as string | null,
+        existingPath: existing.content_path as string | null,
+      })
+      if (result && result.path !== existing.content_path) {
+        await env.DB.prepare('UPDATE tools SET content_path = ? WHERE id = ?').bind(result.path, id).run()
       }
     }
   }

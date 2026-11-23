@@ -12,11 +12,12 @@ export interface CloudflareEnv {
   JWT_SECRET: string
   ADMIN_GITHUB_IDS: string
   RESEND_API_KEY: string
-  GITHUB_WEBHOOK_SECRET: string
   LEMONSQUEEZY_WEBHOOK_SECRET: string
   SITE_URL: string
   API_BASE: string
   OPENPAGERANK_API_KEY?: string
+  GITHUB_BACKLINK_TOKEN?: string
+  GITHUB_PAGES_BASE?: string
 }
 
 export function getEnv(event: H3Event): CloudflareEnv {

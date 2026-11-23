@@ -3,6 +3,8 @@ import { getEnv, siteUrl } from '~/server/utils/env'
 import { verifyAdmin } from '~/server/utils/auth'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
 import { notifySearchEngines } from '~/server/utils/seo'
+import { writeListingPage, pagesListingUrl } from '~/server/utils/githubBacklink'
+import type { ListingPageResult } from '~/server/utils/githubBacklink'
 import type { UserRecord } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
@@ -64,11 +66,30 @@ export default defineEventHandler(async (event) => {
     submitterEmail = getNotifyEmail(ghUser)
   }
 
+  // 生成 GitHub Pages 收录页并回写路径（与是否有邮箱无关；失败不影响审核）
+  let listing: ListingPageResult | null = null
+  if (status === 'active') {
+    listing = await writeListingPage(env, {
+      slug: toolSlug,
+      category: toolCategory,
+      name: toolName,
+      website: tool.website as string | null,
+      pricing: tool.pricing as string | null,
+      shortDescription: tool.short_description as string | null,
+      submitterGithub,
+      submitterSite: tool.submitter_site as string | null,
+    })
+    if (listing) {
+      await env.DB.prepare('UPDATE tools SET content_path = ? WHERE id = ?').bind(listing.path, toolId).run()
+    }
+  }
+
   if (submitterEmail) {
     if (status === 'active') {
       const detailUrl = siteUrl(env, `/tools/${toolCategory}/${toolSlug}`)
       const contributorUrl = siteUrl(env, `/contributors/${submitterGithub}`)
-      const githubUrl = `https://github.com/kbmjj123/aifindr.org/blob/main/content/tools/${toolCategory}/${toolSlug}.md`
+      const githubUrl = listing?.url || pagesListingUrl(env, toolCategory, toolSlug)
+      const githubSourceUrl = `https://github.com/kbmjj123/aifindr.org/blob/main/${listing?.path || `docs/listings/${toolCategory}/${toolSlug}.md`}`
 
       void sendEmail(env, {
         to: submitterEmail,
@@ -76,12 +97,13 @@ export default defineEventHandler(async (event) => {
         subject: `[aifindr] Your tool "${toolName}" has been approved!`,
         html: [
           `<p>Great news! Your tool <strong>${toolName}</strong> has been approved and is now live.</p>`,
-          `<p>Here are your <strong>three dofollow backlinks</strong>:</p>`,
+          `<p>Here are your <strong>three permanent dofollow backlinks</strong>:</p>`,
           `<ol>`,
-          `<li><a href="${githubUrl}">GitHub</a> — github.com (DA 100)</li>`,
+          `<li><a href="${githubUrl}">GitHub Pages listing</a> — kbmjj123.github.io</li>`,
           `<li><a href="${detailUrl}">Tool Detail Page</a> — aifindr.org</li>`,
           `<li><a href="${contributorUrl}">Contributor Page</a> — aifindr.org/contributors/${submitterGithub}</li>`,
           `</ol>`,
+          `<p style="color:#666;font-size:11px;">Your GitHub listing is generated from <a href="${githubSourceUrl}">this source file</a> in our repository.</p>`,
           `<p><a href="${detailUrl}">View your listing →</a></p>`,
           `<p>Share it with your network — the more clicks it gets, the higher it ranks on Trending!</p>`,
           `<p>— aifindr.org</p>`,

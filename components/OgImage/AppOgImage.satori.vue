@@ -140,7 +140,7 @@ const truncatedTitle = computed(() => {
 })
 
 const truncatedDescription = computed(() => {
-  const d = props.description || 'Open-source AI tool directory. Submit your tool, get 3 free dofollow backlinks.'
+  const d = props.description || 'Open-source AI tool directory. Submit your tool, get 3 permanent dofollow backlinks.'
   return d.length > 80 ? d.slice(0, 80).trimEnd() + '…' : d
 })
 

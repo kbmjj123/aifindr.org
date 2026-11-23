@@ -11,6 +11,11 @@
 //   node scripts/audit-submissions.mjs --recheck       # 忽略缓存，重新联网探测
 //   GITHUB_TOKEN=xxx node scripts/audit-submissions.mjs
 //
+//   单工具模式（skill L1 入口，跳过 PR 抓取）：
+//   node scripts/audit-submissions.mjs --domain=example.com --name="Example" \
+//     --website=https://example.com --category=image --pricing=freemium --desc="..."
+//   产出会合并进现有 reports/submissions-triage.json，不覆盖存量 PR 记录。
+//
 // 产出：
 //   reports/submissions-triage.json  机器可读，供后续流水线消费
 //   reports/submissions-triage.md    人读版，带逐条拒绝理由
@@ -26,8 +31,17 @@ const SITE = 'https://aifindr.org'
 const CACHE_FILE = resolve(ROOT, 'reports/.audit-cache.json')
 
 const argv = process.argv.slice(2)
-const LIMIT = Number((argv.find(a => a.startsWith('--limit=')) || '').split('=')[1]) || 0
+const arg = k => (argv.find(a => a.startsWith(`--${k}=`)) || '').split('=').slice(1).join('=') || ''
+const LIMIT = Number(arg('limit')) || 0
 const RECHECK = argv.includes('--recheck')
+// 单工具模式
+const DOMAIN = arg('domain')
+const SINGLE_NAME = arg('name')
+const SINGLE_WEBSITE = arg('website')
+const SINGLE_CATEGORY = arg('category')
+const SINGLE_PRICING = arg('pricing')
+const SINGLE_DESC = arg('desc')
+const TRIAGE_FILE = resolve(ROOT, 'reports/submissions-triage.json')
 
 // ── 规则配置 ────────────────────────────────────────────────
 const VALID_CATEGORIES = ['image', 'writing', 'video', 'audio', 'code', 'productivity',
@@ -192,23 +206,49 @@ async function main() {
   }
   console.log(`  已收录 ${knownHosts.length} 个工具`)
 
-  console.log('→ 拉取开放 PR…')
-  const { list: rawList, via } = await fetchOpenPrs()
-  let prs = rawList.map(p => ({ number: p.number, user: { login: p.login }, created_at: p.created_at || '', title: p.title }))
-  if (LIMIT) prs = prs.slice(0, LIMIT)
-  console.log(`  ${prs.length} 个开放 PR（来源：${via === 'api' ? 'GitHub API' : '网页解析'}）`)
-
+  let drafts
   const cache = await loadCache()
-  console.log('→ 读取 PR 内容（未缓存的才联网）…')
-  const drafts = await parallelMap(prs, async pr => {
-    const key = String(pr.number)
-    if (cache[key]?.body) return cache[key]
-    const fetched = await fetchPrTool(pr.number)
-    const rec = { pr: pr.number, author: pr.user.login, created: pr.created_at.slice(0, 10),
-      title: pr.title.slice(0, 60), path: fetched?.path || '', body: fetched?.body || '' }
+
+  if (DOMAIN) {
+    // ── 单工具模式：跳过 PR 抓取，用传入字段合成一份等价草稿 ──
+    // 下面的静态检查逻辑完全复用，无需分叉。
+    console.log(`→ 单工具模式：${DOMAIN}`)
+    const key = `domain:${DOMAIN}`
+    const website = SINGLE_WEBSITE || `https://${DOMAIN}`
+    const fm = [
+      '---',
+      `name: "${SINGLE_NAME || DOMAIN}"`,
+      `website: "${website}"`,
+      `description: "${SINGLE_DESC || ''}"`,
+      `pricing: "${SINGLE_PRICING || 'freemium'}"`,
+      SINGLE_CATEGORY ? `category: "${SINGLE_CATEGORY}"` : '',
+      '---',
+      '',
+    ].filter(Boolean).join('\n')
+    const path = `content/tools/${SINGLE_CATEGORY || 'other'}/${DOMAIN}.md`
+    const rec = { pr: key, author: '', created: new Date().toISOString().slice(0, 10),
+      title: SINGLE_NAME || DOMAIN, path, body: fm }
     cache[key] = rec
-    return rec
-  }, 6)
+    drafts = [rec]
+    await writeFile(CACHE_FILE, JSON.stringify(cache, null, 2))
+  } else {
+    console.log('→ 拉取开放 PR…')
+    const { list: rawList, via } = await fetchOpenPrs()
+    let prs = rawList.map(p => ({ number: p.number, user: { login: p.login }, created_at: p.created_at || '', title: p.title }))
+    if (LIMIT) prs = prs.slice(0, LIMIT)
+    console.log(`  ${prs.length} 个开放 PR（来源：${via === 'api' ? 'GitHub API' : '网页解析'}）`)
+
+    console.log('→ 读取 PR 内容（未缓存的才联网）…')
+    drafts = await parallelMap(prs, async pr => {
+      const key = String(pr.number)
+      if (cache[key]?.body) return cache[key]
+      const fetched = await fetchPrTool(pr.number)
+      const rec = { pr: pr.number, author: pr.user.login, created: pr.created_at.slice(0, 10),
+        title: pr.title.slice(0, 60), path: fetched?.path || '', body: fetched?.body || '' }
+      cache[key] = rec
+      return rec
+    }, 6)
+  }
 
   console.log('→ 静态规则检查…')
   const records = []
@@ -298,13 +338,23 @@ async function main() {
   }
 
   // ── 输出 ──────────────────────────────────────────────────
+  let finalRecords = records
+  if (DOMAIN) {
+    // 单工具模式：合并进存量 triage，按域名去重后替换旧记录，不覆盖 45 个 PR
+    let existing = []
+    try { existing = JSON.parse(await readFile(TRIAGE_FILE, 'utf8')) } catch { existing = [] }
+    // records 即本次单工具结果（仅 1 条），必须保留；只从存量里剔除同域名旧记录
+    finalRecords = [...existing.filter(r => r.host !== DOMAIN), ...records]
+    console.log(`  已合并进存量 triage（存量 ${existing.length} 条，同域名旧记录已替换）`)
+  }
+
   const order = { PASS: 0, MANUAL: 1, REJECT: 2 }
-  records.sort((a, b) => order[a.verdict] - order[b.verdict] || b.pr - a.pr)
-  const counts = records.reduce((m, r) => (m[r.verdict] = (m[r.verdict] || 0) + 1, m), {})
+  finalRecords.sort((a, b) => order[a.verdict] - order[b.verdict] || String(b.pr).localeCompare(String(a.pr)))
+  const counts = finalRecords.reduce((m, r) => (m[r.verdict] = (m[r.verdict] || 0) + 1, m), {})
 
   await mkdir(resolve(ROOT, 'reports'), { recursive: true })
   await writeFile(CACHE_FILE, JSON.stringify(cache, null, 2))
-  await writeFile(resolve(ROOT, 'reports/submissions-triage.json'), JSON.stringify(records, null, 2))
+  await writeFile(TRIAGE_FILE, JSON.stringify(finalRecords, null, 2))
 
   const row = (a, b, c, d) => `| ${a} | ${b} | ${c} | ${d} |`
   const md = [
@@ -312,7 +362,7 @@ async function main() {
     '',
     `生成时间：${new Date().toISOString()}`,
     '',
-    `共 ${records.length} 个开放提交 —— 直接通过 **${counts.PASS || 0}** · 需复核 **${counts.MANUAL || 0}** · 自动淘汰 **${counts.REJECT || 0}**`,
+    `共 ${finalRecords.length} 个提交 —— 直接通过 **${counts.PASS || 0}** · 需复核 **${counts.MANUAL || 0}** · 自动淘汰 **${counts.REJECT || 0}**`,
     '',
     '> 注意：域名年龄依赖 archive.org。若运行环境无法访问该服务，本轮会标注「存档服务不可达，域名年龄未校验」，该维度不参与判定，需要在网络正常的环境中重跑才生效。',
     '',
@@ -320,21 +370,21 @@ async function main() {
     '',
     row('PR', '工具', '域名', '判定 · 注意点'),
     row('---', '---', '---', '---'),
-    ...(records.filter(r => r.verdict !== 'REJECT').map(r =>
-      row(`#${r.pr}`, r.name.slice(0, 28), r.host || '—', `${r.verdict} · ${r.reasons.join('；') || '无异常'}`)) || ['（无）']),
+    ...(finalRecords.filter(r => r.verdict !== 'REJECT').map(r =>
+      row(`#${r.pr}`, String(r.name).slice(0, 28), r.host || '—', `${r.verdict} · ${r.reasons.join('；') || '无异常'}`)) || ['（无）']),
     '',
     '## 自动淘汰',
     '',
     row('PR', '工具', '域名', '拒绝理由'),
     row('---', '---', '---', '---'),
-    ...records.filter(r => r.verdict === 'REJECT').map(r =>
-      row(`#${r.pr}`, r.name.slice(0, 28), r.host || '—', r.reasons.join('；'))),
+    ...finalRecords.filter(r => r.verdict === 'REJECT').map(r =>
+      row(`#${r.pr}`, String(r.name).slice(0, 28), r.host || '—', r.reasons.join('；'))),
     '',
   ].join('\n')
   await writeFile(resolve(ROOT, 'reports/submissions-triage.md'), md)
 
   console.log('\n=== 初审结果 ===')
-  console.log(`直接通过 ${counts.PASS || 0} · 需复核 ${counts.MANUAL || 0} · 自动淘汰 ${counts.REJECT || 0}（共 ${records.length}）`)
+  console.log(`直接通过 ${counts.PASS || 0} · 需复核 ${counts.MANUAL || 0} · 自动淘汰 ${counts.REJECT || 0}（共 ${finalRecords.length}）`)
   console.log('报告 → reports/submissions-triage.md')
   console.log('数据 → reports/submissions-triage.json')
 }

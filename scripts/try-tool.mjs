@@ -15,6 +15,13 @@
 //   node scripts/try-tool.mjs --limit=3           只跑前 3 个，先验证有没有用
 //   node scripts/try-tool.mjs --only=vocalseparator.com
 //   node scripts/try-tool.mjs --pr=76 --timeout=90
+//   node scripts/try-tool.mjs --cdp=9200        # 复用已启动的真实 Chrome（--remote-debugging-port=9200）
+//
+// CDP 模式：连接本机已开的有头 Chrome，复用其 profile / 登录态，降低被 Cloudflare
+// 判成自动化脚本的概率。需要在另一个终端先启动 Chrome 并带 --remote-debugging-port：
+//   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+//     --remote-debugging-port=9200 --user-data-dir=/tmp/aifindr-cdp-profile
+// 验证码红线不变：遇到 Turnstile 仍记 BLOCKED_CAPTCHA，不绕过。
 
 import { chromium } from 'playwright'
 import { readFile, writeFile, mkdir, rm, stat } from 'node:fs/promises'
@@ -44,6 +51,9 @@ const CHROME = process.env.CHROME_PATH
 const BUDGET_MS = Number(arg('timeout', '120')) * 1000
 const LIMIT = Number(arg('limit', '0')) || 0
 const VERBOSE = has('verbose')
+// CDP 模式：连到本机已启动的 Chrome，复用真实 profile / 登录态
+const CDP_PORT = arg('cdp') || process.env.CDP_PORT || ''
+const CDP_URL = CDP_PORT ? `http://127.0.0.1:${CDP_PORT}` : ''
 
 // ── 供应商识别：静态 HTML 里查不到，真实调用一定在网络层留下痕迹 ──
 const PROVIDERS = [
@@ -86,8 +96,12 @@ const ARTIFACT_TYPES = [/^image\/(png|jpeg|webp|gif|avif)/, /^audio\//, /^video\
 const ACTION_WORDS = [
   'generate', 'create', 'convert', 'remove', 'upscale', 'enhance', 'start',
   'run', 'submit', 'split', 'separate', 'describe', 'translate', 'process',
-  'transform', 'upload', 'let’s go', 'lets go', 'try it', 'try now',
+  'transform', 'upload', 'download', 'let’s go', 'lets go', 'try it', 'try now',
 ]
+// 主 CTA 必须以动作动词开头（或在文案里明确含动作词）。只有「短 + 离上传框近」
+// 而没有动作语义的按钮（如 "Check availability"、"Play original"）不能算主操作——
+// 它们曾两次让 vocalseparator.com 点错按钮，把工具误判成 UNVERIFIED。
+const ACTION_LEAD = /^(try|generate|create|convert|start|run|upscale|enhance|describe|translate|split|separate|process|transform|remove|submit|download|go)\b/i
 
 const NEGATIVE_WORDS = [
   'login', 'log in', 'sign in', 'sign up', 'signup', 'register', 'create account',
@@ -99,6 +113,10 @@ const NEGATIVE_WORDS = [
   'clear', 'reset', 'cancel', 'close', 'undo', 'remove file', 'remove source',
   'delete', 'example', 'random', 'shuffle', 'previous', 'next', 'back',
   'tempo', 'pitch', 'loop', 'export',   // 播放器/编辑器里的次级控件
+  // 状态/可用性查询类：vocalseparator 的 "Check availability"、播放器 "Play original"
+  // 都没有动作语义却因「短 + 离上传框近」拿到高分，必须压下去
+  'check availability', 'availability', 'check status', 'view status',
+  'play original', 'play sample', 'preview', 'see how', 'learn more',
 ]
 
 // 结果容器必须「看起来真的像结果框」。
@@ -184,14 +202,35 @@ async function inspect(page) {
   })
 }
 
-async function detectCaptcha(page) {
-  return page.evaluate(() => {
-    const hits = []
-    if (document.querySelector('iframe[src*="recaptcha"], iframe[src*="turnstile"], iframe[src*="hcaptcha"], .cf-turnstile, .g-recaptcha, .h-captcha, [data-sitekey]')) hits.push('dom')
+/**
+ * 验证码检测。三条独立信号，任一命中即视为遇到验证码：
+ *   1. DOM：常见验证码控件。注意 Cloudflare Turnstile 的 iframe src 是
+ *      /cdn-cgi/challenge-platform/... ，并不含 "turnstile" 字样，必须单独匹配。
+ *   2. 文本：父页面可见的提示。跨域 iframe 内的文字读不到（"Verify you are human"
+ *      正是渲染在 Cloudflare 的 iframe 里），所以不能只靠这一条。
+ *   3. 网络：challenge-platform 的质询请求（/fo/ 质询流、/ci/ 验证图片等）。
+ *      这是最可靠的信号——即使质询 UI 完全在跨域 iframe 里，请求仍会被 netLog 捕获。
+ * netLog 为可选；传入时启用网络信号（调用方应只传当前阶段新增的请求）。
+ */
+async function detectCaptcha(page, netLog = []) {
+  const hits = await page.evaluate(needles => {
+    const out = []
+    if (document.querySelector([
+      'iframe[src*="recaptcha"]', 'iframe[src*="hcaptcha"]',
+      'iframe[src*="turnstile"]', 'iframe[src*="challenges.cloudflare.com"]',
+      'iframe[src*="/cdn-cgi/challenge-platform"]',
+      '.cf-turnstile', '.g-recaptcha', '.h-captcha', '[data-sitekey]',
+      'input[name="cf-turnstile-response"]',
+    ].join(', '))) out.push('dom')
     const t = (document.body.innerText || '').toLowerCase()
-    if (/not a robot|verify you are human|security check/i.test(t)) hits.push('text')
-    return hits
-  })
+    if (needles.some(n => t.includes(n))) out.push('text')
+    return out
+  }, CAPTCHA_TEXT)
+  // Cloudflare 质询的请求路径：/cdn-cgi/challenge-platform/h/b/fo/...、/ci/... 等。
+  // 只匹配质询平台路径，不匹配普通静态脚本（challenges.cloudflare.com/turnstile/v0/api.js
+  // 只是控件脚本加载，本身不代表弹出了验证码）。
+  if (netLog.some(r => /\/cdn-cgi\/challenge-platform\//i.test(r.url || ''))) hits.push('network')
+  return hits
 }
 
 /** 页面里是否已经出现明确的付费要求。出现即停止，不继续任何操作 */
@@ -478,7 +517,7 @@ async function tryTool(browser, target) {
     reasons: [],
     steps: [],
     wall_clock_sec: 0,
-    environment: { headed: false, chrome: 'local', budget_sec: BUDGET_MS / 1000 },
+    environment: { headed: !!CDP_URL, chrome: CDP_URL ? 'cdp' : 'local', budget_sec: BUDGET_MS / 1000 },
     observed: {
       reached: false, http_status: 0, final_host: '', title: '',
       output_kind: '', artifacts: [], providers_seen: [], api_calls: [],
@@ -491,15 +530,26 @@ async function tryTool(browser, target) {
   const left = () => deadline - Date.now()
 
   let ctx
+  let page                // 本次创建的页；CDP 模式下只关它，不动用户已有的标签页
+  let ownsContext = false   // CDP 模式用的是用户的默认 context，不能由我们关闭
   try {
-    ctx = await browser.newContext({
-      viewport: { width: 1440, height: 900 },
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-      locale: 'en-US',
-      timezoneId: 'America/Los_Angeles',
-      acceptDownloads: true,
-    })
-    const page = await ctx.newPage()
+    if (CDP_URL) {
+      // 复用真实 Chrome 的默认 context（profile / cookie / 登录态都在里面）。
+      // 不能用 browser.newContext()——那会开无痕上下文，等于白连。
+      ctx = browser.contexts()[0]
+      if (!ctx) throw new Error('CDP 浏览器没有可用 context')
+      ownsContext = false
+    } else {
+      ctx = await browser.newContext({
+        viewport: { width: 1440, height: 900 },
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        locale: 'en-US',
+        timezoneId: 'America/Los_Angeles',
+        acceptDownloads: true,
+      })
+      ownsContext = true
+    }
+    page = await ctx.newPage()
 
     // 网络层观测：纯静态资源一律丢弃，只留可能有信息量的请求
     const netLog = []
@@ -536,7 +586,7 @@ async function tryTool(browser, target) {
     await page.waitForTimeout(2000)
     await dismissCookie(page)
 
-    const homeCap = await detectCaptcha(page)
+    const homeCap = await detectCaptcha(page, netLog)
     if (homeCap.length) { rec.observed.captcha = homeCap.join('+'); say('首页出现验证码控件：' + homeCap.join('+')) }
 
     const beforeShot = resolve(dir, '01-landing.png')
@@ -688,14 +738,20 @@ async function tryTool(browser, target) {
       .map(b => {
         const t = b.text.toLowerCase()
         let score = 0
+        const hasAction = ACTION_WORDS.some(w => t.includes(w)) || ACTION_LEAD.test(t)
         ACTION_WORDS.forEach(w => { if (t.includes(w)) score += 10 })
-        if (/^(try|generate|create|convert|start|run|upscale|enhance|describe|translate|split|separate|process|transform)\b/.test(t)) score += 8
+        if (ACTION_LEAD.test(t)) score += 8
         NEGATIVE_WORDS.forEach(w => { if (t.includes(w)) score -= 20 })
         if (b.inChrome) score -= 12                                  // nav / header / footer 里的基本不会是主 CTA
         const words = t.split(/\s+/).length
         if (words <= 2) score += 6                                   // 主 CTA 文案通常很短
         else if (words >= 5) score -= 6
-        if (plan === 'file' && /upload|choose|browse|select/i.test(t)) score -= 8   // 已经传过了
+        if (plan === 'file') {
+          if (/upload|choose|browse|select/i.test(t)) score -= 8     // 已经传过了
+          // 没有动作语义的按钮（Check availability / Play original 之类）再近也不是主 CTA。
+          // 它们靠「短 + 近」恰好能凑到 10 分门槛，必须显式排除，否则会重复误点。
+          if (!hasAction) score -= 30
+        }
         if (anchor && b.box) {
           const d = Math.hypot(anchor.x - b.box.x, anchor.y - b.box.y)
           if (d < 300) score += 12; else if (d < 700) score += 4; else score -= 6
@@ -769,8 +825,8 @@ async function tryTool(browser, target) {
       }, FAILURE_TEXT)
       if (failure) break
 
-      const cap = await detectCaptcha(page)
-      if (cap.length) { rec.observed.captcha = cap.join('+'); rec.verdict = 'BLOCKED_CAPTCHA'; rec.reasons.push('执行后出现验证码，不绕过'); break }
+      const cap = await detectCaptcha(page, netLog.slice(netMark))
+      if (cap.length) { rec.observed.captcha = cap.join('+'); rec.verdict = 'BLOCKED_CAPTCHA'; rec.reasons.push('执行后出现验证码（' + cap.join('+') + '），不绕过'); break }
       const paid = await detectPaywall(page)
       if (paid) { rec.observed.paywall = paid; rec.verdict = 'BLOCKED_PAYWALL'; rec.reasons.push('执行后转入付费流程：' + paid); break }
 
@@ -801,7 +857,9 @@ async function tryTool(browser, target) {
     if (failure) { rec.observed.notes.push('页面报错：' + failure); step('页面报错：' + failure) }
 
     // ── 产物①：网络响应体（最强证据，有真实字节）──
-    const netArts = (await Promise.all(collecting.pending)).filter(Boolean).filter(a => a.bytes >= 8192)
+    // 排除验证码质询平台的图片（challenge-platform 的 /ci/ 验证图），否则会被当作产物落盘
+    const netArts = (await Promise.all(collecting.pending)).filter(Boolean)
+      .filter(a => a.bytes >= 8192 && !/\/cdn-cgi\/challenge-platform\//i.test(a.url || ''))
     for (const [i, a] of netArts.sort((x, y) => y.bytes - x.bytes).slice(0, 2).entries()) {
       const ext = (a.type.split('/')[1] || 'bin').split(';')[0].replace(/[^a-z0-9]/g, '')
       const file = `artifact-net-${i}.${ext === 'octet-stream' ? 'bin' : ext}`
@@ -882,14 +940,21 @@ async function tryTool(browser, target) {
     return rec
   } finally {
     rec.wall_clock_sec = rec.evidence.wall_clock_sec = +((Date.now() - t0) / 1000).toFixed(1)
-    await ctx?.close().catch(() => {})
+    // 只关我们自己创建的 context；CDP 默认 context 属于用户的浏览器，关掉会毁掉他的会话
+    if (ownsContext) {
+      await ctx?.close().catch(() => {})
+    } else {
+      // 只关本次打开的页，保留 context 本身（用户的 profile / 其它标签页都在里面）
+      await page?.close().catch(() => {})
+    }
   }
 }
 
 // ── 主入口 ──────────────────────────────────────────────────
 async function main() {
-  if (!existsSync(CHROME)) {
-    console.error(`找不到本机 Chrome：${CHROME}\n可设置 CHROME_PATH 环境变量指向任意 Chromium 内核。`)
+  // CDP 模式下 Chrome 由外部启动，不需要本机 CHROME 路径
+  if (!CDP_URL && !existsSync(CHROME)) {
+    console.error(`找不到本机 Chrome：${CHROME}\n可设置 CHROME_PATH 环境变量指向任意 Chromium 内核，或用 --cdp=<端口> 连接已启动的浏览器。`)
     process.exit(1)
   }
   const probe = JSON.parse(await readFile(PROBE, 'utf8'))
@@ -907,10 +972,14 @@ async function main() {
   if (!targets.length) { console.log('没有可跑的目标'); return }
 
   console.log(`待验证 ${targets.length} 个站点 · 单站预算 ${BUDGET_MS / 1000}s · 预计最长 ${Math.round(targets.length * BUDGET_MS / 60000)} 分钟`)
-  console.log('（目标取自 reports/evidence-probe.json 中 L2 判定 PASS 的记录）\n')
+  console.log('（目标取自 reports/evidence-probe.json 中 L2 判定 PASS 的记录）')
+  if (CDP_URL) console.log(`（CDP 模式：连接 ${CDP_URL}，复用真实浏览器 profile）\n`)
+  else console.log('')
 
   await mkdir(EVIDENCE_DIR, { recursive: true })
-  const browser = await chromium.launch({ headless: true, executablePath: CHROME, args: ['--disable-blink-features=AutomationControlled'] })
+  const browser = CDP_URL
+    ? await chromium.connectOverCDP(CDP_URL)
+    : await chromium.launch({ headless: true, executablePath: CHROME, args: ['--disable-blink-features=AutomationControlled'] })
 
   const results = []
   for (const t of targets) {
@@ -922,7 +991,9 @@ async function main() {
     console.log(`${flag} ${r.verdict.padEnd(16)} ${String(r.wall_clock_sec).padStart(5)}s  ${r.reasons[0] || ''}`.slice(0, 150))
     await sleep(1200)   // 站点之间留一点间隔，别像扫描器
   }
-  await browser.close()
+  // CDP 模式只断开连接，不关闭用户正在用的浏览器
+  if (CDP_URL) await browser.close().catch(() => {})   // connectOverCDP 的 close() 仅断开
+  else await browser.close()
 
   // ── 汇总 ──
   const tally = results.reduce((m, r) => { m[r.verdict] = (m[r.verdict] || 0) + 1; return m }, {})

@@ -315,7 +315,7 @@ POST  /api/webhooks/lemonsqueezy      接收 LS 支付 Webhook（v1.3）
 
 **B-01 内容要点：** 工具名称 + 网站 URL + 预计审核时间（3-7 工作日）+ 付费加速入口 + 提交编号。
 
-**B-03 内容要点（核心）：** 恭喜上线 + 三条外链逐一列出（github.com DA 100 / aifindr.org 详情页 / 贡献者页）+ 引导分享 + 引导查看 Featured 置顶。
+**B-03 内容要点（核心）：** 恭喜上线 + 三条 dofollow 外链逐一列出（GitHub Pages 收录页 / aifindr.org 详情页 / 贡献者页）+ 引导分享 + 引导查看 Featured 置顶。
 
 **B-04 内容要点：** 拒绝原因（info_incomplete / not_qualified / duplicate / other）+ 修改建议 + 重新提交入口。
 

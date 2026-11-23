@@ -139,7 +139,7 @@ https://cdn.aifindr.org/tools/{category}/{slug}/
 | 内容 | `blog/*`、`contributors*`、`__sitemap__/urls.get`、`generate.post` |
 | 用户邮件 | `user/email.post`、`user/email/verify/[token].get` |
 | 定时任务 | `cron/daily-ops`、`cron/link-checker`、`cron/monthly-report`、`cron/newsletter` |
-| Webhook | `webhooks/github.post`、`webhooks/lemonsqueezy.post` |
+| Webhook | `webhooks/lemonsqueezy.post` |
 
 `/api/tools` 查询参数：`category`、`sub_category`、`pricing`（逗号分隔）、`platform`、`tags`（逗号分隔）、`sort=latest|trending|featured`、`page`、`pageSize`（上限 100）；实现里强制 `t.status = 'active'`。
 
@@ -152,10 +152,10 @@ https://cdn.aifindr.org/tools/{category}/{slug}/
 ```
 写入：
   在线表单 → POST /api/submit → Turnstile 校验 → D1 INSERT(pending) → 邮件通知管理员
-  管理员审核 → POST /api/admin/review → D1 UPDATE(active)
+  管理员审核 → POST /api/admin/review → D1 UPDATE(active) → 生成 docs/listings/ 收录页 → GitHub Pages 自动构建
   图片上传 → /api/upload → R2(CDN) → URL 写入 tools.logo / screenshots
   定时任务 → cron/* → 邮件、反链检查、月报、newsletter
-  Webhook → GitHub / Lemon Squeezy 事件 → 对应处理逻辑
+  Webhook → Lemon Squeezy 支付事件 → 对应处理逻辑
 
 读取：
   边缘 SSR 页面 → useApi() → Nitro handler → D1 SQL / R2
@@ -163,7 +163,7 @@ https://cdn.aifindr.org/tools/{category}/{slug}/
   sitemap → /api/__sitemap__/urls
 ```
 
-不存在「GitHub PR → Action → D1 UPSERT → Pages 增量构建」这条链路：`.github/workflows/sync-to-d1.yml` 与 `pnpm run sync-d1` 都是残留（见 `CLAUDE.md` §9）。
+不存在「GitHub PR → Action → D1 UPSERT」这条链路；提交只走在线表单。审核通过后由 `server/utils/githubBacklink.ts` 从 D1 工具数据生成 `docs/listings/[category]/[slug].md` 写回本仓库，GitHub Pages（源 `main/docs`）自动构建成 dofollow 收录页。
 
 ---
 

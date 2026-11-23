@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS tools (
   view_count       INTEGER DEFAULT 0,
   submitter_site   TEXT,
   submitter_github TEXT,
-  content_path     TEXT,
+  content_path     TEXT,       -- 生成的 GitHub Pages 收录页路径（docs/listings/<category>/<slug>.md）
   body             TEXT,
   submitter_id     INTEGER REFERENCES users(id),
   reject_reason    TEXT,       -- 拒绝原因

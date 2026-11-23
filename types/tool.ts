@@ -55,6 +55,8 @@ export interface Tool {
   view_count?: number
   submitter_site?: string
   submitter_github?: string
+  submitter_id?: number
+  content_path?: string       // 生成的 GitHub Pages 收录页路径
   data_source?: string
   images?: ToolImage[]
   videos?: ToolVideo[]
