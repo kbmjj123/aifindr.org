@@ -27,7 +27,7 @@ import { chromium } from 'playwright'
 import { readFile, writeFile, mkdir, rm, stat } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { ensureFixture, PROMPTS } from './lib/fixtures.mjs'
 
@@ -502,7 +502,7 @@ async function uploadFile(page, fixture) {
 }
 
 async function tryTool(browser, target) {
-  const { host, site, pr, category } = target
+  const { host, site, pr, category, l2Verdict, l2Reasons } = target
   const t0 = Date.now()
   const dir = resolve(EVIDENCE_DIR, host)
   // 只清自己这一个站点的目录，避免上一轮的产物残留在 report 里造成误读
@@ -525,9 +525,26 @@ async function tryTool(browser, target) {
     },
     evidence: { steps: [], wall_clock_sec: 0, output_kind: '', output_detail: '', screenshots: [], artifacts: [] },
   }
+  // L2=MANUAL 只有显式 --only 才会走到这里；把不确定点带进证据，L4 不得写成 VERIFIED
+  if (l2Verdict === 'MANUAL') {
+    rec.l2_manual = { verdict: l2Verdict, reasons: l2Reasons || [] }
+  }
   const step = s => { rec.steps.push(s); say(s) }
   const deadline = t0 + BUDGET_MS
   const left = () => deadline - Date.now()
+
+  // 站点适配：只为通用启发式失效的站点加载一份小配置，不复制整套脚本
+  const adapterPath = resolve(__dirname, 'lib/adapters', `${host}.mjs`)
+  let adapter = null
+  if (existsSync(adapterPath)) {
+    try {
+      adapter = (await import(pathToFileURL(adapterPath).href)).default || null
+      if (adapter) step(`加载站点适配：${host}`)
+    } catch (e) {
+      step(`站点适配加载失败，退回默认路径：${e.message}`)
+      adapter = null
+    }
+  }
 
   let ctx
   let page                // 本次创建的页；CDP 模式下只关它，不动用户已有的标签页
@@ -593,7 +610,7 @@ async function tryTool(browser, target) {
     await page.screenshot({ path: beforeShot, fullPage: false }).catch(() => {})
     rec.evidence.screenshots.push('evidence/' + host + '/01-landing.png')
 
-    const ui = await inspect(page)
+    let ui = await inspect(page)
     const visibleAll = ui.fileInputs.filter(x => x.visible).length
       + ui.textInputs.filter(x => x.visible).length
       + ui.textareas.filter(x => x.visible).length
@@ -614,13 +631,13 @@ async function tryTool(browser, target) {
     const looksLikeUpload = z =>
       z.box && z.box.w >= 120 && z.box.h >= 80
       && /upload|drop|drag|browse|choose|select\s*(an?\s*)?(image|file|photo|audio|video)/i.test(z.text || '')
-    const uploadZones = ui.dropzones.filter(d => d.visible && looksLikeUpload(d))
-    const realFileInput = ui.fileInputs.length > 0
-    const textSlot = ui.textareas.find(x => x.visible && !x.disabled)
+    let uploadZones = ui.dropzones.filter(d => d.visible && looksLikeUpload(d))
+    let realFileInput = ui.fileInputs.length > 0
+    let textSlot = ui.textareas.find(x => x.visible && !x.disabled)
       || ui.textInputs.find(x => x.visible && !x.disabled && /prompt|describe|text|enter|type|write|idea/i.test(x.placeholder + x.name))
       || ui.textInputs.find(x => x.visible && !x.disabled)
       || null
-    const editableSlot = ui.editables.find(e => e.visible) || null
+    let editableSlot = ui.editables.find(e => e.visible) || null
     const mediaCategory = ['image', 'video', 'audio'].includes(category)
 
     // 优先级：真实的 file input > 文本框 > contenteditable > 只有拖拽区
@@ -632,6 +649,69 @@ async function tryTool(browser, target) {
     else if (textSlot) plan = 'text'
     else if (editableSlot) plan = 'editable'
     else if (uploadZones.length) plan = 'file'
+
+    // 站点适配：首页没有输入时，允许点一次配置里声明的非登录/非付费入口再探
+    if (plan === 'none' && adapter?.entryCta) {
+      const labels = Array.isArray(adapter.entryCta) ? adapter.entryCta : [adapter.entryCta]
+      const found = await page.evaluate(labels => {
+        const els = [...document.querySelectorAll('button, input[type=submit], [role=button], a.btn, a[class*=btn], a')]
+        const i = els.findIndex(el => {
+          const t = (el.innerText || el.value || '').trim().toLowerCase()
+          return !!t && t.length <= 60 && labels.some(l => t.includes(String(l).toLowerCase()))
+        })
+        return i < 0 ? null : { index: i, text: (els[i].innerText || els[i].value || '').trim() }
+      }, labels)
+      if (found) {
+        if (/sign in|log in|login|sign up|register|buy|purchase|pay|checkout|subscribe/i.test(found.text)) {
+          rec.verdict = 'BLOCKED_PAYWALL'
+          rec.reasons.push(`adapter 入口命中登录/付费按钮「${found.text}」，不点击`)
+          return rec
+        }
+        step(`adapter 入口按钮「${found.text}」`)
+        await page.evaluate(i => {
+          const els = [...document.querySelectorAll('button, input[type=submit], [role=button], a.btn, a[class*=btn], a')]
+          els[i]?.click()
+        }, found.index)
+        await page.waitForTimeout(Number(adapter.waitMs) || 3500)
+
+        const cap2 = await detectCaptcha(page, netLog)
+        if (cap2.length) {
+          rec.observed.captcha = cap2.join('+')
+          rec.verdict = 'BLOCKED_CAPTCHA'
+          rec.reasons.push('入口点击后出现验证码（' + cap2.join('+') + '），不绕过')
+          return rec
+        }
+        const pw2 = await detectPaywall(page)
+        if (pw2) {
+          rec.observed.paywall = pw2
+          rec.verdict = 'BLOCKED_PAYWALL'
+          rec.reasons.push('入口点击后进入付费流程：' + pw2)
+          return rec
+        }
+
+        ui = await inspect(page)
+        rec.observed.final_host = hostOf(page.url())
+        const entryShot = resolve(dir, '02-entry.png')
+        await page.screenshot({ path: entryShot, fullPage: false }).catch(() => {})
+        rec.evidence.screenshots.push('evidence/' + host + '/02-entry.png')
+        realFileInput = ui.fileInputs.length > 0
+        uploadZones = ui.dropzones.filter(d => d.visible && looksLikeUpload(d))
+        textSlot = ui.textareas.find(x => x.visible && !x.disabled)
+          || ui.textInputs.find(x => x.visible && !x.disabled && /prompt|describe|text|enter|type|write|idea/i.test(x.placeholder + x.name))
+          || ui.textInputs.find(x => x.visible && !x.disabled)
+          || null
+        editableSlot = ui.editables.find(e => e.visible) || null
+        plan = 'none'
+        if (realFileInput) plan = 'file'
+        else if (mediaCategory && uploadZones.length) plan = 'file'
+        else if (textSlot) plan = 'text'
+        else if (editableSlot) plan = 'editable'
+        else if (uploadZones.length) plan = 'file'
+        step(`入口后页面：${ui.fileInputs.length} 文件上传 · ${ui.textInputs.length} 文本框 · ${ui.buttons.length} 按钮（计划 ${plan}）`)
+      } else {
+        step('adapter 入口按钮未找到，按默认路径判定')
+      }
+    }
 
     if (plan === 'none') {
       rec.verdict = 'UNVERIFIED'
@@ -959,9 +1039,11 @@ async function main() {
   }
   const probe = JSON.parse(await readFile(PROBE, 'utf8'))
   const passed = probe.filter(x => x.verdict === 'PASS')
+  // skill 允许 MANUAL 继续实操（但不得写 VERIFIED）；只在显式 --only 时放行，批量仍只跑 PASS
+  const explicit = probe.filter(x => x.verdict === 'PASS' || x.verdict === 'MANUAL')
 
   let targets = arg('only')
-    ? passed.filter(x => x.host === arg('only'))
+    ? explicit.filter(x => x.host === arg('only'))
     : arg('pr')
       ? passed.filter(x => String(x.pr) === arg('pr'))
       : has('all')
@@ -972,7 +1054,7 @@ async function main() {
   if (!targets.length) { console.log('没有可跑的目标'); return }
 
   console.log(`待验证 ${targets.length} 个站点 · 单站预算 ${BUDGET_MS / 1000}s · 预计最长 ${Math.round(targets.length * BUDGET_MS / 60000)} 分钟`)
-  console.log('（目标取自 reports/evidence-probe.json 中 L2 判定 PASS 的记录）')
+  console.log('（目标取自 reports/evidence-probe.json；批量只跑 L2=PASS，--only 可显式复核 MANUAL）')
   if (CDP_URL) console.log(`（CDP 模式：连接 ${CDP_URL}，复用真实浏览器 profile）\n`)
   else console.log('')
 
@@ -984,7 +1066,7 @@ async function main() {
   const results = []
   for (const t of targets) {
     process.stdout.write(`[${results.length + 1}/${targets.length}] ${t.host.padEnd(30)} `)
-    const r = await tryTool(browser, { host: t.host, site: t.site, pr: t.pr, category: t.category })
+    const r = await tryTool(browser, { host: t.host, site: t.site, pr: t.pr, category: t.category, l2Verdict: t.verdict, l2Reasons: t.reasons })
     results.push(r)
     await writeFile(resolve(EVIDENCE_DIR, `${t.host}.json`), JSON.stringify(r, null, 2))
     const flag = { VERIFIED: '✅', PARTIAL: '🟡', UNVERIFIED: '⬜', FAILED: '⚠️', BLOCKED_CAPTCHA: '🔒', BLOCKED_PAYWALL: '💳', BLOCKED_LOGIN: '🔑', ERROR: '❌' }[r.verdict] || '?'
