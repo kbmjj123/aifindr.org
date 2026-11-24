@@ -1,6 +1,14 @@
 {
-  "generatedAt": "2026-11-24T15:38:29.960Z",
+  "generatedAt": "2026-11-24T15:49:42.897Z",
   "items": [
+    {
+      "name": "EveryGen AI",
+      "slug": "everygen-ai",
+      "category": "video",
+      "url": "https://kbmjj123.github.io/aifindr.org/listings/video/everygen-ai/",
+      "pricing": "freemium",
+      "submitterGithub": "VulcanFeynman"
+    },
     {
       "name": "MCP360",
       "slug": "mcp360-ai-productivity-tool",
