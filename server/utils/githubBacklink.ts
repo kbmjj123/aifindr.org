@@ -44,7 +44,7 @@ function escapeMarkdownText(value: string): string {
 }
 
 /** 只允许 http(s) 链接，避免把 javascript: 等协议写进公开页面 */
-function safeHttpUrl(raw: string | null | undefined): string | null {
+export function safeHttpUrl(raw: string | null | undefined): string | null {
   if (!raw) return null
   const value = raw.trim()
   if (!/^https?:\/\//i.test(value)) return null

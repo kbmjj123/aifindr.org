@@ -165,6 +165,8 @@ https://cdn.aifindr.org/tools/{category}/{slug}/
 
 不存在「GitHub PR → Action → D1 UPSERT」这条链路；提交只走在线表单。审核通过后由 `server/utils/githubBacklink.ts` 从 D1 工具数据生成 `docs/listings/[category]/[slug].md` 写回本仓库，GitHub Pages（源 `main/docs`）自动构建成 dofollow 收录页。
 
+**收录页批量补生成：** `POST /api/admin/backfill-listings` 遍历 `status=active` 且 `submitter_site` 为合法 http(s) 的工具（默认最多 100 条），逐条调用 `writeListingPage` 并回写 `tools.content_path`。默认 `dryRun=true` 只预览；确认无误后用 `{"dryRun":false,"limit":100}` 分批执行；`force=true` 可覆盖已有 `content_path`。失败逐条记录、不中断批次。用于修复历史工具（如早期审核时缺 token/缺 submitter_site）没有收录页的情况。GitHub Pages 的 `/listings/` 只是收录页，开发者文档首页 `docs/index.html` 本身不列工具。
+
 **PR 发布链路（本地流水线 → 一键发布）：** 老 PR 经 `aifindr-tool-intake` skill 产出草稿时，`submitter_github` 取自 L1 triage 的 `author`（GitHub login），`pr_number` / `pr_url` 取自 `--pr`。发布走 `POST /api/admin/publish-pr`：管理员鉴权 → 按 `users.username` 关联 `submitter_id`（不替用户建账号）→ `status='active'` 入库并写 PR 追溯列 → tool_tags → listing 页 → B-03/F-02 邮件 → PR 评论（三条 dofollow 链接）→ 最后 squash merge。评论/merge 依赖 `GITHUB_PR_TOKEN`（Issues:write + Contents:write），未配置或被分支保护拒绝时静默跳过、只记日志，不回滚 D1。手动后台新建也可传 `pr_number` / `pr_url` 追溯。没登录过站点的 PR 作者只有 `submitter_github`，贡献者页显示名字但收不到 B-03。旧库迁移用 `schema/migrate-tools-pr.sql`。**不恢复 GitHub webhook。**
 
 ---
