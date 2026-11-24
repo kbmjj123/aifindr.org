@@ -42,7 +42,7 @@ aifindr.org/
 ├── assets/css/                  # main.css（CSS 变量 / @theme）、markdown.css
 ├── utils/linkReplacer.ts
 ├── plugins/stats.server.ts
-├── data/                        # exchange-links.ts、submit-template.md
+├── data/                        # exchange-links.ts、tool-pages/
 ├── docs/                        # 邮件系统与历史设计资料
 ├── public/                      # favicon、manifest、ads.txt、验证文件
 ├── nuxt.config.ts
@@ -150,7 +150,7 @@ const { tools, total } = await get<ToolListResponse>('/api/tools', { query: { ca
 | 外链提交平台（后台） | `admin/submission-lists.get` / `.post` / `refresh.post` / `[slug].post`；`admin/submission-sites.get` / `.post` / `import.post` / `[slug].get` / `[slug].post`；`admin/submission-reports/review.post` |
 | 用户邮件 | `user/email.post`、`user/email/verify/[token].get` |
 | 定时任务 | `cron/daily-ops`、`cron/link-checker`、`cron/monthly-report`、`cron/newsletter` |
-| Webhook | `webhooks/github.post`、`webhooks/lemonsqueezy.post` |
+| Webhook | `webhooks/lemonsqueezy.post` |
 
 字段、错误码与响应形状以源码为准，`api-spec.yaml` 仅作参考草稿。
 

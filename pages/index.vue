@@ -6,7 +6,7 @@
       Discover <em>AI Tools</em><br />Built for Makers.
     </h1>
     <p class="hero-sub">
-      Open-source AI tool directory. Submit your tool, get 3 free dofollow backlinks.
+      Open-source AI tool directory. Submit your tool, get 3 permanent dofollow backlinks.
     </p>
     <!-- Hero search -->
     <div class="w-full">
@@ -102,7 +102,7 @@
       Get 3 Free Backlinks for Your Tool
     </h2>
     <p class="font-body text-[13px] mb-6" style="color: var(--color-text-muted)">
-      Submit your AI tool and get listed on GitHub (DA 100), aifindr.org, and your contributor page.
+      Submit your AI tool and get a permanent GitHub Pages listing, an aifindr.org tool page, and your contributor page — all with dofollow links.
     </p>
 
     <div class="flex flex-wrap justify-center gap-6 mb-6">
@@ -110,7 +110,7 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5">
           <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
         </svg>
-        github.com <span class="font-body text-[11px]" style="color: var(--color-text-muted)">DA 100</span>
+        GitHub Pages <span class="font-body text-[11px]" style="color: var(--color-text-muted)">Dofollow</span>
       </div>
       <div class="flex items-center gap-2 font-body text-[12px]" style="color: var(--color-text-secondary)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5">

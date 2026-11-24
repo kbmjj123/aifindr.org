@@ -37,6 +37,10 @@ interface ToolPayload {
   body?: string
   tags?: TagItem[]
   data_source?: string
+  submitter_github?: string   // PR 作者 GitHub login（外部贡献者归属）
+  submitter_site?: string     // 提交者网站（dofollow 反链来源）
+  pr_number?: number          // PR 发布来源编号
+  pr_url?: string             // PR 发布来源链接
 }
 
 export default defineEventHandler(async (event) => {
@@ -85,6 +89,10 @@ export default defineEventHandler(async (event) => {
     else if (Array.isArray(raw)) priceTiers = JSON.stringify(raw)
   }
   const bodyContent = String(body.body || '').trim()
+  const submitterGithub = String(body.submitter_github || '').trim()
+  const submitterSite   = String(body.submitter_site || '').trim()
+  const prNumber = body.pr_number != null && Number.isFinite(Number(body.pr_number)) ? Number(body.pr_number) : null
+  const prUrl = String(body.pr_url || '').trim() || null
   const priceStart  = Number(body.price_starting ?? 0)
   const hasFreeTrial = body.has_free_trial ? 1 : 0
   const platformsStr = Array.isArray(body.platforms)
@@ -147,17 +155,28 @@ export default defineEventHandler(async (event) => {
   // JWT payload 中的 sub 是用户 ID（来自 users 表）
   const adminUserId = payload.sub || null
 
+  // PR 作者归属：传了 submitter_github 时按 username 关联已有的 users 记录；
+  // 没登录过站点的 PR 作者只写 submitter_github（贡献者页仍显示），submitter_id 留空。
+  // 未传 submitter_github 时保持原有行为：归属当前管理员。
+  let ownerId = adminUserId
+  if (submitterGithub) {
+    const owner = await env.DB.prepare('SELECT id FROM users WHERE username = ?')
+      .bind(submitterGithub).first<{ id: number }>()
+    ownerId = owner?.id ?? null
+  }
+
   const insertResult = await env.DB.prepare(`
     INSERT INTO tools (
       slug, name, category, sub_category, website,
       pricing, price_starting, price_detail, price_tiers, has_free_trial, platforms,
       status, launched, meta_description, short_description, faq, logo, screenshots,
-      body, verified, editor_pick, data_source, submitter_id, submitted_at, updated_at
+      body, verified, editor_pick, data_source, submitter_id, submitter_github, submitter_site,
+      pr_number, pr_url, submitted_at, updated_at
     ) VALUES (
       ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?,
       'active', ?, ?, ?, ?, ?,
-      ?, ?, 1, 0, ?, ?, ?, ?
+      ?, ?, 1, 0, ?, ?, ?, ?, ?, ?, ?, ?
     )
   `).bind(
     slug,
@@ -179,7 +198,11 @@ export default defineEventHandler(async (event) => {
     screenshots || null,
     bodyContent || null,
     body.data_source || 'admin_intake',
-    adminUserId,
+    ownerId,
+    submitterGithub || null,
+    submitterSite || null,
+    prNumber,
+    prUrl,
     now,
     now,
   ).run()

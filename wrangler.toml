@@ -30,6 +30,7 @@ API_BASE      = "https://aifindr.org"
 R2_PUBLIC_URL = "https://cdn.aifindr.org"
 GITHUB_CLIENT_ID   = "Ov23lioNhw0LD6MXeMFJ"
 ADMIN_GITHUB_IDS   = "1559584,284824170"
+GITHUB_PAGES_BASE  = "https://kbmjj123.github.io/aifindr.org"
 
 [triggers]
 # Workers Free 账户上限 5 个 cron trigger；三个每日批量巡检合并到 03:00 顺序执行。

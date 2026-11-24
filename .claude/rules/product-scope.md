@@ -139,7 +139,7 @@ https://cdn.aifindr.org/tools/{category}/{slug}/
 | 内容 | `blog/*`、`contributors*`、`__sitemap__/urls.get`、`generate.post` |
 | 用户邮件 | `user/email.post`、`user/email/verify/[token].get` |
 | 定时任务 | `cron/daily-ops`、`cron/link-checker`、`cron/monthly-report`、`cron/newsletter` |
-| Webhook | `webhooks/github.post`、`webhooks/lemonsqueezy.post` |
+| Webhook | `webhooks/lemonsqueezy.post` |
 
 `/api/tools` 查询参数：`category`、`sub_category`、`pricing`（逗号分隔）、`platform`、`tags`（逗号分隔）、`sort=latest|trending|featured`、`page`、`pageSize`（上限 100）；实现里强制 `t.status = 'active'`。
 
@@ -152,10 +152,10 @@ https://cdn.aifindr.org/tools/{category}/{slug}/
 ```
 写入：
   在线表单 → POST /api/submit → Turnstile 校验 → D1 INSERT(pending) → 邮件通知管理员
-  管理员审核 → POST /api/admin/review → D1 UPDATE(active)
+  管理员审核 → POST /api/admin/review → D1 UPDATE(active) → 生成 docs/listings/ 收录页 → GitHub Pages 自动构建
   图片上传 → /api/upload → R2(CDN) → URL 写入 tools.logo / screenshots
   定时任务 → cron/* → 邮件、反链检查、月报、newsletter
-  Webhook → GitHub / Lemon Squeezy 事件 → 对应处理逻辑
+  Webhook → Lemon Squeezy 支付事件 → 对应处理逻辑
 
 读取：
   边缘 SSR 页面 → useApi() → Nitro handler → D1 SQL / R2
@@ -163,7 +163,9 @@ https://cdn.aifindr.org/tools/{category}/{slug}/
   sitemap → /api/__sitemap__/urls
 ```
 
-不存在「GitHub PR → Action → D1 UPSERT → Pages 增量构建」这条链路：`.github/workflows/sync-to-d1.yml` 与 `pnpm run sync-d1` 都是残留（见 `CLAUDE.md` §9）。
+不存在「GitHub PR → Action → D1 UPSERT」这条链路；提交只走在线表单。审核通过后由 `server/utils/githubBacklink.ts` 从 D1 工具数据生成 `docs/listings/[category]/[slug].md` 写回本仓库，GitHub Pages（源 `main/docs`）自动构建成 dofollow 收录页。
+
+**PR 发布链路（本地流水线 → 一键发布）：** 老 PR 经 `aifindr-tool-intake` skill 产出草稿时，`submitter_github` 取自 L1 triage 的 `author`（GitHub login），`pr_number` / `pr_url` 取自 `--pr`。发布走 `POST /api/admin/publish-pr`：管理员鉴权 → 按 `users.username` 关联 `submitter_id`（不替用户建账号）→ `status='active'` 入库并写 PR 追溯列 → tool_tags → listing 页 → B-03/F-02 邮件 → PR 评论（三条 dofollow 链接）→ 最后 squash merge。评论/merge 依赖 `GITHUB_PR_TOKEN`（Issues:write + Contents:write），未配置或被分支保护拒绝时静默跳过、只记日志，不回滚 D1。手动后台新建也可传 `pr_number` / `pr_url` 追溯。没登录过站点的 PR 作者只有 `submitter_github`，贡献者页显示名字但收不到 B-03。旧库迁移用 `schema/migrate-tools-pr.sql`。**不恢复 GitHub webhook。**
 
 ---
 

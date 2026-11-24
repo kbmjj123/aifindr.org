@@ -108,7 +108,7 @@ curl -X POST 'http://localhost:3000/api/submit' \
 ```
 
 > Turnstile 测试 token `1x00000000000000000000` 在本地始终通过验证。
-> `pnpm run sync-d1` 指向已删除的 `scripts/sync-to-d1.js`，**不要执行**。
+> 提交只走在线表单；早期 `sync-d1` / GitHub PR 流程已移除。
 
 ---
 
@@ -122,7 +122,8 @@ wrangler secret put CRON_SECRET            # /api/cron/* HTTP 入口鉴权；sch
 wrangler secret put GITHUB_CLIENT_SECRET
 wrangler secret put JWT_SECRET
 wrangler secret put RESEND_API_KEY
-wrangler secret put GITHUB_WEBHOOK_SECRET
+wrangler secret put GITHUB_BACKLINK_TOKEN   # 生成 GitHub Pages 收录页（需 contents: write）
+wrangler secret put GITHUB_PR_TOKEN         # PR 发布：评论（Issues: write）+ squash merge（Contents: write），不配置则跳过这两步
 wrangler secret put LEMONSQUEEZY_WEBHOOK_SECRET
 wrangler secret put SITE_URL            # 可选，缺省回退到 API_BASE / https://aifindr.org
 wrangler secret put OPENPAGERANK_API_KEY   # 可选，配置后每日自动刷新 page_rank（不配置则跳过）
@@ -248,7 +249,7 @@ Worker 不能在请求中通过公网自调用自己。必须用 `useApi()`（SS
 | `GITHUB_CLIENT_SECRET` | OAuth Client Secret | secret |
 | `JWT_SECRET` | JWT 签名 | secret |
 | `RESEND_API_KEY` | 邮件服务 | secret |
-| `GITHUB_WEBHOOK_SECRET` | GitHub webhook 验签 | secret |
+| `GITHUB_BACKLINK_TOKEN` | 生成 GitHub Pages 收录页（contents: write） | secret |
 | `LEMONSQUEEZY_WEBHOOK_SECRET` | 支付 webhook 验签 | secret |
 
 权威清单是 `server/utils/env.ts` 的 `CloudflareEnv` 接口；`.env.example` 只包含 R2 图片迁移脚本需要的变量。
@@ -268,4 +269,3 @@ Worker 不能在请求中通过公网自调用自己。必须用 `useApi()`（SS
 | `composables/useApi.ts` | 前端请求封装（SSR/CSR 分流） | 是 |
 | `.dev.vars` / `.dev.vars.local` | 本地密钥 | 否（.gitignore） |
 | `wrangler.local.toml` | 本地部署覆盖配置 | 否（.gitignore） |
-| `.github/workflows/sync-to-d1.yml` | 早期 Markdown → D1 同步流程 | 是，但已失效（见 `CLAUDE.md` §9） |

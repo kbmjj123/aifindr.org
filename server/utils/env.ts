@@ -12,12 +12,14 @@ export interface CloudflareEnv {
   JWT_SECRET: string
   ADMIN_GITHUB_IDS: string
   RESEND_API_KEY: string
-  GITHUB_WEBHOOK_SECRET: string
   LEMONSQUEEZY_WEBHOOK_SECRET: string
   SITE_URL: string
   API_BASE: string
   OPENPAGERANK_API_KEY?: string
   CRON_SECRET?: string
+  GITHUB_BACKLINK_TOKEN?: string
+  GITHUB_PAGES_BASE?: string
+  GITHUB_PR_TOKEN?: string    // PR 评论 + squash merge（Issues:write + Contents:write），独立于 backlink token
 }
 
 export function getEnv(event: H3Event): CloudflareEnv {

@@ -315,7 +315,9 @@ POST  /api/webhooks/lemonsqueezy      接收 LS 支付 Webhook（v1.3）
 
 **B-01 内容要点：** 工具名称 + 网站 URL + 预计审核时间（3-7 工作日）+ 付费加速入口 + 提交编号。
 
-**B-03 内容要点（核心）：** 恭喜上线 + 三条外链逐一列出（github.com DA 100 / aifindr.org 详情页 / 贡献者页）+ 引导分享 + 引导查看 Featured 置顶。
+**B-03 内容要点（核心）：** 恭喜上线 + 三条 dofollow 外链逐一列出（GitHub Pages 收录页 / aifindr.org 详情页 / 贡献者页）+ 引导分享 + 引导查看 Featured 置顶。
+
+**B-03 收件人来源：** 审核端点先按 `tools.submitter_id` 查 `users`，再按 `tools.submitter_github` 查 `users`；PR 来源的工具只有 `submitter_github` 时，审核通过会按 `users.username` 尝试补充 `submitter_id`，命中同一套收件人逻辑。`POST /api/admin/publish-pr` 在入库时即完成同样的 username 关联，随后发 B-03。邮箱只取 `users.contact_email`（已验证）或 GitHub 公开邮箱（排除 `noreply.github.com`）；提交表单里填的 Contact Email 不落库，仅用于 B-01。因此**没登录过站点的 PR 作者收不到 B-03**，但会在其 PR 下收到评论形式的三条链接；发邮件仍需本人登录并在 `/settings` 设置验证过的联系邮箱。
 
 **B-04 内容要点：** 拒绝原因（info_incomplete / not_qualified / duplicate / other）+ 修改建议 + 重新提交入口。
 

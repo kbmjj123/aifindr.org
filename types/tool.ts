@@ -1,5 +1,5 @@
 export type ToolPricing = 'free' | 'freemium' | 'paid'
-export type ToolStatus = 'active' | 'beta' | 'discontinued' | 'pending'
+export type ToolStatus = 'active' | 'beta' | 'discontinued' | 'pending' | 'rejected' | 'needs_info'
 export type ToolPlatform = 'web' | 'desktop' | 'mobile' | 'api' | 'discord'
 export type ToolCategory =
   | 'image' | 'writing' | 'video' | 'audio' | 'code'
@@ -55,7 +55,11 @@ export interface Tool {
   view_count?: number
   submitter_site?: string
   submitter_github?: string
+  submitter_id?: number
+  content_path?: string       // 生成的 GitHub Pages 收录页路径
   data_source?: string
+  pr_number?: number          // PR 发布来源：GitHub PR 编号
+  pr_url?: string             // PR 发布来源：GitHub PR 链接
   images?: ToolImage[]
   videos?: ToolVideo[]
   // Nuxt Content 字段

@@ -32,13 +32,15 @@ CREATE TABLE IF NOT EXISTS tools (
   view_count       INTEGER DEFAULT 0,
   submitter_site   TEXT,
   submitter_github TEXT,
-  content_path     TEXT,
+  content_path     TEXT,       -- 生成的 GitHub Pages 收录页路径（docs/listings/<category>/<slug>.md）
   body             TEXT,
   submitter_id     INTEGER REFERENCES users(id),
   reject_reason    TEXT,       -- 拒绝原因
   reviewer_note    TEXT,       -- 管理员备注
   reviewed_at      TEXT,       -- 审核时间
-  data_source      TEXT        -- 数据来源（futurepedia/producthunt/user_submit等）
+  data_source      TEXT,       -- 数据来源（futurepedia/producthunt/user_submit等）
+  pr_number        INTEGER,    -- PR 发布来源：GitHub PR 编号
+  pr_url           TEXT        -- PR 发布来源：GitHub PR 链接
 );
 
 CREATE INDEX IF NOT EXISTS idx_tools_category    ON tools(category);
