@@ -133,7 +133,12 @@ async function putRepoFile(
       }),
     })
     if (!response.ok) {
-      logger.error('githubBacklink', 'Failed to write file', { path, status: response.status })
+      const body = await response.text().catch(() => '')
+      logger.error('githubBacklink', 'Failed to write file', {
+        path,
+        status: response.status,
+        body: body.slice(0, 300),
+      })
       return false
     }
     logger.info('githubBacklink', 'File written', { path })
