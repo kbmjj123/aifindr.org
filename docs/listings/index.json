@@ -1,6 +1,14 @@
 {
-  "generatedAt": "2026-11-24T15:50:10.148Z",
+  "generatedAt": "2026-11-24T15:50:26.172Z",
   "items": [
+    {
+      "name": "All of Us",
+      "slug": "all-of-us-ai-image-generator",
+      "category": "image",
+      "url": "https://kbmjj123.github.io/aifindr.org/listings/image/all-of-us-ai-image-generator/",
+      "pricing": "freemium",
+      "submitterGithub": "jacobGor123"
+    },
     {
       "name": "EveryGen AI",
       "slug": "everygen-ai",
