@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-11-24T15:33:08.363Z",
+  "items": [
+    {
+      "name": "MCP360",
+      "slug": "mcp360-ai-productivity-tool",
+      "category": "productivity",
+      "url": "https://kbmjj123.github.io/aifindr.org/listings/productivity/mcp360-ai-productivity-tool/",
+      "pricing": "free",
+      "submitterGithub": "pixelpushlab"
+    },
+    {
+      "name": "Memfect",
+      "slug": "memfect-ai-productivity-tool",
+      "category": "productivity",
+      "url": "https://kbmjj123.github.io/aifindr.org/listings/productivity/memfect-ai-productivity-tool/",
+      "pricing": "free",
+      "submitterGithub": "fastproductsofficial"
+    },
+    {
+      "name": "Remix the Trend Free Background Remover",
+      "slug": "remix-the-trend-free-background-remover-ai-image-generator",
+      "category": "image",
+      "url": "https://kbmjj123.github.io/aifindr.org/listings/image/remix-the-trend-free-background-remover-ai-image-generator/",
+      "pricing": "free",
+      "submitterGithub": "ezcat207"
+    }
+  ]
+}
