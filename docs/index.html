@@ -259,6 +259,7 @@
     </a>
     <div class="nav-links">
       <a href="#quickstart">Quick Start</a>
+      <a href="#listings">Listings</a>
       <a href="#structure">Structure</a>
       <a href="#contribute">Contribute</a>
       <a href="https://github.com/kbmjj123/aifindr.org" target="_blank">GitHub</a>
@@ -291,6 +292,25 @@
       <span class="tag">Cloudflare D1 / R2</span>
       <span class="tag">TypeScript</span>
       <span class="tag">pnpm</span>
+    </div>
+  </section>
+
+  <!-- PUBLISHED LISTINGS -->
+  <section class="section" id="listings">
+    <div class="section-label">Backlinks</div>
+    <h2>Published Listings</h2>
+    <p class="section-desc">
+      Approved tools get a permanent dofollow listing page on this GitHub Pages site.
+      These pages are generated from D1 tool data and linked back to each submitter's website.
+    </p>
+    <div class="contrib-grid" id="listings-grid">
+      <div class="contrib-card">
+        <div class="contrib-card-title">MCP360</div>
+        <p class="contrib-card-desc">Productivity · free · submitted by pixelpushlab.</p>
+        <a href="https://kbmjj123.github.io/aifindr.org/listings/productivity/mcp360-ai-productivity-tool/" class="btn btn-ghost" style="margin-top:16px;font-size:12px;">
+          View listing →
+        </a>
+      </div>
     </div>
   </section>
 
@@ -494,6 +514,44 @@ wrangler deploy
     </div>
   </div>
 </footer>
+
+<script>
+(function () {
+  var grid = document.getElementById('listings-grid');
+  if (!grid) return;
+  // 同源 fetch：项目站点根为 /aifindr.org/，index.json 与本页面同目录树的 listings/ 下
+  fetch('listings/index.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error('index not found'); return r.json(); })
+    .then(function (data) {
+      var items = (data && Array.isArray(data.items)) ? data.items : [];
+      if (!items.length) return; // 索引为空时保留兜底卡片
+      grid.innerHTML = '';
+      items.forEach(function (item) {
+        var card = document.createElement('div');
+        card.className = 'contrib-card';
+        var title = document.createElement('div');
+        title.className = 'contrib-card-title';
+        title.textContent = item.name || item.slug || 'Untitled';
+        var desc = document.createElement('p');
+        desc.className = 'contrib-card-desc';
+        var parts = [item.category || 'tool'];
+        if (item.pricing) parts.push(item.pricing);
+        if (item.submitterGithub) parts.push('submitted by ' + item.submitterGithub);
+        desc.textContent = parts.join(' · ') + '.';
+        var link = document.createElement('a');
+        link.className = 'btn btn-ghost';
+        link.setAttribute('style', 'margin-top:16px;font-size:12px;');
+        link.href = item.url || '#';
+        link.textContent = 'View listing →';
+        card.appendChild(title);
+        card.appendChild(desc);
+        card.appendChild(link);
+        grid.appendChild(card);
+      });
+    })
+    .catch(function () { /* 索引不可用时保留静态兜底，不影响文档页 */ });
+})();
+</script>
 
 </body>
 </html>

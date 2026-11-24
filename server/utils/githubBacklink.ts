@@ -99,6 +99,54 @@ function utf8ToBase64(input: string): string {
   return btoa(binary)
 }
 
+async function putRepoFile(
+  token: string,
+  path: string,
+  content: string,
+  message: string,
+): Promise<boolean> {
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'User-Agent': 'aifindr-backlink-bot',
+  }
+  try {
+    let sha: string | undefined
+    const current = await fetch(`${API_BASE}/repos/${REPO}/contents/${path}?ref=${BRANCH}`, { headers })
+    if (current.ok) {
+      const data = await current.json() as { sha?: string }
+      sha = data.sha
+    } else if (current.status !== 404) {
+      logger.warn('githubBacklink', 'Failed to check existing file', { path, status: current.status })
+      return false
+    }
+
+    const response = await fetch(`${API_BASE}/repos/${REPO}/contents/${path}`, {
+      method: 'PUT',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message,
+        content: utf8ToBase64(content),
+        branch: BRANCH,
+        ...(sha ? { sha } : {}),
+      }),
+    })
+    if (!response.ok) {
+      logger.error('githubBacklink', 'Failed to write file', { path, status: response.status })
+      return false
+    }
+    logger.info('githubBacklink', 'File written', { path })
+    return true
+  } catch (error) {
+    logger.error('githubBacklink', 'Error writing file', {
+      path,
+      message: error instanceof Error ? error.message : String(error),
+    })
+    return false
+  }
+}
+
 /**
  * 生成/更新一条工具收录页到本仓库的 docs/listings/。
  * 失败只记日志、不抛出——审核流程不应因 GitHub API 故障而中断。
@@ -115,47 +163,60 @@ export async function writeListingPage(
   if (!safeHttpUrl(input.submitterSite)) return null
 
   const path = input.existingPath || listingPagePath(input.category, input.slug)
-  const headers: Record<string, string> = {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    'User-Agent': 'aifindr-backlink-bot',
-  }
+  const ok = await putRepoFile(
+    token,
+    path,
+    buildMarkdown(input),
+    `chore: ${input.existingPath ? 'update' : 'add'} listing page for ${input.slug}`,
+  )
+  if (!ok) return null
+  return { path, url: pagesListingUrl(env, input.category, input.slug) }
+}
 
-  try {
-    let sha: string | undefined
-    const current = await fetch(`${API_BASE}/repos/${REPO}/contents/${path}?ref=${BRANCH}`, { headers })
-    if (current.ok) {
-      const data = await current.json() as { sha?: string }
-      sha = data.sha
-    } else if (current.status !== 404) {
-      logger.warn('githubBacklink', 'Failed to check existing listing file', { path, status: current.status })
-      return null
-    }
+/** 收录页索引文件路径（GitHub Pages 静态站点可同源 fetch） */
+export const LISTINGS_INDEX_PATH = 'docs/listings/index.json'
 
-    const response = await fetch(`${API_BASE}/repos/${REPO}/contents/${path}`, {
-      method: 'PUT',
-      headers: { ...headers, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: `chore: ${sha ? 'update' : 'add'} listing page for ${input.slug}`,
-        content: utf8ToBase64(buildMarkdown(input)),
-        branch: BRANCH,
-        ...(sha ? { sha } : {}),
-      }),
-    })
+interface ListingIndexItem {
+  name: string
+  slug: string
+  category: string
+  url: string
+  pricing: string | null
+  submitterGithub: string | null
+}
 
-    if (!response.ok) {
-      logger.error('githubBacklink', 'Failed to write listing file', { path, status: response.status })
-      return null
-    }
+/**
+ * 重建 docs/listings/index.json：从 D1 汇总所有已生成收录页的工具。
+ * 供 GitHub Pages 开发者文档首页动态渲染 Published Listings。
+ * 失败只记日志、不抛出；token 未配置时静默跳过。
+ */
+export async function writeListingsIndex(env: CloudflareEnv): Promise<boolean> {
+  const token = env.GITHUB_BACKLINK_TOKEN
+  if (!token) return false
 
-    logger.info('githubBacklink', 'Listing page written', { path })
-    return { path, url: pagesListingUrl(env, input.category, input.slug) }
-  } catch (error) {
-    logger.error('githubBacklink', 'Error writing listing file', {
-      path,
-      message: error instanceof Error ? error.message : String(error),
-    })
-    return null
-  }
+  const { results } = await env.DB.prepare(`
+    SELECT name, slug, category, pricing, submitter_github, content_path
+    FROM tools
+    WHERE status = 'active' AND content_path IS NOT NULL AND content_path != ''
+    ORDER BY name ASC
+  `).all<{
+    name: string; slug: string; category: string
+    pricing: string | null; submitter_github: string | null; content_path: string
+  }>()
+
+  const items: ListingIndexItem[] = results.map(row => ({
+    name: row.name,
+    slug: row.slug,
+    category: row.category,
+    url: pagesListingUrl(env, row.category, row.slug),
+    pricing: row.pricing,
+    submitterGithub: row.submitter_github,
+  }))
+
+  return putRepoFile(
+    token,
+    LISTINGS_INDEX_PATH,
+    `${JSON.stringify({ generatedAt: new Date().toISOString(), items }, null, 2)}\n`,
+    `chore: rebuild listings index (${items.length} items)`,
+  )
 }

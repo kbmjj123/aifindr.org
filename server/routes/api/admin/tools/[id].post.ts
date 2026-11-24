@@ -1,7 +1,7 @@
 import { createError, getRouterParam, readBody } from 'h3'
 import { getEnv } from '~/server/utils/env'
 import { verifyAdmin } from '~/server/utils/auth'
-import { writeListingPage } from '~/server/utils/githubBacklink'
+import { writeListingPage, writeListingsIndex } from '~/server/utils/githubBacklink'
 import { CATEGORIES } from '~/types/category'
 
 const LISTING_FIELDS: (keyof UpdatePayload)[] = [
@@ -151,6 +151,7 @@ export default defineEventHandler(async (event) => {
       if (result && result.path !== existing.content_path) {
         await env.DB.prepare('UPDATE tools SET content_path = ? WHERE id = ?').bind(result.path, id).run()
       }
+      await writeListingsIndex(env)
     }
   }
 

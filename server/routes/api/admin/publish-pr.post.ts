@@ -3,7 +3,7 @@ import { getEnv, siteUrl } from '~/server/utils/env'
 import { verifyAdmin } from '~/server/utils/auth'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
 import { notifySearchEngines } from '~/server/utils/seo'
-import { writeListingPage, pagesListingUrl } from '~/server/utils/githubBacklink'
+import { writeListingPage, pagesListingUrl, writeListingsIndex } from '~/server/utils/githubBacklink'
 import { postPrComment, mergePr } from '~/server/utils/githubPr'
 import { VALID_SUBCATEGORY_VALUES, VALID_TAG_VALUES } from '~/types/category'
 import type { UserRecord } from '~/server/utils/jwt'
@@ -171,6 +171,7 @@ export default defineEventHandler(async (event) => {
     listingUrl = listing.url
     await env.DB.prepare('UPDATE tools SET content_path = ? WHERE id = ?').bind(listing.path, toolId).run()
   }
+  await writeListingsIndex(env)
 
   const detailUrl = siteUrl(env, `/tools/${category}/${slug}`)
   const contributorUrl = submitterGithub

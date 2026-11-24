@@ -1,7 +1,7 @@
 import { createError, readBody } from 'h3'
 import { getEnv } from '~/server/utils/env'
 import { verifyAdmin } from '~/server/utils/auth'
-import { writeListingPage, safeHttpUrl } from '~/server/utils/githubBacklink'
+import { writeListingPage, writeListingsIndex, safeHttpUrl } from '~/server/utils/githubBacklink'
 
 interface BackfillPayload {
   dryRun?: boolean       // 默认 true：只预览不写入
@@ -112,6 +112,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (!dryRun && report.written > 0) {
+    await writeListingsIndex(env)
     await env.CACHE.delete('stats').catch(() => {})
     await env.CACHE.delete('sitemap-xml').catch(() => {})
     await env.CACHE.delete('contributors').catch(() => {})

@@ -3,7 +3,7 @@ import { getEnv, siteUrl } from '~/server/utils/env'
 import { verifyAdmin } from '~/server/utils/auth'
 import { getNotifyEmail, sendEmail } from '~/server/utils/email'
 import { notifySearchEngines } from '~/server/utils/seo'
-import { writeListingPage, pagesListingUrl } from '~/server/utils/githubBacklink'
+import { writeListingPage, pagesListingUrl, writeListingsIndex } from '~/server/utils/githubBacklink'
 import type { ListingPageResult } from '~/server/utils/githubBacklink'
 import type { UserRecord } from '~/server/utils/jwt'
 
@@ -95,6 +95,7 @@ export default defineEventHandler(async (event) => {
     if (listing) {
       await env.DB.prepare('UPDATE tools SET content_path = ? WHERE id = ?').bind(listing.path, toolId).run()
     }
+    await writeListingsIndex(env)
   }
 
   if (submitterEmail) {
