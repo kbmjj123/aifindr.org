@@ -123,7 +123,7 @@ aifindr.org/
 | 提交与上传 | `submit.post`、`upload.post`、`upload/sign.post`、`admin/upload-from-url.post`、`file/[...key].get` |
 | 统计 | `stats.get`、`click/[id].post`、`view/[id].post` |
 | 认证 | `auth/github.get`、`auth/callback.get`、`auth/me.get`、`auth/dev-login.get` |
-| 管理后台 | `admin/pending.get`、`admin/review.post`、`admin/publish-pr.post`（PR 工具一键发布：active 入库 + listing + B-03/F-02 + PR 评论 + squash merge）、`admin/tools/*`、`admin/posts/*`、`admin/users.get`、`admin/log.get`、`admin/feature.post`、`admin/broadcast.post` |
+| 管理后台 | `admin/pending.get`、`admin/review.post`、`admin/publish-pr.post`（PR 工具一键发布：active 入库 + listing + B-03/F-02 + PR 评论 + squash merge）、`admin/backfill-listings.post`（批量补生成收录页，默认 dry-run）、`admin/tools/*`、`admin/posts/*`、`admin/users.get`、`admin/log.get`、`admin/feature.post`、`admin/broadcast.post` |
 | 内容 | `blog/*`、`contributors*`、`__sitemap__/urls.get`、`generate.post` |
 | 外链提交平台（公开） | `submission-sites/index.get`、`submission-sites/[slug].get`、`submission-sites/suggest.post`、`submission-lists/index.get`、`submission-lists/[slug].get`（不提供数据集导出端点） |
 | 外链提交平台（后台） | `admin/submission-lists.get` / `.post`（新建）/ `refresh.post` / `[slug].post`（策展）、`admin/submission-sites.get` / `.post`（新增）/ `import.post`（批量）/ `[slug].get` / `[slug].post`（编辑补齐）、`admin/submission-reports/review.post` |

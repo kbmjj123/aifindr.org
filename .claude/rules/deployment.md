@@ -122,7 +122,7 @@ wrangler secret put CRON_SECRET            # /api/cron/* HTTP 入口鉴权；sch
 wrangler secret put GITHUB_CLIENT_SECRET
 wrangler secret put JWT_SECRET
 wrangler secret put RESEND_API_KEY
-wrangler secret put GITHUB_BACKLINK_TOKEN   # 生成 GitHub Pages 收录页（需 contents: write）
+wrangler secret put GITHUB_BACKLINK_TOKEN   # 生成 GitHub Pages 收录页（需 contents: write）；未配置时审核/批量补生成都会静默跳过
 wrangler secret put GITHUB_PR_TOKEN         # PR 发布：评论（Issues: write）+ squash merge（Contents: write），不配置则跳过这两步
 wrangler secret put LEMONSQUEEZY_WEBHOOK_SECRET
 wrangler secret put SITE_URL            # 可选，缺省回退到 API_BASE / https://aifindr.org
