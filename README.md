@@ -73,7 +73,7 @@ Public values live in `wrangler.toml` under `[vars]`:
 | `GITHUB_CLIENT_ID` | GitHub OAuth app client ID |
 | `ADMIN_GITHUB_IDS` | Comma-separated GitHub IDs allowed into `/admin` |
 
-Secrets are set with `wrangler secret put <NAME>`: `TURNSTILE_SECRET`, `GITHUB_CLIENT_SECRET`, `JWT_SECRET`, `RESEND_API_KEY`, `GITHUB_BACKLINK_TOKEN`, `LEMONSQUEEZY_WEBHOOK_SECRET`, `SITE_URL`. The authoritative list is the `CloudflareEnv` interface in `server/utils/env.ts`.
+Secrets are set with `wrangler secret put <NAME>`: `TURNSTILE_SECRET`, `GITHUB_CLIENT_SECRET`, `JWT_SECRET`, `RESEND_API_KEY`, `GITHUB_BACKLINK_TOKEN`, `GITHUB_PR_TOKEN` (PR comment + squash merge; optional — publishing still works without it), `LEMONSQUEEZY_WEBHOOK_SECRET`, `SITE_URL`. The authoritative list is the `CloudflareEnv` interface in `server/utils/env.ts`.
 
 ### Database
 
@@ -182,6 +182,7 @@ The generated `schema/seed-submission-sites.sql` is committed, so deploying does
 ## Known gaps
 
 - The GitHub Pages listing is generated into `docs/listings/[category]/[slug].md` on approval; it requires the `GITHUB_BACKLINK_TOKEN` secret. Submissions go through the online form only.
+- Legacy PRs are enriched locally with the `aifindr-tool-intake` skill and published through `POST /api/admin/publish-pr` (admin-only): active insert + PR traceability (`pr_number`/`pr_url`) + listing page + B-03/F-02 emails + a PR comment with the three backlinks + squash merge. Set `GITHUB_PR_TOKEN` (Issues:write + Contents:write) for the comment/merge steps; without it those steps are skipped but publishing still succeeds. Migrate older databases with `schema/migrate-tools-pr.sql`.
 
 ## Contributing
 

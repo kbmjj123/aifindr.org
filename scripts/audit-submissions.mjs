@@ -13,8 +13,10 @@
 //
 //   单工具模式（skill L1 入口，跳过 PR 抓取）：
 //   node scripts/audit-submissions.mjs --domain=example.com --name="Example" \
-//     --website=https://example.com --category=image --pricing=freemium --desc="..."
+//     --website=https://example.com --category=image --pricing=freemium --desc="..." \
+//     --author=github-login --pr=123
 //   产出会合并进现有 reports/submissions-triage.json，不覆盖存量 PR 记录。
+//   --author / --pr 为 PR 提交者 GitHub login 与 PR 编号；PR 模式下自动取自 PR，无需手填。
 //
 // 产出：
 //   reports/submissions-triage.json  机器可读，供后续流水线消费
@@ -41,6 +43,8 @@ const SINGLE_WEBSITE = arg('website')
 const SINGLE_CATEGORY = arg('category')
 const SINGLE_PRICING = arg('pricing')
 const SINGLE_DESC = arg('desc')
+const SINGLE_AUTHOR = arg('author')   // PR 作者 GitHub login，草稿 frontmatter 的 submitter_github 来源
+const SINGLE_PR = arg('pr')           // PR 编号，草稿 frontmatter 的 pr_number / pr_url 来源
 const TRIAGE_FILE = resolve(ROOT, 'reports/submissions-triage.json')
 
 // ── 规则配置 ────────────────────────────────────────────────
@@ -222,11 +226,13 @@ async function main() {
       `description: "${SINGLE_DESC || ''}"`,
       `pricing: "${SINGLE_PRICING || 'freemium'}"`,
       SINGLE_CATEGORY ? `category: "${SINGLE_CATEGORY}"` : '',
+      SINGLE_AUTHOR ? `submitter_github: "${SINGLE_AUTHOR}"` : '',
+      SINGLE_PR ? `pr_number: "${SINGLE_PR}"` : '',
       '---',
       '',
     ].filter(Boolean).join('\n')
     const path = `content/tools/${SINGLE_CATEGORY || 'other'}/${DOMAIN}.md`
-    const rec = { pr: key, author: '', created: new Date().toISOString().slice(0, 10),
+    const rec = { pr: key, author: SINGLE_AUTHOR, created: new Date().toISOString().slice(0, 10),
       title: SINGLE_NAME || DOMAIN, path, body: fm }
     cache[key] = rec
     drafts = [rec]

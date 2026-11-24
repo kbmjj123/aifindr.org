@@ -38,7 +38,9 @@ CREATE TABLE IF NOT EXISTS tools (
   reject_reason    TEXT,       -- 拒绝原因
   reviewer_note    TEXT,       -- 管理员备注
   reviewed_at      TEXT,       -- 审核时间
-  data_source      TEXT        -- 数据来源（futurepedia/producthunt/user_submit等）
+  data_source      TEXT,       -- 数据来源（futurepedia/producthunt/user_submit等）
+  pr_number        INTEGER,    -- PR 发布来源：GitHub PR 编号
+  pr_url           TEXT        -- PR 发布来源：GitHub PR 链接
 );
 
 CREATE INDEX IF NOT EXISTS idx_tools_category    ON tools(category);

@@ -18,6 +18,7 @@ export interface CloudflareEnv {
   OPENPAGERANK_API_KEY?: string
   GITHUB_BACKLINK_TOKEN?: string
   GITHUB_PAGES_BASE?: string
+  GITHUB_PR_TOKEN?: string    // PR 评论 + squash merge（Issues:write + Contents:write），独立于 backlink token
 }
 
 export function getEnv(event: H3Event): CloudflareEnv {

@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
   const toolName = String(tool.name || '')
   const toolSlug = String(tool.slug || '')
   const toolCategory = String(tool.category || '')
-  const submitterId = tool.submitter_id as number | null
+  let submitterId = tool.submitter_id as number | null
   const submitterGithub = String(tool.submitter_github || '')
 
   let submitterEmail: string | null = null
@@ -64,6 +64,19 @@ export default defineEventHandler(async (event) => {
   if (!submitterEmail && submitterGithub) {
     const ghUser = await env.DB.prepare('SELECT * FROM users WHERE username = ?').bind(submitterGithub).first<UserRecord>()
     submitterEmail = getNotifyEmail(ghUser)
+  }
+
+  // PR 作者归属：工具只有 submitter_github、没有 submitter_id 时，按 username 关联已有账号。
+  // 关联成功则回填 submitter_id，让 B-03 邮件走完整链路；没登录过站点则只保留 submitter_github。
+  if (!submitterId && submitterGithub) {
+    const matched = await env.DB.prepare('SELECT id FROM users WHERE username = ?')
+      .bind(submitterGithub).first<{ id: number }>()
+    if (matched) {
+      await env.DB.prepare('UPDATE tools SET submitter_id = ? WHERE id = ?').bind(matched.id, toolId).run()
+      submitterId = matched.id   // F-02 排除当前提交者时使用关联后的 id
+      const linkedUser = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(matched.id).first<UserRecord>()
+      if (!submitterEmail) submitterEmail = getNotifyEmail(linkedUser)
+    }
   }
 
   // 生成 GitHub Pages 收录页并回写路径（与是否有邮箱无关；失败不影响审核）

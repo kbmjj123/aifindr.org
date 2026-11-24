@@ -16,6 +16,9 @@ meta_description: "<≤150 字符，含核心痛点词>"
 status: "pending"
 data_source: "evidence_probe"
 evidence_level: "<VERIFIED | UNVERIFIED | PARTIAL | BLOCKED_CAPTCHA | BLOCKED_PAYWALL | BLOCKED_LOGIN | FAILED>"
+submitter_github: "<PR 作者 GitHub login，取自 triage.author；无 PR 来源时留空>"
+pr_number: "<PR 编号；无 PR 来源时留空>"
+pr_url: "<https://github.com/kbmjj123/aifindr.org/pull/<编号>；无 PR 来源时留空>"
 last_verified: "<YYYY-MM-DD>"
 ---
 
@@ -64,6 +67,8 @@ last_verified: "<YYYY-MM-DD>"
 | `status` | 固定 `pending` |
 | `data_source` | 固定 `evidence_probe` |
 | `evidence_level` | 必须与 `reports/evidence/<host>.json` 的 `verdict` 一致 |
+| `submitter_github` | PR 提交者 GitHub login，取自 `reports/submissions-triage.json` 的 `author`；无 PR 来源留空字符串 |
+| `pr_number` / `pr_url` | PR 编号与链接，取自 L1 的 `--pr` 参数；无 PR 来源留空字符串 |
 | `last_verified` | 取 L3 JSON `observed_at` 日期部分 |
 
 ## 严禁

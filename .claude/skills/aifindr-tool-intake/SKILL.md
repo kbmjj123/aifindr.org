@@ -54,10 +54,12 @@ description_zh: 用本地实测证据为 aifindr.org 逐个工具编写内容文
 ```bash
 node scripts/audit-submissions.mjs \
   --domain=<host> --name="<名称>" --website=<完整URL> \
-  --category=<分类> --pricing=<free|freemium|paid> --desc="<一句话描述>"
+  --category=<分类> --pricing=<free|freemium|paid> --desc="<一句话描述>" \
+  --author=<PR作者GitHub login> --pr=<PR编号>
 ```
 
-- 读 `reports/submissions-triage.json` 中 `pr` 以 `domain:` 开头的那条记录
+- 读 `reports/submissions-triage.json` 中 `pr` 以 `domain:` 开头的那条记录；`author` 写入草稿 `submitter_github`，`--pr` 写入 `pr_number` / `pr_url`，供后续 `POST /api/admin/publish-pr` 发布与追溯
+- PR 模式下 `--author` / `--pr` 自动取自 PR，无需手填；无 PR 来源时两者省略
 - `REJECT` → **停止**，记录理由，不写内容文件，向用户说明
 - `PASS` / `MANUAL` → 继续；`MANUAL` 必须在最终文档里标注不确定点
 
@@ -127,6 +129,8 @@ FAQ 问题必须有真实来源（PAA / Reddit / G2），不得自行编造。
 | `status` | 固定 `pending`（内容产出后由后台发布） |
 | `data_source` | 固定 `evidence_probe` |
 | `evidence_level` | L3 的 verdict：`VERIFIED` / `UNVERIFIED` / `PARTIAL` / `BLOCKED_*` |
+| `submitter_github` | PR 作者 GitHub login，取自 L1 triage 记录的 `author`；无 PR 来源填空字符串 |
+| `pr_number` / `pr_url` | PR 编号与链接，取自 L1 `--pr`；无 PR 来源填空字符串 |
 | `last_verified` | L3 `observed_at` 的日期 `YYYY-MM-DD` |
 
 **正文六段结构（顺序固定，见 output-template.md）：**
@@ -163,5 +167,7 @@ FAQ 问题必须有真实来源（PAA / Reddit / G2），不得自行编造。
 - [ ] FAQ 问题有真实来源（PAA / Reddit / G2），非编造；数量符合分级规则
 - [ ] `short_description` ≤80 字符、`meta_description` ≤150 字符
 - [ ] `status: pending`、`data_source: evidence_probe`
+- [ ] `submitter_github` 与 L1 triage 的 `author` 一致（无 PR 来源则为空）
+- [ ] `pr_number` / `pr_url` 与 L1 `--pr` 一致（无 PR 来源则为空）
 - [ ] `Evidence` 段路径与本地实际文件一致
 - [ ] 文件写入 `data/tool-pages/<host>.md`，未写 D1、未传 R2

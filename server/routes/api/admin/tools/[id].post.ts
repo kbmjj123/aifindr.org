@@ -34,6 +34,8 @@ interface UpdatePayload {
   status?:            string
   submitter_site?:    string | null
   submitter_github?:  string | null
+  pr_number?:         number | null
+  pr_url?:            string | null
   tags?:              { type: string; tag: string }[]
 }
 
@@ -48,7 +50,7 @@ const EDITABLE_FIELDS = [
   'platforms', 'launched', 'meta_description', 'short_description',
   'body', 'faq', 'logo', 'screenshots',
   'featured', 'verified', 'editor_pick', 'status',
-  'submitter_site', 'submitter_github',
+  'submitter_site', 'submitter_github', 'pr_number', 'pr_url',
 ] as const
 
 type FieldName = typeof EDITABLE_FIELDS[number]
@@ -96,7 +98,7 @@ export default defineEventHandler(async (event) => {
       }
     }
     if (field === 'status' && val !== undefined) {
-      if (!['active', 'beta', 'discontinued', 'pending'].includes(val as string)) {
+      if (!['active', 'beta', 'discontinued', 'pending', 'rejected', 'needs_info'].includes(val as string)) {
         throw createError({ statusCode: 400, statusMessage: 'Invalid status value' })
       }
     }

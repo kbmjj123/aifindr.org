@@ -123,7 +123,7 @@ aifindr.org/
 | 提交与上传 | `submit.post`、`upload.post`、`upload/sign.post`、`admin/upload-from-url.post`、`file/[...key].get` |
 | 统计 | `stats.get`、`click/[id].post`、`view/[id].post` |
 | 认证 | `auth/github.get`、`auth/callback.get`、`auth/me.get`、`auth/dev-login.get` |
-| 管理后台 | `admin/pending.get`、`admin/review.post`、`admin/tools/*`、`admin/posts/*`、`admin/users.get`、`admin/log.get`、`admin/feature.post`、`admin/broadcast.post` |
+| 管理后台 | `admin/pending.get`、`admin/review.post`、`admin/publish-pr.post`（PR 工具一键发布：active 入库 + listing + B-03/F-02 + PR 评论 + squash merge）、`admin/tools/*`、`admin/posts/*`、`admin/users.get`、`admin/log.get`、`admin/feature.post`、`admin/broadcast.post` |
 | 内容 | `blog/*`、`contributors*`、`__sitemap__/urls.get`、`generate.post` |
 | 外链提交平台（公开） | `submission-sites/index.get`、`submission-sites/[slug].get`、`submission-sites/suggest.post`、`submission-lists/index.get`、`submission-lists/[slug].get`（不提供数据集导出端点） |
 | 外链提交平台（后台） | `admin/submission-lists.get` / `.post`（新建）/ `refresh.post` / `[slug].post`（策展）、`admin/submission-sites.get` / `.post`（新增）/ `import.post`（批量）/ `[slug].get` / `[slug].post`（编辑补齐）、`admin/submission-reports/review.post` |
@@ -156,6 +156,8 @@ aifindr.org/
 ### 工具内容编写（本地流水线 skill）
 
 - 工具内容由 `.claude/skills/aifindr-tool-intake/SKILL.md`（`.codebuddy/skills` 软链指向这里）驱动，按 L1→L2→L3→L4 顺序串起本地脚本：`audit-submissions.mjs --domain`（筛查）→ `probe-evidence.mjs --host`（取证）→ `try-tool.mjs --only`（浏览器实操）→ 产出 `data/tool-pages/<host>.md`
+- PR 来源的草稿要把 L1 triage 的 `author`（GitHub login）写进 frontmatter 的 `submitter_github`，`--pr` 写进 `pr_number` / `pr_url`；**不替用户建账号**——按 `users.username` 命中的才关联 `submitter_id` 并收到 B-03 邮件，没登录过站点的人只显示名字
+- 发布走 `POST /api/admin/publish-pr`：active 入库 + PR 追溯列 + listing 页 + B-03/F-02 邮件 + PR 评论（三条链接）+ 最后 squash merge。评论/merge 依赖 `GITHUB_PR_TOKEN`（Issues:write + Contents:write），未配置时静默跳过，失败只记日志不回滚 D1。手动后台新建也可传 `pr_number` / `pr_url` 追溯。迁移旧库用 `schema/migrate-tools-pr.sql`
 - 事实源是 `reports/evidence/`，联网只补定价/FAQ/alternatives；**UNVERIFIED 绝不能写成 VERIFIED**（设计见 `docs/verification-agent-plan.md`）
 - 在线表单提交（`data_source='user_submit'`）进 D1 后，由人工/agent 把域名交给该 skill 启动流水线；skill 只产出本地 MD，发布仍在后台完成
 
@@ -224,7 +226,7 @@ wrangler d1 execute aifindr-db --remote --file=./schema/seed-submission-sites.sq
 环境变量分三类：
 
 - `wrangler.toml [vars]`（公开）：`API_BASE`、`R2_PUBLIC_URL`、`GITHUB_CLIENT_ID`、`ADMIN_GITHUB_IDS`、`GITHUB_PAGES_BASE`
-- `wrangler secret put`（密钥）：`TURNSTILE_SECRET`、`GITHUB_CLIENT_SECRET`、`JWT_SECRET`、`RESEND_API_KEY`、`GITHUB_BACKLINK_TOKEN`、`LEMONSQUEEZY_WEBHOOK_SECRET`、`SITE_URL` 等，完整清单见 `server/utils/env.ts` 的 `CloudflareEnv`
+- `wrangler secret put`（密钥）：`TURNSTILE_SECRET`、`GITHUB_CLIENT_SECRET`、`JWT_SECRET`、`RESEND_API_KEY`、`GITHUB_BACKLINK_TOKEN`、`GITHUB_PR_TOKEN`（PR 评论 + squash merge）、`LEMONSQUEEZY_WEBHOOK_SECRET`、`SITE_URL` 等，完整清单见 `server/utils/env.ts` 的 `CloudflareEnv`
 - 本地：`.dev.vars` / `.dev.vars.local` / `.env*.local`（均被 `.gitignore` 排除）；`.env.example` 只含 R2 图片迁移脚本所需变量
 
 ## 11. 文档维护约定
