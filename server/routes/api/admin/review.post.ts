@@ -128,16 +128,19 @@ export default defineEventHandler(async (event) => {
       void notifySearchEngines(env, toolPageUrl)
 
       // F-02: Notify category submitters
-      const { results: categorySubmitters } = await env.DB.prepare(
-        'SELECT DISTINCT submitter_id FROM tools WHERE category = ? AND status = ? AND submitter_id IS NOT NULL AND submitter_id != ?'
-      ).bind(toolCategory, 'active', submitterId || 0).all<{ submitter_id: number }>()
+      const { results: categorySubmitters } = await env.DB.prepare(`
+        SELECT DISTINCT u.id AS submitter_id, u.*
+        FROM tools t JOIN users u ON u.id = t.submitter_id
+        WHERE t.category = ? AND t.status = 'active'
+          AND t.submitter_id IS NOT NULL AND t.submitter_id != ?
+          AND u.email_notify = 1 AND u.unsubscribed_at IS NULL
+      `).bind(toolCategory, submitterId || 0).all<UserRecord>()
 
       const notified = new Set<number>()
-      for (const row of categorySubmitters) {
-        if (notified.has(row.submitter_id)) continue
-        notified.add(row.submitter_id)
+      for (const catUser of categorySubmitters) {
+        if (notified.has(catUser.id)) continue
+        notified.add(catUser.id)
 
-        const catUser = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(row.submitter_id).first<UserRecord>()
         const catEmail = getNotifyEmail(catUser)
         if (catEmail) {
           void sendEmail(env, {
