@@ -388,51 +388,62 @@ useHead(() => {
   }
 })
 
-// ─── Schema: BreadcrumbList ───────────────────────────────────────
+// ─── Schema: BreadcrumbList / SoftwareApplication / FAQPage ────────
+// defineBreadcrumb/defineSoftwareApp 的函数式 getter 在当前 @unhead/schema-org
+// 版本不会被求值（字段丢失，只剩 @id），必须传静态对象；把整个 nodes 包成
+// computed，让 unhead 在渲染时读取已 resolve 的 tool.value，避免 name 退化成 slug。
+useSchemaOrg(computed(() => {
+  const t = tool.value
+  const nodes: Record<string, unknown>[] = [
+    defineBreadcrumb({
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'All Tools', item: 'https://aifindr.org/tools' },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: categoryInfo.value?.title || category.value,
+          item: `https://aifindr.org/tools/${category.value}`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: t?.name || slug.value,
+          item: canonical.value,
+        },
+      ],
+    }) as Record<string, unknown>,
+  ]
 
-useSchemaOrg([
-  defineBreadcrumb(() => ({
-    itemListElement: [
-      { name: 'All Tools', item: '/tools' },
-      { name: categoryInfo.value?.title || category.value, item: `/tools/${category.value}` },
-      { name: tool.value?.name || slug.value, item: `/tools/${category.value}/${tool.value?.slug || slug.value}` },
-    ],
-  })),
-])
-
-// ─── Schema: SoftwareApplication (via @nuxtjs/seo) ─────────────────
-
-useSchemaOrg([
-  defineSoftwareApp(() => {
-    const t = tool.value
-    if (!t) return {}
+  if (t) {
     const price = t.pricing === 'free' ? '0' : String(t.price_starting || 0)
-    return {
+    const appInput = {
       name: t.name,
       description: t.meta_description || '',
       url: t.website,
+      // 分类标题来自本站 CATEGORIES，不在 schema.org 的 ApplicationCategory 枚举内，
+      // 保留展示值，仅在类型层面放行。
       applicationCategory: categoryInfo.value?.title || t.category,
       image: t.logo || (Array.isArray(t.screenshots) ? t.screenshots[0] : undefined),
       operatingSystem: toolPlatforms.value.length ? toolPlatforms.value.join(', ') : undefined,
       offers: { '@type': 'Offer', price, priceCurrency: 'USD' },
-    }
-  }),
-])
+    } as unknown as Parameters<typeof defineSoftwareApp>[0]
+    nodes.push(defineSoftwareApp(appInput) as Record<string, unknown>)
+  }
 
-// ─── FAQPage schema (reactive, separate call) ─────────────────────
-const faqSchema = computed(() => {
   const f = toolFaq.value
-  if (!f.length) return []
-  return [{
-    '@type': 'FAQPage' as const,
-    mainEntity: f.map((q: any) => ({
-      '@type': 'Question' as const,
-      name: q.question,
-      acceptedAnswer: { '@type': 'Answer' as const, text: q.answer },
-    })),
-  }]
-})
-useSchemaOrg(faqSchema)
+  if (f.length) {
+    nodes.push({
+      '@type': 'FAQPage',
+      mainEntity: f.map((q: any) => ({
+        '@type': 'Question',
+        name: q.question,
+        acceptedAnswer: { '@type': 'Answer', text: q.answer },
+      })),
+    })
+  }
+
+  return nodes
+}))
 
 // ── record view ──────────────────────────────────────────────
 const VIEW_THROTTLE_MS = 30 * 60 * 1000
