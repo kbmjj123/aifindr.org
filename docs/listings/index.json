@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T15:46:21.226Z",
+  "generatedAt": "2026-11-25T22:24:37.152Z",
   "items": [
     {
       "name": "All of Us",
@@ -24,6 +24,14 @@
       "url": "https://kbmjj123.github.io/aifindr.org/listings/data/footalytics-ai-data-tool/",
       "pricing": "free",
       "submitterGithub": "lewisywliu-star"
+    },
+    {
+      "name": "Genjutsu",
+      "slug": "genjutsu-ai-video-generator",
+      "category": "video",
+      "url": "https://kbmjj123.github.io/aifindr.org/listings/video/genjutsu-ai-video-generator/",
+      "pricing": "freemium",
+      "submitterGithub": "VulcanFeynman"
     },
     {
       "name": "MCP360",
