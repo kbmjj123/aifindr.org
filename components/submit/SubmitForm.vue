@@ -147,7 +147,8 @@
       <!-- Platforms -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Platforms
+          Platforms <span style="color: var(--color-danger)">*</span>
+          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(at least one)</span>
         </label>
         <div class="flex flex-wrap gap-3">
           <label v-for="p in platformOptions" :key="p.value"
@@ -163,8 +164,7 @@
       <!-- Launched -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Launch Year
-          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
+          Launch Year <span style="color: var(--color-danger)">*</span>
         </label>
         <BaseInput v-model="form.launched" placeholder="e.g. 2023" maxlength="4" />
       </div>
@@ -175,7 +175,7 @@
 
         <!-- Feature Tags -->
         <div>
-          <p class="font-body text-[11px] mb-2" style="color: var(--color-text-muted)">Features</p>
+          <p class="font-body text-[11px] mb-2" style="color: var(--color-text-muted)">Features <span style="color: var(--color-danger)">*</span> (at least one)</p>
           <div class="flex flex-wrap gap-2">
             <label v-for="t in FEATURE_TAGS" :key="t.value"
               class="flex items-center gap-1 font-body text-[11px] cursor-pointer px-2 py-1 rounded-full"
@@ -193,7 +193,7 @@
         <!-- Audience Tags -->
         <div>
           <p class="font-body text-[11px] mb-2" style="color: var(--color-text-muted)">
-            Audience <span style="color: var(--color-text-muted)">(up to 3)</span>
+            Audience <span style="color: var(--color-danger)">*</span> <span style="color: var(--color-text-muted)">(1–3)</span>
           </p>
           <div class="flex flex-wrap gap-2">
             <label v-for="t in AUDIENCE_TAGS" :key="t.value"
@@ -214,7 +214,7 @@
         <!-- Use Case Tags（根据父分类动态加载） -->
         <div v-if="form.category && useCaseTagOptions.length > 0">
           <p class="font-body text-[11px] mb-2" style="color: var(--color-text-muted)">
-            Use Cases <span style="color: var(--color-text-muted)">(up to 3)</span>
+            Use Cases <span style="color: var(--color-danger)">*</span> <span style="color: var(--color-text-muted)">(1–3)</span>
           </p>
           <div class="flex flex-wrap gap-2">
             <label v-for="t in useCaseTagOptions" :key="t.value"
@@ -247,19 +247,19 @@
       <!-- Media -->
       <div class="pt-4 border-t" :style="{ borderColor: 'var(--color-border)' }">
         <p class="font-body text-[12px] font-medium mb-4" style="color: var(--color-text-primary)">
-          Media <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
+          Media <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(icon + at least 1 screenshot required)</span>
         </p>
 
         <div class="mb-4">
           <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-            Tool Icon
+            Tool Icon <span style="color: var(--color-danger)">*</span>
           </label>
           <ImageUploadSlot v-model="form.coverImage" aspect="square" />
         </div>
 
         <div class="mb-4">
           <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-            Screenshots <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(up to 3)</span>
+            Screenshots <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(at least 1, up to 3)</span>
           </label>
           <div class="space-y-2">
             <ImageUploadSlot v-for="(_, i) in form.screenshots" :key="i"
@@ -269,7 +269,7 @@
 
         <div>
           <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-            Demo Video URL
+            Demo Video URL <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional)</span>
           </label>
           <BaseInput v-model="form.demoVideo" placeholder="https://youtube.com/watch?v=..." />
         </div>
@@ -278,8 +278,8 @@
       <!-- Submitter -->
       <div>
         <label class="font-body text-[12px] font-medium mb-1.5 block" style="color: var(--color-text-primary)">
-          Your Website
-          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">(optional — gets a dofollow backlink)</span>
+          Your Website <span style="color: var(--color-danger)">*</span>
+          <span class="font-body text-[11px]" style="color: var(--color-text-muted)">— gets a dofollow backlink</span>
         </label>
         <BaseInput v-model="form.submitterSite" placeholder="https://your-site.com" />
       </div>
@@ -415,12 +415,42 @@ onUnmounted(() => {
 })
 
 // ── submit ────────────────────────────────────────────────────
+function validateForm(): string | null {
+  const need = (value: string, label: string) => {
+    if (!String(value ?? '').trim()) return `${label} is required`
+    return null
+  }
+  const checks: (string | null)[] = [
+    need(form.name, 'Tool Name'),
+    need(form.website, 'Website URL'),
+    need(form.category, 'Category'),
+    need(form.subCategory, 'Sub Category'),
+    need(form.pricing, 'Pricing Type'),
+    need(form.shortDescription, 'Short Description'),
+    need(form.description, 'One-line Description'),
+    need(form.detailDescription, 'Detailed Description'),
+    need(form.submitterEmail, 'Contact Email'),
+    need(form.coverImage, 'Tool Icon'),
+    need(form.launched, 'Launch Year'),
+    need(form.submitterSite, 'Your Website'),
+  ]
+  const wordCount = form.detailDescription.trim().split(/\s+/).filter(Boolean).length
+  if (wordCount > 0 && wordCount < 100) checks.push('Detailed Description must be at least 100 words')
+  if (form.screenshots.filter(Boolean).length === 0) checks.push('At least one Screenshot is required')
+  if (form.platforms.length === 0) checks.push('At least one Platform is required')
+  if (form.featureTags.length === 0) checks.push('At least one Feature tag is required')
+  if (form.audienceTags.length === 0) checks.push('At least one Audience tag is required')
+  if (form.useCaseTags.length === 0) checks.push('At least one Use Case tag is required')
+  return checks.find(Boolean) || null
+}
+
 async function handleSubmit() {
   if (submitting.value) return
   submitError.value = ''
 
-  if (!form.submitterEmail.trim()) {
-    submitError.value = 'Contact Email is required'
+  const invalid = validateForm()
+  if (invalid) {
+    submitError.value = invalid
     return
   }
 

@@ -68,6 +68,39 @@ export default defineEventHandler(async (event) => {
   const demoVideoUrl    = String(body.demo_video_url || '').trim()
   const tagsRaw         = body.tags  // [{ type: 'feature'|'audience'|'use_case', tag: string }]
 
+  // ── 完整信息校验（只对新提交生效，不影响存量 pending/active）──
+  const completeness: string[] = []
+  const requireValue = (value: string, label: string) => {
+    if (!value.trim()) completeness.push(label)
+  }
+  requireValue(subCategory, 'sub_category')
+  requireValue(shortDesc, 'short_description')
+  requireValue(bodyContent, 'detailDescription')
+  requireValue(submitterSite, 'submitter_site')
+  requireValue(submitterEmailRaw, 'submitter_email')
+  requireValue(logo, 'logo')
+  requireValue(launched, 'launched')
+  if (bodyContent.trim().split(/\s+/).filter(Boolean).length < 100) {
+    completeness.push('detailDescription must be at least 100 words')
+  }
+  const hasScreenshot = screenshotRaw.split(',').some(s => s.trim())
+  if (!hasScreenshot) completeness.push('at least one screenshot is required')
+  const platformsList = Array.isArray(platformsRaw)
+    ? platformsRaw.map(String).filter(Boolean)
+    : String(platformsRaw || '').split(',').map(s => s.trim()).filter(Boolean)
+  if (!platformsList.length) completeness.push('at least one platform is required')
+  for (const type of ['feature', 'audience', 'use_case']) {
+    if (!Array.isArray(tagsRaw) || !(tagsRaw as { type?: string; tag?: string }[]).some(t => t?.type === type && t?.tag)) {
+      completeness.push(`at least one ${type} tag is required`)
+    }
+  }
+  if (completeness.length > 0) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: `Incomplete submission: ${completeness.join(', ')}`,
+    })
+  }
+
   // ── 枚举值校验 ────────────────────────────────────────────
   if (!['free', 'freemium', 'paid'].includes(pricing)) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid pricing value. Must be free, freemium, or paid' })
