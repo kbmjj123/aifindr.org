@@ -45,7 +45,8 @@ import { exchangeLinks, type ExchangeLink } from '~/data/exchange-links'
 const links = exchangeLinks
 
 // Duplicate for seamless marquee loop
-const loopedLinks = computed(() => [...links, ...links])
+const loopedLinks = computed(() => [...links])
+// const loopedLinks = computed(() => [...links, ...links])
 </script>
 
 <style scoped>

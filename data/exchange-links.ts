@@ -30,4 +30,14 @@ export interface ExchangeLink {
  *   }
  */
 /** Add your exchange links here. Component hides when array is empty. */
-export const exchangeLinks: ExchangeLink[] = []
+export const exchangeLinks: ExchangeLink[] = [
+  {
+    name: 'Twelve Tools',
+    url: 'https://twelve.tools',
+    type: 'image',
+    imageUrl: 'https://twelve.tools/badge0-white.svg',
+    imageWidth: 148,
+    imageHeight: 40,
+    alt: 'Featured on Twelve Tools',
+  }
+]
