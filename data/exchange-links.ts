@@ -48,5 +48,14 @@ export const exchangeLinks: ExchangeLink[] = [
     imageWidth: 250,
     imageHeight: 54,
     alt: 'Featured on FWFW',
+  },
+  {
+    name: 'Findly.tools',
+    url: 'https://findly.tools/aifindr?utm_source=aifindr',
+    type: 'image',
+    imageUrl: 'https://findly.tools/badges/findly-tools-badge-light.svg',
+    imageWidth: 175,
+    imageHeight: 55,
+    alt: 'Featured on Findly.tools',
   }
 ]
