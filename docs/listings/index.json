@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T15:43:51.356Z",
+  "generatedAt": "2026-11-25T15:46:21.226Z",
   "items": [
     {
       "name": "All of Us",
@@ -40,6 +40,14 @@
       "url": "https://kbmjj123.github.io/aifindr.org/listings/productivity/memfect-ai-productivity-tool/",
       "pricing": "free",
       "submitterGithub": "fastproductsofficial"
+    },
+    {
+      "name": "ProfessionalHeadshot.io: Work-Ready Portraits from Selfies",
+      "slug": "professionalheadshot-io-work-ready-portraits-from-selfies",
+      "category": "image",
+      "url": "https://kbmjj123.github.io/aifindr.org/listings/image/professionalheadshot-io-work-ready-portraits-from-selfies/",
+      "pricing": "paid",
+      "submitterGithub": "jacobGor123"
     },
     {
       "name": "Remix the Trend Free Background Remover",
