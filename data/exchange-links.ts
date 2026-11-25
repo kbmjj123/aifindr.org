@@ -39,5 +39,14 @@ export const exchangeLinks: ExchangeLink[] = [
     imageWidth: 148,
     imageHeight: 40,
     alt: 'Featured on Twelve Tools',
+  },
+  {
+    name: 'FWFW',
+    url: 'https://fwfw.app/item/aifindrorg',
+    type: 'image',
+    imageUrl: 'https://fwfw.app/badge-white.svg',
+    imageWidth: 250,
+    imageHeight: 54,
+    alt: 'Featured on FWFW',
   }
 ]
