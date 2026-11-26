@@ -157,6 +157,10 @@ All data access goes through Nitro handlers in `server/routes/api/`, using `getE
 
 Endpoint groups: tools & search, submit & upload, stats/click/view, auth, admin (review, tools, posts, users, broadcast, submission lists), blog & contributors, public submission-site directory & lists, sitemap, cron, webhooks (GitHub / Lemon Squeezy). See `api-spec.yaml` for a request/response reference, and the source files for the authoritative signatures.
 
+## RSS Feeds
+
+`/rss.xml` carries the full text of published English blog posts; `/tools.rss.xml` carries newly listed tools in submission order. Both feeds are generated at build time by `scripts/build-rss.mjs` from the public APIs and committed under `public/`. Run `pnpm rss` to regenerate, or `pnpm rss -- --strict` to fail instead of keeping the previous file when the source API is unreachable. New content requires a fresh `pnpm build && wrangler deploy` to enter the feeds.
+
 ## Submission-Site Directory
 
 `/backlink-sites` is a free, open directory of 848 third-party platforms that accept product or website submissions, with search and filters for pricing, dofollow links, domain rating, approval speed and topic. `/submission-lists` publishes 18 generated lists; `/backlink-sites/data` explains the data sources and fields and carries a correction form. The directory does not offer dataset downloads or JSON/CSV export.

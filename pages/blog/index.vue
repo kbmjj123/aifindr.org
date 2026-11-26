@@ -3,9 +3,13 @@
     <h1 class="font-sans font-extrabold text-[24px] tracking-tight mb-2" style="color: var(--color-text-primary)">
       Blog
     </h1>
-    <p class="font-body text-[12px] mb-8" style="color: var(--color-text-muted)">
-      Latest updates, tool reviews, and AI industry insights.
-    </p>
+    <div class="flex flex-wrap items-center gap-4 mb-8">
+      <p class="font-body text-[12px]" style="color: var(--color-text-muted)">
+        Latest updates, tool reviews, and AI industry insights.
+      </p>
+      <a href="/rss.xml" class="font-body text-[11px] underline underline-offset-2"
+        style="color: var(--color-text-secondary);">Subscribe via RSS</a>
+    </div>
 
     <!-- Loading -->
     <div v-if="loading" class="grid gap-3">

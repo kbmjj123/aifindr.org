@@ -199,7 +199,11 @@ GitHub OAuth + JWT；管理员由 `ADMIN_GITHUB_IDS`（逗号分隔的 GitHub ID
 
 **边界**：`/backlink-sites` 与 `/submission-lists` 记录的是**站外第三方提交平台**，其出站链接统一 `nofollow`；它们不是站内提交者激励的一部分，不得用上面的 dofollow 约定去改这批链接，也不得影响上述三条承诺。
 
-## 9. 已知技术债（文档已标注，代码待处理）
+## 9. RSS（构建时静态生成）
+
+`/rss.xml` 与 `/tools.rss.xml` 由 `scripts/build-rss.mjs` 从公开 API 拉取后写入 `public/`，`pnpm build` 会自动前置该脚本，产物随 Worker assets 发布。博客 feed 仅 en、工具 feed 按 `submitted_at` 首次收录排序，各 50 条，全文写入 `content:encoded`。没有 Nitro 路由、没有 D1 变更；新内容需重新 build + deploy 才进 feed。实现依据见 `docs/superpowers/specs/2026-11-26-rss-feeds-design.md` 与对应 plan。
+
+## 10. 已知技术债（文档已标注，代码待处理）
 
 - 已退役并清除：GitHub PR 提交 tab、`data/submit-template.md`、`webhooks/github.post.ts`、`GITHUB_WEBHOOK_SECRET`、`sync-d1` 脚本与空转 workflow。在线表单是唯一支持的提交路径。
 - `api-spec.yaml` 头部架构描述已校正，但正文端点清单仍可能滞后，以 `server/routes/api/` 源码为准
@@ -207,7 +211,7 @@ GitHub OAuth + JWT；管理员由 `ADMIN_GITHUB_IDS`（逗号分隔的 GitHub ID
 - `product-scope.md` / 早期规范中提到的 KV 高频查询缓存（TTL 1h）尚未在 `tools.get.ts` 落地
 - `@nuxt/content` 依赖仍在，但工具数据不走它；后续如无内容集合需求可评估移除
 
-## 10. 环境与命令
+## 11. 环境与命令
 
 本地 Node.js / pnpm 环境已预先配置好，**禁止**运行 node、nvm、pnpm 版本检查、Node 版本切换等环境检测操作。
 
@@ -217,10 +221,13 @@ pnpm build        # 构建到 .output/
 pnpm generate     # 静态生成（当前 Workers SSR 架构下一般不用）
 pnpm preview      # 预览构建产物
 pnpm typecheck    # 类型检查
+pnpm rss          # 从公开 API 重新生成 public/rss.xml 与 public/tools.rss.xml
+pnpm test         # 运行 RSS 脚本的 node:test 单元测试
 wrangler deploy   # 部署单一 Worker
 wrangler d1 execute aifindr-db --remote --file=./schema/init.sql   # 初始化/迁移 D1
 node scripts/build-submission-sites.mjs                            # 重建外链提交平台快照产物
 wrangler d1 execute aifindr-db --remote --file=./schema/seed-submission-sites.sql  # 导入快照（可重复执行）
+node scripts/build-rss.mjs --strict   # 拉取失败时直接退出，不保留旧 feed
 ```
 
 环境变量分三类：
@@ -229,7 +236,7 @@ wrangler d1 execute aifindr-db --remote --file=./schema/seed-submission-sites.sq
 - `wrangler secret put`（密钥）：`TURNSTILE_SECRET`、`GITHUB_CLIENT_SECRET`、`JWT_SECRET`、`RESEND_API_KEY`、`GITHUB_BACKLINK_TOKEN`、`GITHUB_PR_TOKEN`（PR 评论 + squash merge）、`LEMONSQUEEZY_WEBHOOK_SECRET`、`SITE_URL` 等，完整清单见 `server/utils/env.ts` 的 `CloudflareEnv`
 - 本地：`.dev.vars` / `.dev.vars.local` / `.env*.local`（均被 `.gitignore` 排除）；`.env.example` 只含 R2 图片迁移脚本所需变量
 
-## 11. 文档维护约定
+## 12. 文档维护约定
 
 - 改架构、目录、数据结构或 API 时，同步更新本文件、对应 rule 与 `README.md`
 - `api-spec.yaml` 是接口参考草稿；端点签名以 `server/routes/api/` 源码为准

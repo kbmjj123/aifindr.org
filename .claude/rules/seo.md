@@ -41,6 +41,8 @@ export default defineNuxtConfig({
 })
 ```
 
+RSS：`/rss.xml`（博客 en 全文）与 `/tools.rss.xml`（新工具全文）是 `public/` 下的静态文件，由 `scripts/build-rss.mjs` 在构建时生成。它们不在 `/api/**` 下，不受 `robots.disallow` 与 sitemap `exclude` 影响；feed URL 本身不放进 sitemap。页面通过 `app.head.link` 声明 `rel="alternate" type="application/rss+xml"`。
+
 > 早期文档中的 `zeroRuntime: true`（构建时生成）与当前配置不符。OG 组件位于 `components/og/AppOgImage.vue`，另有 `components/OgImage/AppOgImage.satori.vue` 作为 satori 模板。
 
 ## 三、usePageSeo() — 标准 SEO composable

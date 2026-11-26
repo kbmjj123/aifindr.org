@@ -9,6 +9,8 @@
         <NuxtLink to="/submit" class="font-body text-[11px]" style="color: var(--color-text-muted);">Submit</NuxtLink>
         <NuxtLink to="/backlink-sites" class="font-body text-[11px]" style="color: var(--color-text-muted);">Submission Sites</NuxtLink>
         <NuxtLink to="/submission-lists" class="font-body text-[11px]" style="color: var(--color-text-muted);">Submission Lists</NuxtLink>
+        <a href="/rss.xml" class="font-body text-[11px]" style="color: var(--color-text-muted);">Blog RSS</a>
+        <a href="/tools.rss.xml" class="font-body text-[11px]" style="color: var(--color-text-muted);">New Tools RSS</a>
         <NuxtLink to="/backlink-sites/data" class="font-body text-[11px]" style="color: var(--color-text-muted);">Data &amp; corrections</NuxtLink>
         <a href="https://github.com/kbmjj123/aifindr.org" target="_blank" rel="noopener noreferrer"
           class="font-body text-[11px]" style="color: var(--color-text-muted);">GitHub</a>

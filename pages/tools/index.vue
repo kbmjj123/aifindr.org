@@ -7,6 +7,8 @@
       <p class="font-body text-[13px] mt-1" style="color: var(--color-text-secondary)">
         Discover the best AI tools across {{ categories.length }} categories — from image generation to code assistants.
       </p>
+      <a href="/tools.rss.xml" class="inline-block font-body text-[12px] underline underline-offset-2 mt-1"
+        style="color: var(--color-text-secondary);">Subscribe to new tools via RSS</a>
     </div>
 
     <!-- Filter bar -->

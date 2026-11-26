@@ -14,6 +14,15 @@ export default defineNuxtConfig({
     name: 'aifindr.org – Discover AI Tools',
   },
 
+  app: {
+    head: {
+      link: [
+        { rel: 'alternate', type: 'application/rss+xml', title: 'aifindr.org Blog', href: '/rss.xml' },
+        { rel: 'alternate', type: 'application/rss+xml', title: 'aifindr.org New AI Tools', href: '/tools.rss.xml' },
+      ],
+    },
+  },
+
   css: ['~/assets/css/main.css', '~/assets/css/markdown.css', '@vueup/vue-quill/dist/vue-quill.snow.css'],
 
   compatibilityDate: '2026-05-07',
