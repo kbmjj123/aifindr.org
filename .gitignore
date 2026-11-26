@@ -68,3 +68,5 @@ docs/
 # Its inputs (docs/res/*.json / *.jsonl) stay local; generated seed + open data are committed.
 scripts/*
 !scripts/build-submission-sites.mjs
+!scripts/build-rss.mjs
+!scripts/lib/
